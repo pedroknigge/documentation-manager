@@ -1,68 +1,72 @@
-# documentation-manager
+# Documentation Manager
 
-**Skill version:** [1.2.0](./skills/documentation-manager/SKILL.md)
+### Living knowledge for codebases — so agents and humans stop guessing.
 
-> **This repository is the development home of the skill itself** — not an application that *uses* the skill.  
-> Source of truth for the package lives under `skills/documentation-manager/` (`SKILL.md` + `references/`).  
-> Installers, validation scripts, and publish docs support packaging and distribution.  
-> Do not treat this folder as a product codebase to “document with” the skill in consumer mode unless you are dogfooding on purpose.
+<p align="center">
+  <strong>v1.2.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · Intent · Audit · From-zero
+</p>
 
-An [Agent Skill](https://agentskills.io) that keeps a **living knowledge base** next to your code:
+<p align="center">
+  <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-1.2.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
+</p>
 
-- **`AGENTS.md`** (or `agents.md`) as the hub for humans and AI agents  
-- **`docs/`** for vision, requirements, architecture, ADRs, roadmap  
-- **`docs/features/<slug>/`** for **feature-level** documentation  
-- **`docs/audit/`** (optional) for code-vs-docs **claims matrices**  
+---
 
-Works for **whole projects** and **individual features** without forcing a full bootstrap when you only need a feature pack.
+Your repo already has the truth in the **code**.  
+What it usually lacks is a durable story of **what**, **why**, and **what’s next** — one that coding agents can trust without hallucinating endpoints that don’t exist.
 
-Compatible with Claude Code, Grok Build, Codex, Cursor, and any host that loads `SKILL.md` skills. Install via **`npx skills`**, **`install.sh`**, or git clone.
+**Documentation Manager** is an [Agent Skill](https://agentskills.io) that builds and maintains a living knowledge base next to your code:
 
-## What's new in 1.2
+| Hub | Narrative | Features | Truth check |
+|-----|-----------|----------|-------------|
+| `AGENTS.md` | vision · requirements · architecture · roadmap · ADRs | `docs/features/<slug>/` | optional `docs/audit/` claims matrix |
 
-| Capability | What it means |
-|------------|----------------|
-| **Intent first** | Every project-level run classifies **integrate** \| **audit** \| **from-zero** before writing |
-| **Code wins** | Doc claims that fail structural checks are marked Contradicted / Missing — never invent code to match docs |
-| **Code-first audit** | Inventory surfaces from code, then reconcile claims (OK / Partial / Missing / Contradicted) |
-| **from-zero + sandbox** | Full new knowledge base is first-class; paths like `test/` get a non-SSOT banner + **promotion plan** |
-| **Integrate-first (mature)** | Improving existing docs indexes and fills gaps — no parallel rewrite of product-vision / requirements / ADRs |
+Whole project. Single module. Or a full rewrite in a sandbox — **without** torching the docs that already work.
 
-Installer and validator target **≥ 1.2.0** (requires `references/audit-template.md` and Intent/audit/from-zero concepts in `SKILL.md`).
+Works with **Claude Code**, **Grok Build**, **Codex**, **Cursor**, and any host that loads `SKILL.md` skills.
+
+---
 
 ## Install
 
-### Option A — Skills CLI (recommended)
+**One command. Ready in seconds.**
 
 ```bash
 npx skills add pedroknigge/documentation-manager
 ```
 
-Global install for all agents:
+<details>
+<summary><strong>More install options</strong></summary>
+
+<br>
+
+**Global (all agents on this machine)**
 
 ```bash
 npx skills add pedroknigge/documentation-manager -g -y
 ```
 
-List skills in the repo:
+**List skills in the package**
 
 ```bash
 npx skills add pedroknigge/documentation-manager -l
 ```
 
-### Option B — One-liner installer
+**Classic installer** (idempotent; re-run to update)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/pedroknigge/documentation-manager/main/install.sh | bash
 ```
 
-Idempotent. Updates overwrite the skill tree. Uninstall:
+Uninstall:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/pedroknigge/documentation-manager/main/install.sh | bash -s -- --uninstall
 ```
 
-### Option C — Local clone
+**From source**
 
 ```bash
 git clone https://github.com/pedroknigge/documentation-manager.git
@@ -71,140 +75,145 @@ cd documentation-manager
 ./scripts/validate-skill.sh
 ```
 
-## Invoke
+</details>
 
-- Slash: `/documentation-manager`
-- Natural language examples:
-  - *“bootstrap docs”* / *“from zero”* / *“generate docs in test/”*
-  - *“document the checkout feature”* / *“document this module”*
-  - *“sync docs with this PR”* / *“write an ADR for …”*
-  - *“audit docs”* / *“docs vs code”* / *“do our docs lie?”*
-  - *“improve / index / integrate the existing docs”* (mature repos → **integrate**)
+---
 
-## What it does
+## Why teams use it
 
-| Scope | When | Produces |
-|-------|------|----------|
-| **Project** | Greenfield or “document the whole repo” | Hub + core `docs/` + ADRs (per Intent) |
-| **Feature** | “Document billing / this module” | `docs/features/<slug>/` + hub link |
-| **Hybrid** | Feature when no docs exist yet | Minimal hub + feature pack (no bloat) |
+| Pain | What the skill does instead |
+|------|-----------------------------|
+| Docs drift until nobody trusts them | **Audit** reconciles claims against real code — *code wins* |
+| Agents invent architecture from vibes | A linked hub + core set becomes shared context |
+| “Document the project” means 40 empty files | Prefer **integrate** on mature trees — index gaps, don’t rewrite SSOT |
+| You want a full KB but not in production paths | **From-zero + sandbox** (e.g. `test/`) with a promotion plan |
+| Feature work doesn’t need a product novel | Atomic **feature packs** only where they earn their place |
 
-| Mode | Purpose |
-|------|---------|
-| **bootstrap** | New project knowledge base (or from-zero on thin/empty) |
-| **adopt** | Infer docs from existing code — **full** (thin) or **integrate** (mature) |
-| **audit** | Code inventory + claims matrix; code wins on conflict |
-| **feature** | Document or plan one feature (atomic packs; clusters = index + children) |
-| **sync** | Update only docs impacted by a change |
-| **roadmap** | Plan epics / releases at the right level |
+**No auto-commit. No auto-push.** You stay in control of git.
 
-| Intent (v1.2) | When | Writing policy |
-|---------------|------|----------------|
-| **integrate** | Improve / index mature docs (default when “mejorar / ordenar”) | Index + gaps + coverage; **no** parallel SSOT rewrite at root |
-| **audit** | Validate docs against code before trusting them | Claims matrix only (or hand off to integrate / patch) |
-| **from-zero** | Full new knowledge base; sandbox e.g. `test/` is first-class | Full core set from **code** (+ interview if greenfield); old docs = hypothesis only |
+---
 
-Before writing, the skill announces:
+## Three intents. One clear policy.
+
+Every serious project run starts by choosing **how hard** it should write:
+
+| | Intent | Best when you want… | Writing style |
+|---|--------|---------------------|---------------|
+| **1** | **integrate** | Better navigation on docs that already exist | Index · coverage · gaps · links — *no parallel vision/requirements rewrite* |
+| **2** | **audit** | To know if the docs still match the code | Read-first claims matrix: `OK` · `Partial` · `Missing` · `Contradicted` |
+| **3** | **from-zero** | A full knowledge base from scratch | Core set inferred from **code** (or a short greenfield interview); old docs = hypothesis only |
+
+Modes still cover the rest of the lifecycle:
+
+`bootstrap` · `adopt` · `audit` · `feature` · `sync` · `roadmap`
+
+Before it writes a byte, the skill announces scope so you can course-correct:
 
 ```text
-Scope: <x> | Mode: <y> | Intent: <integrate|audit|from-zero|n/a> | Variant: <full|integrate|n/a> | Maturity: <thin|mixed|mature|n/a> | Out: <root|sandbox:path>
+Scope · Mode · Intent · Variant · Maturity · Out: root | sandbox:path
 ```
 
-**Philosophy:** code is truth for *how* and for whether a claim is true; `AGENTS.md` + `docs/` capture *what*, *why*, and plans — but **never override code** when they disagree. No auto-commit or auto-push.
+---
 
-## Example flows
+## Say it in plain language
 
-### 1) Greenfield project
+Slash command: **`/documentation-manager`**
 
-```
-/documentation-manager
-```
+Or just talk:
 
-> “New SaaS for team standups. Stack TBD. Bootstrap the docs.”
+| You say | It leans toward |
+|---------|-----------------|
+| *“Bootstrap docs for this greenfield SaaS.”* | bootstrap / from-zero |
+| *“Document the checkout module.”* | feature pack + hub link |
+| *“We changed billing webhooks — sync the docs.”* | surgical sync |
+| *“Audit docs vs code — do we still tell the truth?”* | audit + claims matrix |
+| *“Full knowledge base under `test/`, don’t touch prod docs.”* | from-zero · sandbox |
+| *“Improve and index what we already have.”* | integrate (mature default) |
 
-Creates `AGENTS.md`, vision, requirements, architecture, roadmap, and initial ADRs.
+---
 
-### 2) Feature only (existing codebase)
+## What lands in your tree
 
-```
-/documentation-manager
-```
-
-> “Document the checkout feature in src/checkout.”
-
-Creates `docs/features/checkout/README.md` (and design if needed), links it from the hub. Does **not** invent a full product-vision suite.
-
-### 3) Sync after a change
-
-> “We changed the billing webhooks API — update the docs.”
-
-Touches only the billing feature doc and related API/architecture sections.
-
-### 4) Audit docs vs code (v1.2)
-
-> “Audit our docs against the codebase — do paths and modules still match?”
-
-Runs a code-first inventory and a claims matrix (`OK` / `Partial` / `Missing` / `Contradicted`). Optionally writes `docs/audit/claims-matrix.md`. Does not rewrite narrative docs unless you ask for a follow-on Intent.
-
-### 5) From-zero in a sandbox (v1.2)
-
-> “Generate a full knowledge base under `test/` without touching productive docs.”
-
-**Intent: from-zero | Out: sandbox:test/** — full hub + core set under the sandbox, non-SSOT banner, and a **promotion plan** for later merge into the real tree.
-
-### 6) Integrate mature docs (v1.2)
-
-> “Improve and index the existing docs — don’t rewrite everything.”
-
-**Intent: integrate** — hub coverage matrix, gap feature packs, canonical links; **non-writes** for existing product-vision / requirements / ADRs unless empty or explicitly requested.
-
-## Layout it encourages
-
-```
+```text
 project-root/
-├── AGENTS.md
+├── AGENTS.md                 ← single hub for humans + agents
 └── docs/
-    ├── product-vision.md      # bootstrap / from-zero / adopt-full
+    ├── product-vision.md
     ├── requirements.md
     ├── architecture.md
     ├── roadmap.md
-    ├── audit/                 # Intent audit (optional)
-    │   └── claims-matrix.md
+    ├── audit/
+    │   └── claims-matrix.md  ← when you ask for truth
     ├── decisions/
-    │   └── ADR-001-....md
+    │   └── ADR-001-….md
     └── features/
         └── checkout/
             ├── README.md
             └── design.md
 ```
 
-Sandbox runs may mirror this under a path such as `test/` instead of the productive root.
+Sandbox runs can mirror the same shape under a path like `test/` — marked **non-SSOT**, with a plan to promote later.
 
-## Repo structure (this package)
+---
 
-```
+## New in 1.2 — sharper by design
+
+- **Intent-first routing** — integrate · audit · from-zero before any write  
+- **Code wins on conflict** — never invent modules to satisfy a stale paragraph  
+- **Code-first audit** — inventory surfaces, then score every structural claim  
+- **Sandbox from-zero** — full KB in a safe folder when you need a clean slate  
+- **Integrate-first maturity** — respect the docs that already own a topic  
+
+Installer and validator target **≥ 1.2.0**.
+
+---
+
+## Built for multi-agent reality
+
+| Host | How you use it |
+|------|----------------|
+| Claude Code · Grok · Codex · Cursor | Load skill → slash or natural language |
+| Skills CLI | `npx skills add pedroknigge/documentation-manager` |
+| Classic | `install.sh` into your agent skills dirs |
+
+Philosophy in one line:
+
+> **Code owns *how* and whether a claim is true.  
+> Docs own *what*, *why*, and *what’s next* — and never override the code.**
+
+---
+
+## This repository
+
+> This folder is the **skill package** (source of truth under `skills/documentation-manager/`), not a product app that *consumes* the skill. Install it into other projects; only dogfood bootstrap here on purpose.
+
+```text
 skills/documentation-manager/
-  SKILL.md                      # router + rules (agents load this first)
-  references/
-    modes.md                    # full mode + Intent procedures
-    audit-template.md           # claims matrix (v1.2)
-    agents-md-template.md
-    quality-checklist.md
-    …                           # ADR, feature, architecture, status taxonomy
-install.sh                      # classic installer (v1.2)
-scripts/validate-skill.sh       # structure + ≥1.2.0 concept checks
+  SKILL.md                 ← agents load this first
+  references/              ← modes, templates, audit, quality bar
+install.sh
+scripts/validate-skill.sh
 scripts/install-smoke.sh
 ```
 
-## Development
+**Developers of the skill**
 
 ```bash
 ./scripts/validate-skill.sh
 ./scripts/install-smoke.sh
 ```
 
-See [PUBLISH.md](./PUBLISH.md) to publish or update the GitHub repo.
+Publishing notes → [PUBLISH.md](./PUBLISH.md) · Behavior source → [SKILL.md](./skills/documentation-manager/SKILL.md)
 
-## License
+---
 
-MIT — see [LICENSE](./LICENSE).
+<p align="center">
+  <strong>Stop documenting for the archive.</strong><br />
+  Start documenting for the agents that ship with you.
+</p>
+
+<p align="center">
+  <a href="#install">Install</a> ·
+  <a href="./skills/documentation-manager/SKILL.md">Skill source</a> ·
+  <a href="./LICENSE">MIT License</a>
+</p>
