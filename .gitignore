@@ -1,0 +1,9 @@
+.DS_Store
+*.zip
+.idea/
+.vscode/
+*.swp
+.grok/
+.claude/
+.agents/
+node_modules/
