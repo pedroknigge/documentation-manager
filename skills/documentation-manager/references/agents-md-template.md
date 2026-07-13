@@ -24,6 +24,14 @@
 
 *(On adopt-integrate, replace or supplement with links to **existing** productive authorities — e.g. CLAUDE.md, docs/modules/, docs/architecture/ — instead of inventing parallel paths.)*
 
+## Plans
+
+| Plan | Doc | Status |
+|------|-----|--------|
+| [Name] | [docs/plans/slug/README.md](./docs/plans/slug/README.md) | Planned / In progress / … |
+
+*(Pre-code features and epics under `docs/plans/`. Promote to a feature pack when code is real.)*
+
 ## Features
 
 | Feature | Doc | Status |
@@ -52,7 +60,7 @@ Rules:
 - Consult this hub and relevant `docs/` files at the start of any significant task.
 - After work that affects architecture, requirements, decisions, features, or plans, update the corresponding documents and this hub (including coverage matrix rows).
 - Prefer creating or updating ADRs for significant technical decisions (one decision per file; continue the repo's numbering scheme).
-- Document features under `docs/features/<kebab-slug>/` and link them here; one primary ModuleId per slug unless this is a cluster **Index**.
+- Document **plans** under `docs/plans/<kebab-slug>/` for new work without solid code; **features** under `docs/features/<kebab-slug>/` when code-backed. One primary ModuleId per slug unless this is a cluster **Index**. Promote plans → feature packs when implementation lands.
 - Keep documentation living and accurate — usefulness over volume; one authority per topic.
 - When uncertain about product intent, ask clarifying questions rather than assuming.
 - Do not delete durable decisions; mark ADRs as Deprecated or Superseded instead.

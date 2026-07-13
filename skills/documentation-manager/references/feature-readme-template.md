@@ -79,5 +79,6 @@ flowchart LR
 
 ## Related docs
 
+- Plan (if promoted): [../../plans/<slug>/README.md](../../plans/<slug>/README.md)
 - Design detail: [design.md](./design.md) (if present)
 - Requirements: [requirements.md](./requirements.md) (if present)

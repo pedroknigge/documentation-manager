@@ -19,11 +19,22 @@ Run before reporting done.
 ## Scope discipline
 
 - [ ] Project bootstrap: core set only (no empty feature trees)
-- [ ] Feature mode: did not force full product-vision/requirements suite
+- [ ] Feature / plan mode: did not force full product-vision/requirements suite
 - [ ] Sync: only impacted docs touched
 - [ ] No auto-commit / auto-push
 
-## Intent / audit / from-zero (v1.2)
+## Feature autopilot / plan (v1.3)
+
+- [ ] Named “new feature X” used **plan** or **feature** autopilot — not project from-zero
+- [ ] No code / planning language → `docs/plans/<slug>/` from plan-template
+- [ ] Code-backed surface → `docs/features/<slug>/` from feature template
+- [ ] Default **non-writes** applied and listed (vision, requirements, unrelated ADRs/packs)
+- [ ] User was **not** required to specify folders or non-writes
+- [ ] Ask at most once (name / plan-vs-pack / multi-module split)
+- [ ] Hub links Plans and/or Features as appropriate
+- [ ] Promote path documented when plan written; promote updates plan status when packing
+
+## Intent / audit / from-zero
 
 - [ ] **Intent** announced: `integrate` | `audit` | `from-zero` (or n/a for pure feature/sync)
 - [ ] Announce line includes Intent and Out

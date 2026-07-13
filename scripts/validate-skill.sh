@@ -32,11 +32,11 @@ if echo "$FM" | grep -q 'version:'; then
   [[ -n "$VER" ]] || VER=$(echo "$FM" | awk -F"'" '/version:/{print $2; exit}')
   [[ -n "$VER" ]] || fail "version present but empty"
   ok "version: $VER"
-  # >= 1.2.0
-  echo "$VER" | grep -Eq '^1\.(2|[3-9]|[1-9][0-9])\.' || \
+  # >= 1.3.0
+  echo "$VER" | grep -Eq '^1\.(3|[4-9]|[1-9][0-9])\.' || \
     echo "$VER" | grep -Eq '^[2-9]\.' || \
-    fail "expected version >= 1.2.0, got $VER"
-  ok "version is >= 1.2.0"
+    fail "expected version >= 1.3.0, got $VER"
+  ok "version is >= 1.3.0"
 else
   fail "Missing version in frontmatter"
 fi
@@ -71,17 +71,19 @@ for ref in \
   modes.md \
   quality-checklist.md \
   status-taxonomy.md \
-  audit-template.md
+  audit-template.md \
+  plan-template.md
 do
   [[ -f "$SKILL_DIR/references/$ref" ]] || fail "Missing references/$ref"
 done
-ok "all references present (incl. audit-template, status-taxonomy)"
+ok "all references present (incl. plan-template, audit-template)"
 
 for concept in \
   "Step 0" \
   "feature" \
   "AGENTS.md" \
   "docs/features" \
+  "docs/plans" \
   "bootstrap" \
   "sync" \
   "references/modes.md" \
@@ -93,11 +95,13 @@ for concept in \
   "from-zero" \
   "audit" \
   "Code wins" \
-  "1.2.0"
+  "Feature autopilot" \
+  "Plan mode" \
+  "1.3.0"
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (Intent, audit, from-zero, 1.2.0)"
+ok "core concepts present (Intent, plan, feature autopilot, 1.3.0)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -106,6 +110,10 @@ for concept in \
   "adopt-integrate" \
   "Coverage matrix" \
   "Feature sizing" \
+  "Feature autopilot" \
+  "Mode: plan" \
+  "Always-on non-writes" \
+  "Promote plan" \
   "ADR placement" \
   "Promotion plan" \
   "sandbox" \
@@ -118,14 +126,15 @@ for concept in \
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md Intent / audit / from-zero procedures present"
+ok "modes.md plan + feature autopilot procedures present"
 
 QC="$SKILL_DIR/references/quality-checklist.md"
 grep -F -q "Coverage matrix" "$QC" || fail "quality-checklist missing Coverage matrix"
 grep -F -q "Mature-repo" "$QC" || fail "quality-checklist missing Mature-repo section"
 grep -F -q "Snapshots" "$QC" || fail "quality-checklist missing Snapshots section"
+grep -F -q "Feature autopilot / plan" "$QC" || fail "quality-checklist missing Feature autopilot section"
 grep -F -q "Intent / audit / from-zero" "$QC" || fail "quality-checklist missing Intent section"
-ok "quality-checklist Intent + mature + snapshots present"
+ok "quality-checklist Intent + plan + mature present"
 
 ST="$SKILL_DIR/references/status-taxonomy.md"
 for label in Real Dual Local Demo Partial Planned Unknown Index; do
@@ -139,11 +148,19 @@ for concept in "OK" "Partial" "Missing" "Contradicted" "Unverifiable" "Claims ma
 done
 ok "audit-template verdicts present"
 
+PT="$SKILL_DIR/references/plan-template.md"
+for concept in "Promotion" "Acceptance criteria" "Open questions" "MVP scope" "docs/features"; do
+  grep -F -q -- "$concept" "$PT" || fail "plan-template missing: $concept"
+done
+ok "plan-template promotion path present"
+
 grep -F -q "Surface coverage" "$SKILL_DIR/references/agents-md-template.md" || \
   fail "agents-md-template missing Surface coverage"
 grep -F -q "code wins" "$SKILL_DIR/references/agents-md-template.md" || \
   fail "agents-md-template missing code wins"
-ok "agents-md-template has Surface coverage + code wins"
+grep -F -q "docs/plans" "$SKILL_DIR/references/agents-md-template.md" || \
+  fail "agents-md-template missing docs/plans"
+ok "agents-md-template has Plans + Surface coverage + code wins"
 
 grep -F -q "Canonical authority" "$SKILL_DIR/references/feature-readme-template.md" || \
   fail "feature-readme-template missing Canonical authority"

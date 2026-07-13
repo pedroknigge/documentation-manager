@@ -143,21 +143,120 @@ No hardcoded table/route/endpoint counts. `api.md` / `data-model.md` = conventio
 
 ---
 
-## 3. Feature
+## 3. Feature autopilot + Plan (v1.3)
 
-**When:** User names a feature, module, epic, or PR surface.
+**Goal:** User names a feature in plain language. Skill picks **plan vs feature pack**, writes the right files, and **never** requires the user to list non-writes.
 
-### 3.0 Feature sizing
+### 3.0 Detect “new feature” phrases
 
-- One primary ModuleId / package / route family per slug.  
-- Domain cluster → index ([feature-cluster-template.md](feature-cluster-template.md)) + **child** packs.  
-- Anti-pattern: one README owning three ModuleIds.  
+Treat as **feature-scoped work** (not project bootstrap / from-zero):
 
-### 3.1–3.5
+| Phrase patterns (any language) | Default |
+|--------------------------------|---------|
+| “nueva feature X”, “new feature X”, “feature X”, “módulo X” | Autopilot (§3.1) |
+| “documentá X”, “document module X”, “docs for X” | Autopilot |
+| “quiero agregar X”, “vamos a construir X”, “plan for X”, “epic X” | Prefer **plan** if no code |
+| “documentá lo que hay en src/X” | Prefer **feature pack** (code-backed) |
+| “promové el plan de X” / “promote plan X” | **Promote** plan → feature pack (§3.6) |
 
-Scope code → short clarify → write pack ([feature-readme-template.md](feature-readme-template.md)) with status taxonomy + canonical authority table → wire hub / coverage row. Hybrid = minimal hub + feature only.
+**Do not** escalate to project Intent (integrate / from-zero) just because someone said “documentá”. Named surface → feature or plan.
 
-If Intent is **audit** on a feature: produce claims for that surface only; do not rewrite the module doc unless asked to patch.
+### 3.1 Autopilot decision (plan vs pack)
+
+```text
+User names a surface
+  → discover code for that name (paths, ModuleId, package, routes)
+  → IF user said "plan" / "epic" / "vamos a construir" OR no meaningful code found
+        → Mode: plan  → docs/plans/<slug>/
+  → ELSE IF code exists (or pack already exists to refresh)
+        → Mode: feature → docs/features/<slug>/
+  → ELSE ambiguous name only
+        → ask ONCE: "plan (no code yet) or document existing code?"
+```
+
+| Signal | Mode | Out path |
+|--------|------|----------|
+| No code / green idea / “plan” / “epic” | **plan** | `docs/plans/<slug>/README.md` |
+| Code path or ModuleId found | **feature** | `docs/features/<slug>/README.md` |
+| Both plan + “and start the pack” | plan first, optional stub feature with status Planned | both; plan is authority until promote |
+| Audit only on a surface | **audit** (scoped) | claims only; no full rewrite |
+
+**Slug:** kebab-case from the name (`Team Invitations` → `team-invitations`). One slug ≈ one ModuleId / bounded context. Domain with many ModuleIds → cluster index + children (feature) or one epic plan + child plans.
+
+### 3.2 Always-on non-writes (feature & plan)
+
+Unless the user **explicitly** asks to change them, **never write/rewrite**:
+
+- `docs/product-vision.md`, `docs/requirements.md` (project-level)
+- Existing ADRs (except **new** ADR when a decision is **locked** and user/context needs it)
+- Unrelated feature packs
+- Full project bootstrap / parallel knowledge tree
+
+**Allowed writes:** plan folder **or** feature pack; hub link / nav bullet; one Surface coverage row; optional roadmap bullet; optional single new ADR; hybrid minimal hub if none exists.
+
+Announce **non-writes** in the summary even when the user did not list them.
+
+### 3.3 Mode: plan
+
+**When:** Autopilot chose plan, or user said plan/epic/spike.
+
+1. Infer name, slug, problem (from user text + any issue/PR link).  
+2. Search code lightly — if something exists, note it and offer pack instead or dual-link.  
+3. Write [plan-template.md](plan-template.md) → `docs/plans/<slug>/README.md`.  
+4. Fill what is known; **Open questions** for the rest — do **not** invent APIs.  
+5. Status: `Planned` (or `In progress` if they are actively designing).  
+6. Wire hub: section **Plans** (or Features → Plans) with link + status.  
+7. If `docs/roadmap.md` exists, add one bullet linking the plan (do not rewrite the whole roadmap).  
+8. Summary: path, non-writes, open questions count, how to promote later.
+
+**Anti-bloat:** no empty `design.md` unless content exists. No product-vision suite.
+
+### 3.4 Mode: feature (code-backed pack)
+
+**When:** Autopilot chose feature, or user points at existing code/pack.
+
+1. **Feature sizing:** one ModuleId / package / route family per slug. Cluster → [feature-cluster-template.md](feature-cluster-template.md) + children. Anti-pattern: one README owning three ModuleIds.  
+2. Scope code (entry points, routes, permissions, tests).  
+3. Write/update [feature-readme-template.md](feature-readme-template.md) under `docs/features/<slug>/` with status taxonomy + **Canonical authority** table.  
+4. Status from code ([status-taxonomy.md](status-taxonomy.md)); if only planned stubs, `Planned` / `In progress`.  
+5. If a plan exists at `docs/plans/<slug>/`, link it under Related; do not duplicate the whole plan.  
+6. Wire hub + coverage row. Hybrid = minimal hub + feature only.  
+7. Summary: pack path, code surfaces found, non-writes.
+
+If Intent is **audit** on a feature: claims for that surface only; do not rewrite the module doc unless asked to patch.
+
+### 3.5 Ask policy (v1.3 — minimal)
+
+| Situation | Action |
+|-----------|--------|
+| Name missing (“documentá la feature”) | Ask once for name |
+| Multi-module dump in one sentence | Propose split (cluster or multiple plans) once |
+| Plan vs pack still ambiguous after search | Ask once |
+| Everything else | **Proceed** with defaults; list assumptions in Open questions |
+
+Do **not** ask the user to specify non-writes, folder layout, or Intent when the phrase is clearly a single new/existing feature.
+
+### 3.6 Promote plan → feature pack
+
+**When:** “promové el plan”, “X ya está en código”, implementation started.
+
+1. Read `docs/plans/<slug>/`.  
+2. Create/update `docs/features/<slug>/` from code + plan acceptance criteria.  
+3. Plan status → `Shipped` or `Superseded` + link to pack.  
+4. Hub: feature link becomes primary; plan stays archived/historical.  
+5. Coverage row → documented.
+
+### 3.7 Layout (plans)
+
+```text
+docs/
+  plans/
+    <slug>/
+      README.md          # plan (template)
+  features/
+    <slug>/
+      README.md          # implementation pack (after code or promote)
+```
 
 ---
 
@@ -179,9 +278,9 @@ If sync reveals many Contradicted claims → suggest full **audit**.
 
 **When:** Plan release, epic, or refresh roadmap.
 
-1. Read hub, roadmap, architecture, features/ADRs.  
+1. Read hub, roadmap, architecture, features/ADRs, **and `docs/plans/`**.  
 2. Clarify goals, MVP, dependencies.  
-3. Write at epic vs single-feature level.  
+3. Write at epic vs single-feature level; prefer linking **plans** for net-new work instead of bloating roadmap prose.  
 4. Net-new ADRs if decisions lock.  
 5. Update hub status.  
 

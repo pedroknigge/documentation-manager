@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v1.2.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · Intent · Audit · From-zero
+  <strong>v1.3.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · Intent · Audit · Plan · From-zero
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-1.2.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-1.3.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -19,9 +19,9 @@ What it usually lacks is a durable story of **what**, **why**, and **what’s ne
 
 **Documentation Manager** is an [Agent Skill](https://agentskills.io) that builds and maintains a living knowledge base next to your code:
 
-| Hub | Narrative | Features | Truth check |
-|-----|-----------|----------|-------------|
-| `AGENTS.md` | vision · requirements · architecture · roadmap · ADRs | `docs/features/<slug>/` | optional `docs/audit/` claims matrix |
+| Hub | Narrative | Plans | Features | Truth check |
+|-----|-----------|-------|----------|-------------|
+| `AGENTS.md` | vision · requirements · architecture · roadmap · ADRs | `docs/plans/<slug>/` | `docs/features/<slug>/` | optional `docs/audit/` claims matrix |
 
 Whole project. Single module. Or a full rewrite in a sandbox — **without** torching the docs that already work.
 
@@ -87,15 +87,16 @@ cd documentation-manager
 | Agents invent architecture from vibes | A linked hub + core set becomes shared context |
 | “Document the project” means 40 empty files | Prefer **integrate** on mature trees — index gaps, don’t rewrite SSOT |
 | You want a full KB but not in production paths | **From-zero + sandbox** (e.g. `test/`) with a promotion plan |
-| Feature work doesn’t need a product novel | Atomic **feature packs** only where they earn their place |
+| “New feature” shouldn’t require a docs expert | **Feature autopilot** → plan or pack with default non-writes |
+| Feature work doesn’t need a product novel | Atomic **plans** pre-code; **feature packs** when code is real |
 
 **No auto-commit. No auto-push.** You stay in control of git.
 
 ---
 
-## Three intents. One clear policy.
+## Three project intents. Feature work is simpler.
 
-Every serious project run starts by choosing **how hard** it should write:
+For **whole-project** work, the skill picks **how hard** it should write:
 
 | | Intent | Best when you want… | Writing style |
 |---|--------|---------------------|---------------|
@@ -103,15 +104,25 @@ Every serious project run starts by choosing **how hard** it should write:
 | **2** | **audit** | To know if the docs still match the code | Read-first claims matrix: `OK` · `Partial` · `Missing` · `Contradicted` |
 | **3** | **from-zero** | A full knowledge base from scratch | Core set inferred from **code** (or a short greenfield interview); old docs = hypothesis only |
 
-Modes still cover the rest of the lifecycle:
+For a **named feature**, you don’t need Intent at all — **feature autopilot** chooses:
 
-`bootstrap` · `adopt` · `audit` · `feature` · `sync` · `roadmap`
+| | Mode | Lands in | When |
+|---|------|----------|------|
+| **A** | **plan** | `docs/plans/<slug>/` | New idea / epic / no solid code yet |
+| **B** | **feature** | `docs/features/<slug>/` | Code exists (or pack refresh) |
+| **C** | **promote** | plan → feature pack | Implementation landed |
+
+Lifecycle modes:
+
+`bootstrap` · `adopt` · `audit` · `plan` · `feature` · `sync` · `roadmap`
 
 Before it writes a byte, the skill announces scope so you can course-correct:
 
 ```text
-Scope · Mode · Intent · Variant · Maturity · Out: root | sandbox:path
+Scope · Mode · Intent · Variant · Maturity · Out ·Slug
 ```
+
+Default **non-writes** on plan/feature: no product-vision/requirements rewrite, no unrelated ADRs — even if you never listed them.
 
 ---
 
@@ -119,12 +130,14 @@ Scope · Mode · Intent · Variant · Maturity · Out: root | sandbox:path
 
 Slash command: **`/documentation-manager`**
 
-Or just talk:
+Or just talk — no expert prompt required:
 
 | You say | It leans toward |
 |---------|-----------------|
 | *“Bootstrap docs for this greenfield SaaS.”* | bootstrap / from-zero |
-| *“Document the checkout module.”* | feature pack + hub link |
+| *“Nueva feature: team invitations.”* | **plan** → `docs/plans/team-invitations/` |
+| *“Documentá el módulo checkout en src/checkout.”* | **feature pack** + hub link |
+| *“Promové el plan de team invitations.”* | plan → `docs/features/…` |
 | *“We changed billing webhooks — sync the docs.”* | surgical sync |
 | *“Audit docs vs code — do we still tell the truth?”* | audit + claims matrix |
 | *“Full knowledge base under `test/`, don’t touch prod docs.”* | from-zero · sandbox |
@@ -144,6 +157,9 @@ project-root/
     ├── roadmap.md
     ├── audit/
     │   └── claims-matrix.md  ← when you ask for truth
+    ├── plans/
+    │   └── team-invitations/ ← new work before code (v1.3)
+    │       └── README.md
     ├── decisions/
     │   └── ADR-001-….md
     └── features/
@@ -156,15 +172,35 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 
 ---
 
-## New in 1.2 — sharper by design
+## New in 1.3 — feature autopilot + plans
 
-- **Intent-first routing** — integrate · audit · from-zero before any write  
+| | |
+|--|--|
+| **Plan mode** | Greenfield feature ideas → `docs/plans/<slug>/` — not a fake implementation pack, not a full bootstrap |
+| **Feature autopilot** | “nueva feature X” is enough; skill picks plan vs pack and applies default **non-writes** |
+| **Promote** | When code lands → `docs/features/<slug>/` + hub + coverage; plan marked Shipped/Superseded |
+| **Minimal asks** | At most once (name / plan-vs-pack / multi-module split) — never “tell me what not to touch” |
+
+```text
+"nueva feature X"
+        │
+        ├─ no code ──► docs/plans/X/
+        │
+        └─ has code ─► docs/features/X/
+                              ▲
+                              │ promote
+                        docs/plans/X/
+```
+
+### Also since 1.2
+
+- **Intent-first routing** — integrate · audit · from-zero before project writes  
 - **Code wins on conflict** — never invent modules to satisfy a stale paragraph  
 - **Code-first audit** — inventory surfaces, then score every structural claim  
 - **Sandbox from-zero** — full KB in a safe folder when you need a clean slate  
 - **Integrate-first maturity** — respect the docs that already own a topic  
 
-Installer and validator target **≥ 1.2.0**.
+Installer and validator target **≥ 1.3.0**.
 
 ---
 
