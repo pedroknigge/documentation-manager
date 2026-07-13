@@ -12,7 +12,7 @@ git init -b main
 git add .
 git commit -m "Initial release: documentation-manager skill v1.0.0"
 gh repo create documentation-manager --public --source=. --remote=origin --push \
-  --description "Agent skill: living AGENTS.md + docs/ knowledge base for projects and features"
+  --description "Living knowledge for codebases — AGENTS.md + docs/ that agents can trust. Intent · Audit · From-zero · Code wins."
 ```
 
 If the repo already exists:
