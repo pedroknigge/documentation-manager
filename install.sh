@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# documentation-manager skill installer — v1.0 (idempotent)
+# documentation-manager skill installer — v1.1 (idempotent)
 # Usage:
 #   curl -fsSL https://raw.githubusercontent.com/pedroknigge/documentation-manager/main/install.sh | bash
 # Or, from a local clone:
@@ -57,9 +57,11 @@ install_skill_tree() {
       agents-md-template.md \
       adr-template.md \
       feature-readme-template.md \
+      feature-cluster-template.md \
       architecture-template.md \
       modes.md \
-      quality-checklist.md
+      quality-checklist.md \
+      status-taxonomy.md
     do
       curl -fsSL "${REPO_RAW}/${SKILL_REL}/references/${ref}" -o "$dest/references/${ref}" || true
     done
@@ -127,7 +129,7 @@ removed_any=0
 if [[ "$UNINSTALL" -eq 1 ]]; then
   cyan "→ documentation-manager skill uninstaller"
 else
-  cyan "→ documentation-manager skill installer (v1.0 — idempotent)"
+  cyan "→ documentation-manager skill installer (v1.1 — idempotent)"
 fi
 
 # ─── Claude Code ──────────────────────────────────────────────────────────────
