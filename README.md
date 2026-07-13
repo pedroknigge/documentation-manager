@@ -1,5 +1,10 @@
 # documentation-manager
 
+> **This repository is the development home of the skill itself** — not an application that *uses* the skill.  
+> Source of truth for the package lives under `skills/documentation-manager/` (`SKILL.md` + `references/`).  
+> Installers, validation scripts, and publish docs support packaging and distribution.  
+> Do not treat this folder as a product codebase to “document with” the skill in consumer mode unless you are dogfooding on purpose.
+
 An [Agent Skill](https://agentskills.io) that keeps a **living knowledge base** next to your code:
 
 - **`AGENTS.md`** (or `agents.md`) as the hub for humans and AI agents  
@@ -67,10 +72,12 @@ cd documentation-manager
 | Mode | Purpose |
 |------|---------|
 | **bootstrap** | New project knowledge base |
-| **adopt** | Infer docs from existing code |
-| **feature** | Document or plan one feature |
+| **adopt** | Infer docs from existing code — **full** (thin) or **integrate** (mature) |
+| **feature** | Document or plan one feature (atomic packs; clusters = index + children) |
 | **sync** | Update only docs impacted by a change |
 | **roadmap** | Plan epics / releases at the right level |
+
+**v1.1:** integrate-first on mature repos (coverage matrix + gaps; no parallel ADR/module rewrite), fixed status taxonomy, sandbox only when requested.
 
 **Philosophy:** code is truth for *how*; `AGENTS.md` + `docs/` are truth for *what* and *why*. No auto-commit or auto-push.
 

@@ -1,6 +1,10 @@
 # ADR-XXX: [Short Decision Title]
 
-**Status:** Proposed | Accepted | Deprecated | Superseded by ADR-YYY  
+> **Numbering:** Match the repository's existing scheme (`ADR-001-…`, `0001-…`, etc.).  
+> Never invent a parallel series for decisions that already have an ADR — link the original.  
+> Net-new only on adopt-integrate.
+
+**Status:** Proposed | Accepted | Accepted — inferred from code | Deprecated | Superseded by ADR-YYY  
 **Date:** YYYY-MM-DD  
 **Deciders:** [Names or roles]  
 **Tags:** [optional: architecture, infra, product, security]

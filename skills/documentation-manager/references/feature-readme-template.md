@@ -3,7 +3,8 @@
 > Part of the project knowledge base. Hub: [AGENTS.md](../../../AGENTS.md)  
 > Related: [Architecture](../../architecture.md) · [Roadmap](../../roadmap.md) · [Decisions](../../decisions/)
 
-**Status:** Planned | In progress | Shipped | Deprecated  
+**Status:** Real | Dual | Local | Demo | Partial | Planned | In progress | Shipped | Deprecated | Unknown  
+*(See [status-taxonomy.md](status-taxonomy.md). Primary token required; optional note in parentheses.)*  
 **Slug:** `feature-slug`  
 **Owners:** [team or roles]  
 **Last updated:** YYYY-MM-DD
@@ -11,6 +12,16 @@
 ## Purpose
 
 [One paragraph: what problem this feature solves and for whom.]
+
+## Canonical authority
+
+| Topic | Authority (link) | This pack's role |
+|-------|------------------|------------------|
+| Business rules | e.g. `docs/modules/….md` | Entry + gaps only |
+| Invariants | e.g. `docs/canonical/….md` | Link |
+| Ops rules | hub / CLAUDE.md | Do not restate |
+
+If an authority already exists, **do not re-narrate it**. Keep Purpose, Public surface, Open questions, and links.
 
 ## Users & success
 
@@ -31,10 +42,11 @@
 | UI | | |
 | CLI / job | | |
 | Events | | |
+| ModuleId | | |
 
 ## How it works
 
-[Short explanation. Link to code entry points.]
+[Short explanation. Link to code entry points. Prefer links to module docs over long prose.]
 
 ### Flow
 
@@ -53,7 +65,7 @@ flowchart LR
 
 ## Design decisions
 
-- Link ADRs here, e.g. [ADR-00N](../../decisions/ADR-00N-....md)
+- Link ADRs here (existing productive paths preferred), e.g. [ADR-00N](../../decisions/ADR-00N-....md)
 - Or summarize minor choices that do not deserve an ADR
 
 ## Edge cases & risks
