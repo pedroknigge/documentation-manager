@@ -23,10 +23,20 @@ Run before reporting done.
 - [ ] Sync: only impacted docs touched
 - [ ] No auto-commit / auto-push
 
+## Intent / audit / from-zero (v1.2)
+
+- [ ] **Intent** announced: `integrate` | `audit` | `from-zero` (or n/a for pure feature/sync)
+- [ ] Announce line includes Intent and Out
+- [ ] Code inventory ran before trusting existing docs (audit, from-zero, or drift-prone integrate)
+- [ ] On conflict **code wins** — no inventing features to match docs
+- [ ] Audit (if run): claims matrix with verdicts OK / Partial / Missing / Contradicted
+- [ ] from-zero: full KB only with that Intent; sandbox when path requested; old docs treated as hypothesis
+- [ ] from-zero does not silently overwrite mature productive SSOT without confirm
+
 ## Mature-repo / adopt
 
 - [ ] Maturity classified (`thin` | `mixed` | `mature`); variant announced (`full` | `integrate`)
-- [ ] No parallel tree that rewrites existing ADRs/modules when mature
+- [ ] No parallel tree that rewrites existing ADRs/modules when mature **and Intent=integrate**
 - [ ] Coverage matrix (Surface coverage) lists discovered surfaces; gaps explicit
 - [ ] ADR numbering matches repo scheme; no duplicate decisions
 - [ ] Feature packs are entry points (surface + links) when module docs already exist — not re-dumps

@@ -1,22 +1,22 @@
 ---
 name: documentation-manager
 description: >
-  Use when bootstrapping, completing, or updating project documentation, or when
-  documenting a feature, module, or epic: create or maintain AGENTS.md (or agents.md)
-  plus a docs/ knowledge base, ADRs, roadmap, and docs/features/<slug>/. Triggers:
-  "document this project", "document this feature", "bootstrap docs", "sync docs",
-  "write ADRs", "update docs after this change", "document module", /documentation-manager.
-  Mature repos: integrate-first (coverage matrix + gaps), never parallel rewrite.
+  Use when bootstrapping, completing, updating, or auditing project documentation,
+  or documenting a feature/module/epic: AGENTS.md (or agents.md) + docs/, ADRs,
+  roadmap, docs/features/<slug>/. Triggers: "document this project", "bootstrap docs",
+  "sync docs", "audit docs", "docs vs code", "generate docs in test/", "from zero",
+  "write ADRs", "document module", /documentation-manager. Intents: integrate, audit,
+  from-zero. On conflict code wins. Mature repos default integrate after optional audit.
 license: MIT
 metadata:
   author: pedroknigge
-  version: "1.1.0"
+  version: "1.2.0"
 ---
 
 # Documentation Manager
 
-Living project knowledge for humans and AI agents. **Code is the source of truth for *how*.**  
-**AGENTS.md + docs/** is the source of truth for *what*, *why*, architecture, decisions, and plans.
+Living project knowledge for humans and AI agents. **Code is the source of truth for *how* and for whether a claim is true.**  
+**AGENTS.md + docs/** capture *what*, *why*, decisions, and plans — but **never override code** when they disagree.
 
 ## Core rules
 
@@ -26,160 +26,149 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 4. Do **not** auto-commit or auto-push. Leave git to the user.
 5. Write generated content in the **user's language** (or the repo's dominant language). This skill body is English for ecosystem compatibility.
 6. Prefer accuracy and usefulness over volume. Core set first; optional docs on demand.
-7. **Integrate-first.** If the repo already has mature docs (`docs/`, ADRs, rich agent rules), do **not** clone a second knowledge base. Prefer index + gaps + canonical links. See **adopt-integrate**.
-8. **One authority per topic.** Each topic has one canonical doc; everything else links. Do not re-narrate existing modules/ADRs.
-9. **Coverage matrix on adopt.** Every product surface discovered (nav, ModuleId, package) appears in a hub matrix: documented / linked / gap.
-10. **Feature atomicity.** One slug ≈ one bounded context or primary ModuleId. Domain clusters are **index** packs with **child** feature packs — not a single mega-README.
-11. **Stable status taxonomy.** Use labels from [references/status-taxonomy.md](references/status-taxonomy.md) (e.g. `Real`, `Dual`, `Demo`, `Partial`).
-12. **Sandbox opt-in.** Write outside the project docs root only when the user asks (`test/`, worktree sandbox). Default: canonical repo paths. Sandbox hubs must banner non-SSOT + include a **promotion plan**.
+7. **Intent first (v1.2).** Classify **Intent**: `integrate` | `audit` | `from-zero` (and optional hybrid: audit then integrate / patch / from-zero). See Step 0.
+8. **Code wins on conflict.** Doc claims that fail structural verification are marked Contradicted/Missing — do not invent code to match docs; fix or flag the doc.
+9. **Integrate-first (when Intent=integrate).** Mature docs → index + gaps + canonical links; no parallel rewrite of product-vision/requirements/ADRs. See **adopt-integrate**.
+10. **One authority per topic.** Each topic has one canonical doc; everything else links.
+11. **Coverage matrix on adopt/from-zero project.** Product surfaces (nav, ModuleId, package) appear as documented / linked / gap.
+12. **Feature atomicity.** One slug ≈ one ModuleId or bounded context. Clusters = **index** + **children**.
+13. **Status taxonomy.** [references/status-taxonomy.md](references/status-taxonomy.md).
+14. **Sandbox opt-in / first-class from-zero.** `Out: sandbox:path` when user asks (`test/`, etc.). Sandbox hubs banner non-SSOT + **promotion plan**. From-zero in sandbox is valid and not “wrong integrate”.
 
-## Step 0 — Detect scope and mode
+## Step 0 — Detect scope, mode, and Intent
 
 **Scope** (required):
 
 | Scope | When | Output focus |
 |-------|------|--------------|
-| **project** | Whole product, empty/greenfield, "bootstrap/docs for the project" | Hub + core project docs |
-| **feature** | Named feature/module/epic/PR surface | `docs/features/<slug>/` + hub link |
-| **hybrid** | Feature work but no hub/docs yet | Feature pack + **minimal** hub only |
-
-Rules:
-- Feature-first must **not** force a full project bootstrap.
-- Project bootstrap must **not** invent empty feature folders.
-- Always keep or create a **hub** (full or minimal).
+| **project** | Whole product / “docs for the project” | Hub + project docs (per Intent) |
+| **feature** | Named feature/module/epic | `docs/features/<slug>/` + hub link |
+| **hybrid** | Feature when no hub yet | Feature pack + minimal hub |
 
 **Mode** (required):
 
 | Mode | Signals |
 |------|---------|
-| **bootstrap** | No hub / no docs, greenfield |
-| **adopt** | Code exists; docs missing, thin, or need integration |
-| **feature** | Document or plan a feature/module |
-| **sync** | Diff, PR, "update docs for this change" |
-| **roadmap** | Plan release, epic, or roadmap update |
+| **bootstrap** | Greenfield, no hub/docs, or Intent **from-zero** on empty/thin |
+| **adopt** | Code exists; docs thin/missing or Intent **integrate** |
+| **audit** | “audit docs”, “docs vs code”, drift, validate claims |
+| **feature** | Document one feature/module |
+| **sync** | Diff / PR / update docs for a change |
+| **roadmap** | Plan release / epic |
 
-For **adopt**, also detect **maturity** and **variant** (see [modes.md](references/modes.md#2-adopt-project)):
+**Intent** (required for project-level work; v1.2):
 
-| Maturity | Variant |
-|----------|---------|
-| **thin** | **adopt-full** — create/complete core set |
-| **mixed** / **mature** | **adopt-integrate** — index, coverage matrix, gap fill only |
+| Intent | User signals (examples) | Behavior |
+|--------|-------------------------|----------|
+| **integrate** | “mejorar docs”, “ordenar”, “sync hub”, mature improve | adopt-integrate (or full if thin); optional pre-audit if drift suspected |
+| **audit** | “auditar”, “¿las docs mienten?”, “docs vs code”, “validar paths” | Code inventory + claim matrix only (or then hand off) |
+| **from-zero** | “toda nueva”, “de cero”, “generá docs en test/”, “full KB en carpeta X” | Full knowledge base; prefer **sandbox** if path given; code-inferred; old docs = hypothesis only |
 
-If ambiguous, ask once: project vs feature, and which mode. Then load detail from [references/modes.md](references/modes.md).
+**Inference (do not over-ask):**
+
+- “generá toda la documentación en `test/`” / “nueva en carpeta test” → **Intent: from-zero | Out: sandbox:test/**
+- Mature repo + “mejorá / integrá / indexá” → **Intent: integrate** (default for mature when improve)
+- “auditar docs” / “código vs docs” → **Intent: audit**
+- Ambiguous with existing `docs/` → **ask once**: integrate | audit | from-zero (optionally audit-then-*)
+
+**Maturity** (when relevant): thin | mixed | mature — see [modes.md](references/modes.md#2-adopt-project).
+
+If scope/mode still ambiguous after Intent, ask once more. Load procedures from [references/modes.md](references/modes.md).
 
 **Announce before writing:**
 
 ```text
-Scope: <x> | Mode: <y> | Variant: <full|integrate|n/a> | Maturity: <thin|mixed|mature|n/a> | Out: <root|sandbox:path>
+Scope: <x> | Mode: <y> | Intent: <integrate|audit|from-zero|n/a> | Variant: <full|integrate|n/a> | Maturity: <thin|mixed|mature|n/a> | Out: <root|sandbox:path>
 ```
 
-When **integrate**, the plan-files step must list **non-writes** (authority exists → do not rewrite).
+When **integrate**, list **non-writes**. When **audit**, list matrix path and top contradictions. When **from-zero** + sandbox, include **promotion plan** in summary.
 
 ## Recommended layout
 
 ```
 project-root/
-├── AGENTS.md                 # hub (index + agent instructions + coverage matrix)
+├── AGENTS.md
 └── docs/
-    ├── product-vision.md     # project (bootstrap / adopt-full)
+    ├── product-vision.md      # bootstrap / from-zero / adopt-full
     ├── requirements.md
     ├── architecture.md
     ├── roadmap.md
-    ├── decisions/            # ADRs — match existing numbering scheme
-    │   └── ADR-001-....md    # or 0001-....md if repo already uses that
-    └── features/
-        └── <feature-slug>/   # kebab-case; atomic or cluster index
-            ├── README.md
-            ├── design.md     # if non-trivial and no existing authority
-            └── requirements.md
+    ├── audit/                 # Intent audit (optional path)
+    │   └── claims-matrix.md   # reconciliation results
+    ├── decisions/
+    └── features/<slug>/
 ```
 
-Supporting docs (`api.md`, `data-model.md`, `testing-strategy.md`, `operations.md`, `glossary.md`, `changelog.md`) only when justified by the codebase or user request — and only when no existing authority covers the topic.
+Supporting docs only when justified and no existing authority covers the topic (except **from-zero**, which may create a full minimal core set).
 
-### Artifact matrix
+### Artifact matrix (summary)
 
-| Artifact | Bootstrap | Adopt full | Adopt integrate | Feature only | Sync |
-|----------|-----------|------------|-----------------|--------------|------|
-| Hub `AGENTS.md` | full create | full create/complete | **extend / index only** | link + short entry | if needed |
-| product-vision / requirements | yes | yes if missing | **no** (link existing) | no (unless impact) | if impacted |
-| architecture | yes | yes if missing | **short map or link** | section or link | if impacted |
-| `docs/features/<slug>/` | only if named | key domains | **entry packs for gaps** | **required** | if impacted |
-| ADR | foundational | inferred net-new | **net-new only; same scheme** | if decision | if decision |
-| Coverage matrix in hub | optional | **required** | **required** | n/a | update rows |
-| Parallel docs tree | n/a | avoid | **forbidden** | n/a | n/a |
-| roadmap | yes | yes if missing | link / light refresh | feature item | if impacted |
+| Artifact | from-zero / bootstrap | integrate (mature) | audit | feature | sync |
+|----------|----------------------|--------------------|-------|---------|------|
+| Hub | create | extend / index | update status optional | link | if needed |
+| Core narrative docs | yes | **no rewrite** | no (read only) | no | if impact |
+| Coverage matrix | yes | **required** | part of inventory | n/a | update |
+| Claims matrix | optional pre | recommended if drift | **required** | n/a | if drift |
+| Feature packs | key domains | gaps / entries | no (unless asked) | **required** | if impact |
+| Parallel full tree | sandbox ok | **forbidden** at root | n/a | n/a | n/a |
 
 ## Workflow (all modes)
 
-1. **Step 0** — scope + mode (+ maturity/variant for adopt) + output location.
-2. **Discover** — list tree; read hub, README, package manifests, existing docs; for feature/adopt/sync also sample code and tests for the target surface.
-3. **Plan files** — list paths to create/update **and** intentional non-writes (keep minimal).
-4. **Load templates** from `references/` as needed (see below).
-5. **Write / edit** — precise changes; cross-link; one authority per topic.
-6. **Hub pass** — index links, agent instructions, coverage matrix (adopt), status tokens.
-7. **Summary** — files created/updated, non-writes, open questions, promotion plan if sandbox. **No auto-commit.**
+1. **Step 0** — scope, mode, **Intent**, maturity/variant, Out.
+2. **Discover code first** — tree, manifests, entry points, ModuleIds/routes/packages, sample tests. Then docs (if any).
+3. If **audit** or docs exist and Intent is integrate/from-zero with suspected drift: run **reconciliation** ([modes.md § Audit](references/modes.md#6-audit-project), [audit-template.md](references/audit-template.md)).
+4. **Plan files** — creates/updates **and** non-writes.
+5. **Load templates** → write/edit → hub pass.
+6. **Summary** — Intent, files, non-writes, matrix stats, promotion plan if sandbox. **No auto-commit.**
 
-### Bootstrap (project)
-Ask structured questions (problem, users, MVP, stack, constraints). Create hub first, then core docs + initial ADRs. Keep process rules out of product-vision (use NFR/ops/hub). See [modes.md](references/modes.md#1-bootstrap-project).
+### Bootstrap / from-zero
+Greenfield interview **or** code archaeology for brownfield from-zero. Full core set + hub. Sandbox if Out says so. Existing productive docs are **not** authority under from-zero (hypothesis only). See [modes.md](references/modes.md#1-bootstrap-project) and [§ from-zero](references/modes.md#7-from-zero).
 
-### Adopt (project)
-Maturity probe → **adopt-full** or **adopt-integrate**. Inferred ADRs: `Accepted — inferred from code`. Never renumber or duplicate existing ADRs. See [modes.md](references/modes.md#2-adopt-project).
+### Adopt / integrate
+Maturity → adopt-full or adopt-integrate. See [modes.md §2](references/modes.md#2-adopt-project).
 
-### Feature
-Slug = kebab-case. Prefer one ModuleId per slug; clusters use [feature-cluster-template.md](references/feature-cluster-template.md) + children. Entry packs when module docs already exist. See [modes.md](references/modes.md#3-feature).
+### Audit
+Code inventory → structural claims → matrix (OK / Partial / Missing / Contradicted) → report; optional follow-on Intent. **Code wins.** See [modes.md §6](references/modes.md#6-audit-project).
 
-### Sync
-Blast radius → only impacted files. New ADR only for durable decisions. See [modes.md](references/modes.md#4-sync).
-
-### Roadmap
-Plan at project epic vs single feature level. See [modes.md](references/modes.md#5-roadmap).
+### Feature / Sync / Roadmap
+Unchanged principles; atomic features; blast-radius sync. See modes §3–5.
 
 ## Hub requirements
 
-Hub must include:
-- Short project overview
-- Navigation links to docs (and Features list when any exist)
-- **Instructions for AI agents**: read hub + relevant `docs/` before significant work; update docs after significant changes; prefer ADRs for decisions; code wins for implementation detail
-- Current status / last updated line
-- On **adopt**: **Surface coverage** matrix ([agents-md-template.md](references/agents-md-template.md))
+- Overview, nav links, agent instructions (read docs; update after significant work; ADRs; **code wins**), status line.
+- Adopt / from-zero project: **Surface coverage** matrix.
+- After audit: link to claims matrix if written.
 
 Template: [agents-md-template.md](references/agents-md-template.md)
 
 ## Quality bar
 
-Follow [quality-checklist.md](references/quality-checklist.md) before finishing.
+Follow [quality-checklist.md](references/quality-checklist.md).
 
-Lightweight Diataxis hint (optional, for user-facing features):
-- **Reference** — what it is / API surface
-- **How-to** — task steps
-- **Explanation** — why (often ADR or design.md)
-- **Tutorial** — only if onboarding needs it
-
-Do not force all four for every feature.
-
-**Anti-snapshot:** no hardcoded table/route/endpoint counts. `api.md` = conventions + discovery; `data-model.md` = invariants + ownership + links.
+**Anti-snapshot:** no hardcoded table/route/endpoint counts.
 
 ## Templates & references
 
 | File | Use |
 |------|-----|
-| [references/agents-md-template.md](references/agents-md-template.md) | Hub + coverage matrix |
-| [references/adr-template.md](references/adr-template.md) | Every ADR (match repo numbering) |
-| [references/feature-readme-template.md](references/feature-readme-template.md) | Atomic feature entry |
-| [references/feature-cluster-template.md](references/feature-cluster-template.md) | Domain cluster index |
-| [references/architecture-template.md](references/architecture-template.md) | Project architecture |
+| [references/agents-md-template.md](references/agents-md-template.md) | Hub + coverage |
+| [references/adr-template.md](references/adr-template.md) | ADRs |
+| [references/feature-readme-template.md](references/feature-readme-template.md) | Feature entry |
+| [references/feature-cluster-template.md](references/feature-cluster-template.md) | Cluster index |
+| [references/architecture-template.md](references/architecture-template.md) | Architecture |
 | [references/status-taxonomy.md](references/status-taxonomy.md) | Status tokens |
-| [references/modes.md](references/modes.md) | Full mode procedures |
+| [references/audit-template.md](references/audit-template.md) | Claims matrix + verdicts |
+| [references/modes.md](references/modes.md) | Full procedures |
 | [references/quality-checklist.md](references/quality-checklist.md) | Done criteria |
 
-## When NOT to use / when to integrate instead
+## When NOT to use / defaults
 
-- Pure code implementation with no doc intent
-- One-off throwaway notes outside the repo
-- **Mature docs systems:** structured `docs/` + ADRs + agent rules already exist → use **adopt-integrate** (coverage matrix, gap fill, feature entry packs, net-new ADRs only). Do **not** generate a full parallel AGENTS+docs tree that rewrites product-vision, requirements, or existing decisions.
-- Do not invent product-vision for internal tooling repos that only need ops/architecture notes unless the user asks for product framing
-- Replacing a mature external docs site (MkDocs/Docusaurus) wholesale — integrate with it instead of forking a parallel tree
+- Pure code with no doc intent
+- Throwaway notes outside the repo
+- **Silent overwrite** of productive SSOT without Intent from-zero or explicit user order
+- Mature improve without audit request → **integrate** (not full parallel tree)
+- Replacing MkDocs/Docusaurus wholesale — integrate with it
 
 ## Activation
 
-Standalone or alongside coding/review skills. When active, proactively suggest doc updates after significant architectural or product changes — ask before large rewrites of narrative docs.
+Standalone or with coding skills. Suggest doc updates after significant architecture/product changes; ask before large narrative rewrites unless Intent is from-zero or audit-driven patch.

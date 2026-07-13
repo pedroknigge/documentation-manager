@@ -2,7 +2,8 @@
 
 > **This file is the hub for project knowledge, architecture overview, decisions, and instructions for anyone (human or AI) working on this codebase.**  
 > Always read this file and the relevant documents in `docs/` before starting significant work. Update them when you make important changes.  
-> Code is the source of truth for implementation details; these documents capture the *why* and high-level *what*.
+> Code is the source of truth for implementation details **and** for whether a structural claim is true.  
+> These documents capture the *why* and high-level *what*. On conflict, **code wins** — fix or flag the doc.
 
 ## Project Overview
 
@@ -56,6 +57,7 @@ Rules:
 - When uncertain about product intent, ask clarifying questions rather than assuming.
 - Do not delete durable decisions; mark ADRs as Deprecated or Superseded instead.
 - Do not invent endpoints, tables, or modules; mark TBD / open question instead.
+- Prefer an **audit** (claims matrix) when docs may have drifted from code before large rewrites.
 
 ## Current Status Summary
 

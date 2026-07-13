@@ -73,11 +73,18 @@ cd documentation-manager
 |------|---------|
 | **bootstrap** | New project knowledge base |
 | **adopt** | Infer docs from existing code — **full** (thin) or **integrate** (mature) |
+| **audit** | Code inventory + claims matrix (OK / Partial / Missing / Contradicted); code wins |
 | **feature** | Document or plan one feature (atomic packs; clusters = index + children) |
 | **sync** | Update only docs impacted by a change |
 | **roadmap** | Plan epics / releases at the right level |
 
-**v1.1:** integrate-first on mature repos (coverage matrix + gaps; no parallel ADR/module rewrite), fixed status taxonomy, sandbox only when requested.
+| Intent (v1.2) | When |
+|---------------|------|
+| **integrate** | Improve / index existing docs (default mature “mejorar”) |
+| **audit** | Validate docs against code before trusting them |
+| **from-zero** | Full new knowledge base (sandbox e.g. `test/` is first-class) |
+
+**v1.2:** Intent selection, code-first audit, from-zero + sandbox first-class; still integrate-first when improving mature docs.
 
 **Philosophy:** code is truth for *how*; `AGENTS.md` + `docs/` are truth for *what* and *why*. No auto-commit or auto-push.
 
