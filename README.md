@@ -119,7 +119,7 @@ Lifecycle modes:
 Before it writes a byte, the skill announces scope so you can course-correct:
 
 ```text
-Scope · Mode · Intent · Variant · Maturity · Out ·Slug
+Scope · Mode · Intent · Variant · Maturity · Out · Slug
 ```
 
 Default **non-writes** on plan/feature: no product-vision/requirements rewrite, no unrelated ADRs — even if you never listed them.
