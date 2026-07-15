@@ -59,6 +59,15 @@ Run before reporting done.
 - [ ] No hardcoded gate/violation **counts** in permanent narrative docs (anti-snapshot)
 - [ ] Non-writes listed when bridge writes
 
+## Knowledge dashboard (v1.6)
+
+- [ ] Generated only from existing docs (no invented features/claims for the UI)
+- [ ] Output under generated path (default `docs/audit/generated/`); not treated as SSOT
+- [ ] Offline / no required CDN
+- [ ] Links back to markdown sources
+- [ ] Did not auto-commit generated HTML
+- [ ] Auto-open browser only if user asked
+
 ## Mature-repo / adopt
 
 - [ ] Maturity classified (`thin` | `mixed` | `mature`); variant announced (`full` | `integrate`)

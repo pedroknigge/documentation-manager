@@ -7,3 +7,6 @@
 .claude/
 .agents/
 node_modules/
+
+# Generated knowledge dashboard (Markdown remains SSOT)
+docs/audit/generated/

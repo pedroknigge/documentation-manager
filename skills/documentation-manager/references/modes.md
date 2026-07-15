@@ -458,6 +458,26 @@ Announce: `ArkGate: detected | bridge: post-gate-sync | audit-enrich` when activ
 
 ---
 
+## 10. Knowledge dashboard (v1.6)
+
+**When:** User asks for a docs dashboard / HTML report, or optionally after audit (offer once).
+
+1. Ensure `docs/features/`, `docs/plans/`, optional `docs/audit/claims-matrix.md` exist as they are — **do not invent** packs to fill the UI.  
+2. Run package script when available:
+
+   ```bash
+   ./scripts/generate-docs-dashboard.sh [root] [out]
+   # default out: docs/audit/generated/dashboard.html
+   ```
+
+3. Prefer gitignored output under `docs/audit/generated/`.  
+4. Announce path; open browser only if user asks.  
+5. Full rules: [knowledge-dashboard.md](knowledge-dashboard.md).
+
+HTML is a **view**. Markdown + code remain authority (**code wins** on claims).
+
+---
+
 ## Completion template (all modes)
 
 ```

@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v1.5.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · Intent · Audit · Plan · Autopilot v2 · ArkGate
+  <strong>v1.6.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · Intent · Audit · Plan · Dashboard · ArkGate
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-1.5.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-1.6.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -145,6 +145,7 @@ Or just talk — no expert prompt required:
 | *“Gate passed — sync the docs.”* / *“after ark-check”* | **ArkGate bridge** → scoped audit/sync |
 | *“Implementá team invitations”* / *“generá stubs”* | plan/pack + **Implementation bridge** (stubs opt-in) |
 | *“Spike: rate-limit exploration”* | plan **Kind: spike** (thin + open questions) |
+| *“Generate the knowledge dashboard”* | static HTML view of docs (markdown SSOT) |
 
 ---
 
@@ -191,7 +192,21 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 
 ---
 
-## New in 1.5 — Feature autopilot v2
+## New in 1.6 — Knowledge dashboard
+
+| | |
+|--|--|
+| **Static HTML** | `./scripts/generate-docs-dashboard.sh` → `docs/audit/generated/dashboard.html` |
+| **SSOT** | Markdown remains authority; HTML is a **view** (gitignored by default) |
+| **Offline** | Single file, no CDN |
+| **Honest** | Features/plans/status from existing packs; claims only if matrix exists |
+
+```bash
+./scripts/generate-docs-dashboard.sh
+# open file://…/docs/audit/generated/dashboard.html
+```
+
+### Also in 1.5 — Feature autopilot v2
 
 | | |
 |--|--|
@@ -237,7 +252,7 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 - **Sandbox from-zero** — full KB in a safe folder when you need a clean slate  
 - **Integrate-first maturity** — respect the docs that already own a topic  
 
-Installer and validator target **≥ 1.5.0** (autopilot v2 + ArkGate bridge + plan mode).
+Installer and validator target **≥ 1.6.0** (dashboard + autopilot v2 + ArkGate bridge + plan mode).
 
 ---
 

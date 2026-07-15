@@ -10,11 +10,12 @@ description: >
   /documentation-manager. Intents: integrate, audit, from-zero. Feature autopilot v2: plain
   "new feature X" → plan or pack; Kind spike/epic/redesign; optional Implementation bridge
   (stubs opt-in only). ArkGate bridge: detect ark.config / ark-check and post-gate audit or
-  sync. On conflict code wins. Mature repos default integrate after optional audit.
+  sync. Knowledge dashboard: static HTML via generate-docs-dashboard.sh (markdown SSOT).
+  On conflict code wins. Mature repos default integrate after optional audit.
 license: MIT
 metadata:
   author: pedroknigge
-  version: "1.5.0"
+  version: "1.6.0"
 ---
 
 # Documentation Manager
@@ -41,6 +42,7 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 15. **Feature autopilot (v1.5 / v2).** Plain “new feature X” / “documentá X” → skill chooses **plan** vs **feature pack**, applies default **non-writes**, sets **Kind** (new feature | spike | epic | redesign). **Implementation bridge** (placement / stubs) only on opt-in (“implementá”, “stubs”, “scaffold”) — default is docs-only + one-line hint. See [modes.md §3](references/modes.md#3-feature-autopilot--plan-v13--v2--skill-v15) and [implementation-bridge.md](references/implementation-bridge.md).
 16. **Plan mode (v1.3+).** Greenfield feature ideas land in **`docs/plans/<slug>/`**, not a fake implementation pack and not a full project bootstrap. Promote to `docs/features/<slug>/` when **code** is real (not stubs alone).
 17. **ArkGate bridge (v1.4).** If ArkGate is detected (`ark.config.json`, `ark-check`, `.ark/`, ark skills) or the user just finished a gate, run the **bridge** sub-flow: enrich inventory from the contract; after gate pass → scoped **sync** / **audit**; residual violations → mark claims Contradicted/Partial — never rewrite docs to excuse broken architecture. No Ark → no-op. Placement hints in Implementation bridge reuse Ark layers when detected. See [arkgate-bridge.md](references/arkgate-bridge.md) and [modes.md §9](references/modes.md#9-arkgate-bridge-v14).
+18. **Knowledge dashboard (v1.6).** Optional static HTML view of plans/features/claims (`scripts/generate-docs-dashboard.sh` → `docs/audit/generated/dashboard.html`). Markdown is SSOT; HTML is gitignored view-only. Offer after audit once or on “dashboard” request. See [knowledge-dashboard.md](references/knowledge-dashboard.md) and [modes.md §10](references/modes.md#10-knowledge-dashboard-v16).
 
 ## Step 0 — Detect scope, mode, and Intent
 
@@ -83,6 +85,7 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 - Ambiguous **project** work with existing `docs/` → **ask once**: integrate | audit | from-zero
 - Named single surface → **never** require the user to list non-writes or choose folders
 - “after ark-check” / “post-gate docs” / gate just ran + docs intent → **sync** or **audit** with **ArkGate bridge**
+- “dashboard” / “docs HTML” / “knowledge report” → generate **Knowledge dashboard** ([knowledge-dashboard.md](references/knowledge-dashboard.md))
 
 **Maturity** (when relevant): thin | mixed | mature — see [modes.md](references/modes.md#2-adopt-project).
 
@@ -155,6 +158,9 @@ Blast-radius sync; roadmap links plans for net-new work. See modes §4–5.
 ### ArkGate bridge (v1.4)
 Detect Ark → post-gate **sync**/**audit** or inventory enrich; residual violations become claim debt, not narrative rewrites. See [arkgate-bridge.md](references/arkgate-bridge.md) and modes §9.
 
+### Knowledge dashboard (v1.6)
+Static HTML from existing docs only (`generate-docs-dashboard.sh`). View-only; markdown SSOT. See [knowledge-dashboard.md](references/knowledge-dashboard.md) and modes §10.
+
 ## Hub requirements
 
 - Overview, nav links, agent instructions (read docs; update after significant work; ADRs; **code wins**), status line.
@@ -185,6 +191,7 @@ Follow [quality-checklist.md](references/quality-checklist.md).
 | [references/audit-template.md](references/audit-template.md) | Claims matrix + verdicts |
 | [references/modes.md](references/modes.md) | Full procedures |
 | [references/arkgate-bridge.md](references/arkgate-bridge.md) | **ArkGate bridge** (detect, post-gate, violation→claim) |
+| [references/knowledge-dashboard.md](references/knowledge-dashboard.md) | **Knowledge dashboard** (static HTML view) |
 | [references/quality-checklist.md](references/quality-checklist.md) | Done criteria |
 
 ## When NOT to use / defaults

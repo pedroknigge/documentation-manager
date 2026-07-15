@@ -4,12 +4,13 @@
 > Related: [Roadmap](../../roadmap.md) · future pack: `docs/features/knowledge-dashboard/`  
 > When this ships or lands in skill/code, **promote** to a feature pack (see Promotion).
 
-**Status:** Planned  
+**Status:** Shipped  
 **Slug:** `knowledge-dashboard`  
 **Kind:** new feature  
 **Owners:** skill maintainers  
 **Last updated:** 2026-07-15  
-**Code path (if any):** *none yet* (generación de artefacto estático desde docs; posible script en `scripts/`)
+**Code path:** `scripts/generate-docs-dashboard.sh`, `references/knowledge-dashboard.md` (skill **v1.6.0**)  
+**Feature pack:** [docs/features/knowledge-dashboard/README.md](../../features/knowledge-dashboard/README.md)
 
 ## Problem
 
@@ -47,12 +48,12 @@ Opcionalmente, tras audit/bootstrap/sync, se genera un **HTML estático local** 
 
 ## Acceptance criteria
 
-- [ ] Generador documentado (script y/o procedimiento skill).
-- [ ] Output no se commitea por defecto (gitignore sugerido o path bajo `docs/audit/generated/` configurable).
-- [ ] Enlaces relativos a Markdown fuente.
-- [ ] Funciona offline (sin CDN obligatorio, o vendor mínimo documentado).
-- [ ] No inventa claims: solo lee lo que existe en docs/code inventory del audit.
-- [ ] Validate-skill / smoke no se rompen.
+- [x] Generador documentado (script y/o procedimiento skill).
+- [x] Output no se commitea por defecto (gitignore sugerido o path bajo `docs/audit/generated/` configurable).
+- [x] Enlaces relativos a Markdown fuente.
+- [x] Funciona offline (sin CDN obligatorio, o vendor mínimo documentado).
+- [x] No inventa claims: solo lee lo que existe en docs/code inventory del audit.
+- [x] Validate-skill / smoke no se rompen.
 
 ## Proposed public surface (hypothesis)
 

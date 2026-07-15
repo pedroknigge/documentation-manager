@@ -32,11 +32,11 @@ if echo "$FM" | grep -q 'version:'; then
   [[ -n "$VER" ]] || VER=$(echo "$FM" | awk -F"'" '/version:/{print $2; exit}')
   [[ -n "$VER" ]] || fail "version present but empty"
   ok "version: $VER"
-  # >= 1.5.0
-  echo "$VER" | grep -Eq '^1\.(5|[6-9]|[1-9][0-9])\.' || \
+  # >= 1.6.0
+  echo "$VER" | grep -Eq '^1\.(6|[7-9]|[1-9][0-9])\.' || \
     echo "$VER" | grep -Eq '^[2-9]\.' || \
-    fail "expected version >= 1.5.0, got $VER"
-  ok "version is >= 1.5.0"
+    fail "expected version >= 1.6.0, got $VER"
+  ok "version is >= 1.6.0"
 else
   fail "Missing version in frontmatter"
 fi
@@ -74,11 +74,12 @@ for ref in \
   audit-template.md \
   plan-template.md \
   arkgate-bridge.md \
-  implementation-bridge.md
+  implementation-bridge.md \
+  knowledge-dashboard.md
 do
   [[ -f "$SKILL_DIR/references/$ref" ]] || fail "Missing references/$ref"
 done
-ok "all references present (incl. plan-template, audit-template, arkgate-bridge, implementation-bridge)"
+ok "all references present (incl. bridges + knowledge-dashboard)"
 
 for concept in \
   "Step 0" \
@@ -101,11 +102,12 @@ for concept in \
   "Plan mode" \
   "ArkGate bridge" \
   "Implementation bridge" \
-  "1.5.0"
+  "Knowledge dashboard" \
+  "1.6.0"
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (Intent, plan, autopilot v2, ArkGate bridge, 1.5.0)"
+ok "core concepts present (autopilot v2, bridges, dashboard, 1.6.0)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -130,11 +132,22 @@ for concept in \
   "ArkGate bridge" \
   "Post-gate" \
   "Kind refinement" \
-  "Implementation bridge"
+  "Implementation bridge" \
+  "Knowledge dashboard"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md plan + feature autopilot v2 + ArkGate bridge procedures present"
+ok "modes.md plan + autopilot v2 + bridges + dashboard procedures present"
+
+[[ -x "$ROOT/scripts/generate-docs-dashboard.sh" ]] || [[ -f "$ROOT/scripts/generate-docs-dashboard.sh" ]] \
+  || fail "Missing scripts/generate-docs-dashboard.sh"
+ok "generate-docs-dashboard.sh present"
+
+KD="$SKILL_DIR/references/knowledge-dashboard.md"
+for concept in "SSOT" "generate-docs-dashboard" "View only" "gitignore"; do
+  grep -F -q -- "$concept" "$KD" || fail "knowledge-dashboard.md missing: $concept"
+done
+ok "knowledge-dashboard.md procedure present"
 
 IB="$SKILL_DIR/references/implementation-bridge.md"
 for concept in \
@@ -170,7 +183,8 @@ grep -F -q "Feature autopilot / plan" "$QC" || fail "quality-checklist missing F
 grep -F -q "Implementation bridge" "$QC" || fail "quality-checklist missing Implementation bridge checks"
 grep -F -q "Intent / audit / from-zero" "$QC" || fail "quality-checklist missing Intent section"
 grep -F -q "ArkGate bridge" "$QC" || fail "quality-checklist missing ArkGate bridge section"
-ok "quality-checklist Intent + plan + mature + bridges present"
+grep -F -q "Knowledge dashboard" "$QC" || fail "quality-checklist missing Knowledge dashboard section"
+ok "quality-checklist Intent + plan + mature + bridges + dashboard present"
 
 PT="$SKILL_DIR/references/plan-template.md"
 grep -F -q "Implementation bridge" "$PT" || fail "plan-template missing Implementation bridge section"
