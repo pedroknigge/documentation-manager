@@ -24,7 +24,10 @@ for path in \
   "$FAKE_HOME/.grok/skills/documentation-manager/SKILL.md" \
   "$FAKE_HOME/.claude/skills/documentation-manager/SKILL.md" \
   "$FAKE_HOME/.agents/skills/documentation-manager/SKILL.md" \
-  "$FAKE_HOME/.agents/skills/documentation-manager/references/modes.md"
+  "$FAKE_HOME/.agents/skills/documentation-manager/references/modes.md" \
+  "$FAKE_HOME/.agents/skills/documentation-manager/references/skill-discovery.md" \
+  "$FAKE_HOME/.agents/skills/documentation-manager/references/plan-template.md" \
+  "$FAKE_HOME/.agents/skills/documentation-manager/scripts/generate-docs-dashboard.sh"
 do
   [[ -f "$path" ]] || { echo "FAIL: missing $path"; exit 1; }
 done

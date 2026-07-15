@@ -32,11 +32,11 @@ if echo "$FM" | grep -q 'version:'; then
   [[ -n "$VER" ]] || VER=$(echo "$FM" | awk -F"'" '/version:/{print $2; exit}')
   [[ -n "$VER" ]] || fail "version present but empty"
   ok "version: $VER"
-  # >= 1.6.0
-  echo "$VER" | grep -Eq '^1\.(6|[7-9]|[1-9][0-9])\.' || \
+  # >= 1.7.0
+  echo "$VER" | grep -Eq '^1\.(7|[8-9]|[1-9][0-9])\.' || \
     echo "$VER" | grep -Eq '^[2-9]\.' || \
-    fail "expected version >= 1.6.0, got $VER"
-  ok "version is >= 1.6.0"
+    fail "expected version >= 1.7.0, got $VER"
+  ok "version is >= 1.7.0"
 else
   fail "Missing version in frontmatter"
 fi
@@ -75,11 +75,12 @@ for ref in \
   plan-template.md \
   arkgate-bridge.md \
   implementation-bridge.md \
-  knowledge-dashboard.md
+  knowledge-dashboard.md \
+  skill-discovery.md
 do
   [[ -f "$SKILL_DIR/references/$ref" ]] || fail "Missing references/$ref"
 done
-ok "all references present (incl. bridges + knowledge-dashboard)"
+ok "all references present (incl. bridges + dashboard + discovery)"
 
 for concept in \
   "Step 0" \
@@ -103,11 +104,12 @@ for concept in \
   "ArkGate bridge" \
   "Implementation bridge" \
   "Knowledge dashboard" \
-  "1.6.0"
+  "Skill hardening" \
+  "1.7.0"
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (autopilot v2, bridges, dashboard, 1.6.0)"
+ok "core concepts present (bridges, dashboard, hardening, 1.7.0)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -221,6 +223,14 @@ grep -F -q "Canonical authority" "$SKILL_DIR/references/feature-readme-template.
 ok "feature-readme-template has Canonical authority"
 
 echo "$NAME_VAL" | grep -Eq '^[a-z0-9]+(-[a-z0-9]+)*$' || fail "name violates agentskills.io pattern"
+
+HARDEN="$ROOT/scripts/test-skill-hardening.sh"
+if [[ -f "$HARDEN" ]]; then
+  echo ""
+  bash "$HARDEN" || fail "test-skill-hardening.sh failed"
+else
+  fail "missing scripts/test-skill-hardening.sh"
+fi
 
 echo ""
 echo "✅ Validation passed for $SKILL_DIR"

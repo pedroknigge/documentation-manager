@@ -11,11 +11,12 @@ description: >
   "new feature X" → plan or pack; Kind spike/epic/redesign; optional Implementation bridge
   (stubs opt-in only). ArkGate bridge: detect ark.config / ark-check and post-gate audit or
   sync. Knowledge dashboard: static HTML via generate-docs-dashboard.sh (markdown SSOT).
-  On conflict code wins. Mature repos default integrate after optional audit.
+  Skill hardening: fixtures + golden mode anchors + discovery/upgrade. On conflict code
+  wins. Mature repos default integrate after optional audit.
 license: MIT
 metadata:
   author: pedroknigge
-  version: "1.6.0"
+  version: "1.7.0"
 ---
 
 # Documentation Manager
@@ -43,6 +44,7 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 16. **Plan mode (v1.3+).** Greenfield feature ideas land in **`docs/plans/<slug>/`**, not a fake implementation pack and not a full project bootstrap. Promote to `docs/features/<slug>/` when **code** is real (not stubs alone).
 17. **ArkGate bridge (v1.4).** If ArkGate is detected (`ark.config.json`, `ark-check`, `.ark/`, ark skills) or the user just finished a gate, run the **bridge** sub-flow: enrich inventory from the contract; after gate pass → scoped **sync** / **audit**; residual violations → mark claims Contradicted/Partial — never rewrite docs to excuse broken architecture. No Ark → no-op. Placement hints in Implementation bridge reuse Ark layers when detected. See [arkgate-bridge.md](references/arkgate-bridge.md) and [modes.md §9](references/modes.md#9-arkgate-bridge-v14).
 18. **Knowledge dashboard (v1.6).** Optional static HTML view of plans/features/claims (`scripts/generate-docs-dashboard.sh` → `docs/audit/generated/dashboard.html`). Markdown is SSOT; HTML is gitignored view-only. Offer after audit once or on “dashboard” request. See [knowledge-dashboard.md](references/knowledge-dashboard.md) and [modes.md §10](references/modes.md#10-knowledge-dashboard-v16).
+19. **Skill hardening (v1.7).** Maintainers: run `validate-skill.sh` + `test-skill-hardening.sh` before release. Agents: detect install/version via [skill-discovery.md](references/skill-discovery.md); suggest reinstall when outdated (no silent auto-patch).
 
 ## Step 0 — Detect scope, mode, and Intent
 
@@ -192,6 +194,7 @@ Follow [quality-checklist.md](references/quality-checklist.md).
 | [references/modes.md](references/modes.md) | Full procedures |
 | [references/arkgate-bridge.md](references/arkgate-bridge.md) | **ArkGate bridge** (detect, post-gate, violation→claim) |
 | [references/knowledge-dashboard.md](references/knowledge-dashboard.md) | **Knowledge dashboard** (static HTML view) |
+| [references/skill-discovery.md](references/skill-discovery.md) | **Discovery / upgrade** + stack layout hints |
 | [references/quality-checklist.md](references/quality-checklist.md) | Done criteria |
 
 ## When NOT to use / defaults

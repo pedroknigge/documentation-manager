@@ -1,0 +1,17 @@
+# Golden decision cases for Documentation Manager autopilot / modes (v1.7+)
+# Columns: id	signal_summary	expected_mode	expected_path_or_policy	skill_or_modes_anchor
+# Validator checks that anchor text still exists in SKILL.md or modes.md (regression guard).
+# Not an LLM runner — structural contract for agents following the skill.
+#
+id	signal_summary	expected_mode	expected_path_or_policy	anchor
+plan-no-code	"nueva feature X" / no code	plan	docs/plans/<slug>/	docs/plans
+feature-with-code	document module with code path	feature	docs/features/<slug>/	docs/features
+promote	"promové el plan" / code landed	promote	plan → feature pack	Promote plan
+from-zero-sandbox	full KB under test/	from-zero	Out: sandbox	from-zero
+integrate-mature	improve existing mature docs	integrate	no parallel vision rewrite	Integrate-first
+audit-claims	docs vs code	audit	claims matrix	Code wins
+arkgate-post-gate	after ark-check / gate passed	sync-or-audit	ArkGate bridge	ArkGate bridge
+impl-bridge-opt-in	implementá / generá stubs	plan-or-feature+bridge	stubs opt-in only	Implementation bridge
+dashboard	generate knowledge dashboard	dashboard	docs/audit/generated/	Knowledge dashboard
+kind-spike	spike / timebox explore	plan	Kind spike	Kind refinement
+non-writes-plan	plan/feature default	plan-or-feature	non-writes vision/requirements	Always-on non-writes

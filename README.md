@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v1.6.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · Intent · Audit · Plan · Dashboard · ArkGate
+  <strong>v1.7.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · Intent · Audit · Plan · Dashboard · Hardening
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-1.6.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-1.7.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -192,7 +192,23 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 
 ---
 
-## New in 1.6 — Knowledge dashboard
+## New in 1.7 — Skill hardening
+
+| | |
+|--|--|
+| **Fixtures** | `scripts/fixtures/` thin · mature · no-docs |
+| **Golden modes** | `golden/autopilot-cases.tsv` anchors in SKILL/modes |
+| **Version sync** | SKILL ↔ README badge ↔ AGENTS |
+| **Discovery** | [skill-discovery.md](./skills/documentation-manager/references/skill-discovery.md) install/upgrade/stack hints |
+| **Gate** | `validate-skill.sh` runs hardening tests; PUBLISH pre-release checklist |
+
+```bash
+./scripts/validate-skill.sh
+./scripts/test-skill-hardening.sh
+./scripts/install-smoke.sh
+```
+
+### Also in 1.6 — Knowledge dashboard
 
 | | |
 |--|--|
@@ -252,7 +268,9 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 - **Sandbox from-zero** — full KB in a safe folder when you need a clean slate  
 - **Integrate-first maturity** — respect the docs that already own a topic  
 
-Installer and validator target **≥ 1.6.0** (dashboard + autopilot v2 + ArkGate bridge + plan mode).
+Installer and validator target **≥ 1.7.0** (hardening + dashboard + autopilot v2 + ArkGate bridge).
+
+**Upgrade:** re-run `./install.sh` or `npx skills add pedroknigge/documentation-manager -y` (idempotent). See [skill-discovery.md](./skills/documentation-manager/references/skill-discovery.md).
 
 ---
 
@@ -288,6 +306,7 @@ scripts/install-smoke.sh
 
 ```bash
 ./scripts/validate-skill.sh
+./scripts/test-skill-hardening.sh
 ./scripts/install-smoke.sh
 ```
 

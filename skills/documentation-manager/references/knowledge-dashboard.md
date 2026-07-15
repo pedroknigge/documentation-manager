@@ -24,16 +24,24 @@ Defaults:
 - `project-root` = current directory  
 - `output-path` = `docs/audit/generated/dashboard.html`
 
-The script is shipped in the **skill package** repo under `scripts/`. After install via `npx skills` / `install.sh`, hosts may only get `SKILL.md` + `references/` — if the script is not on the consumer machine, either:
+The script lives at package root `scripts/generate-docs-dashboard.sh`. **`install.sh` copies it into the installed skill as `…/documentation-manager/scripts/generate-docs-dashboard.sh`**.
 
-1. Copy/run from the package clone, or  
+If the script is still missing (partial install / old host), either:
+
+1. Re-run `install.sh` / install from a full clone, or  
 2. Agent reimplements the same **read-only scan** (features/plans README meta + optional claims matrix) and writes the HTML.
 
-Package path when developing this repo:
+From this package repo:
 
 ```bash
 ./scripts/generate-docs-dashboard.sh .
 # → docs/audit/generated/dashboard.html
+```
+
+From an installed skill tree (after install.sh):
+
+```bash
+~/.agents/skills/documentation-manager/scripts/generate-docs-dashboard.sh /path/to/project
 ```
 
 ## What it reads (no invention)

@@ -4,12 +4,13 @@
 > Related: [Roadmap](../../roadmap.md) · future pack: `docs/features/skill-hardening/`  
 > When this ships or lands in skill/code, **promote** to a feature pack (see Promotion).
 
-**Status:** Planned  
+**Status:** Shipped  
 **Slug:** `skill-hardening`  
 **Kind:** epic  
 **Owners:** skill maintainers  
 **Last updated:** 2026-07-15  
-**Code path (if any):** `scripts/validate-skill.sh`, `scripts/install-smoke.sh`, `install.sh` — *extender*; fixtures TBD
+**Code path:** `scripts/test-skill-hardening.sh`, `scripts/fixtures/`, `references/skill-discovery.md` (skill **v1.7.0**)  
+**Feature pack:** [docs/features/skill-hardening/README.md](../../features/skill-hardening/README.md)
 
 ## Problem
 
@@ -49,12 +50,12 @@ Confianza de ingeniería para evolucionar a v2.0: suite de regresión, install/d
 
 ## Acceptance criteria
 
-- [ ] Suite ejecutable en CI local: `./scripts/validate-skill.sh` exit 0 en main limpio.
-- [ ] Al menos 3 fixtures de proyecto sintético bajo `scripts/fixtures/` (o similar).
-- [ ] Golden cases para: plan mode, feature mode, integrate non-writes, from-zero sandbox banner.
-- [ ] Versión única de verdad alineada (metadata SKILL, README badge, AGENTS).
-- [ ] Documento de upgrade: re-run install / `npx skills add` re-install.
-- [ ] PUBLISH.md menciona gate de validate antes de release.
+- [x] Suite ejecutable en CI local: `./scripts/validate-skill.sh` exit 0 en main limpio.
+- [x] Al menos 3 fixtures de proyecto sintético bajo `scripts/fixtures/` (o similar).
+- [x] Golden cases para: plan mode, feature mode, integrate non-writes, from-zero sandbox banner.
+- [x] Versión única de verdad alineada (metadata SKILL, README badge, AGENTS).
+- [x] Documento de upgrade: re-run install / `npx skills add` re-install.
+- [x] PUBLISH.md menciona gate de validate antes de release.
 
 ## Proposed public surface (hypothesis)
 

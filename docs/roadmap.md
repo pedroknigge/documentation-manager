@@ -2,7 +2,7 @@
 
 > Hub: [AGENTS.md](../AGENTS.md) · Planes: [docs/plans/](./plans/)  
 > **Producto:** Agent Skill (knowledge base viva, agent-first). No es una app de producto genérica.  
-> **Última actualización:** 2026-07-15 · **Versión actual:** 1.6.0
+> **Última actualización:** 2026-07-15 · **Versión actual:** 1.7.0
 
 ## Principios (axiomas)
 
@@ -27,13 +27,13 @@
 
 | Área | Estado | Notas |
 |------|--------|-------|
-| Skill core (`SKILL.md` + modes) | **Shipped** (v1.6.0) | + dashboard §10 |
+| Skill core (`SKILL.md` + modes) | **Shipped** (v1.7.0) | + hardening + discovery |
 | Feature autopilot + plan mode | **Shipped** (v1.3 → **v2 / 1.5**) | Kind + Implementation bridge opt-in |
-| Templates + quality bar | **Shipped** | + knowledge-dashboard ref |
-| Install (`npx skills` / `install.sh`) | **Shipped** | Idempotente; no auto-commit |
-| Validación | **Partial** | validate + dashboard script check; fixtures still pending |
+| Templates + quality bar | **Shipped** | + skill-discovery |
+| Install (`npx skills` / `install.sh`) | **Shipped** | Idempotente; dashboard script shipped |
+| Validación | **Shipped** (hardening) | fixtures + golden + version sync |
 | Bridge ArkGate | **Shipped** (v1.4) | [feature pack](./features/arkgate-bridge/README.md) |
-| Dashboard HTML | **Shipped** (v1.6) | [feature](./features/knowledge-dashboard/README.md) · script generator |
+| Dashboard HTML | **Shipped** (v1.6) | [feature](./features/knowledge-dashboard/README.md) |
 | Polyglot / multi-repo / SaaS | **Planned** (horizonte 100×) | Ver [knowledge-os](./plans/knowledge-os/README.md) |
 
 ## Fases
@@ -58,8 +58,8 @@
 | 1 | [ArkGate bridge](./plans/arkgate-bridge/README.md) → [feature](./features/arkgate-bridge/README.md) | P0 | 1–2 | **Shipped** (v1.4.0) |
 | 2 | [Feature autopilot 2.0](./plans/feature-autopilot-v2/README.md) → [feature](./features/feature-autopilot-v2/README.md) | P0 | 3–4 | **Shipped** (v1.5.0) |
 | 3 | [Knowledge dashboard (HTML)](./plans/knowledge-dashboard/README.md) → [feature](./features/knowledge-dashboard/README.md) | P1 | 3–4 | **Shipped** (v1.6.0) |
-| 4 | [Skill hardening](./plans/skill-hardening/README.md) (discovery, tests, install) | P1 | 5–6 | Planned · **next** |
-| 5 | Publicar **v2.0** + adoption matrix | P0 | fin fase | Planned |
+| 4 | [Skill hardening](./plans/skill-hardening/README.md) → [feature](./features/skill-hardening/README.md) | P1 | 5–6 | **Shipped** (v1.7.0) |
+| 5 | Publicar **v2.0** + adoption matrix | P0 | fin fase | Planned · **next** |
 
 **Métricas de éxito 10×:**
 
@@ -135,7 +135,8 @@ Impacto en “code wins + zero maintenance cost”
 | **1.4** | Bridge ArkGate MVP (procedure + post-gate sync/audit) | **Shipped** 2026-07-15 |
 | **1.5** | Autopilot 2.0 (Kind + Implementation bridge; stubs opt-in) | **Shipped** 2026-07-15 |
 | **1.6** | Knowledge dashboard HTML opcional | **Shipped** 2026-07-15 |
-| **1.7** | Skill hardening (fixtures, discovery) | validate + smoke expanded |
+| **1.7** | Skill hardening (fixtures, discovery) | **Shipped** 2026-07-15 |
+| **2.0** | Adoption matrix + release packaging | next |
 | **2.0** | Hardening + discovery + suite tests + adoption matrix | “10× checklist” completa |
 
 ## Cómo usar este roadmap

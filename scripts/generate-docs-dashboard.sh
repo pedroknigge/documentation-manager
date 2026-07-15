@@ -21,7 +21,12 @@ fi
 OUT_DIR="$(dirname "$OUT")"
 
 html_escape() {
-  printf '%s' "$1" | sed -e 's/&/\&amp;/g' -e 's/</\&lt;/g' -e 's/>/\&gt;/g' -e 's/"/\&quot;/g'
+  printf '%s' "$1" | sed \
+    -e 's/&/\&amp;/g' \
+    -e 's/</\&lt;/g' \
+    -e 's/>/\&gt;/g' \
+    -e 's/"/\&quot;/g' \
+    -e "s/'/\&#39;/g"
 }
 
 meta_field() {
@@ -70,11 +75,12 @@ rel_from_out() {
 status_class() {
   local s
   s=$(printf '%s' "$1" | tr '[:upper:]' '[:lower:]')
+  # Order matters: negate before positive substrings ("not shipped" must not match shipped).
   case "$s" in
+    *not\ shipped*|*unshipped*|*cancelled*|*canceled*|*deprecated*) printf 'bad' ;;
     *shipped*|*real*) printf 'ok' ;;
-    *progress*|*partial*|*dual*|*demo*|*local*) printf 'warn' ;;
+    *in\ progress*|*progress*|*partial*|*dual*|*demo*|*local*) printf 'warn' ;;
     *planned*|*unknown*) printf 'muted' ;;
-    *deprecated*|*cancel*) printf 'bad' ;;
     *) printf 'muted' ;;
   esac
 }

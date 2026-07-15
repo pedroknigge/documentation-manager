@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# documentation-manager skill installer — v1.6 (idempotent)
+# documentation-manager skill installer — v1.7 (idempotent)
 # Usage:
 #   curl -fsSL https://raw.githubusercontent.com/pedroknigge/documentation-manager/main/install.sh | bash
 # Or, from a local clone:
@@ -62,10 +62,26 @@ install_skill_tree() {
       modes.md \
       quality-checklist.md \
       status-taxonomy.md \
-      audit-template.md
+      audit-template.md \
+      plan-template.md \
+      arkgate-bridge.md \
+      implementation-bridge.md \
+      knowledge-dashboard.md \
+      skill-discovery.md
     do
       curl -fsSL "${REPO_RAW}/${SKILL_REL}/references/${ref}" -o "$dest/references/${ref}" || true
     done
+    # Optional package-root dashboard generator (best-effort when installing from GitHub)
+    mkdir -p "$dest/scripts"
+    curl -fsSL "${REPO_RAW}/scripts/generate-docs-dashboard.sh" -o "$dest/scripts/generate-docs-dashboard.sh" 2>/dev/null \
+      && chmod +x "$dest/scripts/generate-docs-dashboard.sh" || true
+  fi
+
+  # When installing from a local clone, also ship the dashboard generator next to the skill.
+  if have_local && [[ -f "${SCRIPT_DIR}/scripts/generate-docs-dashboard.sh" ]]; then
+    mkdir -p "$dest/scripts"
+    cp -f "${SCRIPT_DIR}/scripts/generate-docs-dashboard.sh" "$dest/scripts/generate-docs-dashboard.sh"
+    chmod +x "$dest/scripts/generate-docs-dashboard.sh"
   fi
 
   if [[ ! -f "$dest/SKILL.md" ]]; then
@@ -130,7 +146,7 @@ removed_any=0
 if [[ "$UNINSTALL" -eq 1 ]]; then
   cyan "→ documentation-manager skill uninstaller"
 else
-  cyan "→ documentation-manager skill installer (v1.6 — idempotent)"
+  cyan "→ documentation-manager skill installer (v1.7 — idempotent)"
 fi
 
 # ─── Claude Code ──────────────────────────────────────────────────────────────
