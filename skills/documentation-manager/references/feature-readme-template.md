@@ -77,6 +77,17 @@ flowchart LR
 
 - …
 
+## Implementation bridge
+
+> Optional Stage B when the pack is still incomplete and the user opts into placement/stubs.  
+> Rules: [implementation-bridge.md](implementation-bridge.md). Do not list unreal APIs as Real.
+
+**Stubs written:** no | yes (user opt-in)
+
+| Area | Proposed path | Layer | Status |
+|------|---------------|-------|--------|
+| Gap fill | TBD | TBD | hypothesis |
+
 ## Related docs
 
 - Plan (if promoted): [../../plans/<slug>/README.md](../../plans/<slug>/README.md)

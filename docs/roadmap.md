@@ -2,7 +2,7 @@
 
 > Hub: [AGENTS.md](../AGENTS.md) · Planes: [docs/plans/](./plans/)  
 > **Producto:** Agent Skill (knowledge base viva, agent-first). No es una app de producto genérica.  
-> **Última actualización:** 2026-07-15 · **Versión actual:** 1.4.0
+> **Última actualización:** 2026-07-15 · **Versión actual:** 1.5.0
 
 ## Principios (axiomas)
 
@@ -27,8 +27,8 @@
 
 | Área | Estado | Notas |
 |------|--------|-------|
-| Skill core (`SKILL.md` + modes) | **Shipped** (v1.4.0) | + ArkGate bridge §9 |
-| Feature autopilot + plan mode | **Shipped** (v1.3) | Decide plan vs pack; default non-writes |
+| Skill core (`SKILL.md` + modes) | **Shipped** (v1.5.0) | + ArkGate §9 + autopilot v2 |
+| Feature autopilot + plan mode | **Shipped** (v1.3 → **v2 / 1.5**) | Kind + Implementation bridge opt-in |
 | Templates + quality bar | **Shipped** | ADR, plan, feature, audit, status taxonomy, arkgate-bridge |
 | Install (`npx skills` / `install.sh`) | **Shipped** | Idempotente; no auto-commit |
 | Validación | **Partial** | `validate-skill.sh` (+ bridge checks); sin suite de regresión de prompts |
@@ -56,8 +56,8 @@
 | # | Epic / plan | Prioridad | Semanas (orientativo) | Estado |
 |---|-------------|-----------|------------------------|--------|
 | 1 | [ArkGate bridge](./plans/arkgate-bridge/README.md) → [feature](./features/arkgate-bridge/README.md) | P0 | 1–2 | **Shipped** (v1.4.0) |
-| 2 | [Feature autopilot 2.0](./plans/feature-autopilot-v2/README.md) | P0 | 3–4 | Planned · **next** |
-| 3 | [Knowledge dashboard (HTML)](./plans/knowledge-dashboard/README.md) | P1 | 3–4 | Planned |
+| 2 | [Feature autopilot 2.0](./plans/feature-autopilot-v2/README.md) → [feature](./features/feature-autopilot-v2/README.md) | P0 | 3–4 | **Shipped** (v1.5.0) |
+| 3 | [Knowledge dashboard (HTML)](./plans/knowledge-dashboard/README.md) | P1 | 3–4 | Planned · **next** |
 | 4 | [Skill hardening](./plans/skill-hardening/README.md) (discovery, tests, install) | P1 | 5–6 | Planned |
 | 5 | Publicar **v2.0** + adoption matrix | P0 | fin fase | Planned |
 
@@ -132,8 +132,9 @@ Impacto en “code wins + zero maintenance cost”
 | Release | Contiene | Gate de salida |
 |---------|----------|----------------|
 | **1.3.x** | Fixes, meta-docs, dogfood | validate + smoke verdes |
-| **1.4** | Bridge ArkGate MVP (procedure + post-gate sync/audit) | **Shipped** 2026-07-15 — dogfood consumer repo optional follow-up |
-| **1.5** | Autopilot 2.0 + dashboard HTML opcional | Plan→pack→stub documentado |
+| **1.4** | Bridge ArkGate MVP (procedure + post-gate sync/audit) | **Shipped** 2026-07-15 |
+| **1.5** | Autopilot 2.0 (Kind + Implementation bridge; stubs opt-in) | **Shipped** 2026-07-15 |
+| **1.6** | Knowledge dashboard HTML opcional | Generator + offline report |
 | **2.0** | Hardening + discovery + suite tests + adoption matrix | “10× checklist” completa |
 
 ## Cómo usar este roadmap

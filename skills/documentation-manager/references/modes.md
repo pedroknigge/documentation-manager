@@ -143,9 +143,10 @@ No hardcoded table/route/endpoint counts. `api.md` / `data-model.md` = conventio
 
 ---
 
-## 3. Feature autopilot + Plan (v1.3)
+## 3. Feature autopilot + Plan (v1.3 → v2 / skill v1.5)
 
-**Goal:** User names a feature in plain language. Skill picks **plan vs feature pack**, writes the right files, and **never** requires the user to list non-writes.
+**Goal:** User names a feature in plain language. Skill picks **plan vs feature pack**, writes the right files, and **never** requires the user to list non-writes.  
+**v2:** finer **Kind** (spike / epic / redesign), optional **Implementation bridge** (placement + stubs **opt-in** only). See [implementation-bridge.md](implementation-bridge.md).
 
 ### 3.0 Detect “new feature” phrases
 
@@ -158,6 +159,8 @@ Treat as **feature-scoped work** (not project bootstrap / from-zero):
 | “quiero agregar X”, “vamos a construir X”, “plan for X”, “epic X” | Prefer **plan** if no code |
 | “documentá lo que hay en src/X” | Prefer **feature pack** (code-backed) |
 | “promové el plan de X” / “promote plan X” | **Promote** plan → feature pack (§3.6) |
+| “implementá X”, “generá stubs”, “scaffold X”, “start coding” | Stage A docs if needed **+** Implementation bridge on (§3.8) |
+| “spike X”, “epic X”, “redesign X” | Autopilot + Kind refinement (§3.1b) |
 
 **Do not** escalate to project Intent (integrate / from-zero) just because someone said “documentá”. Named surface → feature or plan.
 
@@ -166,22 +169,38 @@ Treat as **feature-scoped work** (not project bootstrap / from-zero):
 ```text
 User names a surface
   → discover code for that name (paths, ModuleId, package, routes)
-  → IF user said "plan" / "epic" / "vamos a construir" OR no meaningful code found
+  → classify Kind (new feature | spike | epic | redesign) — §3.1b
+  → IF user said "plan" / "epic" / "vamos a construir" / "spike" OR no meaningful code found
         → Mode: plan  → docs/plans/<slug>/
   → ELSE IF code exists (or pack already exists to refresh)
         → Mode: feature → docs/features/<slug>/
   → ELSE ambiguous name only
         → ask ONCE: "plan (no code yet) or document existing code?"
+  → IF implement/stubs language → Stage B Implementation bridge (§3.8) after Stage A
+  → ELSE Stage A only; one-line hint for bridge in summary
 ```
 
 | Signal | Mode | Out path |
 |--------|------|----------|
-| No code / green idea / “plan” / “epic” | **plan** | `docs/plans/<slug>/README.md` |
+| No code / green idea / “plan” / “epic” / “spike” | **plan** | `docs/plans/<slug>/README.md` |
 | Code path or ModuleId found | **feature** | `docs/features/<slug>/README.md` |
-| Both plan + “and start the pack” | plan first, optional stub feature with status Planned | both; plan is authority until promote |
+| Redesign of existing surface | **plan** (+ link current pack) or **feature** refresh | plan owns migration intent until code moves |
+| Both plan + “and start the pack” | plan first; pack only when code real (or Planned pack only if user insists) | plan is authority until promote |
 | Audit only on a surface | **audit** (scoped) | claims only; no full rewrite |
+| Implement / stubs opt-in | plan or feature **+** bridge | docs first; code only if opted in |
 
 **Slug:** kebab-case from the name (`Team Invitations` → `team-invitations`). One slug ≈ one ModuleId / bounded context. Domain with many ModuleIds → cluster index + children (feature) or one epic plan + child plans.
+
+### 3.1b Kind refinement (v2)
+
+| Kind | Signals | Behavior |
+|------|---------|----------|
+| **new feature** | default | Full plan or pack MVP |
+| **spike** | “spike”, “explore”, “timebox”, “prove” | Thin plan; Open questions heavy; bridge placement-only unless user insists on stubs |
+| **epic** | “epic”, multi-team, many ModuleIds | Parent plan + child slugs; forbid one mega-pack for whole epic |
+| **redesign** | “redesign”, “replace”, “migrate” | Plan links existing feature pack; statuses may be Dual/Partial after code |
+
+Set `Kind:` on the plan template. Do not ask if obvious from phrasing.
 
 ### 3.2 Always-on non-writes (feature & plan)
 
@@ -200,14 +219,15 @@ Announce **non-writes** in the summary even when the user did not list them.
 
 **When:** Autopilot chose plan, or user said plan/epic/spike.
 
-1. Infer name, slug, problem (from user text + any issue/PR link).  
+1. Infer name, slug, **Kind** (§3.1b), problem (from user text + any issue/PR link).  
 2. Search code lightly — if something exists, note it and offer pack instead or dual-link.  
 3. Write [plan-template.md](plan-template.md) → `docs/plans/<slug>/README.md`.  
 4. Fill what is known; **Open questions** for the rest — do **not** invent APIs.  
 5. Status: `Planned` (or `In progress` if they are actively designing).  
 6. Wire hub: section **Plans** (or Features → Plans) with link + status.  
 7. If `docs/roadmap.md` exists, add one bullet linking the plan (do not rewrite the whole roadmap).  
-8. Summary: path, non-writes, open questions count, how to promote later.
+8. If implement/stubs opt-in → §3.8; else summary one-liner for Implementation bridge.  
+9. Summary: path, non-writes, open questions count, Kind, how to promote later.
 
 **Anti-bloat:** no empty `design.md` unless content exists. No product-vision suite.
 
@@ -240,11 +260,15 @@ Do **not** ask the user to specify non-writes, folder layout, or Intent when the
 
 **When:** “promové el plan”, “X ya está en código”, implementation started.
 
-1. Read `docs/plans/<slug>/`.  
-2. Create/update `docs/features/<slug>/` from code + plan acceptance criteria.  
-3. Plan status → `Shipped` or `Superseded` + link to pack.  
-4. Hub: feature link becomes primary; plan stays archived/historical.  
-5. Coverage row → documented.
+Use the explicit checklist in [implementation-bridge.md](implementation-bridge.md) (Promote checklist). Short form:
+
+1. Read `docs/plans/<slug>/` + **code inventory** for the slug (**code wins**).  
+2. Create/update `docs/features/<slug>/` from **code** + plan acceptance criteria (not from stubs alone).  
+3. Supersede or trim Implementation bridge stub inventory that diverged from code.  
+4. Plan status → `Shipped` or `Superseded` + link to pack.  
+5. Hub: feature link becomes primary; plan stays archived/historical.  
+6. Coverage row → documented.  
+7. Optional: scoped audit on new structural claims.
 
 ### 3.7 Layout (plans)
 
@@ -252,11 +276,25 @@ Do **not** ask the user to specify non-writes, folder layout, or Intent when the
 docs/
   plans/
     <slug>/
-      README.md          # plan (template)
+      README.md          # plan (template; may include Implementation bridge section)
+      implementation.md  # optional; only if bridge detail is large
   features/
     <slug>/
       README.md          # implementation pack (after code or promote)
 ```
+
+### 3.8 Implementation bridge (v2 — Stage B, opt-in)
+
+**When:** User asks to implement / scaffold / generate stubs, **after** Stage A plan or pack.
+
+1. Load [implementation-bridge.md](implementation-bridge.md).  
+2. Placement table: Ark layers if detected; else repo conventions; mark hypothesis/TBD.  
+3. Engineering checklist from acceptance criteria.  
+4. **Stubs:** write product code **only** if user opted in; mark hypotheses; status stays Planned/In progress — never Real from stubs alone.  
+5. Default non-writes still apply to vision/requirements/unrelated packs; bridge does **not** unlock full-repo codegen.  
+6. Announce `Implementation bridge: on` and list code files touched (if any).
+
+**Anti-hallucination:** no Real endpoints/tables/ModuleIds without code evidence. Public surface rows TBD until code-backed.
 
 ---
 

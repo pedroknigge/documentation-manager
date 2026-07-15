@@ -23,16 +23,21 @@ Run before reporting done.
 - [ ] Sync: only impacted docs touched
 - [ ] No auto-commit / auto-push
 
-## Feature autopilot / plan (v1.3)
+## Feature autopilot / plan (v1.3 + v2)
 
 - [ ] Named “new feature X” used **plan** or **feature** autopilot — not project from-zero
 - [ ] No code / planning language → `docs/plans/<slug>/` from plan-template
 - [ ] Code-backed surface → `docs/features/<slug>/` from feature template
+- [ ] **Kind** set when signaled (new feature | spike | epic | redesign); epic → child slugs not mega-pack
 - [ ] Default **non-writes** applied and listed (vision, requirements, unrelated ADRs/packs)
 - [ ] User was **not** required to specify folders or non-writes
 - [ ] Ask at most once (name / plan-vs-pack / multi-module split)
 - [ ] Hub links Plans and/or Features as appropriate
 - [ ] Promote path documented when plan written; promote updates plan status when packing
+- [ ] **Implementation bridge:** off by default; on only for implement/stubs/scaffold language
+- [ ] Stubs (if any) marked hypothesis; no Real public surface without code evidence
+- [ ] Ark detected → placement uses layers/contract when filling bridge
+- [ ] Promote uses **code** inventory, not stubs alone (implementation-bridge promote checklist)
 
 ## Intent / audit / from-zero
 

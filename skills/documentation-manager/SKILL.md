@@ -7,14 +7,14 @@ description: >
   "bootstrap docs", "sync docs", "audit docs", "docs vs code", "generate docs in test/",
   "from zero", "write ADRs", "document module", "new feature", "nueva feature",
   "plan feature", "promové el plan", "after ark-check", "post-gate docs", "arkgate bridge",
-  /documentation-manager. Intents: integrate, audit, from-zero. Feature autopilot: plain
-  "new feature X" → plan or pack without expert prompts. ArkGate bridge: detect ark.config
-  / ark-check and post-gate audit or sync. On conflict code wins. Mature repos default
-  integrate after optional audit.
+  /documentation-manager. Intents: integrate, audit, from-zero. Feature autopilot v2: plain
+  "new feature X" → plan or pack; Kind spike/epic/redesign; optional Implementation bridge
+  (stubs opt-in only). ArkGate bridge: detect ark.config / ark-check and post-gate audit or
+  sync. On conflict code wins. Mature repos default integrate after optional audit.
 license: MIT
 metadata:
   author: pedroknigge
-  version: "1.4.0"
+  version: "1.5.0"
 ---
 
 # Documentation Manager
@@ -38,9 +38,9 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 12. **Feature atomicity.** One slug ≈ one ModuleId or bounded context. Clusters = **index** + **children**.
 13. **Status taxonomy.** [references/status-taxonomy.md](references/status-taxonomy.md).
 14. **Sandbox opt-in / first-class from-zero.** `Out: sandbox:path` when user asks (`test/`, etc.). Sandbox hubs banner non-SSOT + **promotion plan**.
-15. **Feature autopilot (v1.3).** Plain “new feature X” / “documentá X” → skill chooses **plan** vs **feature pack**, applies default **non-writes**, writes files. User need not know layout or what not to touch. See [modes.md §3](references/modes.md#3-feature-autopilot--plan-v13).
-16. **Plan mode (v1.3).** Greenfield feature ideas land in **`docs/plans/<slug>/`**, not a fake implementation pack and not a full project bootstrap. Promote to `docs/features/<slug>/` when code is real.
-17. **ArkGate bridge (v1.4).** If ArkGate is detected (`ark.config.json`, `ark-check`, `.ark/`, ark skills) or the user just finished a gate, run the **bridge** sub-flow: enrich inventory from the contract; after gate pass → scoped **sync** / **audit**; residual violations → mark claims Contradicted/Partial — never rewrite docs to excuse broken architecture. No Ark → no-op. See [arkgate-bridge.md](references/arkgate-bridge.md) and [modes.md §9](references/modes.md#9-arkgate-bridge-v14).
+15. **Feature autopilot (v1.5 / v2).** Plain “new feature X” / “documentá X” → skill chooses **plan** vs **feature pack**, applies default **non-writes**, sets **Kind** (new feature | spike | epic | redesign). **Implementation bridge** (placement / stubs) only on opt-in (“implementá”, “stubs”, “scaffold”) — default is docs-only + one-line hint. See [modes.md §3](references/modes.md#3-feature-autopilot--plan-v13--v2--skill-v15) and [implementation-bridge.md](references/implementation-bridge.md).
+16. **Plan mode (v1.3+).** Greenfield feature ideas land in **`docs/plans/<slug>/`**, not a fake implementation pack and not a full project bootstrap. Promote to `docs/features/<slug>/` when **code** is real (not stubs alone).
+17. **ArkGate bridge (v1.4).** If ArkGate is detected (`ark.config.json`, `ark-check`, `.ark/`, ark skills) or the user just finished a gate, run the **bridge** sub-flow: enrich inventory from the contract; after gate pass → scoped **sync** / **audit**; residual violations → mark claims Contradicted/Partial — never rewrite docs to excuse broken architecture. No Ark → no-op. Placement hints in Implementation bridge reuse Ark layers when detected. See [arkgate-bridge.md](references/arkgate-bridge.md) and [modes.md §9](references/modes.md#9-arkgate-bridge-v14).
 
 ## Step 0 — Detect scope, mode, and Intent
 
@@ -75,7 +75,8 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 
 **Inference (do not over-ask):**
 
-- “nueva feature X” / “new feature X” / “quiero agregar X” → **Feature autopilot** (plan if no code, feature if code). Intent = n/a
+- “nueva feature X” / “new feature X” / “quiero agregar X” → **Feature autopilot** (plan if no code, feature if code; Kind from phrasing). Intent = n/a
+- “implementá X” / “generá stubs” / “scaffold X” → autopilot Stage A if needed + **Implementation bridge** opt-in (code only if stubs requested)
 - “generá toda la documentación en `test/`” → **Intent: from-zero | Out: sandbox:test/**
 - Mature repo + “mejorá / integrá / indexá” → **Intent: integrate**
 - “auditar docs” / “código vs docs” → **Intent: audit**
@@ -145,8 +146,8 @@ Maturity → adopt-full or adopt-integrate. See [modes.md §2](references/modes.
 ### Audit
 Code inventory → structural claims → matrix → report. **Code wins.** See [modes.md §6](references/modes.md#6-audit-project).
 
-### Plan / Feature (v1.3 autopilot)
-Named surface → **plan** (`docs/plans/<slug>/`) if no code / planning language; **feature** (`docs/features/<slug>/`) if code-backed. Default non-writes always. Promote plan → pack when implementation is real. See [modes.md §3](references/modes.md#3-feature-autopilot--plan-v13).
+### Plan / Feature (autopilot v2)
+Named surface → **plan** (`docs/plans/<slug>/`) if no code / planning language; **feature** (`docs/features/<slug>/`) if code-backed. Kind spike/epic/redesign when signaled. Default non-writes always. Optional **Implementation bridge** on implement/stubs language. Promote plan → pack when **code** is real. See [modes.md §3](references/modes.md#3-feature-autopilot--plan-v13--v2--skill-v15) and [implementation-bridge.md](references/implementation-bridge.md).
 
 ### Sync / Roadmap
 Blast-radius sync; roadmap links plans for net-new work. See modes §4–5.
@@ -176,6 +177,7 @@ Follow [quality-checklist.md](references/quality-checklist.md).
 | [references/agents-md-template.md](references/agents-md-template.md) | Hub + coverage |
 | [references/adr-template.md](references/adr-template.md) | ADRs |
 | [references/plan-template.md](references/plan-template.md) | **Plan mode** (`docs/plans/<slug>/`) |
+| [references/implementation-bridge.md](references/implementation-bridge.md) | **Implementation bridge** (Stage B, stubs opt-in) |
 | [references/feature-readme-template.md](references/feature-readme-template.md) | Feature entry |
 | [references/feature-cluster-template.md](references/feature-cluster-template.md) | Cluster index |
 | [references/architecture-template.md](references/architecture-template.md) | Architecture |

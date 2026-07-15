@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v1.4.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · Intent · Audit · Plan · ArkGate bridge
+  <strong>v1.5.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · Intent · Audit · Plan · Autopilot v2 · ArkGate
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-1.4.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-1.5.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -143,6 +143,8 @@ Or just talk — no expert prompt required:
 | *“Full knowledge base under `test/`, don’t touch prod docs.”* | from-zero · sandbox |
 | *“Improve and index what we already have.”* | integrate (mature default) |
 | *“Gate passed — sync the docs.”* / *“after ark-check”* | **ArkGate bridge** → scoped audit/sync |
+| *“Implementá team invitations”* / *“generá stubs”* | plan/pack + **Implementation bridge** (stubs opt-in) |
+| *“Spike: rate-limit exploration”* | plan **Kind: spike** (thin + open questions) |
 
 ---
 
@@ -189,7 +191,16 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 
 ---
 
-## New in 1.4 — ArkGate bridge
+## New in 1.5 — Feature autopilot v2
+
+| | |
+|--|--|
+| **Kind** | `new feature` · `spike` · `epic` · `redesign` from plain language |
+| **Implementation bridge** | Placement + engineering checklist; **stubs only if you ask** |
+| **Anti-hallucination** | No Real APIs from stubs; promote uses **code** inventory |
+| **Ark placement** | When ArkGate is present, bridge maps dirs to contract layers |
+
+### Also in 1.4 — ArkGate bridge
 
 | | |
 |--|--|
@@ -198,7 +209,7 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 | **Sensor, not fusion** | Reads Ark artifacts; never rewrites `ark.config.json` or app source |
 | **Pairing** | code change → Ark gate → Documentation Manager bridge → you commit |
 
-### Also in 1.3 — feature autopilot + plans
+### Also in 1.3 — plans + autopilot base
 
 | | |
 |--|--|
@@ -226,7 +237,7 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 - **Sandbox from-zero** — full KB in a safe folder when you need a clean slate  
 - **Integrate-first maturity** — respect the docs that already own a topic  
 
-Installer and validator target **≥ 1.4.0** (ArkGate bridge + 1.3 plan/autopilot).
+Installer and validator target **≥ 1.5.0** (autopilot v2 + ArkGate bridge + plan mode).
 
 ---
 

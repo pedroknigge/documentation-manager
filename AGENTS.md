@@ -1,6 +1,6 @@
 # AGENTS.md — documentation-manager (skill package)
 
-**Status:** skill development repo · last updated 2026-07-15 · skill version **1.4.0**
+**Status:** skill development repo · last updated 2026-07-15 · skill version **1.5.0**
 
 ## What this folder is
 
@@ -58,14 +58,15 @@ documentation-manager/          ← this git root (skill development)
 | Feature | Path | Status |
 |---------|------|--------|
 | ArkGate bridge | [docs/features/arkgate-bridge/README.md](docs/features/arkgate-bridge/README.md) | Shipped (v1.4.0) |
+| Feature autopilot 2.0 | [docs/features/feature-autopilot-v2/README.md](docs/features/feature-autopilot-v2/README.md) | Shipped (v1.5.0) |
 
 ## Plans (skill evolution)
 
 | Plan | Path | Status | Horizon |
 |------|------|--------|---------|
 | ArkGate bridge | [docs/plans/arkgate-bridge/README.md](docs/plans/arkgate-bridge/README.md) | Shipped → feature pack | 10× / v2 |
-| Feature autopilot 2.0 | [docs/plans/feature-autopilot-v2/README.md](docs/plans/feature-autopilot-v2/README.md) | Planned · **next** | 10× / v2 |
-| Knowledge dashboard | [docs/plans/knowledge-dashboard/README.md](docs/plans/knowledge-dashboard/README.md) | Planned | 10× / v2 |
+| Feature autopilot 2.0 | [docs/plans/feature-autopilot-v2/README.md](docs/plans/feature-autopilot-v2/README.md) | Shipped → feature pack | 10× / v2 |
+| Knowledge dashboard | [docs/plans/knowledge-dashboard/README.md](docs/plans/knowledge-dashboard/README.md) | Planned · **next** | 10× / v2 |
 | Skill hardening | [docs/plans/skill-hardening/README.md](docs/plans/skill-hardening/README.md) | Planned | 10× / v2 |
 | Knowledge OS | [docs/plans/knowledge-os/README.md](docs/plans/knowledge-os/README.md) | Planned | Bridge + 100× |
 

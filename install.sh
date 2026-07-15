@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# documentation-manager skill installer — v1.4 (idempotent)
+# documentation-manager skill installer — v1.5 (idempotent)
 # Usage:
 #   curl -fsSL https://raw.githubusercontent.com/pedroknigge/documentation-manager/main/install.sh | bash
 # Or, from a local clone:
@@ -130,7 +130,7 @@ removed_any=0
 if [[ "$UNINSTALL" -eq 1 ]]; then
   cyan "→ documentation-manager skill uninstaller"
 else
-  cyan "→ documentation-manager skill installer (v1.4 — idempotent)"
+  cyan "→ documentation-manager skill installer (v1.5 — idempotent)"
 fi
 
 # ─── Claude Code ──────────────────────────────────────────────────────────────

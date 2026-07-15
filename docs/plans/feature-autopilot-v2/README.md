@@ -4,12 +4,13 @@
 > Related: [Roadmap](../../roadmap.md) · future pack: `docs/features/feature-autopilot-v2/`  
 > When this ships or lands in skill behavior, **promote** to a feature pack (see Promotion).
 
-**Status:** Planned  
+**Status:** Shipped  
 **Slug:** `feature-autopilot-v2`  
 **Kind:** epic  
 **Owners:** skill maintainers  
 **Last updated:** 2026-07-15  
-**Code path (if any):** *none yet* (evolución de `SKILL.md` + `modes.md` + templates; stubs = hipótesis de código, no generador pesado en-repo)
+**Code path:** `references/implementation-bridge.md`, `modes.md` §3.1b–3.8, plan/feature templates (skill **v1.5.0**)  
+**Feature pack:** [docs/features/feature-autopilot-v2/README.md](../../features/feature-autopilot-v2/README.md)
 
 ## Problem
 
@@ -49,12 +50,12 @@ Sin v2, el 10× de “costo de docs → 0” se queda a medias: la narrativa nac
 
 ## Acceptance criteria
 
-- [ ] Decision table v2 documentada en `modes.md` (cuándo plan / feature / hybrid / ask once).
-- [ ] Sección o template **Implementation bridge** (sin inventar endpoints reales).
-- [ ] Opt-in claro para stubs; default no escribe código de app sin pedirlo.
-- [ ] Si ArkGate presente: placement hint usa capas del contrato (vía [arkgate-bridge](../arkgate-bridge/README.md)).
-- [ ] Quality bar actualizado: anti-alucinación de APIs en el bridge.
-- [ ] Validate-skill verde.
+- [x] Decision table v2 documentada en `modes.md` (cuándo plan / feature / hybrid / ask once).
+- [x] Sección o template **Implementation bridge** (sin inventar endpoints reales).
+- [x] Opt-in claro para stubs; default no escribe código de app sin pedirlo.
+- [x] Si ArkGate presente: placement hint usa capas del contrato (vía [arkgate-bridge](../arkgate-bridge/README.md)).
+- [x] Quality bar actualizado: anti-alucinación de APIs en el bridge.
+- [x] Validate-skill verde.
 
 ## Proposed public surface (hypothesis)
 
