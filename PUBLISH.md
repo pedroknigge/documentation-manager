@@ -53,7 +53,7 @@ In Codex, the pointer block is in `~/.codex/AGENTS.md` and the full skill is und
 
 ```bash
 ./scripts/validate-skill.sh          # structure + chains test-skill-hardening.sh
-./scripts/test-skill-hardening.sh    # fixtures, golden mode anchors, version sync
+./scripts/test-skill-hardening.sh    # fixtures, golden mode anchors, version sync, v2 matrix
 ./scripts/install-smoke.sh           # install / reinstall / uninstall
 ```
 
@@ -64,11 +64,31 @@ Version must match across:
 - `skills/documentation-manager/SKILL.md` → `metadata.version`
 - `README.md` badge + `vX.Y.Z` heading
 - `AGENTS.md` status line
+- `CHANGELOG.md` section for that version
+- `docs/adoption-matrix.md` version line (when cutting a major)
+
+### Cutting **2.0.0** (reference)
+
+```bash
+# after gate is green:
+git tag -a v2.0.0 -m "documentation-manager skill v2.0.0 — 10x package"
+git push origin main --tags   # only when you intend to publish
+```
+
+Users upgrade with:
+
+```bash
+npx skills add pedroknigge/documentation-manager -y
+# or
+./install.sh
+```
+
+Record new installs in [docs/adoption-matrix.md](./docs/adoption-matrix.md).
 
 ## Update a release
 
 1. Edit skill files under `skills/documentation-manager/`
-2. Bump `metadata.version` in `SKILL.md` (and README/AGENTS)
+2. Bump `metadata.version` in `SKILL.md` (and README/AGENTS/CHANGELOG)
 3. Run the **pre-release gate** above
 4. Commit and push — users re-run `install.sh` or `npx skills add …` / update
 

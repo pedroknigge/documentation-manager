@@ -129,6 +129,15 @@ grep -q "upgrade" "$DISC" || fail "skill-discovery missing upgrade guidance"
 grep -q "version" "$DISC" || fail "skill-discovery missing version detection"
 ok "skill-discovery procedure present"
 
+# ─── v2.0 adoption matrix + changelog ────────────────────────────────────────
+[[ -f "$ROOT/docs/adoption-matrix.md" ]] || fail "missing docs/adoption-matrix.md"
+grep -q "Verified" "$ROOT/docs/adoption-matrix.md" || fail "adoption-matrix missing Verified token"
+grep -q "ArkGate" "$ROOT/docs/adoption-matrix.md" || fail "adoption-matrix missing ArkGate pairing"
+[[ -f "$ROOT/CHANGELOG.md" ]] || fail "missing CHANGELOG.md"
+grep -q "2.0.0" "$ROOT/CHANGELOG.md" || fail "CHANGELOG.md missing 2.0.0"
+[[ -f "$ROOT/docs/features/tenx-v2-release/README.md" ]] || fail "missing tenx-v2-release feature pack"
+ok "v2.0 adoption matrix + CHANGELOG + tenx feature pack"
+
 if [[ "$FAILS" -gt 0 ]]; then
   echo ""
   echo "❌ Hardening failed: $FAILS issue(s)"

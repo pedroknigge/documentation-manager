@@ -1,6 +1,6 @@
 # AGENTS.md — documentation-manager (skill package)
 
-**Status:** skill development repo · last updated 2026-07-15 · skill version **1.7.0**
+**Status:** skill development repo · last updated 2026-07-15 · skill version **2.0.0**
 
 ## What this folder is
 
@@ -61,6 +61,13 @@ documentation-manager/          ← this git root (skill development)
 | Feature autopilot 2.0 | [docs/features/feature-autopilot-v2/README.md](docs/features/feature-autopilot-v2/README.md) | Shipped (v1.5.0) |
 | Knowledge dashboard | [docs/features/knowledge-dashboard/README.md](docs/features/knowledge-dashboard/README.md) | Shipped (v1.6.0) |
 | Skill hardening | [docs/features/skill-hardening/README.md](docs/features/skill-hardening/README.md) | Shipped (v1.7.0) |
+| 10× v2.0 release | [docs/features/tenx-v2-release/README.md](docs/features/tenx-v2-release/README.md) | Shipped (v2.0.0) |
+
+## Navigation (meta)
+
+- Roadmap: [docs/roadmap.md](docs/roadmap.md)
+- **Adoption matrix:** [docs/adoption-matrix.md](docs/adoption-matrix.md)
+- Changelog: [CHANGELOG.md](CHANGELOG.md)
 
 ## Plans (skill evolution)
 

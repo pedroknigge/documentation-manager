@@ -1,4 +1,4 @@
-# Skill discovery & upgrade (v1.7)
+# Skill discovery & upgrade (v1.7 · package v2.0)
 
 How agents and humans detect that Documentation Manager is installed, current, and which layout to prefer. **No silent auto-patch** of the user’s machine without consent.
 
@@ -60,3 +60,5 @@ Before tagging a release:
 ```
 
 All must exit 0. See [PUBLISH.md](../../../PUBLISH.md) in the package root.
+
+Target install version for the 10× line: **≥ 2.0.0**. Track targets in [docs/adoption-matrix.md](../../../docs/adoption-matrix.md).

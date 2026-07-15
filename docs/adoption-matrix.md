@@ -1,0 +1,83 @@
+# Adoption matrix — documentation-manager v2.0
+
+> Hub: [AGENTS.md](../AGENTS.md) · [Roadmap](./roadmap.md) · Companion: [ArkGate](https://github.com/pedroknigge/arkgate)  
+> **Purpose:** Track where this skill is (or should be) installed, and the ArkGate pairing path.  
+> **Honesty rule:** only mark **Verified** when someone ran install/validate against that target. Hypotheses stay **Candidate**.
+
+**Last updated:** 2026-07-15 · Skill version **2.0.0**
+
+## How to use
+
+1. Add a row when you install Documentation Manager on a real project.  
+2. Status tokens: `Candidate` | `Installed` | `Verified` | `Churned`.  
+3. Pairing: `none` | `ArkGate present` | `bridge exercised` (post-gate docs pass once).  
+4. Do **not** invent install counts or stars.
+
+## Package / distribution
+
+| Channel | Path / command | Status | Notes |
+|---------|----------------|--------|-------|
+| GitHub source | [pedroknigge/documentation-manager](https://github.com/pedroknigge/documentation-manager) | Verified | Skill package repo |
+| npx skills | `npx skills add pedroknigge/documentation-manager` | Candidate | Re-verify after each publish |
+| Classic install | `./install.sh` or curl main install.sh | Verified | Covered by `install-smoke.sh` |
+| Hosts | Claude Code · Grok · Codex · Cursor | Candidate | Any host that loads `SKILL.md` |
+
+## 10× capability surface (what adopters get in v2.0)
+
+| Capability | Since | Entry |
+|------------|-------|-------|
+| Intent integrate / audit / from-zero | 1.2 | [SKILL.md](../skills/documentation-manager/SKILL.md) |
+| Feature autopilot + plans | 1.3 | modes §3 |
+| Feature autopilot v2 + Implementation bridge | 1.5 | [implementation-bridge.md](../skills/documentation-manager/references/implementation-bridge.md) |
+| ArkGate bridge (post-gate sync/audit) | 1.4 | [arkgate-bridge.md](../skills/documentation-manager/references/arkgate-bridge.md) |
+| Knowledge dashboard (HTML view) | 1.6 | `scripts/generate-docs-dashboard.sh` |
+| Hardening suite + discovery | 1.7 | `scripts/test-skill-hardening.sh` · [skill-discovery.md](../skills/documentation-manager/references/skill-discovery.md) |
+| Adoption matrix (this file) | **2.0** | packaging + tracking |
+
+## Target projects
+
+| Project | Role | Docs skill | ArkGate | Pairing | Status | Last checked |
+|---------|------|------------|---------|---------|--------|--------------|
+| documentation-manager (this repo) | Skill package dogfood | native | no (skill-only) | n/a | Verified | 2026-07-15 |
+| arkgate (`pedroknigge/arkgate` / local `Desktop/ARK/v1`) | Architecture gate companion | Candidate install | Verified product | bridge designed for | Candidate | — |
+| Consumer apps with `ark.config.json` | Real product codebases | Candidate | Present when config exists | post-gate docs | Candidate | — |
+| Brownfield mature monorepos | integrate-first path | Candidate | optional | — | Candidate | — |
+| Greenfield / sandbox `test/` | from-zero | Candidate | optional | — | Candidate | — |
+
+### Local machine notes (non-canonical)
+
+These paths may exist on a maintainer machine and are useful for dogfood; they are **not** public adoption claims:
+
+| Path hint | Why relevant |
+|-----------|----------------|
+| `…/ARK/v1` | Full ArkGate product + `ark.config.json` |
+| Repos with `.ark/` + `ark.config.json` | Natural bridge targets |
+
+Update the public table above only when install is intentional and recorded.
+
+## Adoption checklist (per target)
+
+- [ ] Install skill (`npx skills add` or `install.sh`)  
+- [ ] Confirm version ≥ **2.0.0** in installed `SKILL.md`  
+- [ ] Hub + docs layout exists or created via integrate/from-zero  
+- [ ] If ArkGate present: run gate once → Documentation Manager bridge offer  
+- [ ] Optional: `./scripts/generate-docs-dashboard.sh`  
+- [ ] Row status → **Verified**
+
+## Metrics (honest)
+
+| Metric | Baseline (v1.3 era) | v2.0 packaging | How measured |
+|--------|---------------------|----------------|--------------|
+| Install friction | Manual discover | install + discovery docs | Time to first hub |
+| Post-change docs precision | Manual audit only | audit + Ark bridge procedure | Claims matrix usage |
+| Regression safety | smoke only | fixtures + golden anchors | `validate-skill.sh` |
+| Public multi-repo installs | Low / unknown | Matrix rows | This file |
+
+×10 adoption is an **objective**, not a claim of current install count.
+
+## Related
+
+- Roadmap: [roadmap.md](./roadmap.md)  
+- Feature pack: [features/tenx-v2-release/README.md](./features/tenx-v2-release/README.md)  
+- Publish: [PUBLISH.md](../PUBLISH.md)  
+- CHANGELOG: [CHANGELOG.md](../CHANGELOG.md)

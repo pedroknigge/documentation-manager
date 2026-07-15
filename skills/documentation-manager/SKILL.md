@@ -2,21 +2,19 @@
 name: documentation-manager
 description: >
   Use when bootstrapping, completing, updating, or auditing project documentation,
-  or documenting a feature/module/epic: AGENTS.md (or agents.md) + docs/, ADRs,
-  roadmap, docs/features/<slug>/, docs/plans/<slug>/. Triggers: "document this project",
-  "bootstrap docs", "sync docs", "audit docs", "docs vs code", "generate docs in test/",
-  "from zero", "write ADRs", "document module", "new feature", "nueva feature",
-  "plan feature", "promové el plan", "after ark-check", "post-gate docs", "arkgate bridge",
-  /documentation-manager. Intents: integrate, audit, from-zero. Feature autopilot v2: plain
-  "new feature X" → plan or pack; Kind spike/epic/redesign; optional Implementation bridge
-  (stubs opt-in only). ArkGate bridge: detect ark.config / ark-check and post-gate audit or
-  sync. Knowledge dashboard: static HTML via generate-docs-dashboard.sh (markdown SSOT).
-  Skill hardening: fixtures + golden mode anchors + discovery/upgrade. On conflict code
-  wins. Mature repos default integrate after optional audit.
+  or documenting a feature/module/epic: AGENTS.md + docs/, ADRs, roadmap,
+  docs/features/<slug>/, docs/plans/<slug>/. Triggers: "document this project",
+  "bootstrap docs", "sync docs", "audit docs", "docs vs code", "from zero",
+  "new feature", "nueva feature", "promové el plan", "after ark-check",
+  "arkgate bridge", "knowledge dashboard", /documentation-manager. Intents:
+  integrate, audit, from-zero. Feature autopilot v2: plan vs pack; Kind
+  spike/epic/redesign; Implementation bridge stubs opt-in. ArkGate bridge:
+  post-gate audit/sync. Dashboard HTML (markdown SSOT). Hardening + discovery.
+  v2.0 10x package + adoption matrix. On conflict code wins.
 license: MIT
 metadata:
   author: pedroknigge
-  version: "1.7.0"
+  version: "2.0.0"
 ---
 
 # Documentation Manager
@@ -45,6 +43,7 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 17. **ArkGate bridge (v1.4).** If ArkGate is detected (`ark.config.json`, `ark-check`, `.ark/`, ark skills) or the user just finished a gate, run the **bridge** sub-flow: enrich inventory from the contract; after gate pass → scoped **sync** / **audit**; residual violations → mark claims Contradicted/Partial — never rewrite docs to excuse broken architecture. No Ark → no-op. Placement hints in Implementation bridge reuse Ark layers when detected. See [arkgate-bridge.md](references/arkgate-bridge.md) and [modes.md §9](references/modes.md#9-arkgate-bridge-v14).
 18. **Knowledge dashboard (v1.6).** Optional static HTML view of plans/features/claims (`scripts/generate-docs-dashboard.sh` → `docs/audit/generated/dashboard.html`). Markdown is SSOT; HTML is gitignored view-only. Offer after audit once or on “dashboard” request. See [knowledge-dashboard.md](references/knowledge-dashboard.md) and [modes.md §10](references/modes.md#10-knowledge-dashboard-v16).
 19. **Skill hardening (v1.7).** Maintainers: run `validate-skill.sh` + `test-skill-hardening.sh` before release. Agents: detect install/version via [skill-discovery.md](references/skill-discovery.md); suggest reinstall when outdated (no silent auto-patch).
+20. **v2.0 package.** Completes the 10× line: capabilities 1.4–1.7 plus [docs/adoption-matrix.md](../../docs/adoption-matrix.md) tracking. Prefer advertising **2.0.0** as the install target.
 
 ## Step 0 — Detect scope, mode, and Intent
 

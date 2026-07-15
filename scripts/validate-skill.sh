@@ -32,11 +32,10 @@ if echo "$FM" | grep -q 'version:'; then
   [[ -n "$VER" ]] || VER=$(echo "$FM" | awk -F"'" '/version:/{print $2; exit}')
   [[ -n "$VER" ]] || fail "version present but empty"
   ok "version: $VER"
-  # >= 1.7.0
-  echo "$VER" | grep -Eq '^1\.(7|[8-9]|[1-9][0-9])\.' || \
-    echo "$VER" | grep -Eq '^[2-9]\.' || \
-    fail "expected version >= 1.7.0, got $VER"
-  ok "version is >= 1.7.0"
+  # >= 2.0.0
+  echo "$VER" | grep -Eq '^[2-9]\.' || \
+    fail "expected version >= 2.0.0, got $VER"
+  ok "version is >= 2.0.0"
 else
   fail "Missing version in frontmatter"
 fi
@@ -105,11 +104,12 @@ for concept in \
   "Implementation bridge" \
   "Knowledge dashboard" \
   "Skill hardening" \
-  "1.7.0"
+  "v2.0" \
+  "2.0.0"
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (bridges, dashboard, hardening, 1.7.0)"
+ok "core concepts present (bridges, dashboard, hardening, 2.0.0)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \

@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v1.7.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · Intent · Audit · Plan · Dashboard · Hardening
+  <strong>v2.0.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · 10× · ArkGate · Autopilot · Dashboard
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-1.7.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.0.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -192,7 +192,16 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 
 ---
 
-## New in 1.7 — Skill hardening
+## New in 2.0 — 10× release package
+
+| | |
+|--|--|
+| **Version** | **2.0.0** — Fase 1 roadmap complete |
+| **Adoption matrix** | [docs/adoption-matrix.md](./docs/adoption-matrix.md) — honest install + ArkGate pairing tracker |
+| **Changelog** | [CHANGELOG.md](./CHANGELOG.md) |
+| **Rolled up** | ArkGate bridge · autopilot v2 · dashboard · hardening · discovery |
+
+### Also in 1.7 — Skill hardening
 
 | | |
 |--|--|
@@ -268,9 +277,9 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 - **Sandbox from-zero** — full KB in a safe folder when you need a clean slate  
 - **Integrate-first maturity** — respect the docs that already own a topic  
 
-Installer and validator target **≥ 1.7.0** (hardening + dashboard + autopilot v2 + ArkGate bridge).
+Installer and validator target **≥ 2.0.0** (10× package: bridge + autopilot v2 + dashboard + hardening + adoption matrix).
 
-**Upgrade:** re-run `./install.sh` or `npx skills add pedroknigge/documentation-manager -y` (idempotent). See [skill-discovery.md](./skills/documentation-manager/references/skill-discovery.md).
+**Upgrade:** re-run `./install.sh` or `npx skills add pedroknigge/documentation-manager -y` (idempotent). See [skill-discovery.md](./skills/documentation-manager/references/skill-discovery.md) · [adoption-matrix.md](./docs/adoption-matrix.md).
 
 ---
 

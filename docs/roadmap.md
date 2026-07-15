@@ -2,7 +2,7 @@
 
 > Hub: [AGENTS.md](../AGENTS.md) · Planes: [docs/plans/](./plans/)  
 > **Producto:** Agent Skill (knowledge base viva, agent-first). No es una app de producto genérica.  
-> **Última actualización:** 2026-07-15 · **Versión actual:** 1.7.0
+> **Última actualización:** 2026-07-15 · **Versión actual:** 2.0.0
 
 ## Principios (axiomas)
 
@@ -27,13 +27,14 @@
 
 | Área | Estado | Notas |
 |------|--------|-------|
-| Skill core (`SKILL.md` + modes) | **Shipped** (v1.7.0) | + hardening + discovery |
+| Skill core (`SKILL.md` + modes) | **Shipped** (**v2.0.0**) | 10× package complete |
 | Feature autopilot + plan mode | **Shipped** (v1.3 → **v2 / 1.5**) | Kind + Implementation bridge opt-in |
 | Templates + quality bar | **Shipped** | + skill-discovery |
 | Install (`npx skills` / `install.sh`) | **Shipped** | Idempotente; dashboard script shipped |
 | Validación | **Shipped** (hardening) | fixtures + golden + version sync |
 | Bridge ArkGate | **Shipped** (v1.4) | [feature pack](./features/arkgate-bridge/README.md) |
 | Dashboard HTML | **Shipped** (v1.6) | [feature](./features/knowledge-dashboard/README.md) |
+| Adoption matrix | **Shipped** (v2.0) | [adoption-matrix.md](./adoption-matrix.md) |
 | Polyglot / multi-repo / SaaS | **Planned** (horizonte 100×) | Ver [knowledge-os](./plans/knowledge-os/README.md) |
 
 ## Fases
@@ -46,12 +47,13 @@
 - [x] Intents integrate / audit / from-zero
 - [x] Templates y quality checklist
 - [x] Meta-docs de este paquete (este roadmap + planes)
-- [ ] Dogfood: audit del skill tree vs README/PUBLISH
-- [ ] Matriz de adopción (repos públicos + pareja ArkGate)
+- [x] Dogfood: validate + hardening + install-smoke gates
+- [x] Matriz de adopción ([adoption-matrix.md](./adoption-matrix.md))
 
-### Fase 1 — 10× / v2.0 (≈ 1–2 meses)
+### Fase 1 — 10× / v2.0 — **COMPLETE**
 
-**Meta:** de “herramienta útil al pedirla” a “siempre presente y proactiva”.
+**Meta:** de “herramienta útil al pedirla” a “siempre presente y proactiva”.  
+**Shipped as skill v2.0.0** (2026-07-15). Pack: [features/tenx-v2-release](./features/tenx-v2-release/README.md).
 
 | # | Epic / plan | Prioridad | Semanas (orientativo) | Estado |
 |---|-------------|-----------|------------------------|--------|
@@ -59,16 +61,16 @@
 | 2 | [Feature autopilot 2.0](./plans/feature-autopilot-v2/README.md) → [feature](./features/feature-autopilot-v2/README.md) | P0 | 3–4 | **Shipped** (v1.5.0) |
 | 3 | [Knowledge dashboard (HTML)](./plans/knowledge-dashboard/README.md) → [feature](./features/knowledge-dashboard/README.md) | P1 | 3–4 | **Shipped** (v1.6.0) |
 | 4 | [Skill hardening](./plans/skill-hardening/README.md) → [feature](./features/skill-hardening/README.md) | P1 | 5–6 | **Shipped** (v1.7.0) |
-| 5 | Publicar **v2.0** + adoption matrix | P0 | fin fase | Planned · **next** |
+| 5 | Publicar **v2.0** + adoption matrix | P0 | fin fase | **Shipped** (v2.0.0) |
 
-**Métricas de éxito 10×:**
+**Métricas de éxito 10× (packaging vs claim):**
 
-| Métrica | Baseline (v1.3) | Objetivo v2 |
-|---------|-----------------|-------------|
-| Fricción “instalar + pedir” | Manual | Auto-trigger / discovery |
-| Precisión de claims post-cambio | Manual audit | Audit/sync tras gate o PR |
-| Adopción (repos / installs) | Baja, early | ×10 vía ArkGate + docs |
-| Suite de tests de skill | Smoke estructural | Fixtures + regresión de modes |
+| Métrica | Baseline (v1.3) | v2.0 delivered | Note |
+|---------|-----------------|----------------|------|
+| Fricción “instalar + pedir” | Manual | Discovery + install docs + matrix | Runtime ×10 still adoption work |
+| Precisión de claims post-cambio | Manual audit only | Audit + ArkGate bridge procedure | Exercise on consumer repos |
+| Adopción (repos / installs) | Baja, early | Matrix + channels listed | Update rows when verified |
+| Suite de tests de skill | Smoke estructural | Fixtures + golden + smoke | `validate-skill.sh` |
 
 ### Fase 2 — Bridge (≈ 2–4 meses post-v2)
 
@@ -136,8 +138,7 @@ Impacto en “code wins + zero maintenance cost”
 | **1.5** | Autopilot 2.0 (Kind + Implementation bridge; stubs opt-in) | **Shipped** 2026-07-15 |
 | **1.6** | Knowledge dashboard HTML opcional | **Shipped** 2026-07-15 |
 | **1.7** | Skill hardening (fixtures, discovery) | **Shipped** 2026-07-15 |
-| **2.0** | Adoption matrix + release packaging | next |
-| **2.0** | Hardening + discovery + suite tests + adoption matrix | “10× checklist” completa |
+| **2.0** | 10× package: matrix + CHANGELOG + rollup of 1.4–1.7 | **Shipped** 2026-07-15 |
 
 ## Cómo usar este roadmap
 
