@@ -32,11 +32,11 @@ if echo "$FM" | grep -q 'version:'; then
   [[ -n "$VER" ]] || VER=$(echo "$FM" | awk -F"'" '/version:/{print $2; exit}')
   [[ -n "$VER" ]] || fail "version present but empty"
   ok "version: $VER"
-  # >= 1.3.0
-  echo "$VER" | grep -Eq '^1\.(3|[4-9]|[1-9][0-9])\.' || \
+  # >= 1.4.0
+  echo "$VER" | grep -Eq '^1\.(4|[5-9]|[1-9][0-9])\.' || \
     echo "$VER" | grep -Eq '^[2-9]\.' || \
-    fail "expected version >= 1.3.0, got $VER"
-  ok "version is >= 1.3.0"
+    fail "expected version >= 1.4.0, got $VER"
+  ok "version is >= 1.4.0"
 else
   fail "Missing version in frontmatter"
 fi
@@ -72,11 +72,12 @@ for ref in \
   quality-checklist.md \
   status-taxonomy.md \
   audit-template.md \
-  plan-template.md
+  plan-template.md \
+  arkgate-bridge.md
 do
   [[ -f "$SKILL_DIR/references/$ref" ]] || fail "Missing references/$ref"
 done
-ok "all references present (incl. plan-template, audit-template)"
+ok "all references present (incl. plan-template, audit-template, arkgate-bridge)"
 
 for concept in \
   "Step 0" \
@@ -97,11 +98,12 @@ for concept in \
   "Code wins" \
   "Feature autopilot" \
   "Plan mode" \
-  "1.3.0"
+  "ArkGate bridge" \
+  "1.4.0"
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (Intent, plan, feature autopilot, 1.3.0)"
+ok "core concepts present (Intent, plan, feature autopilot, ArkGate bridge, 1.4.0)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -122,11 +124,26 @@ for concept in \
   "Claims matrix" \
   "Contradicted" \
   "Code inventory" \
-  "Code wins"
+  "Code wins" \
+  "ArkGate bridge" \
+  "Post-gate"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md plan + feature autopilot procedures present"
+ok "modes.md plan + feature autopilot + ArkGate bridge procedures present"
+
+BRIDGE="$SKILL_DIR/references/arkgate-bridge.md"
+for concept in \
+  "Detection" \
+  "ark.config.json" \
+  "Post-gate" \
+  "code wins" \
+  "Contradicted" \
+  "no-op"
+do
+  grep -F -q -- "$concept" "$BRIDGE" || fail "arkgate-bridge.md missing: $concept"
+done
+ok "arkgate-bridge.md detection + post-gate present"
 
 QC="$SKILL_DIR/references/quality-checklist.md"
 grep -F -q "Coverage matrix" "$QC" || fail "quality-checklist missing Coverage matrix"
@@ -134,7 +151,8 @@ grep -F -q "Mature-repo" "$QC" || fail "quality-checklist missing Mature-repo se
 grep -F -q "Snapshots" "$QC" || fail "quality-checklist missing Snapshots section"
 grep -F -q "Feature autopilot / plan" "$QC" || fail "quality-checklist missing Feature autopilot section"
 grep -F -q "Intent / audit / from-zero" "$QC" || fail "quality-checklist missing Intent section"
-ok "quality-checklist Intent + plan + mature present"
+grep -F -q "ArkGate bridge" "$QC" || fail "quality-checklist missing ArkGate bridge section"
+ok "quality-checklist Intent + plan + mature + ArkGate bridge present"
 
 ST="$SKILL_DIR/references/status-taxonomy.md"
 for label in Real Dual Local Demo Partial Planned Unknown Index; do

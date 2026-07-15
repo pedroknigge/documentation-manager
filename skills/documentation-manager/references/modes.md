@@ -388,15 +388,48 @@ Do **not** auto-start from-zero after audit without user Intent.
 
 ---
 
+## 9. ArkGate bridge (v1.4)
+
+**When:** ArkGate signals present **or** user just ran a gate / ark skill and wants docs to follow. Full procedure: [arkgate-bridge.md](arkgate-bridge.md).
+
+### 9.1 Detect (opt-in)
+
+| Signal | Example |
+|--------|---------|
+| Config | `ark.config.json` |
+| Tooling | `ark-check` in package scripts / lockfile |
+| Artifacts | `.ark/reports/`, `ark-report.html` |
+| Skills | host `ark-*` / `/ark-check` / `/ark-loop` / `/ark-adopt` |
+| Session | “gate passed”, “ark-check”, residual violations |
+
+No signal → **no-op** (do not require Ark).
+
+### 9.2 Post-gate sync / audit
+
+1. Read gate outcome + optional `.ark/reports/latest.json` (sensor only).  
+2. **Pass** + docs → scoped **sync** (blast radius = changed surfaces ∩ layers).  
+3. **Residual violations** → claims matrix **Contradicted/Partial**; do **not** rewrite narrative to excuse broken architecture — code/contract first via Ark.  
+4. Announce before write; default non-writes include app source and `ark.config.json`.  
+5. Map violations / new surfaces → coverage gaps or claim rows (no invented endpoints).
+
+### 9.3 Inventory enrich
+
+When Ark detected during adopt/audit, extend code inventory with layer names/globs and intent prefixes from config — **do not** hardcode violation counts into permanent docs (anti-snapshot).
+
+Announce: `ArkGate: detected | bridge: post-gate-sync | audit-enrich` when active.
+
+---
+
 ## Completion template (all modes)
 
 ```
 Scope: …
 Mode: …
 Intent: integrate | audit | from-zero | n/a
-Variant: …              # adopt only
+Variant: …              # adopt only; arkgate-bridge when bridge sub-flow
 Maturity: …
 Out: root | sandbox:path
+ArkGate: none | detected (<signals>)
 Code inventory: yes/no
 Claims matrix: path or n/a | OK/Partial/Missing/Contradicted counts
 Created: …

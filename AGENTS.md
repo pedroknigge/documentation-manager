@@ -1,6 +1,6 @@
 # AGENTS.md — documentation-manager (skill package)
 
-**Status:** skill development repo · last updated 2026-07-12 · skill version **1.3.0**
+**Status:** skill development repo · last updated 2026-07-15 · skill version **1.4.0**
 
 ## What this folder is
 
@@ -22,6 +22,9 @@ documentation-manager/          ← this git root (skill development)
 ├── README.md                   ← human-facing install & overview
 ├── PUBLISH.md                  ← how to publish the package
 ├── install.sh                  ← classic installer
+├── docs/                       ← meta knowledge (roadmap + plans for the skill itself)
+│   ├── roadmap.md
+│   └── plans/<slug>/
 ├── scripts/                    ← validate / smoke
 └── skills/documentation-manager/
     ├── SKILL.md                ← skill entry (source of truth for behavior)
@@ -39,14 +42,34 @@ documentation-manager/          ← this git root (skill development)
 5. Do **not** auto-commit or auto-push.
 6. Write skill body / ecosystem-facing docs in **English** (ecosystem compatibility). User-facing generated content from the skill follows the **user’s language** when the skill runs on a target project.
 7. If asked to “document this project” **inside this repo**, clarify first: document the **skill package** (meta), or only change skill templates — do not invent a fake product vision for an app that does not exist.
+8. Strategic direction for *this* package lives in [docs/roadmap.md](docs/roadmap.md) and [docs/plans/](docs/plans/). Do not invent a fake product roadmap for a consumer app.
 
 ## Navigation
 
 - Skill behavior: [skills/documentation-manager/SKILL.md](skills/documentation-manager/SKILL.md)
 - Modes detail: [skills/documentation-manager/references/modes.md](skills/documentation-manager/references/modes.md)
 - Quality bar: [skills/documentation-manager/references/quality-checklist.md](skills/documentation-manager/references/quality-checklist.md)
+- **Roadmap (meta):** [docs/roadmap.md](docs/roadmap.md)
 - Install for users: [README.md](README.md)
 - Publish: [PUBLISH.md](PUBLISH.md)
+
+## Features (shipped skill behavior)
+
+| Feature | Path | Status |
+|---------|------|--------|
+| ArkGate bridge | [docs/features/arkgate-bridge/README.md](docs/features/arkgate-bridge/README.md) | Shipped (v1.4.0) |
+
+## Plans (skill evolution)
+
+| Plan | Path | Status | Horizon |
+|------|------|--------|---------|
+| ArkGate bridge | [docs/plans/arkgate-bridge/README.md](docs/plans/arkgate-bridge/README.md) | Shipped → feature pack | 10× / v2 |
+| Feature autopilot 2.0 | [docs/plans/feature-autopilot-v2/README.md](docs/plans/feature-autopilot-v2/README.md) | Planned · **next** | 10× / v2 |
+| Knowledge dashboard | [docs/plans/knowledge-dashboard/README.md](docs/plans/knowledge-dashboard/README.md) | Planned | 10× / v2 |
+| Skill hardening | [docs/plans/skill-hardening/README.md](docs/plans/skill-hardening/README.md) | Planned | 10× / v2 |
+| Knowledge OS | [docs/plans/knowledge-os/README.md](docs/plans/knowledge-os/README.md) | Planned | Bridge + 100× |
+
+*(Pre-code epics under `docs/plans/`. Promote to `docs/features/<slug>/` when behavior lands in the skill tree.)*
 
 ## Scope reminder
 

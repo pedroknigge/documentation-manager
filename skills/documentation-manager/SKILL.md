@@ -6,13 +6,15 @@ description: >
   roadmap, docs/features/<slug>/, docs/plans/<slug>/. Triggers: "document this project",
   "bootstrap docs", "sync docs", "audit docs", "docs vs code", "generate docs in test/",
   "from zero", "write ADRs", "document module", "new feature", "nueva feature",
-  "plan feature", "promové el plan", /documentation-manager. Intents: integrate, audit,
-  from-zero. Feature autopilot: plain "new feature X" → plan or pack without expert
-  prompts. On conflict code wins. Mature repos default integrate after optional audit.
+  "plan feature", "promové el plan", "after ark-check", "post-gate docs", "arkgate bridge",
+  /documentation-manager. Intents: integrate, audit, from-zero. Feature autopilot: plain
+  "new feature X" → plan or pack without expert prompts. ArkGate bridge: detect ark.config
+  / ark-check and post-gate audit or sync. On conflict code wins. Mature repos default
+  integrate after optional audit.
 license: MIT
 metadata:
   author: pedroknigge
-  version: "1.3.0"
+  version: "1.4.0"
 ---
 
 # Documentation Manager
@@ -38,6 +40,7 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 14. **Sandbox opt-in / first-class from-zero.** `Out: sandbox:path` when user asks (`test/`, etc.). Sandbox hubs banner non-SSOT + **promotion plan**.
 15. **Feature autopilot (v1.3).** Plain “new feature X” / “documentá X” → skill chooses **plan** vs **feature pack**, applies default **non-writes**, writes files. User need not know layout or what not to touch. See [modes.md §3](references/modes.md#3-feature-autopilot--plan-v13).
 16. **Plan mode (v1.3).** Greenfield feature ideas land in **`docs/plans/<slug>/`**, not a fake implementation pack and not a full project bootstrap. Promote to `docs/features/<slug>/` when code is real.
+17. **ArkGate bridge (v1.4).** If ArkGate is detected (`ark.config.json`, `ark-check`, `.ark/`, ark skills) or the user just finished a gate, run the **bridge** sub-flow: enrich inventory from the contract; after gate pass → scoped **sync** / **audit**; residual violations → mark claims Contradicted/Partial — never rewrite docs to excuse broken architecture. No Ark → no-op. See [arkgate-bridge.md](references/arkgate-bridge.md) and [modes.md §9](references/modes.md#9-arkgate-bridge-v14).
 
 ## Step 0 — Detect scope, mode, and Intent
 
@@ -59,7 +62,7 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 | **audit** | “audit docs”, “docs vs code”, drift, validate claims |
 | **plan** | “new feature”, “plan”, “epic”, “vamos a construir X” without code |
 | **feature** | Document one feature/module that has (or is) code |
-| **sync** | Diff / PR / update docs for a change |
+| **sync** | Diff / PR / update docs for a change; **post-gate** when Ark just passed |
 | **roadmap** | Plan release / epic list refresh |
 
 **Intent** (required for **project-level** work only):
@@ -78,6 +81,7 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 - “auditar docs” / “código vs docs” → **Intent: audit**
 - Ambiguous **project** work with existing `docs/` → **ask once**: integrate | audit | from-zero
 - Named single surface → **never** require the user to list non-writes or choose folders
+- “after ark-check” / “post-gate docs” / gate just ran + docs intent → **sync** or **audit** with **ArkGate bridge**
 
 **Maturity** (when relevant): thin | mixed | mature — see [modes.md](references/modes.md#2-adopt-project).
 
@@ -86,10 +90,10 @@ If scope/mode still ambiguous after inference, ask once. Load procedures from [r
 **Announce before writing:**
 
 ```text
-Scope: <x> | Mode: <y> | Intent: <integrate|audit|from-zero|n/a> | Variant: <full|integrate|n/a> | Maturity: <…|n/a> | Out: <root|sandbox:path> | Slug: <slug|n/a>
+Scope: <x> | Mode: <y> | Intent: <integrate|audit|from-zero|n/a> | Variant: <full|integrate|arkgate-bridge|n/a> | Maturity: <…|n/a> | Out: <root|sandbox:path> | ArkGate: <none|detected> | Slug: <slug|n/a>
 ```
 
-When **integrate**, list **non-writes**. When **audit**, list matrix path and top contradictions. When **from-zero** + sandbox, include **promotion plan**. When **plan** or **feature**, list path + **default non-writes**.
+When **integrate**, list **non-writes**. When **audit**, list matrix path and top contradictions. When **from-zero** + sandbox, include **promotion plan**. When **plan** or **feature**, list path + **default non-writes**. When **ArkGate bridge**, list signals and post-gate sync vs audit-enrich.
 
 ## Recommended layout
 
@@ -125,12 +129,12 @@ Supporting docs only when justified (except **from-zero**, which may create a fu
 
 ## Workflow (all modes)
 
-1. **Step 0** — scope, mode, **Intent** (if project), maturity/variant, Out, slug.
-2. **Discover code first** — tree, manifests, entry points, ModuleIds/routes/packages, sample tests. Then docs (if any). For named features, search that surface first.
-3. If **audit** or docs exist and Intent is integrate/from-zero with suspected drift: run **reconciliation** ([modes.md § Audit](references/modes.md#6-audit-project), [audit-template.md](references/audit-template.md)).
+1. **Step 0** — scope, mode, **Intent** (if project), maturity/variant, Out, slug; detect **ArkGate** signals when relevant.
+2. **Discover code first** — tree, manifests, entry points, ModuleIds/routes/packages, sample tests. Then docs (if any). For named features, search that surface first. If Ark detected, enrich inventory per [arkgate-bridge.md](references/arkgate-bridge.md).
+3. If **audit** or docs exist and Intent is integrate/from-zero with suspected drift: run **reconciliation** ([modes.md § Audit](references/modes.md#6-audit-project), [audit-template.md](references/audit-template.md)). Post-gate → bridge handoff ([modes.md §9](references/modes.md#9-arkgate-bridge-v14)).
 4. **Plan files** — creates/updates **and** non-writes (defaults for feature/plan).
 5. **Load templates** → write/edit → hub pass.
-6. **Summary** — Intent/mode, files, non-writes, matrix stats, promotion notes. **No auto-commit.**
+6. **Summary** — Intent/mode, files, non-writes, matrix stats, ArkGate note, promotion notes. **No auto-commit.**
 
 ### Bootstrap / from-zero
 Greenfield interview **or** code archaeology for brownfield from-zero. Full core set + hub. Sandbox if Out says so. See [modes.md](references/modes.md#1-bootstrap-project) and [§ from-zero](references/modes.md#7-from-zero).
@@ -146,6 +150,9 @@ Named surface → **plan** (`docs/plans/<slug>/`) if no code / planning language
 
 ### Sync / Roadmap
 Blast-radius sync; roadmap links plans for net-new work. See modes §4–5.
+
+### ArkGate bridge (v1.4)
+Detect Ark → post-gate **sync**/**audit** or inventory enrich; residual violations become claim debt, not narrative rewrites. See [arkgate-bridge.md](references/arkgate-bridge.md) and modes §9.
 
 ## Hub requirements
 
@@ -175,6 +182,7 @@ Follow [quality-checklist.md](references/quality-checklist.md).
 | [references/status-taxonomy.md](references/status-taxonomy.md) | Status tokens |
 | [references/audit-template.md](references/audit-template.md) | Claims matrix + verdicts |
 | [references/modes.md](references/modes.md) | Full procedures |
+| [references/arkgate-bridge.md](references/arkgate-bridge.md) | **ArkGate bridge** (detect, post-gate, violation→claim) |
 | [references/quality-checklist.md](references/quality-checklist.md) | Done criteria |
 
 ## When NOT to use / defaults
@@ -188,6 +196,6 @@ Follow [quality-checklist.md](references/quality-checklist.md).
 
 ## Activation
 
-Standalone or with coding skills. Suggest doc updates after significant architecture/product changes; ask before large narrative rewrites unless Intent is from-zero or audit-driven patch.
+Standalone or with coding skills (including **ArkGate** / `ark-*` when present). Suggest doc updates after significant architecture/product changes; after a gate pass, offer bridge sync/audit once. Ask before large narrative rewrites unless Intent is from-zero or audit-driven patch.
 
 After shipping a coded feature that only had a plan, suggest **promote plan → feature pack**.

@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v1.3.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · Intent · Audit · Plan · From-zero
+  <strong>v1.4.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · Intent · Audit · Plan · ArkGate bridge
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-1.3.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-1.4.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -142,6 +142,23 @@ Or just talk — no expert prompt required:
 | *“Audit docs vs code — do we still tell the truth?”* | audit + claims matrix |
 | *“Full knowledge base under `test/`, don’t touch prod docs.”* | from-zero · sandbox |
 | *“Improve and index what we already have.”* | integrate (mature default) |
+| *“Gate passed — sync the docs.”* / *“after ark-check”* | **ArkGate bridge** → scoped audit/sync |
+
+---
+
+## Pair with ArkGate
+
+**ArkGate** keeps **code** inside the architecture contract. **Documentation Manager** keeps the **narrative** honest against that code.
+
+| | ArkGate | Documentation Manager |
+|--|---------|------------------------|
+| Owns | layers, gates, violations | hub, plans, features, claims matrix |
+| Truth | contract + source | code wins on doc claims |
+| After a change | `ark-check` / `/ark-loop` | bridge: post-gate **sync** or **audit** |
+
+When the skill sees `ark.config.json`, `ark-check`, `.ark/`, or ark host skills, it **enriches** inventory and, after a gate, offers a scoped docs pass. **No Ark → no-op** (never required). Residual violations become claim debt — docs are not rewritten to excuse broken architecture.
+
+Procedure: [skills/documentation-manager/references/arkgate-bridge.md](./skills/documentation-manager/references/arkgate-bridge.md)
 
 ---
 
@@ -172,7 +189,16 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 
 ---
 
-## New in 1.3 — feature autopilot + plans
+## New in 1.4 — ArkGate bridge
+
+| | |
+|--|--|
+| **Detect** | `ark.config.json`, `ark-check`, `.ark/`, ark skills — opt-in only |
+| **Post-gate** | Pass → scoped **sync**/**audit**; residual violations → Contradicted/Partial claims |
+| **Sensor, not fusion** | Reads Ark artifacts; never rewrites `ark.config.json` or app source |
+| **Pairing** | code change → Ark gate → Documentation Manager bridge → you commit |
+
+### Also in 1.3 — feature autopilot + plans
 
 | | |
 |--|--|
@@ -200,7 +226,7 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 - **Sandbox from-zero** — full KB in a safe folder when you need a clean slate  
 - **Integrate-first maturity** — respect the docs that already own a topic  
 
-Installer and validator target **≥ 1.3.0**.
+Installer and validator target **≥ 1.4.0** (ArkGate bridge + 1.3 plan/autopilot).
 
 ---
 

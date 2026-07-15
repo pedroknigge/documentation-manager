@@ -44,6 +44,16 @@ Run before reporting done.
 - [ ] from-zero: full KB only with that Intent; sandbox when path requested; old docs treated as hypothesis
 - [ ] from-zero does not silently overwrite mature productive SSOT without confirm
 
+## ArkGate bridge (v1.4)
+
+- [ ] Detection ran when adopt/audit/sync or user mentioned Ark/gate (signals documented in arkgate-bridge.md)
+- [ ] No Ark signals → bridge no-op (not required)
+- [ ] Post-gate **pass** → scoped sync/audit offered or run with announce-before-write
+- [ ] Residual violations → Contradicted/Partial claims; docs not rewritten to excuse architecture debt
+- [ ] Did not edit `ark.config.json` or app source as part of this skill
+- [ ] No hardcoded gate/violation **counts** in permanent narrative docs (anti-snapshot)
+- [ ] Non-writes listed when bridge writes
+
 ## Mature-repo / adopt
 
 - [ ] Maturity classified (`thin` | `mixed` | `mature`); variant announced (`full` | `integrate`)
