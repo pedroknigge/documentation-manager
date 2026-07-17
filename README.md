@@ -146,6 +146,9 @@ Or just talk — no expert prompt required:
 | *“Implementá team invitations”* / *“generá stubs”* | plan/pack + **Implementation bridge** (stubs opt-in) |
 | *“Spike: rate-limit exploration”* | plan **Kind: spike** (thin + open questions) |
 | *“Generate the knowledge dashboard”* | static HTML view of docs (markdown SSOT) |
+| *“This is a pnpm monorepo — index packages.”* | **Monorepo hubs** → root map + package index |
+| *“Python / Go stack — don’t assume Node.”* | **Polyglot** stack detection + layout tables |
+| *“Add docs/team owners for this module.”* | **Team governance** (optional OWNERS + notes) |
 
 ---
 
@@ -178,8 +181,11 @@ project-root/
     ├── audit/
     │   └── claims-matrix.md  ← when you ask for truth
     ├── plans/
-    │   └── team-invitations/ ← new work before code (v1.3)
+    │   └── team-invitations/ ← new work before code
     │       └── README.md
+    ├── team/                 ← optional (v2.3): OWNERS + approval notes
+    │   ├── OWNERS.md
+    │   └── approval-notes.md
     ├── decisions/
     │   └── ADR-001-….md
     └── features/
@@ -188,6 +194,7 @@ project-root/
             └── design.md
 ```
 
+Monorepos (v2.2): root hub stays a **map + package index**; optional hub/docs per package.  
 Sandbox runs can mirror the same shape under a path like `test/` — marked **non-SSOT**, with a plan to promote later.
 
 ---
@@ -313,9 +320,9 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 - **Sandbox from-zero** — full KB in a safe folder when you need a clean slate  
 - **Integrate-first maturity** — respect the docs that already own a topic  
 
-Installer and validator target **≥ 2.0.0** (10× package: bridge + autopilot v2 + dashboard + hardening + adoption matrix).
+**Current package: 2.4.0** (Fase 2 Bridge complete). Installer/validator baseline remains **≥ 2.0.0** (10×: ArkGate bridge · autopilot v2 · dashboard · hardening · adoption matrix), plus polyglot · monorepo · team · template telemetry on the 2.1–2.4 line.
 
-**Upgrade:** re-run `./install.sh` or `npx skills add pedroknigge/documentation-manager -y` (idempotent). See [skill-discovery.md](./skills/documentation-manager/references/skill-discovery.md) · [adoption-matrix.md](./docs/adoption-matrix.md).
+**Upgrade:** re-run `./install.sh` or `npx skills add pedroknigge/documentation-manager -y` (idempotent). See [skill-discovery.md](./skills/documentation-manager/references/skill-discovery.md) · [adoption-matrix.md](./docs/adoption-matrix.md) · [CHANGELOG.md](./CHANGELOG.md).
 
 ---
 
@@ -343,8 +350,13 @@ skills/documentation-manager/
   SKILL.md                 ← agents load this first
   references/              ← modes, templates, audit, quality bar
 install.sh
-scripts/validate-skill.sh
-scripts/install-smoke.sh
+scripts/
+  validate-skill.sh
+  install-smoke.sh
+  detect-stack.sh          ← polyglot (v2.1)
+  detect-packages.sh       ← monorepo (v2.2)
+  template-telemetry.sh    ← opt-in local ledger (v2.4)
+  generate-docs-dashboard.sh
 ```
 
 **Developers of the skill**
