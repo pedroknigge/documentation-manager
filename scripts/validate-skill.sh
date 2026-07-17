@@ -105,11 +105,13 @@ for concept in \
   "Knowledge dashboard" \
   "Skill hardening" \
   "v2.0" \
-  "2.0.0"
+  "2.0.0" \
+  "Polyglot stack detection" \
+  "2.1.0"
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (bridges, dashboard, hardening, 2.0.0)"
+ok "core concepts present (bridges, dashboard, hardening, 2.0.0, polyglot 2.1.0)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -135,11 +137,13 @@ for concept in \
   "Post-gate" \
   "Kind refinement" \
   "Implementation bridge" \
-  "Knowledge dashboard"
+  "Knowledge dashboard" \
+  "Polyglot stack detection" \
+  "Inventory by stack"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md plan + autopilot v2 + bridges + dashboard procedures present"
+ok "modes.md plan + autopilot v2 + bridges + dashboard + polyglot procedures present"
 
 [[ -x "$ROOT/scripts/generate-docs-dashboard.sh" ]] || [[ -f "$ROOT/scripts/generate-docs-dashboard.sh" ]] \
   || fail "Missing scripts/generate-docs-dashboard.sh"
@@ -186,7 +190,8 @@ grep -F -q "Implementation bridge" "$QC" || fail "quality-checklist missing Impl
 grep -F -q "Intent / audit / from-zero" "$QC" || fail "quality-checklist missing Intent section"
 grep -F -q "ArkGate bridge" "$QC" || fail "quality-checklist missing ArkGate bridge section"
 grep -F -q "Knowledge dashboard" "$QC" || fail "quality-checklist missing Knowledge dashboard section"
-ok "quality-checklist Intent + plan + mature + bridges + dashboard present"
+grep -F -q "Polyglot stack detection" "$QC" || fail "quality-checklist missing Polyglot stack detection section"
+ok "quality-checklist Intent + plan + mature + bridges + dashboard + polyglot present"
 
 PT="$SKILL_DIR/references/plan-template.md"
 grep -F -q "Implementation bridge" "$PT" || fail "plan-template missing Implementation bridge section"

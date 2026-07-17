@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v2.0.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · 10× · ArkGate · Autopilot · Dashboard
+  <strong>v2.1.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · 10× · Polyglot · ArkGate · Autopilot · Dashboard
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.0.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.1.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -192,13 +192,22 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 
 ---
 
-## New in 2.0 — 10× release package
+## New in 2.1 — Polyglot MVP
+
+| | |
+|--|--|
+| **Version** | **2.1.0** — Fase 2 Slice A (Python / Go / Node-TS stack detection) |
+| **Stack tables** | [skill-discovery.md](./skills/documentation-manager/references/skill-discovery.md) · Inventory + layout by stack |
+| **Detector** | `scripts/detect-stack.sh` |
+| **Feature pack** | [docs/features/polyglot-mvp/](./docs/features/polyglot-mvp/README.md) |
+| **Changelog** | [CHANGELOG.md](./CHANGELOG.md) |
+
+### Also in 2.0 — 10× release package
 
 | | |
 |--|--|
 | **Version** | **2.0.0** — Fase 1 roadmap complete |
 | **Adoption matrix** | [docs/adoption-matrix.md](./docs/adoption-matrix.md) — honest install + ArkGate pairing tracker |
-| **Changelog** | [CHANGELOG.md](./CHANGELOG.md) |
 | **Rolled up** | ArkGate bridge · autopilot v2 · dashboard · hardening · discovery |
 
 ### Also in 1.7 — Skill hardening

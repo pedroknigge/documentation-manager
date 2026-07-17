@@ -10,11 +10,12 @@ description: >
   integrate, audit, from-zero. Feature autopilot v2: plan vs pack; Kind
   spike/epic/redesign; Implementation bridge stubs opt-in. ArkGate bridge:
   post-gate audit/sync. Dashboard HTML (markdown SSOT). Hardening + discovery.
-  v2.0 10x package + adoption matrix. On conflict code wins.
+  v2.0 10x package + adoption matrix. Polyglot MVP (v2.1): Python/Go/Node-TS
+  stack detection + inventory/layout tables. On conflict code wins.
 license: MIT
 metadata:
   author: pedroknigge
-  version: "2.0.0"
+  version: "2.1.0"
 ---
 
 # Documentation Manager
@@ -43,7 +44,8 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 17. **ArkGate bridge (v1.4).** If ArkGate is detected (`ark.config.json`, `ark-check`, `.ark/`, ark skills) or the user just finished a gate, run the **bridge** sub-flow: enrich inventory from the contract; after gate pass → scoped **sync** / **audit**; residual violations → mark claims Contradicted/Partial — never rewrite docs to excuse broken architecture. No Ark → no-op. Placement hints in Implementation bridge reuse Ark layers when detected. See [arkgate-bridge.md](references/arkgate-bridge.md) and [modes.md §9](references/modes.md#9-arkgate-bridge-v14).
 18. **Knowledge dashboard (v1.6).** Optional static HTML view of plans/features/claims (`scripts/generate-docs-dashboard.sh` → `docs/audit/generated/dashboard.html`). Markdown is SSOT; HTML is gitignored view-only. Offer after audit once or on “dashboard” request. See [knowledge-dashboard.md](references/knowledge-dashboard.md) and [modes.md §10](references/modes.md#10-knowledge-dashboard-v16).
 19. **Skill hardening (v1.7).** Maintainers: run `validate-skill.sh` + `test-skill-hardening.sh` before release. Agents: detect install/version via [skill-discovery.md](references/skill-discovery.md); suggest reinstall when outdated (no silent auto-patch).
-20. **v2.0 package.** Completes the 10× line: capabilities 1.4–1.7 plus [docs/adoption-matrix.md](../../docs/adoption-matrix.md) tracking. Prefer advertising **2.0.0** as the install target.
+20. **v2.0 package.** Completes the 10× line: capabilities 1.4–1.7 plus [docs/adoption-matrix.md](../../docs/adoption-matrix.md) tracking. Baseline install floor remains **2.0.0**; current line is **2.1.0+**.
+21. **Polyglot stack detection (v2.1 Slice A).** On project discover (integrate / audit / from-zero / adopt), detect stack from filesystem (`package.json`, `pyproject.toml`, `go.mod`, …) via [skill-discovery.md](references/skill-discovery.md) **Polyglot stack detection** (or `scripts/detect-stack.sh`). Use **Inventory by stack** and **Docs layout guidance by stack** — do **not** assume Node/TS. Never invent ModuleIds/endpoints for frameworks without code evidence. See [modes.md §0.3](references/modes.md#03-stack-detection-polyglot-mvp--v21).
 
 ## Step 0 — Detect scope, mode, and Intent
 
@@ -95,10 +97,10 @@ If scope/mode still ambiguous after inference, ask once. Load procedures from [r
 **Announce before writing:**
 
 ```text
-Scope: <x> | Mode: <y> | Intent: <integrate|audit|from-zero|n/a> | Variant: <full|integrate|arkgate-bridge|n/a> | Maturity: <…|n/a> | Out: <root|sandbox:path> | ArkGate: <none|detected> | Slug: <slug|n/a>
+Scope: <x> | Mode: <y> | Intent: <integrate|audit|from-zero|n/a> | Variant: <full|integrate|arkgate-bridge|n/a> | Maturity: <…|n/a> | Out: <root|sandbox:path> | Stack: <node-ts|python|go|mixed|unknown|n/a> | ArkGate: <none|detected> | Slug: <slug|n/a>
 ```
 
-When **integrate**, list **non-writes**. When **audit**, list matrix path and top contradictions. When **from-zero** + sandbox, include **promotion plan**. When **plan** or **feature**, list path + **default non-writes**. When **ArkGate bridge**, list signals and post-gate sync vs audit-enrich.
+When **integrate**, list **non-writes**. When **audit**, list matrix path and top contradictions. When **from-zero** + sandbox, include **promotion plan**. When **plan** or **feature**, list path + **default non-writes**. When **ArkGate bridge**, list signals and post-gate sync vs audit-enrich. When project-level, include **Stack** from polyglot detection.
 
 ## Recommended layout
 
@@ -134,8 +136,8 @@ Supporting docs only when justified (except **from-zero**, which may create a fu
 
 ## Workflow (all modes)
 
-1. **Step 0** — scope, mode, **Intent** (if project), maturity/variant, Out, slug; detect **ArkGate** signals when relevant.
-2. **Discover code first** — tree, manifests, entry points, ModuleIds/routes/packages, sample tests. Then docs (if any). For named features, search that surface first. If Ark detected, enrich inventory per [arkgate-bridge.md](references/arkgate-bridge.md).
+1. **Step 0** — scope, mode, **Intent** (if project), maturity/variant, Out, slug; detect **ArkGate** signals when relevant; detect **Stack** for project work ([skill-discovery.md](references/skill-discovery.md) Polyglot stack detection).
+2. **Discover code first** — stack-aware inventory (node-ts / python / go tables), tree, manifests, entry points, packages/modules, sample tests. Then docs (if any). For named features, search that surface first. If Ark detected, enrich inventory per [arkgate-bridge.md](references/arkgate-bridge.md).
 3. If **audit** or docs exist and Intent is integrate/from-zero with suspected drift: run **reconciliation** ([modes.md § Audit](references/modes.md#6-audit-project), [audit-template.md](references/audit-template.md)). Post-gate → bridge handoff ([modes.md §9](references/modes.md#9-arkgate-bridge-v14)).
 4. **Plan files** — creates/updates **and** non-writes (defaults for feature/plan).
 5. **Load templates** → write/edit → hub pass.
@@ -193,7 +195,7 @@ Follow [quality-checklist.md](references/quality-checklist.md).
 | [references/modes.md](references/modes.md) | Full procedures |
 | [references/arkgate-bridge.md](references/arkgate-bridge.md) | **ArkGate bridge** (detect, post-gate, violation→claim) |
 | [references/knowledge-dashboard.md](references/knowledge-dashboard.md) | **Knowledge dashboard** (static HTML view) |
-| [references/skill-discovery.md](references/skill-discovery.md) | **Discovery / upgrade** + stack layout hints |
+| [references/skill-discovery.md](references/skill-discovery.md) | **Discovery / upgrade** + **Polyglot stack detection** (inventory + layout) |
 | [references/quality-checklist.md](references/quality-checklist.md) | Done criteria |
 
 ## When NOT to use / defaults

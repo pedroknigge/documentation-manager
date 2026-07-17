@@ -27,13 +27,25 @@ If docs exist and user intent is unclear → **ask once**: integrate | audit | f
 ### 0.2 Pipeline order
 
 ```text
-Discover CODE surfaces first
+Detect stack (Polyglot stack detection — skill-discovery.md)
+  → Discover CODE surfaces first (inventory table for that stack)
   → if Intent=audit OR (docs exist AND drift suspected AND Intent≠from-zero pure skip):
         Audit / reconciliation pass
   → execute Intent write policy
 ```
 
 **Code wins:** never invent endpoints/tables/modules to satisfy a doc claim.
+
+### 0.3 Stack detection (polyglot MVP · v2.1)
+
+Before inventory on **from-zero / integrate / audit** (and when exploring for adopt-full):
+
+1. Run **Polyglot stack detection** in [skill-discovery.md](skill-discovery.md) (signals: `package.json`, `pyproject.toml`, `go.mod`, …) or `./scripts/detect-stack.sh <root>` when available.  
+2. Record token(s): `node-ts` | `python` | `go` | `unknown`. If the detector prints **two or more** primaries (space-separated), announce **`Stack: mixed`** and inventory each.  
+3. Choose **Inventory by stack** and **Docs layout guidance by stack** from that same reference — **do not** default to Node/TS paths when another stack is primary.  
+4. Announce `Stack: …` with the project Step 0 line.
+
+Anti-hallucination: no ModuleIds/HTTP routes/framework claims without code evidence for that stack.
 
 ---
 
@@ -93,10 +105,11 @@ If Intent is **from-zero**, do **not** force adopt-integrate even when mature �
 
 ### 2.1 Explore
 
-1. Tree, README, manifests  
-2. **Code surfaces first** (ModuleIds, routes, packages, schemas)  
-3. Existing docs / authorities  
-4. Optional quick audit sample if claims look stale  
+1. **Stack detection** (§0.3 / [skill-discovery.md](skill-discovery.md) Polyglot stack detection)  
+2. Tree, README, manifests for the detected stack(s)  
+3. **Code surfaces first** using the **Inventory by stack** table (not Node-only assumptions)  
+4. Existing docs / authorities  
+5. Optional quick audit sample if claims look stale  
 
 ### 2.2 Adopt-full (thin)
 
@@ -332,19 +345,24 @@ If sync reveals many Contradicted claims → suggest full **audit**.
 
 ### 6.1 Code inventory (always first)
 
-Build a list from the repo (adapt to stack):
+1. **Detect stack** (§0.3) — tokens: `node-ts` | `python` | `go` | `mixed` | `unknown`.  
+2. Build inventory from the **Inventory by stack** table in [skill-discovery.md](skill-discovery.md) (Polyglot stack detection).  
+3. Summary of common kinds (always prefer stack-specific rows in skill-discovery):
 
-| Kind | How to discover (examples) |
-|------|----------------------------|
-| Packages / apps | manifests, workspaces |
-| ModuleIds / feature flags | permissions maps, enums, nav registries |
-| HTTP routes | `app/api/**`, routers, OpenAPI if generated |
-| UI surfaces | app router pages, major nav |
+| Kind | How to discover (examples; **stack-aware**) |
+|------|-----------------------------------------------|
+| Packages / apps | `package.json` workspaces · `pyproject.toml` · `go.mod` / `go.work` |
+| ModuleIds / feature flags | permissions maps, enums, nav registries **if present** (often node-ts) |
+| Entry / CLI | `src/index.ts` · `__main__.py` / console scripts · `cmd/*/main.go` |
+| Feature modules | `src/<area>` · `src/<pkg>` · `internal/<area>` |
+| HTTP routes | Only if code exists: `app/api/**`, FastAPI/Flask/Django routes, Go handlers |
+| UI surfaces | app router / templates **if present** |
 | Data layer | ORM schemas, migrations (names not counts) |
-| Kernels / jobs | `src/kernel`, workers, scripts |
-| Tests | test dirs touching domain |
+| Kernels / jobs | workers, scripts, `cmd/` workers |
+| Tests | `*.test.ts` · `test_*.py` · `*_test.go` |
 
-Do **not** hardcode giant endpoint tables into permanent docs; inventory is for the audit pass.
+Do **not** hardcode giant endpoint tables into permanent docs; inventory is for the audit pass.  
+Do **not** invent framework surfaces for a stack that is not evidenced.
 
 ### 6.2 Claim extraction (structural)
 
@@ -398,13 +416,14 @@ Do **not** auto-start from-zero after audit without user Intent.
 
 ### 7.1 Rules
 
-1. **Code inventory first** (same as audit §6.1).  
+1. **Stack detection first** (§0.3) — then **code inventory** (same as audit §6.1) using **Inventory by stack** / **Docs layout guidance by stack** in [skill-discovery.md](skill-discovery.md).  
 2. Existing productive docs are **hypothesis**, not authority — sample them for vocabulary only; verify every structural claim you reuse.  
-3. Produce full core set (hub + vision/requirements/architecture/roadmap/ADRs as needed) + coverage matrix + atomic features for major surfaces.  
+3. Produce full core set (hub + vision/requirements/architecture/roadmap/ADRs as needed) + coverage matrix + atomic features for major surfaces; **feature slug sources follow the stack table** (Python packages / Go `cmd`+`internal` / Node routes — not Node-only defaults on a Python/Go repo).  
 4. If user named a folder (`test/`, `docs-sandbox/`) → **Out: sandbox:path** with banners + promotion plan.  
 5. Do **not** silently overwrite productive `docs/` + `CLAUDE.md` SSOT; if they insist on root from-zero on a mature monorepo, confirm once that overwrite is intended.  
 6. Status tokens from taxonomy; process rules stay out of product-vision.  
 7. Optional: run audit matrix against *old* docs as appendix (“what the previous docs got wrong”).  
+8. Hub + `docs/` shape is **shared** across stacks; only inventory vocabulary and feature boundaries change.  
 
 ### 7.2 Difference from adopt-integrate
 

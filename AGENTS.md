@@ -1,6 +1,6 @@
 # AGENTS.md — documentation-manager (skill package)
 
-**Status:** skill development repo · last updated 2026-07-15 · skill version **2.0.0**
+**Status:** skill development repo · last updated 2026-07-17 · skill version **2.1.0**
 
 ## What this folder is
 
@@ -62,6 +62,7 @@ documentation-manager/          ← this git root (skill development)
 | Knowledge dashboard | [docs/features/knowledge-dashboard/README.md](docs/features/knowledge-dashboard/README.md) | Shipped (v1.6.0) |
 | Skill hardening | [docs/features/skill-hardening/README.md](docs/features/skill-hardening/README.md) | Shipped (v1.7.0) |
 | 10× v2.0 release | [docs/features/tenx-v2-release/README.md](docs/features/tenx-v2-release/README.md) | Shipped (v2.0.0) |
+| Polyglot MVP | [docs/features/polyglot-mvp/README.md](docs/features/polyglot-mvp/README.md) | Shipped (v2.1.0) |
 
 ## Navigation (meta)
 
@@ -77,7 +78,8 @@ documentation-manager/          ← this git root (skill development)
 | Feature autopilot 2.0 | [docs/plans/feature-autopilot-v2/README.md](docs/plans/feature-autopilot-v2/README.md) | Shipped → feature pack | 10× / v2 |
 | Knowledge dashboard | [docs/plans/knowledge-dashboard/README.md](docs/plans/knowledge-dashboard/README.md) | Shipped → feature pack | 10× / v2 |
 | Skill hardening | [docs/plans/skill-hardening/README.md](docs/plans/skill-hardening/README.md) | Shipped → feature pack | 10× / v2 |
-| Knowledge OS | [docs/plans/knowledge-os/README.md](docs/plans/knowledge-os/README.md) | Planned | Bridge + 100× |
+| **Phase 2 Bridge** | [docs/plans/phase-2-bridge/README.md](docs/plans/phase-2-bridge/README.md) | In progress (A shipped) | Bridge (post-v2) |
+| Knowledge OS | [docs/plans/knowledge-os/README.md](docs/plans/knowledge-os/README.md) | Planned | 100× (post-Bridge) |
 
 *(Pre-code epics under `docs/plans/`. Promote to `docs/features/<slug>/` when behavior lands in the skill tree.)*
 

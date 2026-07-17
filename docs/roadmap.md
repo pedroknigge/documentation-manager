@@ -2,7 +2,7 @@
 
 > Hub: [AGENTS.md](../AGENTS.md) · Planes: [docs/plans/](./plans/)  
 > **Producto:** Agent Skill (knowledge base viva, agent-first). No es una app de producto genérica.  
-> **Última actualización:** 2026-07-15 · **Versión actual:** 2.0.0
+> **Última actualización:** 2026-07-17 · **Versión actual:** 2.1.0
 
 ## Principios (axiomas)
 
@@ -27,7 +27,7 @@
 
 | Área | Estado | Notas |
 |------|--------|-------|
-| Skill core (`SKILL.md` + modes) | **Shipped** (**v2.0.0**) | 10× package complete |
+| Skill core (`SKILL.md` + modes) | **Shipped** (**v2.1.0**) | 10× + polyglot MVP |
 | Feature autopilot + plan mode | **Shipped** (v1.3 → **v2 / 1.5**) | Kind + Implementation bridge opt-in |
 | Templates + quality bar | **Shipped** | + skill-discovery |
 | Install (`npx skills` / `install.sh`) | **Shipped** | Idempotente; dashboard script shipped |
@@ -35,7 +35,8 @@
 | Bridge ArkGate | **Shipped** (v1.4) | [feature pack](./features/arkgate-bridge/README.md) |
 | Dashboard HTML | **Shipped** (v1.6) | [feature](./features/knowledge-dashboard/README.md) |
 | Adoption matrix | **Shipped** (v2.0) | [adoption-matrix.md](./adoption-matrix.md) |
-| Polyglot / multi-repo / SaaS | **Planned** (horizonte 100×) | Ver [knowledge-os](./plans/knowledge-os/README.md) |
+| Bridge (polyglot / monorepo / team / telemetry) | **In progress** (Fase 2) | [phase-2-bridge](./plans/phase-2-bridge/README.md) · A [polyglot-mvp](./features/polyglot-mvp/README.md) shipped |
+| Polyglot / multi-repo / SaaS (org + OS) | **Planned** (horizonte 100×) | [knowledge-os](./plans/knowledge-os/README.md) |
 
 ## Fases
 
@@ -72,15 +73,24 @@
 | Adopción (repos / installs) | Baja, early | Matrix + channels listed | Update rows when verified |
 | Suite de tests de skill | Smoke estructural | Fixtures + golden + smoke | `validate-skill.sh` |
 
-### Fase 2 — Bridge (≈ 2–4 meses post-v2)
+<a id="fase-2-bridge"></a>
 
-**Meta:** salir del nicho “un repo TS AI-first”.
+### Fase 2 — Bridge (≈ 2–4 meses post-v2) — **IN PROGRESS**
 
-- Polyglot MVP (Python, Go, …) — detección de stack + layouts por lenguaje
-- Monorepo: hubs por package + índice raíz
-- Governance / team mode (`docs/team/`, approvals ligeros)
-- Self-improving básico: telemetría **opt-in** anónima de gaps de templates
-- Detalle en [knowledge-os](./plans/knowledge-os/README.md) (tramo bridge)
+**Meta:** salir del nicho “un repo TS AI-first”.  
+**Plan formal:** [docs/plans/phase-2-bridge/](./plans/phase-2-bridge/README.md) (umbrella).  
+**Parent next:** [knowledge-os](./plans/knowledge-os/README.md) (Fase 3; tramo Bridge delegado al plan de abajo).
+
+| # | Slice | Prioridad | Hyp. version | Estado |
+|---|-------|-----------|--------------|--------|
+| A | [Polyglot MVP](./plans/phase-2-bridge/README.md) → [feature](./features/polyglot-mvp/README.md) | P0 | 2.1.0 | **Shipped** (v2.1.0) |
+| B | Monorepo hubs (root map + package index) | P0 | 2.2.x | **Planned** |
+| C | Team governance (`docs/team/`, owners, approval notes) | P1 | 2.3.x | **Planned** |
+| D | Template telemetry (opt-in, anonymous gaps only) | P1 | 2.4.x | **Planned** |
+
+**Gate de salida Fase 2:** epic AC en el [plan phase-2-bridge](./plans/phase-2-bridge/README.md) (A–D shipped + validate verde + core local sin red).
+
+<a id="fase-3-knowledge-os"></a>
 
 ### Fase 3 — 100× Knowledge OS (≈ 4–12 meses)
 
@@ -139,6 +149,9 @@ Impacto en “code wins + zero maintenance cost”
 | **1.6** | Knowledge dashboard HTML opcional | **Shipped** 2026-07-15 |
 | **1.7** | Skill hardening (fixtures, discovery) | **Shipped** 2026-07-15 |
 | **2.0** | 10× package: matrix + CHANGELOG + rollup of 1.4–1.7 | **Shipped** 2026-07-15 |
+| **2.1** | Polyglot MVP (Slice A) | **Shipped** 2026-07-17 — [polyglot-mvp](./features/polyglot-mvp/README.md) |
+| **2.2–2.4** | Fase 2 Bridge slices B–D (monorepo → team → telemetry) | **Planned** — [phase-2-bridge](./plans/phase-2-bridge/README.md) |
+| **2.x Bridge rollup** | Cierre Fase 2 cuando epic AC pass | **Planned** |
 
 ## Cómo usar este roadmap
 

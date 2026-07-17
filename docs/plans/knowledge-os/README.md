@@ -8,8 +8,8 @@
 **Slug:** `knowledge-os`  
 **Kind:** epic  
 **Owners:** skill maintainers + partners de ecosistema (futuro)  
-**Last updated:** 2026-07-15  
-**Code path (if any):** *none yet* — depende de completar 10× ([roadmap Fase 1](../../roadmap.md))
+**Last updated:** 2026-07-17  
+**Code path (if any):** *none yet* — depende de cerrar [Fase 2 Bridge](../phase-2-bridge/README.md) antes del tramo 100× full
 
 ## Problem
 
@@ -43,12 +43,15 @@ Humanos y agentes consultan una **única narrativa verificable** del proyecto (y
 
 ### Tramo Bridge (post-v2, ≈ 2–4 meses)
 
-| In | Out (queda para 100× full) |
-|----|----------------------------|
-| Polyglot MVP (Python/Go detection + layouts) | Todos los lenguajes enterprise |
-| Monorepo: hub raíz + packages | Federated multi-org graph |
-| `docs/team/` governance ligera (owners, approval notes) | Workflow BPM completo |
-| Telemetría **opt-in** anónima de gaps de template | Perfilado de código de clientes |
+> **Plan de ejecución dedicado:** [phase-2-bridge](../phase-2-bridge/README.md) (slices A–D, acceptance, release train).  
+> Este epic solo resume el tramo; **no duplicar** el plan operativo aquí.
+
+| In | Out (queda para 100× full) | Slice |
+|----|----------------------------|-------|
+| Polyglot MVP (Python/Go detection + layouts) | Todos los lenguajes enterprise | A |
+| Monorepo: hub raíz + packages | Federated multi-org graph | B |
+| `docs/team/` governance ligera (owners, approval notes) | Workflow BPM completo | C |
+| Telemetría **opt-in** anónima de gaps de template | Perfilado de código de clientes | D |
 
 ### Tramo Knowledge OS (≈ 4–12 meses)
 
@@ -63,7 +66,7 @@ Humanos y agentes consultan una **única narrativa verificable** del proyecto (y
 
 ## Acceptance criteria (epic-level; slices tendrán los suyos)
 
-- [ ] **Fase Bridge** cerrada según checklist del [roadmap Fase 2](../../roadmap.md#fase-2--bridge--2-4-meses-post-v2).
+- [ ] **Fase Bridge** cerrada según epic AC del [plan phase-2-bridge](../phase-2-bridge/README.md) ([roadmap Fase 2](../../roadmap.md#fase-2-bridge)).
 - [ ] Al menos un pipeline CI de ejemplo (GitHub Actions) que corra audit estructural.
 - [ ] Spec de living claims (formato, veredictos, truth score) en ADR + template.
 - [ ] Política de privacidad: opt-in, anonymized, air-gapped path documentado.
@@ -108,8 +111,8 @@ flowchart TB
 
 ## Dependencies & risks
 
-- **Depends on:** v2.0 10× plans ([arkgate-bridge](../arkgate-bridge/README.md), [feature-autopilot-v2](../feature-autopilot-v2/README.md), [knowledge-dashboard](../knowledge-dashboard/README.md), [skill-hardening](../skill-hardening/README.md)).
-- **Blocked by:** adopción real post-v2; sin usuarios el OS es vaporware.
+- **Depends on:** v2.0 10× shipped; **Fase 2** via [phase-2-bridge](../phase-2-bridge/README.md) (polyglot, monorepo, team, telemetry).
+- **Blocked by:** Bridge incomplete for monorepo/org premises; adopción real post-v2; sin usuarios el OS es vaporware.
 - **Risks:** scope creep SaaS; privacidad; over-documentation; fragmentación polyglot a medias.
 - **Open decisions:** ¿monorepo de servicios separado del package skill? ¿marca “Documentation Manager” vs nombre OS?
 
@@ -138,5 +141,6 @@ Este epic **no se promueve de un golpe**. Cada slice:
 
 ## Related
 
-- Roadmap: [Fase 2](../../roadmap.md#fase-2--bridge--2-4-meses-post-v2) · [Fase 3](../../roadmap.md#fase-3--100-knowledge-os--4-12-meses)
+- Roadmap: [Fase 2](../../roadmap.md#fase-2-bridge) · [Fase 3](../../roadmap.md#fase-3-knowledge-os)
+- **Bridge execution plan:** [phase-2-bridge](../phase-2-bridge/README.md)
 - Prerrequisitos 10×: [arkgate-bridge](../arkgate-bridge/README.md), [feature-autopilot-v2](../feature-autopilot-v2/README.md), [knowledge-dashboard](../knowledge-dashboard/README.md), [skill-hardening](../skill-hardening/README.md)

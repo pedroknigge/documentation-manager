@@ -59,6 +59,14 @@ Run before reporting done.
 - [ ] No hardcoded gate/violation **counts** in permanent narrative docs (anti-snapshot)
 - [ ] Non-writes listed when bridge writes
 
+## Polyglot stack detection (v2.1)
+
+- [ ] Project-level work: **Stack** detected (`node-ts` | `python` | `go` | `mixed` | `unknown`) via [skill-discovery.md](skill-discovery.md) Polyglot stack detection (or `detect-stack.sh`)
+- [ ] Inventory used **Inventory by stack** rows — not Node/TS-only defaults on Python/Go repos
+- [ ] Feature/plan slug sources follow **Docs layout guidance by stack**
+- [ ] No invented ModuleIds/endpoints/framework surfaces without code evidence
+- [ ] Announce line includes `Stack: …` when Intent is integrate / audit / from-zero
+
 ## Knowledge dashboard (v1.6)
 
 - [ ] Generated only from existing docs (no invented features/claims for the UI)

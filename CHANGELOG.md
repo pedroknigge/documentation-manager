@@ -4,6 +4,22 @@ All notable changes to the **documentation-manager** skill package.
 
 Format: keep entries scannable. Versions follow semver for the skill package (`SKILL.md` metadata).
 
+## [2.1.0] — 2026-07-17
+
+### Added
+
+- **Polyglot MVP (Slice A / Fase 2 Bridge):** stack detection for **Python**, **Go**, and Node/TS baseline  
+- Tables: **Inventory by stack** + **Docs layout guidance by stack** in `references/skill-discovery.md`  
+- Modes wiring: §0.3 + adopt/audit/from-zero use stack tables (no Node-only default)  
+- `scripts/detect-stack.sh` — filesystem detector (`node-ts` / `python` / `go` / `unknown`)  
+- Fixtures: `python-thin-repo/`, `go-thin-repo/` + hardening asserts  
+- Feature pack: [docs/features/polyglot-mvp/](docs/features/polyglot-mvp/README.md)
+
+### Notes
+
+- Shared hub + `docs/` layout across stacks; monorepo multi-hub remains Slice B  
+- Anti-hallucination: no invented ModuleIds/endpoints without code evidence  
+
 ## [2.0.0] — 2026-07-15
 
 ### Added

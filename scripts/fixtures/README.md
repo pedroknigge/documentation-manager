@@ -4,9 +4,13 @@ Synthetic **project roots** and **golden tables** used by `scripts/validate-skil
 
 | Fixture | Intent | Shape |
 |---------|--------|--------|
-| `thin-repo/` | adopt-full / from-zero candidate | code + README, no `AGENTS.md` / `docs/` |
+| `thin-repo/` | adopt-full / from-zero candidate | Node/TS code + README, no `AGENTS.md` / `docs/` |
+| `python-thin-repo/` | polyglot MVP | `pyproject.toml` + `src/hello_app/`, no hub/docs |
+| `go-thin-repo/` | polyglot MVP | `go.mod` + `cmd/` + `internal/`, no hub/docs |
 | `mature-repo/` | integrate / plan-vs-feature | hub + roadmap + feature pack + plan + code |
 | `no-docs-repo/` | bootstrap | README only |
 | `golden/autopilot-cases.tsv` | mode regression | anchors must exist in SKILL/modes |
+
+Stack detection smoke: `scripts/detect-stack.sh scripts/fixtures/<fixture>`.
 
 These are **not** full agent e2e runs. They lock layout expectations and decision-table contracts so refactors fail fast.
