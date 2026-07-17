@@ -40,20 +40,36 @@
 
 *(Add a row for every feature pack under `docs/features/`. Status tokens from the skill's status taxonomy: Real, Dual, Local, Demo, Partial, Planned, In progress, Shipped, Deprecated, Unknown, Index.)*
 
+## Package index *(monorepo only)*
+
+> When **Monorepo hubs** apply (workspaces / `pnpm-workspace` / `go.work` / multi-package). Root hub is a **map**, not a dump of every package’s narrative.  
+> See skill [skill-discovery.md](skill-discovery.md) Monorepo hubs.
+
+| Package path | Role (short) | Hub / docs | Docs status |
+|--------------|--------------|------------|-------------|
+| `packages/example` | … | [packages/example/AGENTS.md](./packages/example/AGENTS.md) or — | documented / linked / **gap** |
+
+Rules:
+- Index only — do not paste full package product vision into the root hub.
+- Packages without docs → **gap** (do not invent product vision).
+- Default non-writes: root index must not rewrite mature package docs.
+
 ## Surface coverage
 
 > Required on **adopt** (full or integrate). Every product surface discovered in code should appear once.  
+> **Monorepo:** include a row per package (use package path as Surface when ModuleId unknown) — multi-package coverage.  
 > Status values: [status taxonomy](status-taxonomy.md) — `Real` | `Dual` | `Local` | `Demo` | `Partial` | `Planned` | `In progress` | `Shipped` | `Deprecated` | `Unknown` | `Index`.
 
 | Surface / ModuleId | Canonical doc | Feature pack | Status | Gap |
 |--------------------|---------------|--------------|--------|-----|
 | `example-module` | [docs/modules/example.md](./docs/modules/example.md) | [features/example](./docs/features/example/README.md) | Dual | residual legacy |
-| `undocumented-surface` | — | — | Unknown | needs feature pack or module doc |
+| `packages/undocumented` | — | — | Unknown | **gap** — needs package hub or feature pack |
 
 Rules:
 - Prefer linking an existing module/canonical doc over writing a new narrative.
-- Rows with empty Canonical doc **and** empty Feature pack = open documentation debt.
+- Rows with empty Canonical doc **and** empty Feature pack = open documentation debt (**gap**).
 - Do not omit surfaces just because you did not write a long feature README.
+- Monorepo: one authority per package topic; root links, does not duplicate SSOT.
 
 ## Instructions for AI Agents & Contributors
 

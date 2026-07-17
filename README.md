@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v2.1.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · 10× · Polyglot · ArkGate · Autopilot · Dashboard
+  <strong>v2.2.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · 10× · Polyglot · Monorepo · ArkGate · Autopilot · Dashboard
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.1.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.2.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -192,15 +192,24 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 
 ---
 
-## New in 2.1 — Polyglot MVP
+## New in 2.2 — Monorepo hubs
+
+| | |
+|--|--|
+| **Version** | **2.2.0** — Fase 2 Slice B (package index + root hub map) |
+| **Procedure** | [skill-discovery.md](./skills/documentation-manager/references/skill-discovery.md) Monorepo hubs |
+| **Detector** | `scripts/detect-packages.sh` |
+| **Feature pack** | [docs/features/monorepo-hubs/](./docs/features/monorepo-hubs/README.md) |
+| **Changelog** | [CHANGELOG.md](./CHANGELOG.md) |
+
+### Also in 2.1 — Polyglot MVP
 
 | | |
 |--|--|
 | **Version** | **2.1.0** — Fase 2 Slice A (Python / Go / Node-TS stack detection) |
-| **Stack tables** | [skill-discovery.md](./skills/documentation-manager/references/skill-discovery.md) · Inventory + layout by stack |
+| **Stack tables** | Inventory + layout by stack |
 | **Detector** | `scripts/detect-stack.sh` |
 | **Feature pack** | [docs/features/polyglot-mvp/](./docs/features/polyglot-mvp/README.md) |
-| **Changelog** | [CHANGELOG.md](./CHANGELOG.md) |
 
 ### Also in 2.0 — 10× release package
 

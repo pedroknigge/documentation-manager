@@ -28,7 +28,8 @@ If docs exist and user intent is unclear → **ask once**: integrate | audit | f
 
 ```text
 Detect stack (Polyglot stack detection — skill-discovery.md)
-  → Discover CODE surfaces first (inventory table for that stack)
+  → Detect monorepo (Monorepo hubs — skill-discovery.md) / package index
+  → Discover CODE surfaces first (inventory table for that stack; per package if monorepo)
   → if Intent=audit OR (docs exist AND drift suspected AND Intent≠from-zero pure skip):
         Audit / reconciliation pass
   → execute Intent write policy
@@ -46,6 +47,17 @@ Before inventory on **from-zero / integrate / audit** (and when exploring for ad
 4. Announce `Stack: …` with the project Step 0 line.
 
 Anti-hallucination: no ModuleIds/HTTP routes/framework claims without code evidence for that stack.
+
+### 0.4 Monorepo hubs (v2.2 Slice B)
+
+On **from-zero / integrate / adopt / audit** when multi-package signals exist:
+
+1. Run **Monorepo hubs** procedure in [skill-discovery.md](skill-discovery.md) (signals: `pnpm-workspace.yaml`, `package.json` workspaces, `go.work`, multi-`pyproject` / multi-`go.mod`, `packages/*`) or `./scripts/detect-packages.sh <root>`.  
+2. If monorepo: build or update root hub as a **map** + **Package index** (not a narrative dump of every package).  
+3. **Multi-package coverage** — one coverage row per package (or major surface); packages without docs = **gap**.  
+4. **Default package non-writes** — when indexing the root, do **not** rewrite mature package product-vision / requirements / ADRs / feature packs.  
+5. Optional package-level hub only when that package is in scope; never invent product vision for gap packages.  
+6. Announce `Monorepo: yes|no | packages: <n>`.
 
 ---
 
@@ -106,10 +118,13 @@ If Intent is **from-zero**, do **not** force adopt-integrate even when mature �
 ### 2.1 Explore
 
 1. **Stack detection** (§0.3 / [skill-discovery.md](skill-discovery.md) Polyglot stack detection)  
-2. Tree, README, manifests for the detected stack(s)  
-3. **Code surfaces first** using the **Inventory by stack** table (not Node-only assumptions)  
-4. Existing docs / authorities  
-5. Optional quick audit sample if claims look stale  
+2. **Monorepo detection** (§0.4 / Monorepo hubs) — package list / `detect-packages.sh`  
+3. Tree, README, manifests for the detected stack(s) and packages  
+4. **Code surfaces first** using the **Inventory by stack** table (not Node-only assumptions); per package when monorepo  
+5. Existing docs / authorities (root + package-local); **do not rewrite** mature package docs on root index-only work  
+6. Optional quick audit sample if claims look stale  
+
+When monorepo: ensure root hub has **Package index** and multi-package **Surface coverage** rows (gap allowed).
 
 ### 2.2 Adopt-full (thin)
 
@@ -119,6 +134,19 @@ If Intent is **from-zero**, do **not** force adopt-integrate even when mature �
 4. **Coverage matrix required**.  
 5. Atomic feature packs for key domains.  
 6. Summarize inferred vs confirmed.  
+
+### 2.2b Monorepo package non-writes (integrate)
+
+When monorepo detected and work is **root map / package index** only:
+
+| Default non-writes (package trees) |
+|------------------------------------|
+| Package `product-vision` / requirements / architecture rewrites |
+| Package ADRs renumbered or forked into root |
+| Full feature packs for every package “because monorepo” |
+| Invented ModuleIds / endpoints for gap packages |
+
+Allowed: root hub Package index, coverage **gap** rows, links to existing package docs, one new package hub if user scoped that package.
 
 ### 2.3 Adopt-integrate (mature / mixed) — Intent integrate
 
@@ -346,8 +374,9 @@ If sync reveals many Contradicted claims → suggest full **audit**.
 ### 6.1 Code inventory (always first)
 
 1. **Detect stack** (§0.3) — tokens: `node-ts` | `python` | `go` | `mixed` | `unknown`.  
-2. Build inventory from the **Inventory by stack** table in [skill-discovery.md](skill-discovery.md) (Polyglot stack detection).  
-3. Summary of common kinds (always prefer stack-specific rows in skill-discovery):
+2. **Detect monorepo** (§0.4) — if yes, inventory per package path from **Package index** / `detect-packages.sh`.  
+3. Build inventory from the **Inventory by stack** table in [skill-discovery.md](skill-discovery.md) (Polyglot stack detection).  
+4. Summary of common kinds (always prefer stack-specific rows in skill-discovery):
 
 | Kind | How to discover (examples; **stack-aware**) |
 |------|-----------------------------------------------|
@@ -416,14 +445,15 @@ Do **not** auto-start from-zero after audit without user Intent.
 
 ### 7.1 Rules
 
-1. **Stack detection first** (§0.3) — then **code inventory** (same as audit §6.1) using **Inventory by stack** / **Docs layout guidance by stack** in [skill-discovery.md](skill-discovery.md).  
+1. **Stack detection first** (§0.3) — then **monorepo detection** (§0.4) — then **code inventory** (same as audit §6.1) using **Inventory by stack** / **Docs layout guidance by stack** in [skill-discovery.md](skill-discovery.md).  
 2. Existing productive docs are **hypothesis**, not authority — sample them for vocabulary only; verify every structural claim you reuse.  
 3. Produce full core set (hub + vision/requirements/architecture/roadmap/ADRs as needed) + coverage matrix + atomic features for major surfaces; **feature slug sources follow the stack table** (Python packages / Go `cmd`+`internal` / Node routes — not Node-only defaults on a Python/Go repo).  
-4. If user named a folder (`test/`, `docs-sandbox/`) → **Out: sandbox:path** with banners + promotion plan.  
-5. Do **not** silently overwrite productive `docs/` + `CLAUDE.md` SSOT; if they insist on root from-zero on a mature monorepo, confirm once that overwrite is intended.  
-6. Status tokens from taxonomy; process rules stay out of product-vision.  
-7. Optional: run audit matrix against *old* docs as appendix (“what the previous docs got wrong”).  
-8. Hub + `docs/` shape is **shared** across stacks; only inventory vocabulary and feature boundaries change.  
+4. **Monorepo:** root hub = **map + Package index** first; multi-package coverage with **gap** rows; full package KBs only for in-scope packages (or sandbox) — not one mega pack.  
+5. If user named a folder (`test/`, `docs-sandbox/`) → **Out: sandbox:path** with banners + promotion plan.  
+6. Do **not** silently overwrite productive `docs/` + `CLAUDE.md` SSOT; if they insist on root from-zero on a mature monorepo, confirm once that overwrite is intended.  
+7. Status tokens from taxonomy; process rules stay out of product-vision.  
+8. Optional: run audit matrix against *old* docs as appendix (“what the previous docs got wrong”).  
+9. Hub + `docs/` shape is **shared** across stacks; only inventory vocabulary and feature boundaries change.  
 
 ### 7.2 Difference from adopt-integrate
 

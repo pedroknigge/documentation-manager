@@ -4,7 +4,7 @@
 > **Purpose:** Track where this skill is (or should be) installed, and the ArkGate pairing path.  
 > **Honesty rule:** only mark **Verified** when someone ran install/validate against that target. Hypotheses stay **Candidate**.
 
-**Last updated:** 2026-07-17 · Skill version **2.1.0**
+**Last updated:** 2026-07-17 · Skill version **2.2.0**
 
 ## How to use
 
@@ -34,6 +34,7 @@
 | Hardening suite + discovery | 1.7 | `scripts/test-skill-hardening.sh` · [skill-discovery.md](../skills/documentation-manager/references/skill-discovery.md) |
 | Adoption matrix (this file) | **2.0** | packaging + tracking |
 | Polyglot stack detection (Python/Go/Node-TS) | **2.1** | [polyglot-mvp](./features/polyglot-mvp/README.md) · `detect-stack.sh` |
+| Monorepo hubs (package index + root map) | **2.2** | [monorepo-hubs](./features/monorepo-hubs/README.md) · `detect-packages.sh` |
 
 ## Target projects
 

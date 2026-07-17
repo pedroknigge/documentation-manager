@@ -4,6 +4,23 @@ All notable changes to the **documentation-manager** skill package.
 
 Format: keep entries scannable. Versions follow semver for the skill package (`SKILL.md` metadata).
 
+## [2.2.0] — 2026-07-17
+
+### Added
+
+- **Monorepo hubs (Slice B / Fase 2 Bridge):** package index + root hub as map  
+- Detection signals: `pnpm-workspace.yaml`, `package.json` workspaces, `go.work`, multi-package dirs  
+- Modes §0.4 + package non-writes when root-index only; multi-package coverage with **gap**  
+- `scripts/detect-packages.sh` — lists package paths from real workspace signals  
+- Fixture: `monorepo-thin/` (`packages/api`, `packages/web`)  
+- Feature pack: [docs/features/monorepo-hubs/](docs/features/monorepo-hubs/README.md)  
+- Hub template: Package index section in agents-md-template  
+
+### Notes
+
+- Orthogonal to polyglot stack detection (v2.1); stack may still run per package  
+- Team governance (Slice C) and telemetry (Slice D) remain planned  
+
 ## [2.1.0] — 2026-07-17
 
 ### Added

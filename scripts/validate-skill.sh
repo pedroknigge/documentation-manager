@@ -107,11 +107,13 @@ for concept in \
   "v2.0" \
   "2.0.0" \
   "Polyglot stack detection" \
-  "2.1.0"
+  "2.1.0" \
+  "Monorepo hubs" \
+  "2.2.0"
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (bridges, dashboard, hardening, 2.0.0, polyglot 2.1.0)"
+ok "core concepts present (bridges, dashboard, hardening, 2.0.0, polyglot 2.1.0, monorepo 2.2.0)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -139,11 +141,14 @@ for concept in \
   "Implementation bridge" \
   "Knowledge dashboard" \
   "Polyglot stack detection" \
-  "Inventory by stack"
+  "Inventory by stack" \
+  "Monorepo hubs" \
+  "Package index" \
+  "package non-writes"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md plan + autopilot v2 + bridges + dashboard + polyglot procedures present"
+ok "modes.md plan + autopilot v2 + bridges + dashboard + polyglot + monorepo procedures present"
 
 [[ -x "$ROOT/scripts/generate-docs-dashboard.sh" ]] || [[ -f "$ROOT/scripts/generate-docs-dashboard.sh" ]] \
   || fail "Missing scripts/generate-docs-dashboard.sh"
@@ -191,7 +196,8 @@ grep -F -q "Intent / audit / from-zero" "$QC" || fail "quality-checklist missing
 grep -F -q "ArkGate bridge" "$QC" || fail "quality-checklist missing ArkGate bridge section"
 grep -F -q "Knowledge dashboard" "$QC" || fail "quality-checklist missing Knowledge dashboard section"
 grep -F -q "Polyglot stack detection" "$QC" || fail "quality-checklist missing Polyglot stack detection section"
-ok "quality-checklist Intent + plan + mature + bridges + dashboard + polyglot present"
+grep -F -q "Monorepo hubs" "$QC" || fail "quality-checklist missing Monorepo hubs section"
+ok "quality-checklist Intent + plan + mature + bridges + dashboard + polyglot + monorepo present"
 
 PT="$SKILL_DIR/references/plan-template.md"
 grep -F -q "Implementation bridge" "$PT" || fail "plan-template missing Implementation bridge section"
@@ -221,7 +227,9 @@ grep -F -q "code wins" "$SKILL_DIR/references/agents-md-template.md" || \
   fail "agents-md-template missing code wins"
 grep -F -q "docs/plans" "$SKILL_DIR/references/agents-md-template.md" || \
   fail "agents-md-template missing docs/plans"
-ok "agents-md-template has Plans + Surface coverage + code wins"
+grep -F -q "Package index" "$SKILL_DIR/references/agents-md-template.md" || \
+  fail "agents-md-template missing Package index"
+ok "agents-md-template has Plans + Surface coverage + Package index + code wins"
 
 grep -F -q "Canonical authority" "$SKILL_DIR/references/feature-readme-template.md" || \
   fail "feature-readme-template missing Canonical authority"

@@ -67,6 +67,14 @@ Run before reporting done.
 - [ ] No invented ModuleIds/endpoints/framework surfaces without code evidence
 - [ ] Announce line includes `Stack: …` when Intent is integrate / audit / from-zero
 
+## Monorepo hubs (v2.2)
+
+- [ ] Monorepo signals checked (`pnpm-workspace` / workspaces / `go.work` / multi-package) or `detect-packages.sh`
+- [ ] If monorepo: root hub is a **map** with **Package index** (not a narrative dump)
+- [ ] Multi-package **Surface coverage** rows; packages without docs marked **gap**
+- [ ] Default package **non-writes** when only indexing root (no rewrite of mature package vision/ADRs/packs)
+- [ ] No mega feature pack swallowing all packages; one authority per package topic
+
 ## Knowledge dashboard (v1.6)
 
 - [ ] Generated only from existing docs (no invented features/claims for the UI)

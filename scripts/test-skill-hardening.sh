@@ -30,10 +30,10 @@ grep -q "skill version \*\*${VER}\*\*" "$ROOT/AGENTS.md" \
 ok "version sync README + AGENTS ↔ SKILL ($VER)"
 
 # ─── Fixtures present ───────────────────────────────────────────────────────
-for f in thin-repo mature-repo no-docs-repo python-thin-repo go-thin-repo golden/autopilot-cases.tsv; do
+for f in thin-repo mature-repo no-docs-repo python-thin-repo go-thin-repo monorepo-thin golden/autopilot-cases.tsv; do
   [[ -e "$FIX/$f" ]] || fail "missing fixture $f"
 done
-ok "fixtures present (thin, mature, no-docs, python-thin, go-thin, golden)"
+ok "fixtures present (thin, mature, no-docs, python-thin, go-thin, monorepo-thin, golden)"
 
 # thin: code, no hub/docs
 [[ -f "$FIX/thin-repo/src/app/index.ts" ]] || fail "thin-repo missing code"
@@ -93,6 +93,57 @@ edge_out=$(bash "$DETECT" "$_edge")
 echo "$edge_out" | grep -qw "go" && fail "detect-stack cmd+internal without go.mod must not report go, got: $edge_out"
 rm -rf "$_edge"
 ok "detect-stack.sh on node + python + go fixtures (+ negative go edges)"
+
+# monorepo-thin: multi-package workspace signals, no root hub/docs
+[[ -f "$FIX/monorepo-thin/pnpm-workspace.yaml" ]] || fail "monorepo-thin missing pnpm-workspace.yaml"
+[[ -f "$FIX/monorepo-thin/package.json" ]] || fail "monorepo-thin missing package.json"
+[[ -f "$FIX/monorepo-thin/packages/api/package.json" ]] || fail "monorepo-thin missing packages/api"
+[[ -f "$FIX/monorepo-thin/packages/web/package.json" ]] || fail "monorepo-thin missing packages/web"
+[[ -f "$FIX/monorepo-thin/packages/api/src/index.ts" ]] || fail "monorepo-thin missing api code"
+[[ -f "$FIX/monorepo-thin/packages/web/src/index.ts" ]] || fail "monorepo-thin missing web code"
+[[ ! -f "$FIX/monorepo-thin/AGENTS.md" ]] || fail "monorepo-thin should not have root AGENTS.md"
+[[ ! -d "$FIX/monorepo-thin/docs" ]] || fail "monorepo-thin should not have root docs/"
+ok "monorepo-thin shape"
+
+# ─── detect-packages.sh drives monorepo fixture (shipped entry point) ───────
+DPKG="$ROOT/scripts/detect-packages.sh"
+[[ -f "$DPKG" ]] || fail "missing scripts/detect-packages.sh"
+chmod +x "$DPKG" 2>/dev/null || true
+pkg_out=$(bash "$DPKG" "$FIX/monorepo-thin")
+echo "$pkg_out" | grep -qx "packages/api" || fail "detect-packages expected packages/api, got: $pkg_out"
+echo "$pkg_out" | grep -qx "packages/web" || fail "detect-packages expected packages/web, got: $pkg_out"
+pkg_count=$(echo "$pkg_out" | grep -c . || true)
+[[ "$pkg_count" -ge 2 ]] || fail "detect-packages monorepo-thin expected ≥2 packages, got $pkg_count"
+# single-repo fixtures must not invent packages
+single_out=$(bash "$DPKG" "$FIX/thin-repo")
+[[ -z "${single_out// }" ]] || fail "detect-packages thin-repo should be empty, got: $single_out"
+# go.work multi-module (temp) — shipped path must resolve use ( ./mod ) blocks
+_gw=$(mktemp -d)
+mkdir -p "$_gw/mod-a" "$_gw/mod-b"
+printf 'module a\n' > "$_gw/mod-a/go.mod"
+printf 'module b\n' > "$_gw/mod-b/go.mod"
+cat > "$_gw/go.work" <<'EOF'
+go 1.22
+use (
+	./mod-a
+	./mod-b
+)
+EOF
+gw_out=$(bash "$DPKG" "$_gw")
+echo "$gw_out" | grep -qx "mod-a" || fail "detect-packages go.work expected mod-a, got: $gw_out"
+echo "$gw_out" | grep -qx "mod-b" || fail "detect-packages go.work expected mod-b, got: $gw_out"
+rm -rf "$_gw"
+# npm workspaces only (no pnpm-workspace.yaml)
+_nw=$(mktemp -d)
+mkdir -p "$_nw/packages/a" "$_nw/packages/b"
+printf '%s\n' '{"name":"root","private":true,"workspaces":["packages/*"]}' > "$_nw/package.json"
+printf '%s\n' '{"name":"a"}' > "$_nw/packages/a/package.json"
+printf '%s\n' '{"name":"b"}' > "$_nw/packages/b/package.json"
+nw_out=$(bash "$DPKG" "$_nw")
+echo "$nw_out" | grep -qx "packages/a" || fail "detect-packages npm workspaces expected packages/a, got: $nw_out"
+echo "$nw_out" | grep -qx "packages/b" || fail "detect-packages npm workspaces expected packages/b, got: $nw_out"
+rm -rf "$_nw"
+ok "detect-packages.sh on monorepo-thin (+ empty thin + go.work + npm workspaces)"
 
 # ─── Golden autopilot anchors (regression of decision table prose) ───────────
 GOLDEN="$FIX/golden/autopilot-cases.tsv"
@@ -189,7 +240,28 @@ grep -F -q "Polyglot stack detection" "$SKILL_DIR/references/quality-checklist.m
   || fail "quality-checklist missing Polyglot stack detection"
 ok "polyglot stack detection anchors (discovery + modes + SKILL + QC)"
 
-# ─── v2.0 adoption matrix + changelog + polyglot feature pack ────────────────
+# ─── Monorepo hubs anchors (Slice B) ─────────────────────────────────────────
+for anchor in \
+  "Monorepo hubs" \
+  "Package index" \
+  "pnpm-workspace.yaml" \
+  "go.work" \
+  "Root hub = map" \
+  "multi-package"
+do
+  grep -F -q -- "$anchor" "$DISC" || fail "skill-discovery missing monorepo anchor: $anchor"
+done
+grep -F -q "Monorepo hubs" "$MODES" || fail "modes.md missing Monorepo hubs"
+grep -F -q "Package index" "$MODES" || fail "modes.md missing Package index"
+grep -F -q "package non-writes" "$MODES" || fail "modes.md missing package non-writes"
+grep -F -q "Monorepo hubs" "$SKILL_FILE" || fail "SKILL.md missing Monorepo hubs"
+grep -F -q "Monorepo hubs" "$SKILL_DIR/references/quality-checklist.md" \
+  || fail "quality-checklist missing Monorepo hubs"
+grep -F -q "Package index" "$SKILL_DIR/references/agents-md-template.md" \
+  || fail "agents-md-template missing Package index"
+ok "monorepo hubs anchors (discovery + modes + SKILL + QC + hub template)"
+
+# ─── v2.0 adoption matrix + changelog + feature packs ────────────────────────
 [[ -f "$ROOT/docs/adoption-matrix.md" ]] || fail "missing docs/adoption-matrix.md"
 grep -q "Verified" "$ROOT/docs/adoption-matrix.md" || fail "adoption-matrix missing Verified token"
 grep -q "ArkGate" "$ROOT/docs/adoption-matrix.md" || fail "adoption-matrix missing ArkGate pairing"
@@ -199,9 +271,11 @@ grep -q "${VER}" "$ROOT/CHANGELOG.md" || fail "CHANGELOG.md missing current vers
 [[ -f "$ROOT/docs/features/tenx-v2-release/README.md" ]] || fail "missing tenx-v2-release feature pack"
 [[ -f "$ROOT/docs/features/polyglot-mvp/README.md" ]] || fail "missing polyglot-mvp feature pack"
 grep -q "Shipped" "$ROOT/docs/features/polyglot-mvp/README.md" || fail "polyglot-mvp pack not marked Shipped"
+[[ -f "$ROOT/docs/features/monorepo-hubs/README.md" ]] || fail "missing monorepo-hubs feature pack"
+grep -q "Shipped" "$ROOT/docs/features/monorepo-hubs/README.md" || fail "monorepo-hubs pack not marked Shipped"
 grep -q "Shipped" "$ROOT/docs/plans/phase-2-bridge/README.md" \
-  || fail "phase-2-bridge plan should mark slice A shipped (grep Shipped)"
-ok "adoption matrix + CHANGELOG + tenx + polyglot-mvp feature pack"
+  || fail "phase-2-bridge plan should mark slices shipped (grep Shipped)"
+ok "adoption matrix + CHANGELOG + tenx + polyglot-mvp + monorepo-hubs feature packs"
 
 if [[ "$FAILS" -gt 0 ]]; then
   echo ""

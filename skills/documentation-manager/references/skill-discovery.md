@@ -1,4 +1,4 @@
-# Skill discovery & upgrade (v1.7 · package v2.1 · polyglot MVP)
+# Skill discovery & upgrade (v1.7 · package v2.2 · polyglot + monorepo)
 
 How agents and humans detect that Documentation Manager is installed, current, and which **stack / layout** to prefer. **No silent auto-patch** of the user’s machine without consent.
 
@@ -102,13 +102,13 @@ Same **hub + `docs/`** contract for all stacks (AGENTS.md, plans, features). Bia
 - Docs tree shape stays agent-first: hub, `docs/plans/`, `docs/features/`, optional audit — **not** language-specific wiki roots.  
 - Integrate-first: mature docs are not rewritten just because stack is non-TS.  
 - **Anti-hallucination:** never invent ModuleIds/endpoints/tables for frameworks not evidenced in code.  
-- Monorepo multi-package **hub index** is Slice B; here only detect stack and inventory honestly.
+- Monorepo multi-package **hub index** is Slice B (next section).
 
 ### Other layout signals (orthogonal)
 
 | Signals | Hint |
 |---------|------|
-| monorepo `workspaces` / `pnpm-workspace` / `go.work` / multi-package | Root hub + package notes; avoid mega single feature pack (full monorepo hubs → Slice B) |
+| monorepo (see **Monorepo hubs** below) | Root hub = map + package index; avoid mega single feature pack |
 | `ark.config.json` | Enable [arkgate-bridge.md](arkgate-bridge.md) inventory enrich |
 | Existing MkDocs/Docusaurus | **Integrate** — do not replace wholesale |
 
@@ -124,6 +124,94 @@ Stack: <node-ts|python|go|mixed|unknown> | signals: <short list>
 
 ---
 
+## Monorepo hubs (v2.2 Slice B)
+
+**When:** project-level adopt / integrate / from-zero / audit on a multi-package tree.  
+**Orthogonal to stack:** run polyglot detection at root **and** (when useful) per package; monorepo rules govern hub shape.
+
+### Monorepo detection signals
+
+| Signal | Ecosystem | Notes |
+|--------|-----------|--------|
+| `pnpm-workspace.yaml` | Node | `packages:` globs (e.g. `packages/*`) |
+| `package.json` `"workspaces"` | Node (npm/yarn) | Array or `{ "packages": [...] }` |
+| `lerna.json` / `nx.json` / `turbo.json` | Node tooling | Hint only; still resolve package dirs from workspaces/globs |
+| `go.work` | Go | Lists `use` module dirs |
+| Multiple `go.mod` under subdirs | Go | Multi-module tree without go.work |
+| Multiple `pyproject.toml` under subdirs | Python | Multi-package / workspace layout |
+| `packages/*`, `apps/*`, `libs/*` with manifests | Common | Directory convention + package.json / pyproject / go.mod inside |
+
+Optional helper:
+
+```bash
+./scripts/detect-packages.sh <consumer-repo-root>
+# stdout: one package path per line (relative to root), e.g.
+# packages/api
+# packages/web
+# (empty stdout + exit 0 if single-package / no monorepo signals)
+```
+
+**What `detect-packages.sh` actually resolves (v2.2):**
+
+| Source | Resolved |
+|--------|----------|
+| `pnpm-workspace.yaml` globs / concrete dirs | Yes |
+| `package.json` `workspaces` (via `node` JSON parse) | Yes |
+| `go.work` `use ./path` (incl. multi-line `use (` blocks) | Yes |
+| Convention `packages/*`, `apps/*`, `libs/*` with manifests | Yes (when nothing else found) |
+| Arbitrary multi-`go.mod` / multi-`pyproject.toml` outside those | **No** — agent walks tree manually from the signal table |
+
+If the script is unavailable or returns empty while signals suggest monorepo, detect manually from the signal table, then list package roots that contain a package manifest (`package.json`, `pyproject.toml`, or `go.mod`).
+
+**Not a monorepo:** single root manifest only, no workspace file, no multi-package globs / multi-module layout → single-repo flow (Slice A stack tables only).
+
+### Root hub = map (not a dump)
+
+| Do | Do not |
+|----|--------|
+| Root `AGENTS.md` = **map**: overview, links, **Package index**, multi-package **Surface coverage** | Paste full product vision / architecture of every package into root |
+| One **Package index** table listing each package path + docs status | One mega feature pack that swallows all packages |
+| Link package hubs / package docs when they exist | Duplicate package SSOT into root `docs/features/` |
+| Mark packages **without** docs as **gap** in coverage | Invent product vision / ModuleIds for undocumented packages |
+
+### Package index (required when monorepo detected)
+
+In the **root hub** (or root `docs/` index linked from hub):
+
+| Package path | Role (short) | Hub / docs | Docs status |
+|--------------|--------------|------------|-------------|
+| `packages/api` | … from README/code only | [path or —] | documented / linked / **gap** |
+| `packages/web` | … | … | … |
+
+Rules:
+
+1. **One authority per topic** — claims for a package live in that package’s hub/docs or a single linked canonical doc; root only indexes.  
+2. **Optional package hub** — create/update `packages/<name>/AGENTS.md` (or package-local docs) only when the package is a real work surface and the user scope needs it; not mandatory for every package on first integrate.  
+3. **Default non-writes** when indexing root: do **not** rewrite mature package product-vision / requirements / ADRs / feature packs just to build the root map.  
+4. **Coverage matrix multi-package** — each package (or major surface inside it) is a row; empty hub + empty feature pack = **gap**.  
+5. **from-zero** on monorepo: root map + index first; full package KBs only for packages in scope (or sandbox); never invent APIs.
+
+### Procedure (adopt / integrate / from-zero / audit)
+
+1. Detect monorepo (signals above or `detect-packages.sh`).  
+2. If **no** monorepo → single-repo flow.  
+3. If monorepo → list packages → build/update **Package index** on root hub.  
+4. Multi-package **Surface coverage** rows (package path as surface key when ModuleId unknown).  
+5. Stack-aware inventory **per package** when stacks differ (polyglot Slice A).  
+6. Announce:
+
+```text
+Monorepo: yes | packages: <n> | root hub: map+index | package non-writes: default
+```
+
+### Anti-patterns
+
+- Collapsing monorepo into one giant `docs/features/everything` pack  
+- Rewriting every package’s narrative on root-only “sync hub”  
+- Inventing package purposes not evidenced in README/code  
+
+---
+
 ## Pre-release gate (maintainers)
 
 Before tagging a release:
@@ -136,4 +224,4 @@ Before tagging a release:
 
 All must exit 0. See [PUBLISH.md](../../../PUBLISH.md) in the package root.
 
-Target install version for the 10× line: **≥ 2.0.0**. Polyglot MVP ships in **≥ 2.1.0**. Track targets in [docs/adoption-matrix.md](../../../docs/adoption-matrix.md).
+Target install version for the 10× line: **≥ 2.0.0**. Polyglot MVP **≥ 2.1.0**. Monorepo hubs **≥ 2.2.0**. Track targets in [docs/adoption-matrix.md](../../../docs/adoption-matrix.md).

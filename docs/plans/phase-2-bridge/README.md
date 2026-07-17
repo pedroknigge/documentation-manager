@@ -4,12 +4,13 @@
 > Related: [Roadmap](../../roadmap.md) · parent epic: [knowledge-os](../knowledge-os/README.md)  
 > When slices ship, **promote** each to `docs/features/<slug>/` or a release note; this plan is the **Fase 2 umbrella**.
 
-**Status:** In progress (Slice A **Shipped**)  
+**Status:** In progress (Slices A–B **Shipped**)  
 **Slug:** `phase-2-bridge`  
 **Kind:** epic  
 **Owners:** skill maintainers  
 **Last updated:** 2026-07-17  
-**Code path (if any):** Slice A → `skills/documentation-manager/references/skill-discovery.md`, `modes.md` §0.3, `scripts/detect-stack.sh`, fixtures `python-thin-repo` / `go-thin-repo`  
+**Code path (if any):** A → polyglot + `detect-stack.sh`; B → monorepo hubs + `detect-packages.sh`, fixture `monorepo-thin`  
+
 
 **Horizon:** ~2–4 months post-v2.0.0  
 **Prerequisite:** [Fase 1 / 10× complete](../../roadmap.md#fase-1--10--v20--complete) (v2.0.0)
@@ -86,15 +87,14 @@ Orden pensado por **dependencia y riesgo**, no por glamour. Cada slice puede shi
 | Go | `go.mod`, `cmd/`, `internal/` |
 | Node/TS (ya) | `package.json`, `tsconfig`, monorepo workspaces |
 
-### Slice B — Monorepo hubs (`monorepo-hubs`) · P0
+### Slice B — Monorepo hubs (`monorepo-hubs`) · P0 · **Shipped** (v2.2.0)
 
 | | |
 |--|--|
 | **Problema** | Un solo hub no escala a packages. |
 | **Entrega** | Detección de monorepo (workspaces, `go.work`, multi-`pyproject`, `packages/*`); **root hub** con índice de packages; opcional hub/docs por package; coverage matrix multi-package. |
-| **Acceptance** | Ver § Acceptance → B. |
-| **Depends on** | A ayuda (stack por package), pero B puede empezar con Node workspaces solo y ampliar. |
-| **Promote to** | `docs/features/monorepo-hubs/` |
+| **Acceptance** | Ver § Acceptance → B (done). |
+| **Feature pack** | [docs/features/monorepo-hubs/](../../features/monorepo-hubs/README.md) |
 
 **Reglas de diseño (locked for this plan):**
 
@@ -151,10 +151,10 @@ Orden pensado por **dependencia y riesgo**, no por glamour. Cada slice puede shi
 
 ### B — Monorepo hubs
 
-- [ ] Detección de monorepo documentada (señales por ecosistema).
-- [ ] Procedimiento: root hub + package index; optional package-level hub/docs.
-- [ ] Coverage matrix soporta filas multi-package.
-- [ ] Default non-writes: no reescribir docs maduras de un package al indexar el root.
+- [x] Detección de monorepo documentada (señales por ecosistema).
+- [x] Procedimiento: root hub + package index; optional package-level hub/docs.
+- [x] Coverage matrix soporta filas multi-package.
+- [x] Default non-writes: no reescribir docs maduras de un package al indexar el root.
 
 ### C — Team governance
 
@@ -252,10 +252,9 @@ Versions are **not** locked; adjust at ship time.
 
 ## Implementation bridge
 
-> Slice A **shipped** (docs procedures + `detect-stack.sh` + fixtures).  
-> Say **start slice B** (or C/D) for the next placement checklist.
+> Slices A–B **shipped**. Say **start slice C** (or D) for the next placement checklist.
 
-**Stubs written:** no (Slice A was skill/docs/scripts, not app stubs)
+**Stubs written:** no (skill/docs/scripts only)
 
 ### Slice A placement (done)
 
@@ -266,6 +265,17 @@ Versions are **not** locked; adjust at ship time.
 | Detector | `scripts/detect-stack.sh` | Real |
 | Fixtures | `scripts/fixtures/python-thin-repo`, `go-thin-repo` | Real |
 | Feature pack | `docs/features/polyglot-mvp/` | Real |
+
+### Slice B placement (done)
+
+| Area | Path | Status |
+|------|------|--------|
+| Monorepo tables | `references/skill-discovery.md` Monorepo hubs | Real |
+| Modes | `references/modes.md` §0.4, §2.1, §2.2b, §6.1, §7.1 | Real |
+| Detector | `scripts/detect-packages.sh` | Real |
+| Hub template | `agents-md-template.md` Package index | Real |
+| Fixture | `scripts/fixtures/monorepo-thin/` | Real |
+| Feature pack | `docs/features/monorepo-hubs/` | Real |
 
 ## Promotion
 
