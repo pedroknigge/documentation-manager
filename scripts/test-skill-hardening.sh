@@ -209,10 +209,11 @@ else
 fi
 
 # ─── install.sh ships required remote refs (hardening regression) ────────────
-for ref in plan-template.md arkgate-bridge.md implementation-bridge.md knowledge-dashboard.md; do
+for ref in plan-template.md arkgate-bridge.md implementation-bridge.md knowledge-dashboard.md \
+  team-governance.md team-owners-template.md team-approval-notes-template.md template-telemetry.md; do
   grep -q "$ref" "$ROOT/install.sh" || fail "install.sh remote list missing $ref"
 done
-ok "install.sh remote reference list includes v1.3–1.6 files"
+ok "install.sh remote reference list includes v1.3–2.4 skill refs"
 
 # ─── Discovery procedure present ─────────────────────────────────────────────
 DISC="$SKILL_DIR/references/skill-discovery.md"
@@ -261,6 +262,91 @@ grep -F -q "Package index" "$SKILL_DIR/references/agents-md-template.md" \
   || fail "agents-md-template missing Package index"
 ok "monorepo hubs anchors (discovery + modes + SKILL + QC + hub template)"
 
+# ─── Team governance anchors (Slice C) ───────────────────────────────────────
+for f in team-governance.md team-owners-template.md team-approval-notes-template.md; do
+  [[ -f "$SKILL_DIR/references/$f" ]] || fail "missing references/$f"
+done
+TG="$SKILL_DIR/references/team-governance.md"
+for anchor in \
+  "docs/team" \
+  "OWNERS.md" \
+  "approval-notes" \
+  "create" \
+  "link" \
+  "Integrate-first" \
+  "last approved" \
+  "anti-wiki"
+do
+  grep -F -q -- "$anchor" "$TG" || fail "team-governance missing anchor: $anchor"
+done
+grep -F -q "Owner" "$SKILL_DIR/references/team-owners-template.md" || fail "team-owners-template missing Owner"
+grep -F -q "Approved by" "$SKILL_DIR/references/team-approval-notes-template.md" \
+  || fail "team-approval-notes-template missing Approved by"
+grep -F -q "Team governance" "$MODES" || fail "modes.md missing Team governance"
+grep -F -q "docs/team" "$MODES" || fail "modes.md missing docs/team"
+grep -F -q "Team governance" "$SKILL_FILE" || fail "SKILL.md missing Team governance"
+grep -F -q "docs/team" "$SKILL_FILE" || fail "SKILL.md missing docs/team"
+grep -F -q "Team governance" "$SKILL_DIR/references/quality-checklist.md" \
+  || fail "quality-checklist missing Team governance"
+grep -F -q "docs/team/OWNERS.md" "$SKILL_DIR/references/agents-md-template.md" \
+  || fail "agents-md-template missing docs/team/OWNERS.md"
+ok "team governance anchors (templates + modes + SKILL + QC + hub)"
+
+# ─── Template telemetry anchors + real entry point (Slice D) ─────────────────
+TT="$SKILL_DIR/references/template-telemetry.md"
+[[ -f "$TT" ]] || fail "missing references/template-telemetry.md"
+for anchor in \
+  "Default off" \
+  "Never-send" \
+  "Air-gapped" \
+  "template_gap" \
+  "local ledger" \
+  "TEMPLATE_MISSING" \
+  "network"
+do
+  grep -F -q -- "$anchor" "$TT" || fail "template-telemetry.md missing: $anchor"
+done
+grep -F -q "Template telemetry" "$MODES" || fail "modes.md missing Template telemetry"
+grep -F -q "Default off" "$MODES" || fail "modes.md missing Default off (telemetry)"
+grep -F -q "Template telemetry" "$SKILL_FILE" || fail "SKILL.md missing Template telemetry"
+grep -F -q "Template telemetry" "$SKILL_DIR/references/quality-checklist.md" \
+  || fail "quality-checklist missing Template telemetry"
+TEL="$ROOT/scripts/template-telemetry.sh"
+[[ -f "$TEL" ]] || fail "missing scripts/template-telemetry.sh"
+chmod +x "$TEL" 2>/dev/null || true
+if grep -E -q '\b(curl|wget|nc)\b|https?://' "$TEL"; then
+  fail "template-telemetry.sh must not use network tools or URLs"
+fi
+# Drive real entry point: opt-in off → no-op (no ledger file)
+_td=$(mktemp -d)
+_led="$_td/ledger.jsonl"
+out=$(bash "$TEL" record --gap-kind TEMPLATE_MISSING --template-id plan-template --ledger "$_led" 2>&1) || true
+[[ ! -f "$_led" ]] || fail "telemetry off must not create ledger, got file"
+echo "$out" | grep -qi "no-op\|opt-in off" || fail "telemetry off should announce no-op, got: $out"
+# Opt-in on → one JSONL line with allowlisted fields only
+out=$(bash "$TEL" record --gap-kind TEMPLATE_MISSING --template-id plan-template \
+  --ledger "$_led" --opt-in --skill-version 2.4.0 --host grok 2>&1) || fail "telemetry on record failed: $out"
+[[ -f "$_led" ]] || fail "telemetry on must create ledger"
+lines=$(wc -l < "$_led" | tr -d ' ')
+[[ "$lines" -eq 1 ]] || fail "telemetry on expected 1 line, got $lines"
+grep -q '"event":"template_gap"' "$_led" || fail "ledger missing template_gap event"
+grep -q '"gap_kind":"TEMPLATE_MISSING"' "$_led" || fail "ledger missing gap_kind"
+grep -q '"template_id":"plan-template"' "$_led" || fail "ledger missing template_id"
+# Never-send: path-like template_id rejected
+if bash "$TEL" record --gap-kind TEMPLATE_MISSING --template-id "src/app.ts" --ledger "$_td/bad.jsonl" --opt-in 2>/dev/null; then
+  fail "telemetry must reject path-like template_id"
+fi
+# Never-send flag rejected
+if bash "$TEL" record --gap-kind TEMPLATE_MISSING --template-id ok --url http://x --opt-in --ledger "$_td/bad2.jsonl" 2>/dev/null; then
+  fail "telemetry must reject --url never-send flag"
+fi
+# Flag without value must not swallow the next option as a value
+if bash "$TEL" record --gap-kind --template-id plan-template --opt-in --ledger "$_td/bad3.jsonl" 2>/dev/null; then
+  fail "telemetry must reject --gap-kind without value"
+fi
+rm -rf "$_td"
+ok "template telemetry anchors + script on/off + never-send"
+
 # ─── v2.0 adoption matrix + changelog + feature packs ────────────────────────
 [[ -f "$ROOT/docs/adoption-matrix.md" ]] || fail "missing docs/adoption-matrix.md"
 grep -q "Verified" "$ROOT/docs/adoption-matrix.md" || fail "adoption-matrix missing Verified token"
@@ -273,9 +359,13 @@ grep -q "${VER}" "$ROOT/CHANGELOG.md" || fail "CHANGELOG.md missing current vers
 grep -q "Shipped" "$ROOT/docs/features/polyglot-mvp/README.md" || fail "polyglot-mvp pack not marked Shipped"
 [[ -f "$ROOT/docs/features/monorepo-hubs/README.md" ]] || fail "missing monorepo-hubs feature pack"
 grep -q "Shipped" "$ROOT/docs/features/monorepo-hubs/README.md" || fail "monorepo-hubs pack not marked Shipped"
+[[ -f "$ROOT/docs/features/team-governance/README.md" ]] || fail "missing team-governance feature pack"
+grep -q "Shipped" "$ROOT/docs/features/team-governance/README.md" || fail "team-governance pack not marked Shipped"
+[[ -f "$ROOT/docs/features/template-telemetry/README.md" ]] || fail "missing template-telemetry feature pack"
+grep -q "Shipped" "$ROOT/docs/features/template-telemetry/README.md" || fail "template-telemetry pack not marked Shipped"
 grep -q "Shipped" "$ROOT/docs/plans/phase-2-bridge/README.md" \
   || fail "phase-2-bridge plan should mark slices shipped (grep Shipped)"
-ok "adoption matrix + CHANGELOG + tenx + polyglot-mvp + monorepo-hubs feature packs"
+ok "adoption matrix + CHANGELOG + feature packs (incl. template-telemetry)"
 
 if [[ "$FAILS" -gt 0 ]]; then
   echo ""

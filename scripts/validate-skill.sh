@@ -75,11 +75,15 @@ for ref in \
   arkgate-bridge.md \
   implementation-bridge.md \
   knowledge-dashboard.md \
-  skill-discovery.md
+  skill-discovery.md \
+  team-governance.md \
+  team-owners-template.md \
+  team-approval-notes-template.md \
+  template-telemetry.md
 do
   [[ -f "$SKILL_DIR/references/$ref" ]] || fail "Missing references/$ref"
 done
-ok "all references present (incl. bridges + dashboard + discovery)"
+ok "all references present (incl. bridges + dashboard + discovery + team + telemetry)"
 
 for concept in \
   "Step 0" \
@@ -109,11 +113,16 @@ for concept in \
   "Polyglot stack detection" \
   "2.1.0" \
   "Monorepo hubs" \
-  "2.2.0"
+  "2.2.0" \
+  "Team governance" \
+  "2.3.0" \
+  "docs/team" \
+  "Template telemetry" \
+  "2.4.0"
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (bridges, dashboard, hardening, 2.0.0, polyglot 2.1.0, monorepo 2.2.0)"
+ok "core concepts present (… team 2.3.0, telemetry 2.4.0)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -144,11 +153,17 @@ for concept in \
   "Inventory by stack" \
   "Monorepo hubs" \
   "Package index" \
-  "package non-writes"
+  "package non-writes" \
+  "Team governance" \
+  "docs/team" \
+  "approval notes" \
+  "Template telemetry" \
+  "Default off" \
+  "network: never"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md plan + autopilot v2 + bridges + dashboard + polyglot + monorepo procedures present"
+ok "modes.md … + team + template telemetry procedures present"
 
 [[ -x "$ROOT/scripts/generate-docs-dashboard.sh" ]] || [[ -f "$ROOT/scripts/generate-docs-dashboard.sh" ]] \
   || fail "Missing scripts/generate-docs-dashboard.sh"
@@ -197,7 +212,9 @@ grep -F -q "ArkGate bridge" "$QC" || fail "quality-checklist missing ArkGate bri
 grep -F -q "Knowledge dashboard" "$QC" || fail "quality-checklist missing Knowledge dashboard section"
 grep -F -q "Polyglot stack detection" "$QC" || fail "quality-checklist missing Polyglot stack detection section"
 grep -F -q "Monorepo hubs" "$QC" || fail "quality-checklist missing Monorepo hubs section"
-ok "quality-checklist Intent + plan + mature + bridges + dashboard + polyglot + monorepo present"
+grep -F -q "Team governance" "$QC" || fail "quality-checklist missing Team governance section"
+grep -F -q "Template telemetry" "$QC" || fail "quality-checklist missing Template telemetry section"
+ok "quality-checklist … + team + template telemetry present"
 
 PT="$SKILL_DIR/references/plan-template.md"
 grep -F -q "Implementation bridge" "$PT" || fail "plan-template missing Implementation bridge section"
@@ -229,7 +246,42 @@ grep -F -q "docs/plans" "$SKILL_DIR/references/agents-md-template.md" || \
   fail "agents-md-template missing docs/plans"
 grep -F -q "Package index" "$SKILL_DIR/references/agents-md-template.md" || \
   fail "agents-md-template missing Package index"
-ok "agents-md-template has Plans + Surface coverage + Package index + code wins"
+grep -F -q "docs/team/OWNERS.md" "$SKILL_DIR/references/agents-md-template.md" || \
+  fail "agents-md-template missing Team docs/team/OWNERS.md link"
+ok "agents-md-template has Plans + Surface coverage + Package index + Team + code wins"
+
+TG="$SKILL_DIR/references/team-governance.md"
+for concept in "docs/team" "OWNERS.md" "approval-notes" "create" "link" "Integrate-first" "anti-wiki"; do
+  grep -F -q -- "$concept" "$TG" || fail "team-governance.md missing: $concept"
+done
+ok "team-governance.md create/link + integrate-first present"
+
+grep -F -q "Owner" "$SKILL_DIR/references/team-owners-template.md" || \
+  fail "team-owners-template missing Owner"
+grep -F -q "Approved by" "$SKILL_DIR/references/team-approval-notes-template.md" || \
+  fail "team-approval-notes-template missing Approved by"
+grep -F -q "last approved" "$SKILL_DIR/references/team-approval-notes-template.md" || \
+  grep -F -q "Last approved" "$SKILL_DIR/references/team-approval-notes-template.md" || \
+  fail "team-approval-notes-template missing last approved"
+ok "team owner + approval-notes templates present"
+
+TT="$SKILL_DIR/references/template-telemetry.md"
+for concept in \
+  "Default off" \
+  "Never-send" \
+  "Air-gapped" \
+  "template_gap" \
+  "local ledger" \
+  "network"
+do
+  grep -F -q -- "$concept" "$TT" || fail "template-telemetry.md missing: $concept"
+done
+[[ -f "$ROOT/scripts/template-telemetry.sh" ]] || fail "missing scripts/template-telemetry.sh"
+# Air-gapped: shipped script must not call network tools
+if grep -E -q '\b(curl|wget|nc)\b|https?://' "$ROOT/scripts/template-telemetry.sh"; then
+  fail "template-telemetry.sh must not use network tools or URLs"
+fi
+ok "template-telemetry procedure + local script (no network tools)"
 
 grep -F -q "Canonical authority" "$SKILL_DIR/references/feature-readme-template.md" || \
   fail "feature-readme-template missing Canonical authority"

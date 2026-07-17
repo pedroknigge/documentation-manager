@@ -67,7 +67,11 @@ install_skill_tree() {
       arkgate-bridge.md \
       implementation-bridge.md \
       knowledge-dashboard.md \
-      skill-discovery.md
+      skill-discovery.md \
+      team-governance.md \
+      team-owners-template.md \
+      team-approval-notes-template.md \
+      template-telemetry.md
     do
       curl -fsSL "${REPO_RAW}/${SKILL_REL}/references/${ref}" -o "$dest/references/${ref}" || true
     done

@@ -4,6 +4,37 @@ All notable changes to the **documentation-manager** skill package.
 
 Format: keep entries scannable. Versions follow semver for the skill package (`SKILL.md` metadata).
 
+## [2.4.0] — 2026-07-17
+
+### Added
+
+- **Template telemetry (Slice D / Fase 2 Bridge complete):** opt-in local JSONL ledger  
+- Privacy contract: default off, never-send (source/secrets/repo URLs), air-gapped no-op  
+- Script: `scripts/template-telemetry.sh` (`status` / `record`) — no network tools  
+- Modes §12 + SKILL rule 24; quality checklist  
+- Feature pack: [docs/features/template-telemetry/](docs/features/template-telemetry/README.md)  
+
+### Notes
+
+- Network upload deferred (local ledger only in v2.4)  
+- Completes Fase 2 Bridge slices A–D  
+
+## [2.3.0] — 2026-07-17
+
+### Added
+
+- **Team governance (Slice C / Fase 2 Bridge):** optional `docs/team/` surface  
+- Procedure: create vs link, integrate-first non-writes, hub pointer (anti-wiki)  
+- Templates: `team-owners-template.md`, `team-approval-notes-template.md`  
+- Modes §11 + SKILL rule 23; quality checklist + agents-md Team links  
+- Feature pack: [docs/features/team-governance/](docs/features/team-governance/README.md)  
+- install.sh remote refs include team templates  
+
+### Notes
+
+- Markdown only — no CODEOWNERS engine, merge bots, or BPM  
+- Slice D (template telemetry) remains planned  
+
 ## [2.2.0] — 2026-07-17
 
 ### Added

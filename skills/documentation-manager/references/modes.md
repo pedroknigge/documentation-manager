@@ -155,7 +155,8 @@ Allowed: root hub Package index, coverage **gap** rows, links to existing packag
 3. Hub: extend existing; second hub only as index.  
 4. Write only: coverage matrix, entry feature packs, net-new ADRs (same numbering), thin gaps.  
 5. Prefer a **claims audit** first if user mentioned drift or many path claims.  
-6. Summary: authorities, created, **non-writes**, gaps, promotion if sandbox.  
+6. **Team governance** (§11): if user asked for owners/team → create or link `docs/team/`; if not asked, do not force; never rewrite product-vision to “add owners”.  
+7. Summary: authorities, created, **non-writes**, gaps, promotion if sandbox.  
 
 ### 2.4 Output location (sandbox)
 
@@ -449,11 +450,12 @@ Do **not** auto-start from-zero after audit without user Intent.
 2. Existing productive docs are **hypothesis**, not authority — sample them for vocabulary only; verify every structural claim you reuse.  
 3. Produce full core set (hub + vision/requirements/architecture/roadmap/ADRs as needed) + coverage matrix + atomic features for major surfaces; **feature slug sources follow the stack table** (Python packages / Go `cmd`+`internal` / Node routes — not Node-only defaults on a Python/Go repo).  
 4. **Monorepo:** root hub = **map + Package index** first; multi-package coverage with **gap** rows; full package KBs only for in-scope packages (or sandbox) — not one mega pack.  
-5. If user named a folder (`test/`, `docs-sandbox/`) → **Out: sandbox:path** with banners + promotion plan.  
-6. Do **not** silently overwrite productive `docs/` + `CLAUDE.md` SSOT; if they insist on root from-zero on a mature monorepo, confirm once that overwrite is intended.  
-7. Status tokens from taxonomy; process rules stay out of product-vision.  
-8. Optional: run audit matrix against *old* docs as appendix (“what the previous docs got wrong”).  
-9. Hub + `docs/` shape is **shared** across stacks; only inventory vocabulary and feature boundaries change.  
+5. **Team governance** (§11): include `docs/team/` only when owners are known (user/code); never invent people; otherwise leave ownership as gap/TBD.  
+6. If user named a folder (`test/`, `docs-sandbox/`) → **Out: sandbox:path** with banners + promotion plan.  
+7. Do **not** silently overwrite productive `docs/` + `CLAUDE.md` SSOT; if they insist on root from-zero on a mature monorepo, confirm once that overwrite is intended.  
+8. Status tokens from taxonomy; process rules stay out of product-vision.  
+9. Optional: run audit matrix against *old* docs as appendix (“what the previous docs got wrong”).  
+10. Hub + `docs/` shape is **shared** across stacks; only inventory vocabulary and feature boundaries change.  
 
 ### 7.2 Difference from adopt-integrate
 
@@ -524,6 +526,57 @@ Announce: `ArkGate: detected | bridge: post-gate-sync | audit-enrich` when activ
 5. Full rules: [knowledge-dashboard.md](knowledge-dashboard.md).
 
 HTML is a **view**. Markdown + code remain authority (**code wins** on claims).
+
+---
+
+## 11. Team governance (v2.3 Slice C)
+
+**When:** User asks for owners / team / governance / “quién es dueño” / approval notes; or from-zero when ownership is known; optional hub link on integrate if team docs already exist.
+
+**Full procedure:** [team-governance.md](team-governance.md)
+
+### 11.1 Create vs link
+
+1. If `docs/team/` missing and team work is in scope → **create** from [team-owners-template.md](team-owners-template.md) and optionally [team-approval-notes-template.md](team-approval-notes-template.md).  
+2. If `docs/team/` (or equivalent) exists → **link** from hub; extend owner rows; do not fork a parallel team tree.  
+3. Integrate without team request → do **not** force `docs/team/`; may link existing CODEOWNERS/CLAUDE ownership if already authoritative.  
+4. from-zero → include team only when owners are known; never invent people.
+
+### 11.2 Integrate-first non-writes
+
+Adding team docs must **not** rewrite mature product-vision, requirements, architecture, or ADRs.  
+Default non-writes: product-vision, requirements, architecture, existing ADRs, unrelated feature packs.
+
+### 11.3 Hub + monorepo
+
+- Hub Key Links: Team → `docs/team/OWNERS.md` (and approval-notes if present) — **pointer only**, not an HR wiki.  
+- Monorepo: owner rows may use package paths from Package index.  
+- Approval notes: “last approved” style only; no BPM.
+
+Announce: `Team: create|link|skip | docs/team | owners | approval-notes`.
+
+---
+
+## 12. Template telemetry (v2.4 Slice D)
+
+**When:** User explicitly opts in to template-gap telemetry, or maintainers dogfood with `DOCS_TELEMETRY_OPT_IN` / opt-in file. **Default: do nothing.**
+
+**Full procedure + privacy:** [template-telemetry.md](template-telemetry.md)
+
+### 12.1 Rules
+
+1. **Default off** — never enable opt-in without user consent.  
+2. Record only **template / skill UX gaps** (`gap_kind` allowlist); never product source, secrets, or repo URLs.  
+3. Use local ledger only:
+
+   ```bash
+   ./scripts/template-telemetry.sh record --gap-kind TEMPLATE_MISSING --template-id plan-template --opt-in
+   ```
+
+4. **Air-gapped:** with opt-in off, `record` is no-op; skill remains fully usable; **network: never**.  
+5. Do not use telemetry as a substitute for audit/claims matrices.
+
+Announce: `Telemetry: off|local-ledger | opt-in: no|yes | network: never`.
 
 ---
 

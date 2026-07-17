@@ -66,7 +66,7 @@ Humanos y agentes consultan una **única narrativa verificable** del proyecto (y
 
 ## Acceptance criteria (epic-level; slices tendrán los suyos)
 
-- [ ] **Fase Bridge** cerrada según epic AC del [plan phase-2-bridge](../phase-2-bridge/README.md) ([roadmap Fase 2](../../roadmap.md#fase-2-bridge)).
+- [x] **Fase Bridge** cerrada según epic AC del [plan phase-2-bridge](../phase-2-bridge/README.md) ([roadmap Fase 2](../../roadmap.md#fase-2-bridge)) — skill **v2.4.0**.
 - [ ] Al menos un pipeline CI de ejemplo (GitHub Actions) que corra audit estructural.
 - [ ] Spec de living claims (formato, veredictos, truth score) en ADR + template.
 - [ ] Política de privacidad: opt-in, anonymized, air-gapped path documentado.

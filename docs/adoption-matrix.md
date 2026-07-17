@@ -4,7 +4,7 @@
 > **Purpose:** Track where this skill is (or should be) installed, and the ArkGate pairing path.  
 > **Honesty rule:** only mark **Verified** when someone ran install/validate against that target. Hypotheses stay **Candidate**.
 
-**Last updated:** 2026-07-17 · Skill version **2.2.0**
+**Last updated:** 2026-07-17 · Skill version **2.4.0**
 
 ## How to use
 
@@ -35,6 +35,8 @@
 | Adoption matrix (this file) | **2.0** | packaging + tracking |
 | Polyglot stack detection (Python/Go/Node-TS) | **2.1** | [polyglot-mvp](./features/polyglot-mvp/README.md) · `detect-stack.sh` |
 | Monorepo hubs (package index + root map) | **2.2** | [monorepo-hubs](./features/monorepo-hubs/README.md) · `detect-packages.sh` |
+| Team governance (`docs/team/` owners + notes) | **2.3** | [team-governance](./features/team-governance/README.md) |
+| Template telemetry (opt-in local ledger) | **2.4** | [template-telemetry](./features/template-telemetry/README.md) · `template-telemetry.sh` |
 
 ## Target projects
 

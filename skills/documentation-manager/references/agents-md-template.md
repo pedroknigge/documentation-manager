@@ -21,6 +21,8 @@
 - Testing Strategy: [docs/testing-strategy.md](./docs/testing-strategy.md) *(if present)*
 - Operations: [docs/operations.md](./docs/operations.md) *(if present)*
 - Glossary: [docs/glossary.md](./docs/glossary.md) *(if present)*
+- Team (owners): [docs/team/OWNERS.md](./docs/team/OWNERS.md) *(if present — pointer only, not an HR wiki)*
+- Approval notes: [docs/team/approval-notes.md](./docs/team/approval-notes.md) *(if present)*
 
 *(On adopt-integrate, replace or supplement with links to **existing** productive authorities — e.g. CLAUDE.md, docs/modules/, docs/architecture/ — instead of inventing parallel paths.)*
 

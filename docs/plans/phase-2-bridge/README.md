@@ -4,12 +4,14 @@
 > Related: [Roadmap](../../roadmap.md) · parent epic: [knowledge-os](../knowledge-os/README.md)  
 > When slices ship, **promote** each to `docs/features/<slug>/` or a release note; this plan is the **Fase 2 umbrella**.
 
-**Status:** In progress (Slices A–B **Shipped**)  
+**Status:** Shipped (Slices A–D complete · skill **v2.4.0**)  
 **Slug:** `phase-2-bridge`  
 **Kind:** epic  
 **Owners:** skill maintainers  
 **Last updated:** 2026-07-17  
-**Code path (if any):** A → polyglot + `detect-stack.sh`; B → monorepo hubs + `detect-packages.sh`, fixture `monorepo-thin`  
+**Code path (if any):** A polyglot; B monorepo; C team; D `template-telemetry.sh` + procedure  
+
+
 
 
 **Horizon:** ~2–4 months post-v2.0.0  
@@ -102,28 +104,26 @@ Orden pensado por **dependencia y riesgo**, no por glamour. Cada slice puede shi
 2. **One authority per topic** se mantiene: claims de un package viven en su árbol o se linkean; no duplicar SSOT.  
 3. Packages sin docs → fila **gap** en coverage, no inventar product vision.
 
-### Slice C — Team governance (`team-governance`) · P1
+### Slice C — Team governance (`team-governance`) · P1 · **Shipped** (v2.3.0)
 
 | | |
 |--|--|
 | **Problema** | Sin dueños ni rastro de aprobación en la KB. |
 | **Entrega** | Layout `docs/team/` (o equivalente documentado); template owners + approval notes; procedure en modes; integrate no reescribe product vision al añadir team. |
-| **Acceptance** | Ver § Acceptance → C. |
-| **Depends on** | Independiente de A/B en gran parte; shippea mejor **después** de monorepo para owners por package. |
-| **Promote to** | `docs/features/team-governance/` |
+| **Acceptance** | Ver § Acceptance → C (done). |
+| **Feature pack** | [docs/features/team-governance/](../../features/team-governance/README.md) |
 
 **In scope:** Markdown owners list, “last approved” notes, link desde hub.  
 **Out:** CODEOWNERS enforcement engine, bots de merge, roles IAM.
 
-### Slice D — Opt-in template telemetry (`template-telemetry`) · P1
+### Slice D — Opt-in template telemetry (`template-telemetry`) · P1 · **Shipped** (v2.4.0)
 
 | | |
 |--|--|
 | **Problema** | Gaps de templates se descubren tarde y a mano. |
 | **Entrega** | Contrato de evento anónimo (qué se envía / qué **nunca**); opt-in explícito; path air-gapped = no-op; doc de privacidad en package; script o procedure de export local opcional. |
-| **Acceptance** | Ver § Acceptance → D. |
-| **Depends on** | Mejor después de A–C (más templates/layouts que medir). Puede shippear un **local ledger** primero y red después. |
-| **Promote to** | `docs/features/template-telemetry/` |
+| **Acceptance** | Ver § Acceptance → D (done). |
+| **Feature pack** | [docs/features/template-telemetry/](../../features/template-telemetry/README.md) |
 
 **Privacy hard rules (non-negotiable):**
 
@@ -135,12 +135,12 @@ Orden pensado por **dependencia y riesgo**, no por glamour. Cada slice puede shi
 
 ### Epic-level (cierra Fase 2)
 
-- [ ] Slices **A–D** shipped (feature packs o CHANGELOG minors) con validate + hardening verdes.
-- [ ] Roadmap Fase 2 marcado **COMPLETE** y release note de cierre Bridge (versión package a definir, p.ej. **2.x** rollup).
-- [ ] [knowledge-os](../knowledge-os/README.md) actualiza el tramo Bridge a **done** y desbloquea foco Fase 3.
-- [ ] Adoption matrix: ≥1 fila **Verified** polyglot o monorepo (honest; no inventar installs).
-- [ ] Core local sigue funcionando **sin** red y **sin** cuenta.
-- [ ] Quality bar anti over-documentation intacto (no explosion de templates basura).
+- [x] Slices **A–D** shipped (feature packs o CHANGELOG minors) con validate + hardening verdes.
+- [x] Roadmap Fase 2 marcado **COMPLETE** y release note de cierre Bridge (**v2.4.0**).
+- [ ] [knowledge-os](../knowledge-os/README.md) actualiza el tramo Bridge a **done** y desbloquea foco Fase 3. *(Fase 3 still planned; Bridge tramo marked done below)*
+- [ ] Adoption matrix: ≥1 fila **Verified** polyglot o monorepo (honest; no inventar installs). *(adoption remains separate work)*
+- [x] Core local sigue funcionando **sin** red y **sin** cuenta.
+- [x] Quality bar anti over-documentation intacto (no explosion de templates basura).
 
 ### A — Polyglot MVP
 
@@ -158,16 +158,16 @@ Orden pensado por **dependencia y riesgo**, no por glamour. Cada slice puede shi
 
 ### C — Team governance
 
-- [ ] Template `docs/team/` (owners + approval notes) en references.
-- [ ] Mode/procedure: cuándo crear vs linkear; integrate-first.
-- [ ] Hub del consumer puede linkear Team sin volverse un wiki de RR.HH.
+- [x] Template `docs/team/` (owners + approval notes) en references.
+- [x] Mode/procedure: cuándo crear vs linkear; integrate-first.
+- [x] Hub del consumer puede linkear Team sin volverse un wiki de RR.HH.
 
 ### D — Template telemetry
 
-- [ ] Spec de payload + privacy en package docs.
-- [ ] Opt-in mechanism documented; default off verificado en smoke.
-- [ ] Air-gapped path: skill usable sin telemetría.
-- [ ] Solo gaps de *templates/skill UX*, no profiling de código de producto.
+- [x] Spec de payload + privacy en package docs.
+- [x] Opt-in mechanism documented; default off verificado en smoke.
+- [x] Air-gapped path: skill usable sin telemetría.
+- [x] Solo gaps de *templates/skill UX*, no profiling de código de producto.
 
 ## Proposed public surface (hypothesis)
 
@@ -252,7 +252,7 @@ Versions are **not** locked; adjust at ship time.
 
 ## Implementation bridge
 
-> Slices A–B **shipped**. Say **start slice C** (or D) for the next placement checklist.
+> Slices A–D **shipped** (Fase 2 Bridge complete at v2.4.0). Next horizon: [knowledge-os](../knowledge-os/README.md).
 
 **Stubs written:** no (skill/docs/scripts only)
 
@@ -276,6 +276,25 @@ Versions are **not** locked; adjust at ship time.
 | Hub template | `agents-md-template.md` Package index | Real |
 | Fixture | `scripts/fixtures/monorepo-thin/` | Real |
 | Feature pack | `docs/features/monorepo-hubs/` | Real |
+
+### Slice C placement (done)
+
+| Area | Path | Status |
+|------|------|--------|
+| Procedure | `references/team-governance.md` | Real |
+| Templates | `team-owners-template.md`, `team-approval-notes-template.md` | Real |
+| Modes | `references/modes.md` §11 | Real |
+| Hub link | `agents-md-template.md` Team Key Links | Real |
+| Feature pack | `docs/features/team-governance/` | Real |
+
+### Slice D placement (done)
+
+| Area | Path | Status |
+|------|------|--------|
+| Procedure | `references/template-telemetry.md` | Real |
+| Script | `scripts/template-telemetry.sh` | Real |
+| Modes | `references/modes.md` §12 | Real |
+| Feature pack | `docs/features/template-telemetry/` | Real |
 
 ## Promotion
 

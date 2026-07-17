@@ -7,16 +7,14 @@ description: >
   "bootstrap docs", "sync docs", "audit docs", "docs vs code", "from zero",
   "new feature", "nueva feature", "promové el plan", "after ark-check",
   "arkgate bridge", "knowledge dashboard", /documentation-manager. Intents:
-  integrate, audit, from-zero. Feature autopilot v2: plan vs pack; Kind
-  spike/epic/redesign; Implementation bridge stubs opt-in. ArkGate bridge:
-  post-gate audit/sync. Dashboard HTML (markdown SSOT). Hardening + discovery.
-  v2.0 10x package + adoption matrix. Polyglot MVP (v2.1): Python/Go/Node-TS
-  stack detection + inventory/layout tables. Monorepo hubs (v2.2): package
-  index, root map, multi-package coverage. On conflict code wins.
+  integrate, audit, from-zero. Feature autopilot v2; Implementation bridge
+  opt-in; ArkGate post-gate sync; dashboard HTML; polyglot + monorepo hubs;
+  team governance (docs/team); opt-in template-gap telemetry (default off).
+  v2.4 Bridge package. On conflict code wins.
 license: MIT
 metadata:
   author: pedroknigge
-  version: "2.2.0"
+  version: "2.4.0"
 ---
 
 # Documentation Manager
@@ -45,9 +43,11 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 17. **ArkGate bridge (v1.4).** If ArkGate is detected (`ark.config.json`, `ark-check`, `.ark/`, ark skills) or the user just finished a gate, run the **bridge** sub-flow: enrich inventory from the contract; after gate pass → scoped **sync** / **audit**; residual violations → mark claims Contradicted/Partial — never rewrite docs to excuse broken architecture. No Ark → no-op. Placement hints in Implementation bridge reuse Ark layers when detected. See [arkgate-bridge.md](references/arkgate-bridge.md) and [modes.md §9](references/modes.md#9-arkgate-bridge-v14).
 18. **Knowledge dashboard (v1.6).** Optional static HTML view of plans/features/claims (`scripts/generate-docs-dashboard.sh` → `docs/audit/generated/dashboard.html`). Markdown is SSOT; HTML is gitignored view-only. Offer after audit once or on “dashboard” request. See [knowledge-dashboard.md](references/knowledge-dashboard.md) and [modes.md §10](references/modes.md#10-knowledge-dashboard-v16).
 19. **Skill hardening (v1.7).** Maintainers: run `validate-skill.sh` + `test-skill-hardening.sh` before release. Agents: detect install/version via [skill-discovery.md](references/skill-discovery.md); suggest reinstall when outdated (no silent auto-patch).
-20. **v2.0 package.** Completes the 10× line: capabilities 1.4–1.7 plus [docs/adoption-matrix.md](../../docs/adoption-matrix.md) tracking. Baseline install floor remains **2.0.0**; polyglot line **2.1.0**; current line is **2.2.0+**.
+20. **v2.0 package.** Completes the 10× line: capabilities 1.4–1.7 plus [docs/adoption-matrix.md](../../docs/adoption-matrix.md) tracking. Baseline install floor remains **2.0.0**; polyglot **2.1.0**; monorepo **2.2.0**; team **2.3.0**; current line is **2.4.0+** (Fase 2 Bridge complete).
 21. **Polyglot stack detection (v2.1 Slice A / skill 2.1.0).** On project discover (integrate / audit / from-zero / adopt), detect stack from filesystem (`package.json`, `pyproject.toml`, `go.mod`, …) via [skill-discovery.md](references/skill-discovery.md) **Polyglot stack detection** (or `scripts/detect-stack.sh`). Use **Inventory by stack** and **Docs layout guidance by stack** — do **not** assume Node/TS. Never invent ModuleIds/endpoints for frameworks without code evidence. See [modes.md §0.3](references/modes.md#03-stack-detection-polyglot-mvp--v21).
 22. **Monorepo hubs (v2.2 Slice B).** Detect multi-package trees (`pnpm-workspace.yaml`, `package.json` workspaces, `go.work`, multi-package dirs) via [skill-discovery.md](references/skill-discovery.md) **Monorepo hubs** (or `scripts/detect-packages.sh`). Root hub is a **map + Package index**, not a dump; multi-package coverage marks **gap** packages; default **package non-writes** when only indexing root. See [modes.md §0.4](references/modes.md#04-monorepo-hubs-v22-slice-b).
+23. **Team governance (v2.3 Slice C).** Optional `docs/team/` with **owners** + **approval notes** (last-approved style). Create vs link per [team-governance.md](references/team-governance.md); hub links Team without becoming an HR wiki; integrate-first — adding team must **not** rewrite product-vision / requirements / ADRs. No CODEOWNERS engine or BPM. See [modes.md §11](references/modes.md#11-team-governance-v23-slice-c).
+24. **Template telemetry (v2.4 Slice D).** Opt-in **local ledger** for **template/skill UX gaps only** ([template-telemetry.md](references/template-telemetry.md); `scripts/template-telemetry.sh`). **Default off**; never-send source/secrets/repo URLs; **network never**; air-gapped no-op when opt-in off. See [modes.md §12](references/modes.md#12-template-telemetry-v24-slice-d).
 
 ## Step 0 — Detect scope, mode, and Intent
 
@@ -91,6 +91,8 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 - Named single surface → **never** require the user to list non-writes or choose folders
 - “after ark-check” / “post-gate docs” / gate just ran + docs intent → **sync** or **audit** with **ArkGate bridge**
 - “dashboard” / “docs HTML” / “knowledge report” → generate **Knowledge dashboard** ([knowledge-dashboard.md](references/knowledge-dashboard.md))
+- “owners” / “quién es dueño” / “team docs” / “approval notes” / “docs/team” → **Team governance** ([team-governance.md](references/team-governance.md); modes §11)
+- “template telemetry” / “opt-in telemetry” / “record template gap” → **Template telemetry** only if user opts in ([template-telemetry.md](references/template-telemetry.md); modes §12); default off
 
 **Maturity** (when relevant): thin | mixed | mature — see [modes.md](references/modes.md#2-adopt-project).
 
@@ -114,6 +116,9 @@ project-root/
     ├── requirements.md
     ├── architecture.md
     ├── roadmap.md
+    ├── team/                  # v2.3 team governance (optional)
+    │   ├── OWNERS.md
+    │   └── approval-notes.md
     ├── audit/                 # Intent audit (optional)
     │   └── claims-matrix.md
     ├── plans/<slug>/          # v1.3 plan mode (pre-code / epic)
@@ -134,6 +139,7 @@ Supporting docs only when justified (except **from-zero**, which may create a fu
 | Claims matrix | optional pre | recommended if drift | **required** | n/a | scoped if audit | if drift |
 | **Plans** `docs/plans/` | n/a | n/a | n/a | **required** | link if exists | if impact |
 | Feature packs | key domains | gaps / entries | no (unless asked) | no (until promote) | **required** | if impact |
+| **Team** `docs/team/` | if owners known | create/link if asked | no | n/a | n/a | if impact |
 | Parallel full tree | sandbox ok | **forbidden** at root | n/a | n/a | n/a | n/a |
 
 ## Workflow (all modes)
@@ -166,10 +172,17 @@ Detect Ark → post-gate **sync**/**audit** or inventory enrich; residual violat
 ### Knowledge dashboard (v1.6)
 Static HTML from existing docs only (`generate-docs-dashboard.sh`). View-only; markdown SSOT. See [knowledge-dashboard.md](references/knowledge-dashboard.md) and modes §10.
 
+### Team governance (v2.3)
+Optional `docs/team/` owners + approval notes; create vs link; integrate-first. See [team-governance.md](references/team-governance.md) and modes §11.
+
+### Template telemetry (v2.4)
+Opt-in local ledger for template gaps only; default off; air-gapped no-op. See [template-telemetry.md](references/template-telemetry.md) and modes §12.
+
 ## Hub requirements
 
 - Overview, nav links, agent instructions (read docs; update after significant work; ADRs; **code wins**), status line.
 - Link **Plans** (`docs/plans/`) and **Features** (`docs/features/`) when present.
+- Link **Team** (`docs/team/OWNERS.md`) when team docs exist — pointer only, not an HR wiki.
 - Adopt / from-zero project: **Surface coverage** matrix (multi-package rows when monorepo).
 - Monorepo: **Package index** on root hub (map, not dump).
 - After audit: link to claims matrix if written.
@@ -199,6 +212,10 @@ Follow [quality-checklist.md](references/quality-checklist.md).
 | [references/arkgate-bridge.md](references/arkgate-bridge.md) | **ArkGate bridge** (detect, post-gate, violation→claim) |
 | [references/knowledge-dashboard.md](references/knowledge-dashboard.md) | **Knowledge dashboard** (static HTML view) |
 | [references/skill-discovery.md](references/skill-discovery.md) | **Discovery / upgrade** + **Polyglot** + **Monorepo hubs** (package index) |
+| [references/team-governance.md](references/team-governance.md) | **Team governance** (create/link, non-writes) |
+| [references/team-owners-template.md](references/team-owners-template.md) | Consumer `docs/team/OWNERS.md` |
+| [references/team-approval-notes-template.md](references/team-approval-notes-template.md) | Consumer `docs/team/approval-notes.md` |
+| [references/template-telemetry.md](references/template-telemetry.md) | **Template telemetry** (opt-in, privacy, local ledger) |
 | [references/quality-checklist.md](references/quality-checklist.md) | Done criteria |
 
 ## When NOT to use / defaults

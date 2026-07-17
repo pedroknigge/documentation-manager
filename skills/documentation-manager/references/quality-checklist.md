@@ -75,6 +75,23 @@ Run before reporting done.
 - [ ] Default package **non-writes** when only indexing root (no rewrite of mature package vision/ADRs/packs)
 - [ ] No mega feature pack swallowing all packages; one authority per package topic
 
+## Team governance (v2.3)
+
+- [ ] Team work used [team-governance.md](team-governance.md): **create** vs **link** decided deliberately
+- [ ] Layout `docs/team/` with **OWNERS.md** (and approval-notes if requested); templates not invented HR wiki
+- [ ] Hub links Team as a **pointer** only
+- [ ] Integrate-first: adding team did **not** rewrite product-vision / requirements / ADRs
+- [ ] No invented owner names; empty owner = gap
+- [ ] Approval notes are last-approved style only — no BPM / ticket clone
+
+## Template telemetry (v2.4)
+
+- [ ] Telemetry **default off**; enabled only with explicit user opt-in
+- [ ] Events are **template/skill UX gaps** only — no product source, secrets, or repo URLs
+- [ ] Local ledger only (`template-telemetry.sh`); **network never**
+- [ ] Air-gapped path verified: skill usable with opt-in off (no-op record)
+- [ ] Never-send list respected ([template-telemetry.md](template-telemetry.md))
+
 ## Knowledge dashboard (v1.6)
 
 - [ ] Generated only from existing docs (no invented features/claims for the UI)

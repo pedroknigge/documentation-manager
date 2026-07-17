@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v2.2.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · 10× · Polyglot · Monorepo · ArkGate · Autopilot · Dashboard
+  <strong>v2.4.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · Bridge complete · Polyglot · Monorepo · Team · Telemetry · ArkGate
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.2.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.4.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -192,15 +192,33 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 
 ---
 
-## New in 2.2 — Monorepo hubs
+## New in 2.4 — Template telemetry (Fase 2 complete)
+
+| | |
+|--|--|
+| **Version** | **2.4.0** — Fase 2 Slice D (opt-in local template-gap ledger) |
+| **Procedure** | [template-telemetry.md](./skills/documentation-manager/references/template-telemetry.md) |
+| **CLI** | `scripts/template-telemetry.sh` — default off, network never |
+| **Feature pack** | [docs/features/template-telemetry/](./docs/features/template-telemetry/README.md) |
+| **Changelog** | [CHANGELOG.md](./CHANGELOG.md) |
+
+### Also in 2.3 — Team governance
+
+| | |
+|--|--|
+| **Version** | **2.3.0** — Fase 2 Slice C (`docs/team/` owners + approval notes) |
+| **Procedure** | [team-governance.md](./skills/documentation-manager/references/team-governance.md) |
+| **Templates** | OWNERS + approval-notes under `docs/team/` |
+| **Feature pack** | [docs/features/team-governance/](./docs/features/team-governance/README.md) |
+
+### Also in 2.2 — Monorepo hubs
 
 | | |
 |--|--|
 | **Version** | **2.2.0** — Fase 2 Slice B (package index + root hub map) |
-| **Procedure** | [skill-discovery.md](./skills/documentation-manager/references/skill-discovery.md) Monorepo hubs |
+| **Procedure** | Monorepo hubs in skill-discovery |
 | **Detector** | `scripts/detect-packages.sh` |
 | **Feature pack** | [docs/features/monorepo-hubs/](./docs/features/monorepo-hubs/README.md) |
-| **Changelog** | [CHANGELOG.md](./CHANGELOG.md) |
 
 ### Also in 2.1 — Polyglot MVP
 
