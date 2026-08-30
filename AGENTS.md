@@ -1,6 +1,6 @@
 # AGENTS.md — documentation-manager (skill package)
 
-**Status:** skill development repo · last updated 2026-07-17 · skill version **2.4.0**
+**Status:** skill development repo · last updated 2026-08-30 · skill version **2.5.0**
 
 ## What this folder is
 
@@ -66,6 +66,7 @@ documentation-manager/          ← this git root (skill development)
 | Monorepo hubs | [docs/features/monorepo-hubs/README.md](docs/features/monorepo-hubs/README.md) | Shipped (v2.2.0) |
 | Team governance | [docs/features/team-governance/README.md](docs/features/team-governance/README.md) | Shipped (v2.3.0) |
 | Template telemetry | [docs/features/template-telemetry/README.md](docs/features/template-telemetry/README.md) | Shipped (v2.4.0) |
+| Living claims (KOS first increment) | [docs/features/living-claims/README.md](docs/features/living-claims/README.md) | Shipped (v2.5.0) |
 
 ## Navigation (meta)
 
@@ -82,7 +83,7 @@ documentation-manager/          ← this git root (skill development)
 | Knowledge dashboard | [docs/plans/knowledge-dashboard/README.md](docs/plans/knowledge-dashboard/README.md) | Shipped → feature pack | 10× / v2 |
 | Skill hardening | [docs/plans/skill-hardening/README.md](docs/plans/skill-hardening/README.md) | Shipped → feature pack | 10× / v2 |
 | **Phase 2 Bridge** | [docs/plans/phase-2-bridge/README.md](docs/plans/phase-2-bridge/README.md) | **Shipped** (A–D complete, v2.4.0) | Bridge |
-| Knowledge OS | [docs/plans/knowledge-os/README.md](docs/plans/knowledge-os/README.md) | Planned | 100× (post-Bridge) |
+| Knowledge OS | [docs/plans/knowledge-os/README.md](docs/plans/knowledge-os/README.md) | **First increment** (living-claims v0 + CI audit, v2.5.0); epic continues toward 100× | 100× (post-Bridge) |
 
 *(Pre-code epics under `docs/plans/`. Promote to `docs/features/<slug>/` when behavior lands in the skill tree.)*
 

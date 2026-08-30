@@ -27,10 +27,15 @@ for path in \
   "$FAKE_HOME/.agents/skills/documentation-manager/references/modes.md" \
   "$FAKE_HOME/.agents/skills/documentation-manager/references/skill-discovery.md" \
   "$FAKE_HOME/.agents/skills/documentation-manager/references/plan-template.md" \
+  "$FAKE_HOME/.agents/skills/documentation-manager/references/living-claims.md" \
   "$FAKE_HOME/.agents/skills/documentation-manager/scripts/generate-docs-dashboard.sh"
 do
   [[ -f "$path" ]] || { echo "FAIL: missing $path"; exit 1; }
 done
+
+# Package-root CI gate (not copied into skill install tree; must exist for consumers)
+[[ -f "$ROOT/scripts/audit-claims.sh" ]] || { echo "FAIL: missing scripts/audit-claims.sh"; exit 1; }
+[[ -f "$ROOT/.github/workflows/docs-audit.yml" ]] || { echo "FAIL: missing docs-audit workflow"; exit 1; }
 
 grep -q "BEGIN documentation-manager skill" "$FAKE_HOME/.codex/AGENTS.md" \
   || { echo "FAIL: codex block missing"; exit 1; }

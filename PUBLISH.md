@@ -67,6 +67,16 @@ Version must match across:
 - `CHANGELOG.md` section for that version
 - `docs/adoption-matrix.md` version line (when cutting a major)
 
+### Cutting **2.5.0** (Knowledge OS first increment)
+
+Narrative: **first OS foundation slice toward 100×** (living claims v0 + local CI audit). Do **not** market as a second 10× or a full 100× leap.
+
+```bash
+# after gate is green:
+git tag -a v2.5.0 -m "documentation-manager skill v2.5.0 — Knowledge OS first increment (living claims + CI audit)"
+git push origin main --tags   # only when you intend to publish
+```
+
 ### Cutting **2.0.0** (reference)
 
 ```bash

@@ -2,7 +2,7 @@
 
 > Hub: [AGENTS.md](../AGENTS.md) · Planes: [docs/plans/](./plans/)  
 > **Producto:** Agent Skill (knowledge base viva, agent-first). No es una app de producto genérica.  
-> **Última actualización:** 2026-07-17 · **Versión actual:** 2.4.0
+> **Última actualización:** 2026-08-30 · **Versión actual:** 2.5.0
 
 ## Principios (axiomas)
 
@@ -27,7 +27,7 @@
 
 | Área | Estado | Notas |
 |------|--------|-------|
-| Skill core (`SKILL.md` + modes) | **Shipped** (**v2.4.0**) | 10× + Fase 2 Bridge complete |
+| Skill core (`SKILL.md` + modes) | **Shipped** (**v2.5.0**) | Bridge complete + Knowledge OS first increment |
 | Feature autopilot + plan mode | **Shipped** (v1.3 → **v2 / 1.5**) | Kind + Implementation bridge opt-in |
 | Templates + quality bar | **Shipped** | + skill-discovery |
 | Install (`npx skills` / `install.sh`) | **Shipped** | Idempotente; dashboard script shipped |
@@ -36,7 +36,8 @@
 | Dashboard HTML | **Shipped** (v1.6) | [feature](./features/knowledge-dashboard/README.md) |
 | Adoption matrix | **Shipped** (v2.0) | [adoption-matrix.md](./adoption-matrix.md) |
 | Bridge (polyglot / monorepo / team / telemetry) | **Shipped** (Fase 2) | [phase-2-bridge](./plans/phase-2-bridge/README.md) · A–D complete |
-| Polyglot / multi-repo / SaaS (org + OS) | **Planned** (horizonte 100×) | [knowledge-os](./plans/knowledge-os/README.md) |
+| Living claims + CI structural audit | **Shipped** (v2.5.0) | [living-claims](./features/living-claims/README.md) — first KOS increment |
+| Polyglot / multi-repo / SaaS (org + OS) | **Planned** (resto del horizonte 100×) | [knowledge-os](./plans/knowledge-os/README.md) |
 
 ## Fases
 
@@ -94,16 +95,17 @@
 
 ### Fase 3 — 100× Knowledge OS (≈ 4–12 meses)
 
-**Meta:** sistema operativo de conocimiento AI-native.
+**Meta:** sistema operativo de conocimiento AI-native.  
+**First increment (shipped as skill v2.5.0):** living claims v0 + local/air-gapped CI structural audit — **toward** 100×, not a full OS leap. Pack: [features/living-claims](./features/living-claims/README.md).
 
-| Capacidad | Descripción | Dependencias |
-|-----------|-------------|--------------|
-| Living claims + truth score | Hash/código ↔ claim; CI audit | Fase 1 audit + CI hooks |
-| Org-level hub | Políticas centrales, sync multi-repo | Bridge multi-repo |
-| SaaS control-plane (opcional) | Dashboard web, search semántico, Linear/Jira | Core local siempre free |
-| Native agent standard | Built-in / MCP registry / “documentation mode” | Adopción + ecosistema |
-| Marketplace de knowledge packs | Presets por dominio (SaaS, fintech, AI) | Templates estables |
-| Meta-architect | Anti-patterns de docs a escala | Telemetría opt-in |
+| Capacidad | Descripción | Dependencias | Estado |
+|-----------|-------------|--------------|--------|
+| Living claims + truth score | Hash/código ↔ claim; CI audit | Fase 1 audit + CI hooks | **First increment** (v2.5.0) |
+| Org-level hub | Políticas centrales, sync multi-repo | Bridge multi-repo | Planned |
+| SaaS control-plane (opcional) | Dashboard web, search semántico, Linear/Jira | Core local siempre free | Planned (non-goal for core) |
+| Native agent standard | Built-in / MCP registry / “documentation mode” | Adopción + ecosistema | Planned |
+| Marketplace de knowledge packs | Presets por dominio (SaaS, fintech, AI) | Templates estables | Planned |
+| Meta-architect | Anti-patterns de docs a escala | Telemetría opt-in | Planned |
 
 Ver plan: [knowledge-os](./plans/knowledge-os/README.md).
 
@@ -153,6 +155,7 @@ Impacto en “code wins + zero maintenance cost”
 | **2.2** | Monorepo hubs (Slice B) | **Shipped** 2026-07-17 — [monorepo-hubs](./features/monorepo-hubs/README.md) |
 | **2.3** | Team governance (Slice C) | **Shipped** 2026-07-17 — [team-governance](./features/team-governance/README.md) |
 | **2.4** | Template telemetry (Slice D) + Fase 2 Bridge complete | **Shipped** 2026-07-17 — [template-telemetry](./features/template-telemetry/README.md) |
+| **2.5** | Knowledge OS **first increment** (living claims v0 + local CI audit) | **Shipped** 2026-08-30 — [living-claims](./features/living-claims/README.md); toward 100×, not a second 10× |
 
 ## Cómo usar este roadmap
 

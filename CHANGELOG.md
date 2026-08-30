@@ -4,6 +4,22 @@ All notable changes to the **documentation-manager** skill package.
 
 Format: keep entries scannable. Versions follow semver for the skill package (`SKILL.md` metadata).
 
+## [2.5.0] — 2026-08-30
+
+### Added
+
+- **Knowledge OS first increment (toward 100×):** living claims v0 + local CI structural audit  
+- Procedure: `references/living-claims.md`; feature pack: [docs/features/living-claims/](docs/features/living-claims/README.md)  
+- Air-gapped entrypoint: `scripts/audit-claims.sh` (fail on critical Contradicted)  
+- Example workflow: `.github/workflows/docs-audit.yml`  
+- install.sh remote refs include `living-claims.md`  
+
+### Notes
+
+- **Not** a second 10× (that shipped at v2.0) and **not** a full 100× Knowledge OS leap  
+- Core stays local/air-gapped — no SaaS/control-plane in this release  
+- Continues [knowledge-os](docs/plans/knowledge-os/README.md) epic after Fase 2 Bridge (v2.4.0)  
+
 ## [2.4.0] — 2026-07-17
 
 ### Added

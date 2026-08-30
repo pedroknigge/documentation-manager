@@ -4,12 +4,12 @@
 > Related: [Roadmap](../../roadmap.md) · future pack: `docs/features/knowledge-os/`  
 > When slices ship, **promote** cada slice a feature pack o release notes; este plan permanece como **epic paraguas**.
 
-**Status:** Planned  
+**Status:** Planned (first increment shipping in skill **2.5.0** — living claims v0 + CI audit)  
 **Slug:** `knowledge-os`  
 **Kind:** epic  
 **Owners:** skill maintainers + partners de ecosistema (futuro)  
-**Last updated:** 2026-07-17  
-**Code path (if any):** *none yet* — depende de cerrar [Fase 2 Bridge](../phase-2-bridge/README.md) antes del tramo 100× full
+**Last updated:** 2026-08-30  
+**Code path (if any):** skill tree + local `scripts/audit-claims.sh` (v2.5); SaaS still none — depende de cerrar [Fase 2 Bridge](../phase-2-bridge/README.md) antes del tramo 100× full
 
 ## Problem
 
@@ -67,11 +67,11 @@ Humanos y agentes consultan una **única narrativa verificable** del proyecto (y
 ## Acceptance criteria (epic-level; slices tendrán los suyos)
 
 - [x] **Fase Bridge** cerrada según epic AC del [plan phase-2-bridge](../phase-2-bridge/README.md) ([roadmap Fase 2](../../roadmap.md#fase-2-bridge)) — skill **v2.4.0**.
-- [ ] Al menos un pipeline CI de ejemplo (GitHub Actions) que corra audit estructural.
-- [ ] Spec de living claims (formato, veredictos, truth score) en ADR + template.
-- [ ] Política de privacidad: opt-in, anonymized, air-gapped path documentado.
-- [ ] Core local sigue funcionando **sin** cuenta SaaS.
-- [ ] Quality bar anti over-documentation intacto.
+- [ ] Al menos un pipeline CI de ejemplo (GitHub Actions) que corra audit estructural. _(scripts/CI exclusivity in 2.5.0 cut)_
+- [x] Spec de living claims (formato, veredictos, truth score) en ADR + template — [ADR-0001](../../adr/0001-living-claims-wire-format.md), [living-claims.md](../../../skills/documentation-manager/references/living-claims.md), [feature pack](../../features/living-claims/README.md).
+- [ ] Política de privacidad: opt-in, anonymized, air-gapped path documentado. _(template telemetry covers opt-in; OS SaaS privacy still open)_
+- [x] Core local sigue funcionando **sin** cuenta SaaS.
+- [x] Quality bar anti over-documentation intacto.
 
 ## Proposed public surface (hypothesis)
 
@@ -118,7 +118,7 @@ flowchart TB
 
 ## Open questions
 
-- ¿Formato wire de living claims (YAML frontmatter vs matrix only vs sidecar JSON)?
+- ~~¿Formato wire de living claims (YAML frontmatter vs matrix only vs sidecar JSON)?~~ → **Resolved (v0):** matrix-first columns; see [ADR-0001](../../adr/0001-living-claims-wire-format.md).
 - ¿Governance: CODEOWNERS-like para docs o proceso solo en Markdown?
 - ¿Quién opera el marketplace (community GitHub vs hosted)?
 

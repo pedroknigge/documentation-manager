@@ -49,6 +49,15 @@ Run before reporting done.
 - [ ] from-zero: full KB only with that Intent; sandbox when path requested; old docs treated as hypothesis
 - [ ] from-zero does not silently overwrite mature productive SSOT without confirm
 
+## Living claims + CI audit (v2.5)
+
+- [ ] Structural claims use living-claims columns: Anchor path (+ optional symbol/hash) and Severity (`critical` \| `normal`)
+- [ ] Wire matches [living-claims.md](living-claims.md) / [ADR-0001](../../../docs/adr/0001-living-claims-wire-format.md) — matrix-first, no parallel wiki
+- [ ] Verdict enum unchanged; omitted severity treated as `normal`
+- [ ] Truth score described as **advisory**; **CI / `audit-claims.sh`** is the gate for critical Contradicted
+- [ ] Did not invent code to satisfy a claim; did not auto-commit
+- [ ] No SaaS/control-plane invented for the core gate (local/air-gapped)
+
 ## ArkGate bridge (v1.4)
 
 - [ ] Detection ran when adopt/audit/sync or user mentioned Ark/gate (signals documented in arkgate-bridge.md)

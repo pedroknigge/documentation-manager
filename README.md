@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v2.4.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · Bridge complete · Polyglot · Monorepo · Team · Telemetry · ArkGate
+  <strong>v2.5.0</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT · Knowledge OS first increment · Living claims · CI audit · Bridge · ArkGate
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.4.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.0-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -199,7 +199,19 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 
 ---
 
-## New in 2.4 — Template telemetry (Fase 2 complete)
+## New in 2.5 — Knowledge OS first increment (toward 100×)
+
+| | |
+|--|--|
+| **Version** | **2.5.0** — first Knowledge OS slice (living claims v0 + local CI structural audit) |
+| **Not a leap** | 10× already shipped at **v2.0**; this is **not** a second 10× or a full 100× OS |
+| **Procedure** | [living-claims.md](./skills/documentation-manager/references/living-claims.md) |
+| **CI (local/air-gapped)** | `scripts/audit-claims.sh` · example [`.github/workflows/docs-audit.yml`](./.github/workflows/docs-audit.yml) |
+| **Feature pack** | [docs/features/living-claims/](./docs/features/living-claims/README.md) |
+| **Plan** | [docs/plans/knowledge-os/](./docs/plans/knowledge-os/README.md) |
+| **Changelog** | [CHANGELOG.md](./CHANGELOG.md) |
+
+### Also in 2.4 — Template telemetry (Fase 2 complete)
 
 | | |
 |--|--|
@@ -207,7 +219,6 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 | **Procedure** | [template-telemetry.md](./skills/documentation-manager/references/template-telemetry.md) |
 | **CLI** | `scripts/template-telemetry.sh` — default off, network never |
 | **Feature pack** | [docs/features/template-telemetry/](./docs/features/template-telemetry/README.md) |
-| **Changelog** | [CHANGELOG.md](./CHANGELOG.md) |
 
 ### Also in 2.3 — Team governance
 
@@ -320,7 +331,7 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 - **Sandbox from-zero** — full KB in a safe folder when you need a clean slate  
 - **Integrate-first maturity** — respect the docs that already own a topic  
 
-**Current package: 2.4.0** (Fase 2 Bridge complete). Installer/validator baseline remains **≥ 2.0.0** (10×: ArkGate bridge · autopilot v2 · dashboard · hardening · adoption matrix), plus polyglot · monorepo · team · template telemetry on the 2.1–2.4 line.
+**Current package: 2.5.0** — Knowledge OS **first increment** (living claims v0 + local CI audit) toward 100×; Fase 2 Bridge remains complete at 2.4. Installer/validator baseline remains **≥ 2.0.0** (10× at v2.0), plus polyglot · monorepo · team · telemetry on 2.1–2.4, plus living-claims/CI on 2.5.
 
 **Upgrade:** re-run `./install.sh` or `npx skills add pedroknigge/documentation-manager -y` (idempotent). See [skill-discovery.md](./skills/documentation-manager/references/skill-discovery.md) · [adoption-matrix.md](./docs/adoption-matrix.md) · [CHANGELOG.md](./CHANGELOG.md).
 
@@ -356,6 +367,7 @@ scripts/
   detect-stack.sh          ← polyglot (v2.1)
   detect-packages.sh       ← monorepo (v2.2)
   template-telemetry.sh    ← opt-in local ledger (v2.4)
+  audit-claims.sh          ← living-claims CI (v2.5, air-gapped)
   generate-docs-dashboard.sh
 ```
 

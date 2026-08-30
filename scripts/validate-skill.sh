@@ -79,11 +79,12 @@ for ref in \
   team-governance.md \
   team-owners-template.md \
   team-approval-notes-template.md \
-  template-telemetry.md
+  template-telemetry.md \
+  living-claims.md
 do
   [[ -f "$SKILL_DIR/references/$ref" ]] || fail "Missing references/$ref"
 done
-ok "all references present (incl. bridges + dashboard + discovery + team + telemetry)"
+ok "all references present (incl. bridges + dashboard + discovery + team + telemetry + living-claims)"
 
 for concept in \
   "Step 0" \
@@ -118,11 +119,14 @@ for concept in \
   "2.3.0" \
   "docs/team" \
   "Template telemetry" \
-  "2.4.0"
+  "2.4.0" \
+  "Living claims" \
+  "2.5.0" \
+  "audit-claims"
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (… team 2.3.0, telemetry 2.4.0)"
+ok "core concepts present (… team 2.3.0, telemetry 2.4.0, living-claims 2.5.0)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -159,11 +163,15 @@ for concept in \
   "approval notes" \
   "Template telemetry" \
   "Default off" \
-  "network: never"
+  "network: never" \
+  "Living claims" \
+  "audit-claims" \
+  "anchor.path" \
+  "severity"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md … + team + template telemetry procedures present"
+ok "modes.md … + team + template telemetry + living-claims procedures present"
 
 [[ -x "$ROOT/scripts/generate-docs-dashboard.sh" ]] || [[ -f "$ROOT/scripts/generate-docs-dashboard.sh" ]] \
   || fail "Missing scripts/generate-docs-dashboard.sh"
@@ -214,7 +222,8 @@ grep -F -q "Polyglot stack detection" "$QC" || fail "quality-checklist missing P
 grep -F -q "Monorepo hubs" "$QC" || fail "quality-checklist missing Monorepo hubs section"
 grep -F -q "Team governance" "$QC" || fail "quality-checklist missing Team governance section"
 grep -F -q "Template telemetry" "$QC" || fail "quality-checklist missing Template telemetry section"
-ok "quality-checklist … + team + template telemetry present"
+grep -F -q "Living claims" "$QC" || fail "quality-checklist missing Living claims section"
+ok "quality-checklist … + team + template telemetry + living-claims present"
 
 PT="$SKILL_DIR/references/plan-template.md"
 grep -F -q "Implementation bridge" "$PT" || fail "plan-template missing Implementation bridge section"
@@ -227,10 +236,33 @@ done
 ok "status-taxonomy labels present"
 
 AT="$SKILL_DIR/references/audit-template.md"
-for concept in "OK" "Partial" "Missing" "Contradicted" "Unverifiable" "Claims matrix" "Code inventory"; do
+for concept in "OK" "Partial" "Missing" "Contradicted" "Unverifiable" "Claims matrix" "Code inventory" "Severity" "anchor.path"; do
   grep -F -q -- "$concept" "$AT" || fail "audit-template missing: $concept"
 done
-ok "audit-template verdicts present"
+ok "audit-template verdicts + living-claims severity/anchor present"
+
+LC="$SKILL_DIR/references/living-claims.md"
+for concept in \
+  "anchor.path" \
+  "severity" \
+  "critical" \
+  "Contradicted" \
+  "truth score" \
+  "audit-claims"
+do
+  grep -F -qi -- "$concept" "$LC" || fail "living-claims.md missing: $concept"
+done
+ok "living-claims.md wire-format anchors present"
+
+[[ -f "$ROOT/scripts/audit-claims.sh" ]] || fail "missing scripts/audit-claims.sh"
+chmod +x "$ROOT/scripts/audit-claims.sh" 2>/dev/null || true
+if grep -E -q '\b(curl|wget|nc)\b|https?://' "$ROOT/scripts/audit-claims.sh"; then
+  fail "audit-claims.sh must not use network tools or URLs"
+fi
+[[ -f "$ROOT/.github/workflows/docs-audit.yml" ]] || fail "missing .github/workflows/docs-audit.yml"
+grep -F -q "audit-claims.sh" "$ROOT/.github/workflows/docs-audit.yml" \
+  || fail "docs-audit.yml must invoke audit-claims.sh"
+ok "audit-claims.sh present (air-gapped) + example docs-audit workflow"
 
 PT="$SKILL_DIR/references/plan-template.md"
 for concept in "Promotion" "Acceptance criteria" "Open questions" "MVP scope" "docs/features"; do

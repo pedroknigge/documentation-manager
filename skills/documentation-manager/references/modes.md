@@ -420,12 +420,20 @@ Skip pure opinion, future hopes without paths, and marketing fluff unless they c
 
 ### 6.4 Write the matrix
 
-Use [audit-template.md](audit-template.md). Prefer:
+Use [audit-template.md](audit-template.md) (**living claims v0** columns). Prefer:
 
 - `docs/audit/claims-matrix.md` at root, or  
 - sandbox path if user asked not to touch productive docs  
 
-Include: summary counts, top Contradicted/Missing, recommended next Intent (`integrate` patch vs `from-zero` sandbox).
+Include: summary counts, severity counts, top Contradicted/Missing, recommended next Intent (`integrate` patch vs `from-zero` sandbox).
+
+For each structural claim set:
+
+- **Anchor path** (`anchor.path`) when path-backed  
+- optional **Anchor symbol** / **Anchor hash**  
+- **Severity** `critical` \| `normal` (omit → `normal`)  
+
+Verdict enum unchanged. Full wire: [living-claims.md](living-claims.md) · [ADR-0001](../../../docs/adr/0001-living-claims-wire-format.md).
 
 ### 6.5 Standalone vs follow-on
 
@@ -437,6 +445,10 @@ Include: summary counts, top Contradicted/Missing, recommended next Intent (`int
 | → from-zero | Full KB (usually sandbox) treating old docs as hypothesis |
 
 Do **not** auto-start from-zero after audit without user Intent.
+
+### 6.6 Living claims + local CI (pointer)
+
+After writing the matrix, remind: dashboard truth score is **advisory**; **CI / `scripts/audit-claims.sh` is the gate** (fail on **critical Contradicted**). Procedure: [§13](#13-living-claims--ci-structural-audit-v25) and [living-claims.md](living-claims.md).
 
 ---
 
@@ -577,6 +589,26 @@ Announce: `Team: create|link|skip | docs/team | owners | approval-notes`.
 5. Do not use telemetry as a substitute for audit/claims matrices.
 
 Announce: `Telemetry: off|local-ledger | opt-in: no|yes | network: never`.
+
+---
+
+## 13. Living claims + CI structural audit (v2.5)
+
+**When:** Mode/Intent **audit**; user asks for living claims, truth score, docs CI, or fail-on-Contradicted; maintainers shipping Knowledge OS first increment.
+
+**Full procedure:** [living-claims.md](living-claims.md) · Wire ADR: [docs/adr/0001-living-claims-wire-format.md](../../../docs/adr/0001-living-claims-wire-format.md)
+
+### 13.1 Rules
+
+1. **Matrix-first** — extend claims matrix; no parallel claims wiki.  
+2. Anchors: `anchor.path` (+ optional `symbol` / `hash`); severity `critical` \| `normal`.  
+3. Verdicts unchanged; **code wins**.  
+4. **Truth score** formula matches dashboard heuristic; score is **advisory**.  
+5. **CI is the gate:** `critical` + `Contradicted` → non-zero from local air-gapped `scripts/audit-claims.sh` (example `.github/workflows/docs-audit.yml`). **No network** required.  
+6. Graceful v0: no matrix → skip/warn; missing severity → `normal`.  
+7. Do not invent code to match docs; do not auto-commit.
+
+Announce: `Living-claims: v0 | matrix: path|none | CI-gate: audit-claims | score: advisory`.
 
 ---
 

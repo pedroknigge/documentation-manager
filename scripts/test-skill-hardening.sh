@@ -30,10 +30,11 @@ grep -q "skill version \*\*${VER}\*\*" "$ROOT/AGENTS.md" \
 ok "version sync README + AGENTS ↔ SKILL ($VER)"
 
 # ─── Fixtures present ───────────────────────────────────────────────────────
-for f in thin-repo mature-repo no-docs-repo python-thin-repo go-thin-repo monorepo-thin golden/autopilot-cases.tsv; do
+for f in thin-repo mature-repo no-docs-repo python-thin-repo go-thin-repo monorepo-thin \
+  golden/autopilot-cases.tsv claims-pass claims-fail claims-none; do
   [[ -e "$FIX/$f" ]] || fail "missing fixture $f"
 done
-ok "fixtures present (thin, mature, no-docs, python-thin, go-thin, monorepo-thin, golden)"
+ok "fixtures present (thin, mature, no-docs, python-thin, go-thin, monorepo-thin, golden, claims-*)"
 
 # thin: code, no hub/docs
 [[ -f "$FIX/thin-repo/src/app/index.ts" ]] || fail "thin-repo missing code"
@@ -210,10 +211,11 @@ fi
 
 # ─── install.sh ships required remote refs (hardening regression) ────────────
 for ref in plan-template.md arkgate-bridge.md implementation-bridge.md knowledge-dashboard.md \
-  team-governance.md team-owners-template.md team-approval-notes-template.md template-telemetry.md; do
+  team-governance.md team-owners-template.md team-approval-notes-template.md template-telemetry.md \
+  living-claims.md; do
   grep -q "$ref" "$ROOT/install.sh" || fail "install.sh remote list missing $ref"
 done
-ok "install.sh remote reference list includes v1.3–2.4 skill refs"
+ok "install.sh remote reference list includes v1.3–2.5 skill refs"
 
 # ─── Discovery procedure present ─────────────────────────────────────────────
 DISC="$SKILL_DIR/references/skill-discovery.md"
@@ -363,9 +365,44 @@ grep -q "Shipped" "$ROOT/docs/features/monorepo-hubs/README.md" || fail "monorep
 grep -q "Shipped" "$ROOT/docs/features/team-governance/README.md" || fail "team-governance pack not marked Shipped"
 [[ -f "$ROOT/docs/features/template-telemetry/README.md" ]] || fail "missing template-telemetry feature pack"
 grep -q "Shipped" "$ROOT/docs/features/template-telemetry/README.md" || fail "template-telemetry pack not marked Shipped"
+[[ -f "$ROOT/docs/features/living-claims/README.md" ]] || fail "missing living-claims feature pack"
+grep -q "Shipped" "$ROOT/docs/features/living-claims/README.md" || fail "living-claims pack not marked Shipped"
 grep -q "Shipped" "$ROOT/docs/plans/phase-2-bridge/README.md" \
   || fail "phase-2-bridge plan should mark slices shipped (grep Shipped)"
-ok "adoption matrix + CHANGELOG + feature packs (incl. template-telemetry)"
+ok "adoption matrix + CHANGELOG + feature packs (incl. template-telemetry + living-claims)"
+
+# ─── Living claims CI audit entrypoint + fixtures (Knowledge OS first increment) ─
+AUDIT="$ROOT/scripts/audit-claims.sh"
+[[ -f "$AUDIT" ]] || fail "missing scripts/audit-claims.sh"
+chmod +x "$AUDIT" 2>/dev/null || true
+if grep -E -q '\b(curl|wget|nc)\b|https?://' "$AUDIT"; then
+  fail "audit-claims.sh must not use network tools or URLs"
+fi
+[[ -f "$FIX/claims-pass/docs/audit/claims-matrix.md" ]] || fail "claims-pass missing matrix"
+[[ -f "$FIX/claims-fail/docs/audit/claims-matrix.md" ]] || fail "claims-fail missing matrix"
+[[ ! -f "$FIX/claims-none/docs/audit/claims-matrix.md" ]] || fail "claims-none must not have matrix"
+if ! bash "$AUDIT" "$FIX/claims-pass" >/dev/null; then
+  fail "audit-claims.sh must PASS on claims-pass fixture"
+fi
+if bash "$AUDIT" "$FIX/claims-fail" >/dev/null 2>&1; then
+  fail "audit-claims.sh must FAIL on claims-fail (critical Contradicted)"
+fi
+if ! bash "$AUDIT" "$FIX/claims-none" >/dev/null 2>&1; then
+  fail "audit-claims.sh must skip/warn exit 0 on claims-none"
+fi
+[[ -f "$ROOT/.github/workflows/docs-audit.yml" ]] || fail "missing .github/workflows/docs-audit.yml"
+grep -F -q "audit-claims.sh" "$ROOT/.github/workflows/docs-audit.yml" \
+  || fail "docs-audit.yml must invoke audit-claims.sh"
+LC="$SKILL_DIR/references/living-claims.md"
+[[ -f "$LC" ]] || fail "missing references/living-claims.md"
+for anchor in "anchor.path" "severity" "critical" "Contradicted" "audit-claims"; do
+  grep -F -qi -- "$anchor" "$LC" || fail "living-claims.md missing: $anchor"
+done
+grep -F -q "Living claims" "$SKILL_FILE" || fail "SKILL.md missing Living claims"
+grep -F -q "Living claims" "$MODES" || fail "modes.md missing Living claims"
+grep -F -q "Severity" "$SKILL_DIR/references/audit-template.md" \
+  || fail "audit-template missing Severity"
+ok "living-claims CI audit script + fixtures + GHA + skill anchors"
 
 if [[ "$FAILS" -gt 0 ]]; then
   echo ""

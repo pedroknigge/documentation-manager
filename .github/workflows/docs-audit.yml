@@ -1,0 +1,21 @@
+# Example / opt-in GitHub Actions workflow for documentation-manager consumers.
+# Air-gapped structural gate: scripts/audit-claims.sh (no network beyond checkout).
+# Fails only on critical + Contradicted. Missing matrix → skip (exit 0).
+name: docs-audit
+
+on:
+  pull_request:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  claims:
+    name: Structural claims audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run air-gapped claims audit
+        run: bash scripts/audit-claims.sh .

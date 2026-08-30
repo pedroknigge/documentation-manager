@@ -11,8 +11,12 @@ Synthetic **project roots** and **golden tables** used by `scripts/validate-skil
 | `mature-repo/` | integrate / plan-vs-feature | hub + roadmap + feature pack + plan + code |
 | `no-docs-repo/` | bootstrap | README only |
 | `golden/autopilot-cases.tsv` | mode regression | anchors must exist in SKILL/modes |
+| `claims-pass/` | audit-claims.sh PASS | matrix with OK / Partial only |
+| `claims-fail/` | audit-claims.sh FAIL | critical + Contradicted row |
+| `claims-none/` | audit-claims.sh skip | no `docs/audit/claims-matrix.md` |
 
 Stack detection smoke: `scripts/detect-stack.sh scripts/fixtures/<fixture>`.  
-Package list smoke: `scripts/detect-packages.sh scripts/fixtures/monorepo-thin`.
+Package list smoke: `scripts/detect-packages.sh scripts/fixtures/monorepo-thin`.  
+Claims gate smoke: `scripts/audit-claims.sh scripts/fixtures/claims-{pass,fail,none}`.
 
 These are **not** full agent e2e runs. They lock layout expectations and decision-table contracts so refactors fail fast.
