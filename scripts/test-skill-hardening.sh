@@ -31,7 +31,7 @@ ok "version sync README + AGENTS ↔ SKILL ($VER)"
 
 # ─── Fixtures present ───────────────────────────────────────────────────────
 for f in thin-repo mature-repo no-docs-repo python-thin-repo go-thin-repo monorepo-thin \
-  golden/autopilot-cases.tsv claims-pass claims-fail claims-none survey-heuristics; do
+  golden/autopilot-cases.tsv claims-pass claims-fail claims-none claims-breadcrumbs survey-heuristics; do
   [[ -e "$FIX/$f" ]] || fail "missing fixture $f"
 done
 ok "fixtures present (thin, mature, no-docs, python-thin, go-thin, monorepo-thin, golden, claims-*, survey-heuristics)"
@@ -412,6 +412,7 @@ if ! bash "$AUDIT" "$FIX/claims-none" >/dev/null 2>&1; then
 fi
 # --list-changed: light git helper; default matrix gate unchanged
 grep -F -q -- "--list-changed" "$AUDIT" || fail "audit-claims.sh missing --list-changed"
+grep -F -q -- "--list-claims" "$AUDIT" || fail "audit-claims.sh missing --list-claims"
 TMPGIT="$(mktemp -d)"
 git -C "$TMPGIT" init -q -b main
 git -C "$TMPGIT" config user.email "audit-test@example.com"
@@ -425,14 +426,96 @@ CHANGED="$(bash "$AUDIT" --list-changed "$TMPGIT" || true)"
 echo "$CHANGED" | grep -qx "tracked.txt" || fail "--list-changed must list dirty tracked.txt"
 echo "$CHANGED" | grep -qx "untracked.txt" || fail "--list-changed must list untracked.txt"
 if bash "$AUDIT" --base main "$TMPGIT" >/dev/null 2>&1; then
-  fail "--base without --list-changed must fail"
+  fail "--base without --list-changed or --list-claims must fail"
 fi
 rm -rf "$TMPGIT"
+
+# --list-claims: change-set only (survey-heuristics-style fixture + temp git)
+BCFIX="$FIX/claims-breadcrumbs"
+[[ -f "$BCFIX/src/ok.ts" ]] || fail "claims-breadcrumbs missing src/ok.ts"
+[[ -f "$BCFIX/src/malformed.ts" ]] || fail "claims-breadcrumbs missing src/malformed.ts"
+[[ -f "$BCFIX/src/unknown-id.ts" ]] || fail "claims-breadcrumbs missing src/unknown-id.ts"
+[[ -f "$BCFIX/src/untouched.ts" ]] || fail "claims-breadcrumbs missing src/untouched.ts"
+[[ -f "$BCFIX/docs/audit/claims-matrix.md" ]] || fail "claims-breadcrumbs missing matrix"
+setup_bc_git() {
+  local dest="$1"
+  mkdir -p "$dest"
+  cp -R "$BCFIX/." "$dest/"
+  git -C "$dest" init -q -b main
+  git -C "$dest" config user.email "audit-test@example.com"
+  git -C "$dest" config user.name "audit-test"
+  git -C "$dest" add -A
+  git -C "$dest" commit -qm init
+}
+BCGIT="$(mktemp -d)"
+setup_bc_git "$BCGIT"
+# committed valid breadcrumbs must not appear until the file is in the change set
+clean_out="$(bash "$AUDIT" --list-claims "$BCGIT" 2>/dev/null || true)"
+[[ -z "${clean_out// }" ]] || fail "--list-claims on clean tree must be empty, got: $clean_out"
+# dirty only ok.ts — must not leak untouched.ts
+printf '\n' >> "$BCGIT/src/ok.ts"
+ok_out="$(bash "$AUDIT" --list-claims "$BCGIT" 2>/dev/null || true)"
+echo "$ok_out" | grep -E -q '^src/ok\.ts:[0-9]+[[:space:]]+id=C-001[[:space:]]+parent=C-002[[:space:]]+plane=P1[[:space:]]+status=changed$' \
+  || fail "--list-claims must report ok.ts fields, got: $ok_out"
+ok_lines=$(printf '%s\n' "$ok_out" | grep -c . || true)
+[[ "$ok_lines" -eq 1 ]] || fail "--list-claims dirty ok.ts must be exactly 1 row, got ($ok_lines): $ok_out"
+echo "$ok_out" | grep -F "untouched.ts" \
+  && fail "--list-claims must not list untouched.ts outside the change set, got: $ok_out"
+echo "$ok_out" | grep -F "ok.py" \
+  && fail "--list-claims must not list committed ok.py, got: $ok_out"
+# untracked valid file is in the default change set
+printf '%s\n' '// @claim id=C-002 plane=P2 status=adjusted' > "$BCGIT/src/new.ts"
+new_out="$(bash "$AUDIT" --list-claims "$BCGIT" 2>/dev/null || true)"
+echo "$new_out" | grep -F -q "src/new.ts" \
+  || fail "--list-claims must list untracked new.ts, got: $new_out"
+# malformed → exit 1 + HITL stderr; never invent
+BCBAD="$(mktemp -d)"
+setup_bc_git "$BCBAD"
+printf '\n' >> "$BCBAD/src/malformed.ts"
+bad_err="$(mktemp)"
+bad_rc=0
+bash "$AUDIT" --list-claims "$BCBAD" >/dev/null 2>"$bad_err" || bad_rc=$?
+[[ "$bad_rc" -eq 1 ]] || fail "--list-claims malformed must exit 1, got $bad_rc"
+grep -F -q "HITL" "$bad_err" || fail "--list-claims malformed must HITL on stderr, got: $(cat "$bad_err")"
+grep -F -q "missing required field plane" "$bad_err" \
+  || fail "--list-claims must HITL missing plane, got: $(cat "$bad_err")"
+grep -F -q "invalid status=rewritten" "$bad_err" \
+  || fail "--list-claims must HITL invalid status, got: $(cat "$bad_err")"
+grep -F -q "two parent= keys" "$bad_err" \
+  || fail "--list-claims must HITL two parent=, got: $(cat "$bad_err")"
+grep -F -q "invalid plane=P4" "$bad_err" \
+  || fail "--list-claims must HITL invalid plane, got: $(cat "$bad_err")"
+# unknown id: print the breadcrumb; note missing matrix id; exit 0
+BCUNK="$(mktemp -d)"
+setup_bc_git "$BCUNK"
+printf '\n' >> "$BCUNK/src/unknown-id.ts"
+unk_err="$(mktemp)"
+unk_rc=0
+unk_out="$(bash "$AUDIT" --list-claims "$BCUNK" 2>"$unk_err")" || unk_rc=$?
+[[ "$unk_rc" -eq 0 ]] || fail "--list-claims unknown id must exit 0, got $unk_rc"
+echo "$unk_out" | grep -E -q '^src/unknown-id\.ts:[0-9]+[[:space:]]+id=C-999[[:space:]]+parent=-[[:space:]]+plane=P1[[:space:]]+status=changed$' \
+  || fail "--list-claims must report C-999 as written, got: $unk_out"
+grep -F -q "id=C-999" "$unk_err" && grep -F -q "not in matrix" "$unk_err" \
+  || fail "--list-claims must note C-999 missing from matrix, got: $(cat "$unk_err")"
+# --base: committed range vs main, not a tree walk
+BCBASE="$(mktemp -d)"
+setup_bc_git "$BCBASE"
+git -C "$BCBASE" checkout -q -b feat
+printf '\n' >> "$BCBASE/src/ok.py"
+git -C "$BCBASE" add src/ok.py
+git -C "$BCBASE" commit -qm feat
+base_out="$(bash "$AUDIT" --list-claims --base main "$BCBASE" 2>/dev/null || true)"
+echo "$base_out" | grep -F -q "src/ok.py" \
+  || fail "--list-claims --base must list committed ok.py, got: $base_out"
+echo "$base_out" | grep -F "untouched.ts" \
+  && fail "--list-claims --base must not walk the tree, got: $base_out"
+rm -rf "$BCGIT" "$BCBAD" "$BCUNK" "$BCBASE" "$bad_err" "$unk_err"
+ok "--list-claims change-set only + HITL + matrix note"
 [[ -f "$ROOT/.github/workflows/docs-audit.yml" ]] || fail "missing .github/workflows/docs-audit.yml"
 grep -F -q "audit-claims.sh" "$ROOT/.github/workflows/docs-audit.yml" \
   || fail "docs-audit.yml must invoke audit-claims.sh"
-if grep -E -q 'run:.*--list-changed' "$ROOT/.github/workflows/docs-audit.yml"; then
-  fail "docs-audit.yml must not invoke --list-changed (CI gate is whole-matrix)"
+if grep -E -q 'run:.*--list-(changed|claims)' "$ROOT/.github/workflows/docs-audit.yml"; then
+  fail "docs-audit.yml must not invoke --list-changed/--list-claims (CI gate is whole-matrix)"
 fi
 grep -E -q '\[x\].*\.github/workflows/docs-audit\.yml' "$ROOT/docs/plans/knowledge-os/README.md" \
   || fail "knowledge-os plan must mark the GitHub Actions example AC satisfied"

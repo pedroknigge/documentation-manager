@@ -168,6 +168,7 @@ for concept in \
   "severity" \
   "diff-first" \
   "--list-changed" \
+  "--list-claims" \
   "Cascade verdicts" \
   "Versklavungsprinzip" \
   "for-review" \
@@ -268,7 +269,8 @@ for concept in \
   "truth score" \
   "audit-claims" \
   "diff-first" \
-  "whole matrix"
+  "whole matrix" \
+  "--list-claims"
 do
   grep -F -qi -- "$concept" "$LC" || fail "living-claims.md missing: $concept"
 done
@@ -301,11 +303,13 @@ if grep -E -q '\b(curl|wget|nc)\b|https?://' "$ROOT/scripts/audit-claims.sh"; th
 fi
 grep -F -q -- "--list-changed" "$ROOT/scripts/audit-claims.sh" \
   || fail "audit-claims.sh missing --list-changed helper"
+grep -F -q -- "--list-claims" "$ROOT/scripts/audit-claims.sh" \
+  || fail "audit-claims.sh missing --list-claims helper"
 [[ -f "$ROOT/.github/workflows/docs-audit.yml" ]] || fail "missing .github/workflows/docs-audit.yml"
 grep -F -q "audit-claims.sh" "$ROOT/.github/workflows/docs-audit.yml" \
   || fail "docs-audit.yml must invoke audit-claims.sh"
-if grep -E -q 'run:.*--list-changed' "$ROOT/.github/workflows/docs-audit.yml"; then
-  fail "docs-audit.yml must not invoke --list-changed (CI gate is whole-matrix)"
+if grep -E -q 'run:.*--list-(changed|claims)' "$ROOT/.github/workflows/docs-audit.yml"; then
+  fail "docs-audit.yml must not invoke --list-changed/--list-claims (CI gate is whole-matrix)"
 fi
 grep -E -q '\[x\].*\.github/workflows/docs-audit\.yml' "$ROOT/docs/plans/knowledge-os/README.md" \
   || fail "knowledge-os plan must mark the GitHub Actions example AC satisfied (docs-audit.yml)"

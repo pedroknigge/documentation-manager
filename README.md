@@ -212,7 +212,7 @@ scripts/
   detect-stack.sh          ← polyglot (v2.1)
   detect-packages.sh       ← monorepo (v2.2)
   survey-docs.sh           ← finds Readme.md, real ADRs only, skips examples unless you ask
-  audit-claims.sh          ← living-claims CI (v2.5, air-gapped)
+  audit-claims.sh          ← living-claims CI + --list-changed / --list-claims (v2.5, air-gapped)
   generate-docs-dashboard.sh
 ```
 

@@ -14,11 +14,13 @@ Synthetic **project roots** and **golden tables** used by `scripts/validate-skil
 | `claims-pass/` | audit-claims.sh PASS | matrix with OK / Partial only |
 | `claims-fail/` | audit-claims.sh FAIL | critical + Contradicted row |
 | `claims-none/` | audit-claims.sh skip | no `docs/audit/claims-matrix.md` |
+| `claims-breadcrumbs/` | audit-claims.sh `--list-claims` | valid / malformed / unknown-id `@claim` samples + matrix (change-set via temp git) |
 | `survey-heuristics/` | survey-docs.sh | CapCase `Readme.md`; `docs/adr/0001-…`; `examples/` demo MD; `TableHeadRenderer.tsx` |
 
 Stack detection smoke: `scripts/detect-stack.sh scripts/fixtures/<fixture>`.  
 Package list smoke: `scripts/detect-packages.sh scripts/fixtures/monorepo-thin`.  
 Claims gate smoke: `scripts/audit-claims.sh scripts/fixtures/claims-{pass,fail,none}`.  
+Breadcrumb parse smoke: copy `claims-breadcrumbs/` into a git worktree, dirty a file, then `scripts/audit-claims.sh --list-claims <worktree>` (hardening does this).  
 Survey heuristics smoke: `scripts/survey-docs.sh --readme|--adrs|--claim-scope scripts/fixtures/survey-heuristics`.
 
 These are **not** full agent e2e runs. They lock layout expectations and decision-table contracts so refactors fail fast.

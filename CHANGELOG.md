@@ -6,6 +6,14 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+### Added
+
+- **P0 Kernel:** parse `@claim` breadcrumbs from the git change set only (`audit-claims.sh --list-claims`)  
+- Reports `id` / `parent` / `plane` / `status` (path + line); malformed → HITL stderr + exit 1; never invents fields  
+- Optional read-only note when a comment id is missing from the matrix (no matrix write)  
+- Fixture: `scripts/fixtures/claims-breadcrumbs/` + hardening asserts  
+- No version bump — install floor stays **2.5.0**
+
 ### Fixed
 
 - **Cold-start survey heuristics** (LIVE FIELD DOGFOOD / [#11](https://github.com/pedroknigge/documentation-manager/issues/11)): case-insensitive root README (`Readme.md` counts); tight ADR homes/names (no `*adr*` substring — `TableHeadRenderer.tsx` is not an ADR); default claim/doc scope is `docs/` + root + `.github` and **excludes** `examples/**` unless you opt in  
