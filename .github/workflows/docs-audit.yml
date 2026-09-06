@@ -4,9 +4,9 @@
 # (local air-gapped gate — no network beyond checkout).
 #
 # Gate: parse the WHOLE claims matrix; fail merge on any critical Contradicted.
-# Do not pass --list-changed, --list-claims, or --upsert-claims here. Those
-# flags are the agent §6.0 change-set helpers only — scoping the job to the
-# diff would hide existing critical Contradicted.
+# Do not pass --list-changed, --list-claims, --upsert-claims, or --record-haken
+# here. Those flags are the agent §6.0 change-set helpers only — scoping the
+# job to the diff would hide existing critical Contradicted.
 #
 # Missing matrix → skip (exit 0).
 name: docs-audit

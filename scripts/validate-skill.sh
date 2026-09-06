@@ -170,6 +170,7 @@ for concept in \
   "--list-changed" \
   "--list-claims" \
   "--upsert-claims" \
+  "--record-haken" \
   "Cascade verdicts" \
   "Versklavungsprinzip" \
   "for-review" \
@@ -272,7 +273,8 @@ for concept in \
   "diff-first" \
   "whole matrix" \
   "--list-claims" \
-  "--upsert-claims"
+  "--upsert-claims" \
+  "--record-haken"
 do
   grep -F -qi -- "$concept" "$LC" || fail "living-claims.md missing: $concept"
 done
@@ -309,10 +311,12 @@ grep -F -q -- "--list-claims" "$ROOT/scripts/audit-claims.sh" \
   || fail "audit-claims.sh missing --list-claims helper"
 grep -F -q -- "--upsert-claims" "$ROOT/scripts/audit-claims.sh" \
   || fail "audit-claims.sh missing --upsert-claims helper"
+grep -F -q -- "--record-haken" "$ROOT/scripts/audit-claims.sh" \
+  || fail "audit-claims.sh missing --record-haken helper"
 [[ -f "$ROOT/.github/workflows/docs-audit.yml" ]] || fail "missing .github/workflows/docs-audit.yml"
 grep -F -q "audit-claims.sh" "$ROOT/.github/workflows/docs-audit.yml" \
   || fail "docs-audit.yml must invoke audit-claims.sh"
-if grep -E -q 'run:.*--(list-changed|list-claims|upsert-claims)' "$ROOT/.github/workflows/docs-audit.yml"; then
+if grep -E -q 'run:.*--(list-changed|list-claims|upsert-claims|record-haken)' "$ROOT/.github/workflows/docs-audit.yml"; then
   fail "docs-audit.yml must not invoke change-set helpers (CI gate is whole-matrix)"
 fi
 grep -E -q '\[x\].*\.github/workflows/docs-audit\.yml' "$ROOT/docs/plans/knowledge-os/README.md" \
