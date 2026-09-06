@@ -390,6 +390,24 @@ fi
 if ! bash "$AUDIT" "$FIX/claims-none" >/dev/null 2>&1; then
   fail "audit-claims.sh must skip/warn exit 0 on claims-none"
 fi
+# --list-changed: light git helper; default matrix gate unchanged
+grep -F -q -- "--list-changed" "$AUDIT" || fail "audit-claims.sh missing --list-changed"
+TMPGIT="$(mktemp -d)"
+git -C "$TMPGIT" init -q -b main
+git -C "$TMPGIT" config user.email "audit-test@example.com"
+git -C "$TMPGIT" config user.name "audit-test"
+echo one > "$TMPGIT/tracked.txt"
+git -C "$TMPGIT" add tracked.txt
+git -C "$TMPGIT" commit -qm init
+echo two >> "$TMPGIT/tracked.txt"
+echo new > "$TMPGIT/untracked.txt"
+CHANGED="$(bash "$AUDIT" --list-changed "$TMPGIT" || true)"
+echo "$CHANGED" | grep -qx "tracked.txt" || fail "--list-changed must list dirty tracked.txt"
+echo "$CHANGED" | grep -qx "untracked.txt" || fail "--list-changed must list untracked.txt"
+if bash "$AUDIT" --base main "$TMPGIT" >/dev/null 2>&1; then
+  fail "--base without --list-changed must fail"
+fi
+rm -rf "$TMPGIT"
 [[ -f "$ROOT/.github/workflows/docs-audit.yml" ]] || fail "missing .github/workflows/docs-audit.yml"
 grep -F -q "audit-claims.sh" "$ROOT/.github/workflows/docs-audit.yml" \
   || fail "docs-audit.yml must invoke audit-claims.sh"

@@ -54,7 +54,7 @@ This ADR locks the goal and the captain rule. It does **not** specify implementa
 
 - Breadcrumbs format spec — [living-claims.md § Code breadcrumbs](../../skills/documentation-manager/references/living-claims.md#code-breadcrumbs-comment-mirror)
 - Cascade engine
-- Git-diff audit implementation
+- Git-diff audit **procedure** — [modes.md §6.0](../../skills/documentation-manager/references/modes.md#60-change-set-diff-first) (`audit-claims.sh --list-changed`)
 - Reconcile logic
 - Orderfield / ArkGate ports
 
@@ -63,4 +63,5 @@ This ADR locks the goal and the captain rule. It does **not** specify implementa
 - First-contact pointer: [../../README.md](../../README.md)
 - Prior ADR in this series: [0001-living-claims-wire-format.md](./0001-living-claims-wire-format.md)
 - Breadcrumbs convention (owns the comment wire): [living-claims.md § Code breadcrumbs](../../skills/documentation-manager/references/living-claims.md#code-breadcrumbs-comment-mirror)
+- Diff-first audit procedure: [modes.md §6.0](../../skills/documentation-manager/references/modes.md#60-change-set-diff-first)
 - Epic (does not replace this lock): [../plans/knowledge-os/README.md](../plans/knowledge-os/README.md)

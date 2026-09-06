@@ -11,7 +11,7 @@ Machine-anchored structural claims on top of the existing audit matrix. **Markdo
 
 | Signal | Action |
 |--------|--------|
-| Intent / mode **audit** | Write matrix with living-claims columns (anchors + severity) |
+| Intent / mode **audit** | **Diff-first** change set ([modes.md §6.0](modes.md#60-change-set-diff-first)), then write matrix with living-claims columns (anchors + severity) |
 | “living claims”, “truth score”, “docs CI”, “fail on Contradicted” | Follow this procedure + modes §6 / §13 |
 | Integrate after audit | Patch Contradicted/Missing; keep anchors honest |
 | “breadcrumbs”, code-comment claim tags | Follow **Code breadcrumbs** below; propose only — no engines |
@@ -55,13 +55,14 @@ score = (OK_N * 100 + PARTIAL_N * 50) / TOTAL_V   # TOTAL_V > 0
 
 ## Agent procedure
 
-1. Code inventory first ([modes.md §6.1](modes.md#61-code-inventory-always-first)).  
-2. Extract structural claims only.  
+1. **Diff-first** change set ([modes.md §6.0](modes.md#60-change-set-diff-first)): `./scripts/audit-claims.sh --list-changed [--base REF]` or the git commands there. Never a full-tree read by default.  
+2. Inventory **only those paths** ([modes.md §6.1](modes.md#61-code-inventory-change-set-only)). Extract structural claims only from the set.  
 3. For each claim: set `anchor.path` (and optional symbol/hash); set `severity=critical` only when a false claim would ship a lie about a shipped surface / security / install path.  
 4. Verdicts unchanged — **code wins**.  
 5. Write `docs/audit/claims-matrix.md` (or sandbox) from [audit-template.md](audit-template.md).  
 6. Offer dashboard ([knowledge-dashboard.md](knowledge-dashboard.md)) as view; remind that **CI is the gate**.  
-7. Never invent code to satisfy a claim; never auto-commit.
+7. If a changed breadcrumb names `parent=` (or a changed id is a parent), **recommend review of children** — do not run a cascade engine.  
+8. Never invent code to satisfy a claim; never auto-commit. HITL when who-wins is unclear.
 
 ## CI (local / air-gapped)
 
@@ -69,6 +70,8 @@ Consumers (and this package example workflow) run a pure local script — **no n
 
 ```bash
 ./scripts/audit-claims.sh [path-to-claims-matrix.md]
+# change-set helper (audit/reconcile reads — not the CI gate):
+./scripts/audit-claims.sh --list-changed [--base REF] [ROOT]
 ```
 
 Example GitHub Actions: copy `.github/workflows/docs-audit.yml` from the skill package (opt-in). Script + fixtures land with the CI slice; this document is the skill-side contract.
@@ -142,7 +145,7 @@ checkout() { :; }
 
 ### Non-goals (this section)
 
-Convention only. Do **not** implement here: cascade engine, git-diff audit runner, reconcile, breadcrumb parsers, or CI that fails on missing comments. `audit-claims.sh` stays matrix-only.
+Convention only. Do **not** implement here: cascade engine, reconcile classification, breadcrumb parsers, or CI that fails on missing comments. `audit-claims.sh` default remains the **matrix gate**; `--list-changed` is the change-set helper only.
 
 ## Non-goals (v0)
 
@@ -150,11 +153,11 @@ Convention only. Do **not** implement here: cascade engine, git-diff audit runne
 - Formal proof / SMT  
 - Auto-commit; inventing implementation to match docs  
 - Replacing Notion/MkDocs  
-- Cascade / git-diff audit / reconcile / breadcrumb parsers (comment convention only)
+- Cascade engine / reconcile classification / breadcrumb parsers (comment convention only)
 
 ## Concept anchors (greppable)
 
-`living claims` · `living-claims` · `anchor.path` · `severity` · `critical Contradicted` · `truth score` · `audit-claims` · `docs-audit` · `@claim` · `breadcrumb` · `plane` · `changed` · `adjusted`
+`living claims` · `living-claims` · `anchor.path` · `severity` · `critical Contradicted` · `truth score` · `audit-claims` · `docs-audit` · `@claim` · `breadcrumb` · `plane` · `changed` · `adjusted` · `diff-first` · `--list-changed`
 
 ## Related
 

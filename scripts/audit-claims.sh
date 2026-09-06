@@ -4,15 +4,19 @@
 # Parses docs/audit/claims-matrix.md (or --matrix PATH). Fails only on
 # **critical** + **Contradicted**. No network. Graceful when matrix absent.
 #
+# Change-set helper (audit/reconcile reads — not the CI gate):
+#   --list-changed [--base REF]  print git-changed paths (one per line)
+#
 # Usage:
 #   audit-claims.sh [PROJECT_ROOT]
 #   audit-claims.sh --matrix PATH
+#   audit-claims.sh --list-changed [--base REF] [PROJECT_ROOT]
 #   audit-claims.sh --help
 #
 # Exit codes:
-#   0 — pass, or no matrix (skip/warn)
+#   0 — pass, or no matrix (skip/warn), or --list-changed printed (even if empty)
 #   1 — one or more critical Contradicted claims
-#   2 — usage / unreadable matrix path when explicitly required
+#   2 — usage / unreadable matrix path when explicitly required / not a git repo
 set -euo pipefail
 
 SCRIPT_NAME="$(basename "$0")"
@@ -22,17 +26,25 @@ usage() {
 Usage:
   $SCRIPT_NAME [PROJECT_ROOT]
   $SCRIPT_NAME --matrix PATH
+  $SCRIPT_NAME --list-changed [--base REF] [PROJECT_ROOT]
   $SCRIPT_NAME -h | --help
 
 Air-gapped structural audit of a claims matrix (Markdown table).
 Fails (exit 1) only when a row is Verdict=Contradicted AND Severity=critical.
 Missing matrix → warn and exit 0. Matrix without Severity column → treat all as normal.
+
+--list-changed prints the git change set (one path per line) for diff-first
+audit/reconcile reads. Default: dirty tree vs HEAD + untracked. With --base:
+git diff --name-only <base>...HEAD. Empty set is exit 0 (agent HITL — do not
+full-tree). Does not change the matrix gate.
 EOF
 }
 
 ROOT=""
 MATRIX=""
 EXPLICIT_MATRIX=0
+LIST_CHANGED=0
+BASE=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -44,6 +56,15 @@ while [[ $# -gt 0 ]]; do
       [[ $# -ge 2 ]] || { echo "$SCRIPT_NAME: --matrix requires a path" >&2; exit 2; }
       MATRIX="$2"
       EXPLICIT_MATRIX=1
+      shift 2
+      ;;
+    --list-changed)
+      LIST_CHANGED=1
+      shift
+      ;;
+    --base)
+      [[ $# -ge 2 ]] || { echo "$SCRIPT_NAME: --base requires a ref" >&2; exit 2; }
+      BASE="$2"
       shift 2
       ;;
     --)
@@ -71,6 +92,35 @@ if [[ -z "$ROOT" ]]; then
   ROOT="$(pwd)"
 fi
 ROOT="$(cd -P "$ROOT" 2>/dev/null && pwd || echo "$ROOT")"
+
+if [[ -n "$BASE" && "$LIST_CHANGED" -eq 0 ]]; then
+  echo "$SCRIPT_NAME: --base requires --list-changed" >&2
+  exit 2
+fi
+if [[ "$LIST_CHANGED" -eq 1 && "$EXPLICIT_MATRIX" -eq 1 ]]; then
+  echo "$SCRIPT_NAME: --list-changed and --matrix are mutually exclusive" >&2
+  exit 2
+fi
+
+list_changed_files() {
+  local root="$1"
+  local base="${2:-}"
+  if ! git -C "$root" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "$SCRIPT_NAME: not a git repository: $root" >&2
+    exit 2
+  fi
+  if [[ -n "$base" ]]; then
+    git -C "$root" diff --name-only "${base}...HEAD"
+  else
+    git -C "$root" diff --name-only HEAD
+    git -C "$root" ls-files --others --exclude-standard
+  fi
+}
+
+if [[ "$LIST_CHANGED" -eq 1 ]]; then
+  list_changed_files "$ROOT" "$BASE"
+  exit 0
+fi
 
 if [[ -z "$MATRIX" ]]; then
   MATRIX="$ROOT/docs/audit/claims-matrix.md"

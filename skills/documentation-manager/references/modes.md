@@ -31,7 +31,7 @@ Detect stack (Polyglot stack detection — skill-discovery.md)
   → Detect monorepo (Monorepo hubs — skill-discovery.md) / package index
   → Discover CODE surfaces first (inventory table for that stack; per package if monorepo)
   → if Intent=audit OR (docs exist AND drift suspected AND Intent≠from-zero pure skip):
-        Audit / reconciliation pass
+        Audit / reconciliation pass (**diff-first** — §6.0; never a full-tree read by default)
   → execute Intent write policy
 ```
 
@@ -285,7 +285,7 @@ Announce **non-writes** in the summary even when the user did not list them.
 6. Wire hub + coverage row. Hybrid = minimal hub + feature only.  
 7. Summary: pack path, code surfaces found, non-writes.
 
-If Intent is **audit** on a feature: claims for that surface only; do not rewrite the module doc unless asked to patch.
+If Intent is **audit** on a feature: claims for that surface **intersected with the §6.0 change set**; do not walk the feature tree; do not rewrite the module doc unless asked to patch.
 
 ### 3.5 Ask policy (v1.3 — minimal)
 
@@ -350,7 +350,7 @@ docs/
 4. Prefer Superseded ADR notes over deletion.  
 5. List file → change; flag debt without inventing pages.  
 
-If sync reveals many Contradicted claims → suggest full **audit**.
+If sync reveals many Contradicted claims → suggest **audit** (still **diff-first** on that change set; not a full-tree scan).
 
 ---
 
@@ -372,12 +372,28 @@ If sync reveals many Contradicted claims → suggest full **audit**.
 
 **Goal:** Structural reconciliation of documentation claims against **code as source of truth**. Not full NLP of every sentence.
 
-### 6.1 Code inventory (always first)
+**Default scope: diff-first** ([ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md)). Inventory, claim reads, and the SKILL.md **reconciliation** pass use the **git change set** only. Never a full-tree scan unless the user explicitly opts in (`full audit`, `whole tree`, `--full-tree`). ADR-0002 **reconcile classification** (evolution vs regime vs orphan) is a different P0 — do not implement it here; if you are already in a reconcile-shaped pass, still read only the change set.
 
-1. **Detect stack** (§0.3) — tokens: `node-ts` | `python` | `go` | `mixed` | `unknown`.  
-2. **Detect monorepo** (§0.4) — if yes, inventory per package path from **Package index** / `detect-packages.sh`.  
-3. Build inventory from the **Inventory by stack** table in [skill-discovery.md](skill-discovery.md) (Polyglot stack detection).  
-4. Summary of common kinds (always prefer stack-specific rows in skill-discovery):
+### 6.0 Change set (diff-first)
+
+1. Resolve paths (first that applies):
+   - User named a range / PR / `--base` → `git diff --name-only <base>...HEAD`
+   - Else dirty worktree or untracked → `git diff --name-only HEAD` plus `git ls-files --others --exclude-standard`
+   - Same rules, one helper: `./scripts/audit-claims.sh --list-changed [--base REF] [ROOT]`
+2. Empty set, not a git repo, or unclear base → **HITL** (ask once: name a base, give a file list, or confirm full-tree opt-in). **Do not** fall back to reading the tree.
+3. Inventory (§6.1) and claim extraction (§6.2) **only** those paths, plus a specific `anchor.path` a changed doc cites. Do not glob `docs/**` or walk `src/`.
+4. Named feature + change set → **intersect**. Empty intersection → HITL, not a feature-tree walk.
+5. **Cascade pointer:** if a changed file has a breadcrumb `parent=` ([living-claims.md § Code breadcrumbs](living-claims.md#code-breadcrumbs-comment-mirror)) or a matrix row whose `id` is named as `parent` on a changed breadcrumb, **recommend review of children**. Do not run a cascade engine (separate P0). Do not grep the repo for children.
+6. Human is captain. Propose matrix updates; HITL when who-wins is unclear.
+
+Announce: `Audit-scope: diff-first | files: <n> | base: <HEAD|ref|n/a>` or `Audit-scope: full-tree (user opt-in)`.
+
+### 6.1 Code inventory (change set only)
+
+1. Take the §6.0 path list — that **is** the inventory universe.  
+2. **Detect stack** (§0.3) from **root manifests already in hand** (`package.json`, `pyproject.toml`, `go.mod`) — do not walk packages to inventory everything. Tokens: `node-ts` | `python` | `go` | `mixed` | `unknown`.  
+3. Classify **only changed files** with the **Inventory by stack** table in [skill-discovery.md](skill-discovery.md).  
+4. Summary of common kinds (prefer stack-specific rows; **only if the path is in the change set**):
 
 | Kind | How to discover (examples; **stack-aware**) |
 |------|-----------------------------------------------|
@@ -396,7 +412,7 @@ Do **not** invent framework surfaces for a stack that is not evidenced.
 
 ### 6.2 Claim extraction (structural)
 
-From hub, `docs/**`, CLAUDE/AGENTS, module docs, ADRs — extract checkable claims:
+From **changed docs in the §6.0 set** (and existing matrix rows whose `anchor.path` is in the set) — extract checkable claims. Do not read all of `docs/**`.
 
 - Path references (`src/…`, `docs/…`)  
 - Module / feature names and status (`Real`, `Dual`, “shipped”)  
@@ -604,11 +620,12 @@ Announce: `Telemetry: off|local-ledger | opt-in: no|yes | network: never`.
 2. Anchors: `anchor.path` (+ optional `symbol` / `hash`); severity `critical` \| `normal`.  
 3. Verdicts unchanged; **code wins**.  
 4. **Truth score** formula matches dashboard heuristic; score is **advisory**.  
-5. **CI is the gate:** `critical` + `Contradicted` → non-zero from local air-gapped `scripts/audit-claims.sh` (example `.github/workflows/docs-audit.yml`). **No network** required.  
+5. **CI is the gate:** `critical` + `Contradicted` → non-zero from local air-gapped `scripts/audit-claims.sh` (example `.github/workflows/docs-audit.yml`). **No network** required. The gate parses the **whole matrix** (do not hide existing critical Contradicted). Agent **audit/reconcile reads** stay **diff-first** (§6.0); `--list-changed` is the change-set helper, not the gate.  
 6. Graceful v0: no matrix → skip/warn; missing severity → `normal`.  
-7. Do not invent code to match docs; do not auto-commit.
+7. Do not invent code to match docs; do not auto-commit.  
+8. **Diff-first** — never a full-tree read by default; cascade = recommend review only (no engine).
 
-Announce: `Living-claims: v0 | matrix: path|none | CI-gate: audit-claims | score: advisory`.
+Announce: `Living-claims: v0 | matrix: path|none | CI-gate: audit-claims | score: advisory | Audit-scope: diff-first`.
 
 ---
 
@@ -624,6 +641,7 @@ Out: root | sandbox:path
 ArkGate: none | detected (<signals>)
 Code inventory: yes/no
 Claims matrix: path or n/a | OK/Partial/Missing/Contradicted counts
+Audit-scope: diff-first | full-tree (opt-in) | n/a
 Created: …
 Updated: …
 Non-writes: …
