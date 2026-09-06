@@ -68,15 +68,20 @@ score = (OK_N * 100 + PARTIAL_N * 50) / TOTAL_V   # TOTAL_V > 0
 
 ## CI (local / air-gapped)
 
-Consumers (and this package example workflow) run a pure local script — **no network**:
+Consumers (and this package example workflow) run a pure local script — **no network**.
+
+The **merge gate** parses the **whole matrix**. Agent audit/reconcile **reads** stay **diff-first** ([modes.md §6.0](modes.md#60-change-set-diff-first)). Do not pass `--list-changed` to the CI job (that would hide existing critical Contradicted).
 
 ```bash
-./scripts/audit-claims.sh [path-to-claims-matrix.md]
-# change-set helper (audit/reconcile reads — not the CI gate):
-./scripts/audit-claims.sh --list-changed [--base REF] [ROOT]
+# gate (whole matrix — what CI runs):
+./scripts/audit-claims.sh [PROJECT_ROOT]
+./scripts/audit-claims.sh --matrix PATH
+
+# change-set helper (agent reads — not the CI gate):
+./scripts/audit-claims.sh --list-changed [--base REF] [PROJECT_ROOT]
 ```
 
-Example GitHub Actions: copy `.github/workflows/docs-audit.yml` from the skill package (opt-in). Script + fixtures land with the CI slice; this document is the skill-side contract.
+Copy both `.github/workflows/docs-audit.yml` and `scripts/audit-claims.sh` into the consumer repo (opt-in). Enable the workflow as a required check to fail merge on **critical Contradicted**.
 
 ## Code breadcrumbs (comment mirror)
 
@@ -159,7 +164,7 @@ Convention only. Do **not** implement here: cascade engine (verdicts: [modes.md 
 
 ## Concept anchors (greppable)
 
-`living claims` · `living-claims` · `anchor.path` · `severity` · `critical Contradicted` · `truth score` · `audit-claims` · `docs-audit` · `@claim` · `breadcrumb` · `plane` · `changed` · `adjusted` · `diff-first` · `--list-changed` · `recommend review`
+`living claims` · `living-claims` · `anchor.path` · `severity` · `critical Contradicted` · `truth score` · `audit-claims` · `docs-audit` · `@claim` · `breadcrumb` · `plane` · `changed` · `adjusted` · `diff-first` · `--list-changed` · `recommend review` · `whole matrix`
 
 ## Related
 

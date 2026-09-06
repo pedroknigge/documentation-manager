@@ -59,7 +59,7 @@ Run before reporting done.
 - [ ] Structural claims use living-claims columns: Anchor path (+ optional symbol/hash) and Severity (`critical` \| `normal`)
 - [ ] Wire matches [living-claims.md](living-claims.md) / [ADR-0001](../../../docs/adr/0001-living-claims-wire-format.md) — matrix-first, no parallel wiki
 - [ ] Verdict enum unchanged; omitted severity treated as `normal`
-- [ ] Truth score described as **advisory**; **CI / `audit-claims.sh`** is the gate for critical Contradicted
+- [ ] Truth score described as **advisory**; **CI / `audit-claims.sh`** is the gate for critical Contradicted (whole matrix; agent reads stay **diff-first**)
 - [ ] Did not invent code to satisfy a claim; did not auto-commit
 - [ ] No SaaS/control-plane invented for the core gate (local/air-gapped)
 

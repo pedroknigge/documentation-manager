@@ -26,10 +26,10 @@ What it usually lacks is a durable story of **what**, **why**, and **what’s ne
 | | Why this shape |
 |--|--|
 | **Enslavement** | Claims stay bound to code and parent knowledge. Agents stop inventing architecture from vibes. |
-| **Diff-first** | Audit and reconcile default to the **git change set**. You ask; it does not scan the tree. |
+| **Diff-first** | Audit and reconcile **reads** default to the **git change set**. The merge **CI gate** still parses the **whole** claims matrix (existing critical Contradicted cannot hide). |
 | **Captain** | The skill **proposes**. It never overrides the layout you already evolved. No auto-commit. Conflicts go to you (HITL). |
 
-Binding decision: [ADR-0002](./docs/adr/0002-knowledge-enslavement-captain.md). Audit procedure: [modes.md §6.0](./skills/documentation-manager/references/modes.md#60-change-set-diff-first).
+Binding decision: [ADR-0002](./docs/adr/0002-knowledge-enslavement-captain.md). Audit procedure: [modes.md §6.0](./skills/documentation-manager/references/modes.md#60-change-set-diff-first). CI example (whole-matrix gate): [`.github/workflows/docs-audit.yml`](./.github/workflows/docs-audit.yml).
 
 | Hub | Narrative | Plans | Features | Truth check |
 |-----|-----------|-------|----------|-------------|
