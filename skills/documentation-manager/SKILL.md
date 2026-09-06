@@ -1,7 +1,7 @@
 ---
 name: documentation-manager
 description: >
-  Use when bootstrapping, completing, updating, or auditing project documentation,
+  v2.5.0 — Use when bootstrapping, completing, updating, or auditing project documentation,
   or documenting a feature/module/epic: AGENTS.md + docs/, ADRs, roadmap,
   docs/features/<slug>/, docs/plans/<slug>/. Triggers: "document this project",
   "bootstrap docs", "sync docs", "audit docs", "docs vs code", "from zero",
@@ -10,8 +10,7 @@ description: >
   integrate, audit, from-zero. Feature autopilot v2; Implementation bridge
   opt-in; ArkGate post-gate sync; dashboard HTML; polyglot + monorepo hubs;
   team governance (docs/team); living claims v0 + local CI structural audit
-  (Knowledge OS first increment).
-  v2.5 Knowledge OS first increment (toward 100×). On conflict code wins.
+  (Knowledge OS first increment toward 100×). On conflict code wins.
 license: MIT
 metadata:
   author: pedroknigge
