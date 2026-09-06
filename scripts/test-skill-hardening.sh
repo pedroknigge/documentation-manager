@@ -269,7 +269,18 @@ grep -q "upgrade" "$DISC" || fail "skill-discovery missing upgrade guidance"
 grep -q "version" "$DISC" || fail "skill-discovery missing version detection"
 grep -q "Skill-runtime scripts" "$DISC" \
   || fail "skill-discovery missing Skill-runtime scripts (install path convention)"
+# Sync order honesty — npx replaces the skill dir and wipes scripts/
+grep -F -q "npx first" "$DISC" \
+  || fail "skill-discovery missing npx-first sync order"
+grep -F -q "wipes" "$DISC" \
+  || fail "skill-discovery missing wipe-risk language"
+grep -F -q "npx first" "$ROOT/README.md" \
+  || fail "README missing npx-first sync order"
+if grep -F -q 'or `npx skills add pedroknigge/documentation-manager -y` (idempotent)' "$ROOT/README.md"; then
+  fail "README Upgrade still claims install.sh or npx is interchangeable/idempotent"
+fi
 ok "skill-discovery procedure present"
+ok "sync order honesty: npx first, then install.sh (wipe risk documented)"
 
 # ─── Polyglot stack detection anchors (Slice A) ──────────────────────────────
 for anchor in \

@@ -10,6 +10,8 @@
 # and ships the runtime CLI into <skill>/scripts/ (package-root scripts/ is SSOT).
 # Codex gets a marked pointer block in ~/.codex/AGENTS.md (full skill lives under ~/.agents/skills).
 # Does not auto-copy scripts into consumer repos (CI copy stays opt-in).
+# After `npx skills add`, run this installer — npx replaces the skill folder
+# and wipes scripts/ (audit-claims + discovery helpers) that this script ships.
 
 set -euo pipefail
 
@@ -293,5 +295,5 @@ if [[ "$installed_any" -eq 0 ]]; then
 fi
 
 cyan "→ Done. Invoke with /documentation-manager"
-cyan "  Or: npx skills add pedroknigge/documentation-manager"
+cyan "  If you also use npx skills add, run this AFTER npx (npx wipes scripts/)."
 cyan "  Update anytime by re-running this script. Uninstall: ./install.sh --uninstall"

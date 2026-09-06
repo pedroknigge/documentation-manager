@@ -66,6 +66,8 @@ Works with **Claude Code**, **Grok Build**, **Codex**, **Cursor**, and any host 
 npx skills add pedroknigge/documentation-manager
 ```
 
+Need the helper scripts too (`audit-claims.sh` and friends)? Run the classic installer **after** npx — not before. `npx` replaces the skill folder and **wipes** those scripts.
+
 <details>
 <summary><strong>More install options</strong></summary>
 
@@ -83,7 +85,7 @@ npx skills add pedroknigge/documentation-manager -g -y
 npx skills add pedroknigge/documentation-manager -l
 ```
 
-**Classic installer** (idempotent; re-run to update)
+**Classic installer** (**npx first**, then this — re-run to restore scripts)
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/pedroknigge/documentation-manager/main/install.sh | bash
@@ -277,7 +279,7 @@ Version notes, shipped packs, and epics live **off** this page:
 | **Shipped packs** | [AGENTS.md](./AGENTS.md#features-shipped-skill-behavior) |
 | **Roadmap / plans** | [docs/roadmap.md](./docs/roadmap.md) · [docs/plans/](./docs/plans/) |
 | **Adoption** | [docs/adoption-matrix.md](./docs/adoption-matrix.md) |
-| **Upgrade** | re-run `./install.sh` or `npx skills add pedroknigge/documentation-manager -y` (idempotent) · [skill-discovery.md](./skills/documentation-manager/references/skill-discovery.md) |
+| **Upgrade** | **npx first**, then `./install.sh` (or the curl/bash install.sh). `npx` last **wipes** `scripts/`. · [skill-discovery.md](./skills/documentation-manager/references/skill-discovery.md) |
 
 ---
 
