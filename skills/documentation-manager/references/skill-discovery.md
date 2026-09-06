@@ -33,7 +33,35 @@ npx skills add pedroknigge/documentation-manager -y
 npx skills add pedroknigge/documentation-manager -g -y
 ```
 
-Re-run is **idempotent** (see `scripts/install-smoke.sh`).
+Re-run is **idempotent** (see `scripts/install-smoke.sh`). Classic `install.sh` also refreshes the runtime CLI below.
+
+---
+
+## Skill-runtime scripts
+
+Package-root `scripts/` is the **SSOT**. `install.sh` (local clone **and** raw GitHub curl) copies a **runtime subset** into the installed skill:
+
+`<skill-dir>/scripts/` — e.g. `~/.claude/skills/documentation-manager/scripts/`
+
+| Script | Role | On install |
+|--------|------|------------|
+| `audit-claims.sh` | Living-claims gate + change-set helpers | **Required** |
+| `detect-stack.sh` | Polyglot | Prefer |
+| `detect-packages.sh` | Monorepo | Prefer |
+| `survey-docs.sh` | Cold-start survey | Prefer |
+| `generate-docs-dashboard.sh` | HTML view | Kept |
+
+**Where agents run them:** the **installed skill** `scripts/`. Pass the consumer repo as the root argument.
+
+`./scripts/<name>` in modes is shorthand. Resolve:
+
+1. Installed skill `…/documentation-manager/scripts/<name>` (what `install.sh` ships)
+2. Else consumer-repo `./scripts/<name>` if present (opt-in **CI** copy — `docs-audit.yml` needs a local script)
+3. Else follow the procedure by hand, or re-run `install.sh`
+
+**Not an install story:** auto-copy into every consumer repo. Maintainer-only scripts (`validate-skill.sh`, hardening, smoke, fixtures) stay at package root.
+
+`npx skills add` copies `skills/documentation-manager/` (SKILL + references) only. Re-run classic `install.sh` to get the kernel CLI.
 
 ---
 
@@ -42,10 +70,12 @@ Re-run is **idempotent** (see `scripts/install-smoke.sh`).
 **When:** any **consumer** project discovery — adopt, integrate, from-zero, audit, feature autopilot inventory.  
 **Do not** assume Node/TS. Detect stack from **filesystem signals**, then inventory and layout guidance follow the tables below.
 
-Optional helper (package repo / installed package scripts):
+Optional helper (installed skill `scripts/` first — [Skill-runtime scripts](#skill-runtime-scripts)):
 
 ```bash
-# From documentation-manager package root (or copy):
+# Installed skill (after install.sh); pass the consumer root:
+~/.agents/skills/documentation-manager/scripts/detect-stack.sh <consumer-repo-root>
+# Shorthand if a copy exists in the consumer or package repo:
 ./scripts/detect-stack.sh <consumer-repo-root>
 # stdout examples:
 #   node-ts
@@ -141,10 +171,11 @@ Stack: <node-ts|python|go|mixed|unknown> | signals: <short list>
 | Multiple `pyproject.toml` under subdirs | Python | Multi-package / workspace layout |
 | `packages/*`, `apps/*`, `libs/*` with manifests | Common | Directory convention + package.json / pyproject / go.mod inside |
 
-Optional helper:
+Optional helper (installed skill `scripts/` first — [Skill-runtime scripts](#skill-runtime-scripts)):
 
 ```bash
-./scripts/detect-packages.sh <consumer-repo-root>
+~/.agents/skills/documentation-manager/scripts/detect-packages.sh <consumer-repo-root>
+# or ./scripts/detect-packages.sh <consumer-repo-root>
 # stdout: one package path per line (relative to root), e.g.
 # packages/api
 # packages/web
@@ -219,10 +250,11 @@ Monorepo: yes | packages: <n> | root hub: map+index | package non-writes: defaul
 
 These three checks stop false “empty repo” / false ADR / demo-markdown thrash. They do **not** invent a second inventory engine.
 
-Optional helper (package repo / installed package scripts):
+Optional helper (installed skill `scripts/` first — [Skill-runtime scripts](#skill-runtime-scripts)):
 
 ```bash
-./scripts/survey-docs.sh [--readme|--adrs|--claim-scope|--include-examples] <consumer-repo-root>
+~/.agents/skills/documentation-manager/scripts/survey-docs.sh [--readme|--adrs|--claim-scope|--include-examples] <consumer-repo-root>
+# or ./scripts/survey-docs.sh …
 ```
 
 Agents may also apply the tables by hand when the script is unavailable.

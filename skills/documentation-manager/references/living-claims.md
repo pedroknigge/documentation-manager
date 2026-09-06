@@ -87,7 +87,7 @@ The **merge gate** parses the **whole matrix**. Agent audit/reconcile **reads** 
 ./scripts/audit-claims.sh --cascade-recommend [--base REF] [PROJECT_ROOT]
 ```
 
-Copy both `.github/workflows/docs-audit.yml` and `scripts/audit-claims.sh` into the consumer repo (opt-in). Enable the workflow as a required check to fail merge on **critical Contradicted**.
+**Agents** invoke the same script from the **installed skill** `scripts/` ([skill-discovery.md — Skill-runtime scripts](skill-discovery.md#skill-runtime-scripts)). Consumer-repo `./scripts/audit-claims.sh` is an opt-in **CI** copy (with `.github/workflows/docs-audit.yml`) — not a second install path. Enable the workflow as a required check to fail merge on **critical Contradicted**.
 
 ## Code breadcrumbs (comment mirror)
 

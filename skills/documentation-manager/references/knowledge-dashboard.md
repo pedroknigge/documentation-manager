@@ -24,7 +24,7 @@ Defaults:
 - `project-root` = current directory  
 - `output-path` = `docs/audit/generated/dashboard.html`
 
-The script lives at package root `scripts/generate-docs-dashboard.sh`. **`install.sh` copies it into the installed skill as `…/documentation-manager/scripts/generate-docs-dashboard.sh`**.
+The script lives at package root `scripts/generate-docs-dashboard.sh`. **`install.sh` copies it into the installed skill as `…/documentation-manager/scripts/generate-docs-dashboard.sh`** (same ship path as the other [skill-runtime scripts](skill-discovery.md#skill-runtime-scripts)).
 
 If the script is still missing (partial install / old host), either:
 

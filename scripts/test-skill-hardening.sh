@@ -255,11 +255,20 @@ grep -q "template-telemetry.md" "$ROOT/install.sh" \
   && fail "install.sh must not fetch withdrawn template-telemetry.md"
 ok "install.sh remote reference list includes v1.3–2.5 skill refs (telemetry withdrawn)"
 
+# ─── install.sh ships skill-runtime scripts (local + raw) ───────────────────
+for script in audit-claims.sh detect-stack.sh detect-packages.sh survey-docs.sh \
+  generate-docs-dashboard.sh; do
+  grep -q "$script" "$ROOT/install.sh" || fail "install.sh runtime list missing $script"
+done
+ok "install.sh ships audit-claims + discovery helpers + dashboard"
+
 # ─── Discovery procedure present ─────────────────────────────────────────────
 DISC="$SKILL_DIR/references/skill-discovery.md"
 [[ -f "$DISC" ]] || fail "missing references/skill-discovery.md"
 grep -q "upgrade" "$DISC" || fail "skill-discovery missing upgrade guidance"
 grep -q "version" "$DISC" || fail "skill-discovery missing version detection"
+grep -q "Skill-runtime scripts" "$DISC" \
+  || fail "skill-discovery missing Skill-runtime scripts (install path convention)"
 ok "skill-discovery procedure present"
 
 # ─── Polyglot stack detection anchors (Slice A) ──────────────────────────────
