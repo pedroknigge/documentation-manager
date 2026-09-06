@@ -282,6 +282,18 @@ fi
 ok "skill-discovery procedure present"
 ok "sync order honesty: npx first, then install.sh (wipe risk documented)"
 
+# ─── Gemini / Antigravity classic-install anchors ───────────────────────────
+for anchor in \
+  ".gemini/skills" \
+  ".gemini/config/skills" \
+  ".gemini/antigravity/skills"
+do
+  grep -F -q -- "$anchor" "$ROOT/install.sh" || fail "install.sh missing Gemini path: $anchor"
+done
+grep -F -q ".gemini/skills" "$DISC" || fail "skill-discovery missing Gemini skills path"
+grep -F -q ".gemini/skills" "$ROOT/README.md" || fail "README missing Gemini skills path"
+ok "Gemini / Antigravity install anchors (install.sh + honesty)"
+
 # ─── Polyglot stack detection anchors (Slice A) ──────────────────────────────
 for anchor in \
   "Polyglot stack detection" \

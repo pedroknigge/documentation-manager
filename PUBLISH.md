@@ -67,6 +67,16 @@ Version must match across:
 - `CHANGELOG.md` section for that version
 - `docs/adoption-matrix.md` version line (when cutting a major)
 
+### Cutting **2.5.2** (Gemini / agy classic install)
+
+Narrative: classic `install.sh` covers Gemini CLI (`~/.gemini/skills/`) plus existing `~/.gemini/config/skills/` and `~/.gemini/antigravity/skills/` parents. **Not** a new major; **not** a Knowledge OS leap.
+
+```bash
+# after gate is green:
+git tag -a v2.5.2 -m "documentation-manager skill v2.5.2 — Gemini (+ agy) classic install paths"
+git push origin main --tags   # only when you intend to publish
+```
+
 ### Cutting **2.5.1** (catch-up patch)
 
 Narrative: fold all post-2.5.0 **Unreleased** into one honest patch (kernel loops, dual-plane reconcile, §6.0 escape, install ships `audit-claims`, npx-then-install honesty, comment report-first, C-062, …). **Not** a new major; **not** a second Knowledge OS leap. Going forward: **patch-per-PR**.
@@ -79,7 +89,7 @@ git push origin main --tags   # only when you intend to publish
 
 ### Cutting **2.5.0** (Knowledge OS first increment)
 
-Narrative: **first OS foundation slice toward 100×** (living claims v0 + local CI audit). Do **not** market as a second 10× or a full 100× leap. Historical — current install floor is **2.5.1**.
+Narrative: **first OS foundation slice toward 100×** (living claims v0 + local CI audit). Do **not** market as a second 10× or a full 100× leap. Historical — current install floor is **2.5.2**.
 
 ```bash
 # after gate is green:

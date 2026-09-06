@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v2.5.1</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT
+  <strong>v2.5.2</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.1-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.2-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -66,7 +66,7 @@ Works with **Claude Code**, **Grok Build**, **Codex**, **Cursor**, and any host 
 npx skills add pedroknigge/documentation-manager
 ```
 
-Need the helper scripts too (`audit-claims.sh` and friends)? Run the classic installer **after** npx — not before. `npx` replaces the skill folder and **wipes** those scripts.
+Need the helper scripts too (`audit-claims.sh` and friends)? Run the classic installer **after** npx — not before. `npx` replaces the skill folder and **wipes** those scripts. Classic `install.sh` writes `~/.gemini/skills/` when `gemini` or `~/.gemini` is present (also `~/.gemini/config/skills/` and `~/.gemini/antigravity/skills/` if those parents already exist).
 
 <details>
 <summary><strong>More install options</strong></summary>
