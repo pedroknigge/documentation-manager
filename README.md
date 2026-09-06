@@ -108,6 +108,22 @@ cd documentation-manager
 
 **No auto-commit. No auto-push.** You stay captain of git.
 
+<a id="try-this-prompt"></a>
+
+## Try this prompt
+
+First run or a later audit/sync — copy and paste. Same [honest stage](#honest-stage): you ask; the agent follows the playbook. [AS-IS vs TO-BE (§6.8)](./skills/documentation-manager/references/modes.md#who-wins-as-is-vs-to-be) · [stale comments (§6.10)](./skills/documentation-manager/references/modes.md#610-narrative-comments-report-first) stay report-only.
+
+```text
+Use /documentation-manager in this repo.
+
+1) Audit docs vs code (diff-first; full-tree only if the diff is useless).
+2) AS-IS = what the code says. TO-BE = the latest living plan/claim per topic; mark the rest Superseded.
+3) Update the claims matrix. Do not invent code. Do not auto-commit.
+4) If you see stale narrative comments in the change set, report them; do not rewrite them.
+5) At the end: what changed, what you left alone, and what needs my OK.
+```
+
 ---
 
 ## How it writes (when you ask)
@@ -271,6 +287,7 @@ Version notes, shipped packs, and epics live **off** this page:
 
 <p align="center">
   <a href="#install">Install</a> ·
+  <a href="#try-this-prompt">Try this prompt</a> ·
   <a href="#north-star">North star</a> ·
   <a href="#honest-stage">Honest stage</a> ·
   <a href="./docs/adr/0002-knowledge-enslavement-captain.md">ADR-0002</a> ·
