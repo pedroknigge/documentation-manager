@@ -8,6 +8,10 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ### Changed
 
+- **P1 Install honesty:** upgrade order is **npx first → then `./install.sh`** (or the curl/bash install.sh); `npx skills add` replaces the skill folder and **wipes** `scripts/`  
+- README Upgrade row no longer treats the two paths as interchangeable / idempotent  
+- No version bump — install floor stays **2.5.0**
+
 - **P1 Reconcile:** dual-plane who-wins — **AS-IS** code (and anchored matrix claims); **TO-BE** one living SSOT after classification  
 - Date / mtime remains **evidence**, not a silent winner, on both planes (no date-wins engine)  
 - Procedure [modes.md §6.8](skills/documentation-manager/references/modes.md#who-wins-as-is-vs-to-be); ADR-0002 reconcile row  

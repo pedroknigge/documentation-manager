@@ -85,11 +85,10 @@ git tag -a v2.0.0 -m "documentation-manager skill v2.0.0 — 10x package"
 git push origin main --tags   # only when you intend to publish
 ```
 
-Users upgrade with:
+Users upgrade with (**npx first**, then classic install — npx last wipes `scripts/`):
 
 ```bash
 npx skills add pedroknigge/documentation-manager -y
-# or
 ./install.sh
 ```
 
@@ -100,7 +99,7 @@ Record new installs in [docs/adoption-matrix.md](./docs/adoption-matrix.md).
 1. Edit skill files under `skills/documentation-manager/`
 2. Bump `metadata.version` in `SKILL.md` (and README/AGENTS/CHANGELOG)
 3. Run the **pre-release gate** above
-4. Commit and push — users re-run `install.sh` or `npx skills add …` / update
+4. Commit and push — users: **npx first**, then `install.sh` (npx last wipes `scripts/`)
 
 ## Notes
 

@@ -22,18 +22,23 @@ Documentation Manager: installed | version: <x.y.z> | path: <skill dir>
 2. Compare to package source (this repo / GitHub `pedroknigge/documentation-manager` / README badge).  
 3. If local **&lt;** published: suggest reinstall — do **not** overwrite without user OK.
 
-Upgrade (user-approved):
+Upgrade (user-approved). **If you use both: npx first → then `./install.sh`.**
+
+`npx skills add` replaces the whole skill folder with SKILL.md + references only. That **wipes** the helper scripts classic `install.sh` just put in `scripts/` (audit-claims, detect-stack, and friends). Running npx last is the dangerous order.
 
 ```bash
-# classic
-./install.sh
-# or
+# 1) refresh SKILL.md + references
 npx skills add pedroknigge/documentation-manager -y
-# global
+# 2) put the helper scripts back (required after npx)
+./install.sh
+# same as: curl -fsSL https://raw.githubusercontent.com/pedroknigge/documentation-manager/main/install.sh | bash
+
+# global npx still needs step 2 after
 npx skills add pedroknigge/documentation-manager -g -y
+./install.sh
 ```
 
-Re-run is **idempotent** (see `scripts/install-smoke.sh`). Classic `install.sh` also refreshes the runtime CLI below.
+`install.sh` by itself is idempotent (see `scripts/install-smoke.sh`). Mixing the two is **not** — always finish with `install.sh`.
 
 ---
 
@@ -61,7 +66,7 @@ Package-root `scripts/` is the **SSOT**. `install.sh` (local clone **and** raw G
 
 **Not an install story:** auto-copy into every consumer repo. Maintainer-only scripts (`validate-skill.sh`, hardening, smoke, fixtures) stay at package root.
 
-`npx skills add` copies `skills/documentation-manager/` (SKILL + references) only. Re-run classic `install.sh` to get the kernel CLI.
+`npx skills add` copies `skills/documentation-manager/` (SKILL + references) only and **replaces** the skill directory. Always run classic `install.sh` **after** npx (**npx first** → then install). Never treat them as interchangeable.
 
 ---
 
