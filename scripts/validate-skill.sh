@@ -170,7 +170,10 @@ for concept in \
   "anchor.path" \
   "severity" \
   "diff-first" \
-  "--list-changed"
+  "--list-changed" \
+  "Cascade verdicts" \
+  "Versklavungsprinzip" \
+  "for-review"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done

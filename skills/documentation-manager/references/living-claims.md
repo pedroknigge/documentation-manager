@@ -61,7 +61,7 @@ score = (OK_N * 100 + PARTIAL_N * 50) / TOTAL_V   # TOTAL_V > 0
 4. Verdicts unchanged — **code wins**.  
 5. Write `docs/audit/claims-matrix.md` (or sandbox) from [audit-template.md](audit-template.md).  
 6. Offer dashboard ([knowledge-dashboard.md](knowledge-dashboard.md)) as view; remind that **CI is the gate**.  
-7. If a changed breadcrumb names `parent=` (or a changed id is a parent), **recommend review of children** — do not run a cascade engine.  
+7. If a changed breadcrumb names `parent=` (or a changed id is a parent), apply [modes.md §6.7](modes.md#67-cascade-verdicts-haken) — **recommend review of children**; do not run a cascade engine.  
 8. Never invent code to satisfy a claim; never auto-commit. HITL when who-wins is unclear.
 
 ## CI (local / air-gapped)
@@ -145,7 +145,7 @@ checkout() { :; }
 
 ### Non-goals (this section)
 
-Convention only. Do **not** implement here: cascade engine, reconcile classification, breadcrumb parsers, or CI that fails on missing comments. `audit-claims.sh` default remains the **matrix gate**; `--list-changed` is the change-set helper only.
+Convention only. Do **not** implement here: cascade engine (verdicts: [modes.md §6.7](modes.md#67-cascade-verdicts-haken)), reconcile classification, breadcrumb parsers, or CI that fails on missing comments. `audit-claims.sh` default remains the **matrix gate**; `--list-changed` is the change-set helper only.
 
 ## Non-goals (v0)
 
@@ -161,7 +161,7 @@ Convention only. Do **not** implement here: cascade engine, reconcile classifica
 
 ## Related
 
-- Modes: [modes.md §6](modes.md#6-audit-project-or-feature) · [§13](modes.md#13-living-claims--ci-structural-audit-v25)  
+- Modes: [modes.md §6](modes.md#6-audit-project-or-feature) · [§6.7](modes.md#67-cascade-verdicts-haken) · [§13](modes.md#13-living-claims--ci-structural-audit-v25)  
 - Quality: [quality-checklist.md](quality-checklist.md)  
 - Feature pack: [docs/features/living-claims/README.md](../../../docs/features/living-claims/README.md)  
 - Epic: [docs/plans/knowledge-os/README.md](../../../docs/plans/knowledge-os/README.md)  

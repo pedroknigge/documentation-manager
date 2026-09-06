@@ -47,7 +47,7 @@ Run before reporting done.
 - [ ] On conflict **code wins** — no inventing features to match docs
 - [ ] Audit (if run): claims matrix with verdicts OK / Partial / Missing / Contradicted
 - [ ] Audit / reconcile reads were **diff-first** (git change set); no full-tree scan unless the user opted in
-- [ ] Cascade: recommended review only when a parent breadcrumb appears in the change set — no cascade engine
+- [ ] Cascade: recommended review only when a parent breadcrumb appears in the change set; apply [modes.md §6.7](modes.md#67-cascade-verdicts-haken) (hold / escalate / break / for-review); HITL when ambiguous — captain decides ties; no cascade engine
 - [ ] from-zero: full KB only with that Intent; sandbox when path requested; old docs treated as hypothesis
 - [ ] from-zero does not silently overwrite mature productive SSOT without confirm
 
