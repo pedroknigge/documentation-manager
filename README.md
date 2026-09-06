@@ -27,6 +27,8 @@ Whole project. Single module. Or a full rewrite in a sandbox — **without** tor
 
 Works with **Claude Code**, **Grok Build**, **Codex**, **Cursor**, and any host that loads `SKILL.md` skills.
 
+**North star:** make knowledge enslavement inevitable for agents, with the human as captain. On-demand skill — not an always-on product. It proposes structure; it never overrides the layout you already evolved. You stay captain. Conflicts go to HITL. Binding decision: [ADR-0002](./docs/adr/0002-knowledge-enslavement-captain.md).
+
 ---
 
 ## Install
