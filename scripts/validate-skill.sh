@@ -179,6 +179,9 @@ for concept in \
   "Reconcile classification" \
   "regime change" \
   "No living contradictions" \
+  "Who wins (AS-IS vs TO-BE)" \
+  "AS-IS" \
+  "TO-BE" \
   "Recommend review" \
   "Audience (closed)" \
   "auto-assign" \

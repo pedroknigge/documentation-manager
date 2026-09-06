@@ -539,15 +539,26 @@ These tokens are **not** [§6.3](#63-verdicts) matrix verdicts, **not** [§6.7](
 
 **No living contradictions.** Never leave two parallel contradicting SSOTs.
 
-#### Who wins
+#### Who wins (AS-IS vs TO-BE)
 
-1. From the change set — agent-written `docs/plans/**` and MDs that share a topic with a living doc (or with each other), or that cite a living authority.
+Name the **reconcile plane** first (not breadcrumb `plane=` P3–P0). Closed classes and **no living contradictions** stay. **Raw date-wins / mtime auto-win is forbidden on both planes.** Date is **evidence** for which TO-BE regime is current, not a silent winner. Do not invent a recency engine.
+
+| Plane | What it is | Who wins |
+|-------|------------|----------|
+| **AS-IS** | Facts about the live system | **Code** (and matrix claims anchored to code). Docs that fight code → Contradicted/Partial; never “fix” by rewriting code identity. |
+| **TO-BE** | Intent / future plans / design claims | **One living SSOT per topic.** Among many partial/evolved plans, keep one living; mark others **Superseded**. |
+
+“Latest wins” for **TO-BE** means the **latest living regime after classification** (regime change → supersede old; evolution → patch living) — not “touched yesterday wins.”
+
+1. From the change set — agent-written `docs/plans/**` and MDs that share a topic with a living doc (or with each other), or that cite a living authority. Name the plane.
 2. Classify with the closed set. Tool **proposes**.
 3. **Latest-by-date does not auto-win.** Date is evidence, not a verdict. Do not invent a recency rule.
-4. The **supersede / enslavement** verdict wins: still enslaved to the living SSOT → **evolution**; new order → **regime change** and supersede the old; no authority → **orphan**; two living truths → **contradiction**.
-5. Unclear who wins, or a tie (which doc is superseded; evolution vs regime change) → **HITL**. Captain (dev) decides. Do not pick a class to look decisive.
+4. Apply the plane winner. **AS-IS:** code / anchored matrix (do not rewrite code identity). **TO-BE:** one living SSOT. The **supersede / enslavement** verdict still maps: still enslaved to the living SSOT → **evolution**; new order → **regime change** and supersede the old; no authority → **orphan**; two living truths → **contradiction**.
+5. Unclear who wins, or a tie (which doc is superseded; evolution vs regime change; which plane) → **HITL**. Captain (dev) decides. Do not pick a class to look decisive.
 
 #### Apply
+
+AS-IS uses [§6.3](#63-verdicts) (code wins). TO-BE uses supersede marking below. Same closed classes on both planes.
 
 1. Trigger from the §6.0 pointer (or when this session writes a plan/MD on an existing topic).
 2. Propose one closed-set class (or HITL).
@@ -806,7 +817,7 @@ Announce: `Team: create|link|skip | docs/team | owners | approval-notes`.
 5. **CI is the gate:** `critical` + `Contradicted` → non-zero from local air-gapped `scripts/audit-claims.sh` (example `.github/workflows/docs-audit.yml`). **No network** required. The gate parses the **whole matrix** (do not hide existing critical Contradicted). Agent **audit/reconcile reads** stay **diff-first** (§6.0); `--list-changed` / `--list-claims` / `--upsert-claims` / `--record-haken` / `--cascade-recommend` are change-set helpers, not the gate.  
 6. Graceful v0: no matrix → skip/warn; missing severity → `normal`.  
 7. Do not invent code to match docs; do not auto-commit.  
-8. **Diff-first** — never a full-tree read by default; cascade = [§6.7](#67-cascade-verdicts-haken) (recommend review; no engine); reconcile classification = [§6.8](#68-reconcile-classification-plansmds) (no living contradictions; no date-wins); recommend review = [§6.9](#69-recommend-review-human-vs-agent) (human vs agent; no assign); narrative comments = [§6.10](#610-narrative-comments-report-first) (report-first; no auto-edit).
+8. **Diff-first** — never a full-tree read by default; cascade = [§6.7](#67-cascade-verdicts-haken) (recommend review; no engine); reconcile classification = [§6.8](#68-reconcile-classification-plansmds) (no living contradictions; AS-IS code / TO-BE one living SSOT; no date-wins); recommend review = [§6.9](#69-recommend-review-human-vs-agent) (human vs agent; no assign); narrative comments = [§6.10](#610-narrative-comments-report-first) (report-first; no auto-edit).
 
 Announce: `Living-claims: v0 | matrix: path|none | CI-gate: audit-claims | score: advisory | Audit-scope: diff-first`.
 

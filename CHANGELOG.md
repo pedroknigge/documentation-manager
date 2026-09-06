@@ -8,6 +8,11 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ### Changed
 
+- **P1 Reconcile:** dual-plane who-wins — **AS-IS** code (and anchored matrix claims); **TO-BE** one living SSOT after classification  
+- Date / mtime remains **evidence**, not a silent winner, on both planes (no date-wins engine)  
+- Procedure [modes.md §6.8](skills/documentation-manager/references/modes.md#who-wins-as-is-vs-to-be); ADR-0002 reconcile row  
+- No version bump — install floor stays **2.5.0**
+
 - **Glance version:** `SKILL.md` `description` starts with `v2.5.0 —` (Orderfield habit); `metadata.version` unchanged  
 - **P1 Docs:** first-contact honesty — documented procedures vs four on-demand loops (parse / persist / record / cascade-recommend); “has Haken” ≠ DB / daemon  
 - **P1 Docs:** skill entry names the four on-demand kernel loops (`--list-claims` / `--upsert-claims` / `--record-haken` / `--cascade-recommend`); Haken ≠ DB / daemon  
