@@ -372,7 +372,7 @@ If sync reveals many Contradicted claims → suggest **audit** (still **diff-fir
 
 **Goal:** Structural reconciliation of documentation claims against **code as source of truth**. Not full NLP of every sentence.
 
-**Default scope: diff-first** ([ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md)). Inventory, claim reads, and the SKILL.md **reconciliation** pass use the **git change set** only. Never a full-tree scan unless the user explicitly opts in (`full audit`, `whole tree`, `--full-tree`). ADR-0002 **reconcile classification** (evolution vs regime vs orphan) is a different P0 — do not implement it here; if you are already in a reconcile-shaped pass, still read only the change set.
+**Default scope: diff-first** ([ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md)). Inventory, claim reads, and the SKILL.md **reconciliation** pass use the **git change set** only. Never a full-tree scan unless the user explicitly opts in (`full audit`, `whole tree`, `--full-tree`). ADR-0002 **reconcile classification** of agent-written plans/MDs is [§6.8](#68-reconcile-classification-plansmds) — still read only the change set.
 
 ### 6.0 Change set (diff-first)
 
@@ -384,7 +384,8 @@ If sync reveals many Contradicted claims → suggest **audit** (still **diff-fir
 3. Inventory (§6.1) and claim extraction (§6.2) **only** those paths, plus a specific `anchor.path` a changed doc cites. Do not glob `docs/**` or walk `src/`.
 4. Named feature + change set → **intersect**. Empty intersection → HITL, not a feature-tree walk.
 5. **Cascade pointer:** if a changed file has a breadcrumb `parent=` ([living-claims.md § Code breadcrumbs](living-claims.md#code-breadcrumbs-comment-mirror)) or a matrix row whose `id` is named as `parent` on a changed breadcrumb, **recommend review of children** and apply [§6.7](#67-cascade-verdicts-haken) (hold / escalate / break / for-review). Do not run a cascade engine. Do not grep the repo for children.
-6. Human is captain. Propose matrix updates; HITL when who-wins is unclear.
+6. **Reconcile pointer:** if the change set includes agent-written plans/MDs that share a topic with a living doc (or with each other), apply [§6.8](#68-reconcile-classification-plansmds). Do not walk `docs/**` for a second tree.
+7. Human is captain. Propose matrix updates; HITL when who-wins is unclear.
 
 Announce: `Audit-scope: diff-first | files: <n> | base: <HEAD|ref|n/a>` or `Audit-scope: full-tree (user opt-in)`.
 
@@ -502,7 +503,47 @@ These tokens are **not** [§6.3](#63-verdicts) matrix verdicts and **not** bread
 2. Propose one closed-set verdict (or HITL).
 3. Human is captain. Do not override evolved layout. Do not auto-commit. Do not run an engine.
 
-**Non-goals:** cascade graph walker · repo-wide child grep · reconcile classification (other P0) · new breadcrumb keys or planes · new verdict tokens.
+**Non-goals:** cascade graph walker · repo-wide child grep · reconcile classification ([§6.8](#68-reconcile-classification-plansmds)) · new breadcrumb keys or planes · new verdict tokens.
+
+### 6.8 Reconcile classification (plans/MDs)
+
+**Procedure only** — not an auto-merge engine and not a date-wins rule. Binding: [ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md) reconcile row.
+
+Stay on the **§6.0 change set** (plus the living SSOT a changed plan/MD already cites). Do not walk `docs/**` for a second tree.
+
+Cascade verdicts stay in [§6.7](#67-cascade-verdicts-haken). Breadcrumb wire stays locked.
+
+#### Vocabulary (closed)
+
+These tokens are **not** [§6.3](#63-verdicts) matrix verdicts, **not** [§6.7](#67-cascade-verdicts-haken) cascade verdicts, and **not** breadcrumb `status=` (`changed` / `adjusted`).
+
+| Class | Meaning |
+|-------|---------|
+| **evolution** | Same regime. The new plan/MD extends or refines the living SSOT. Patch the living doc; do not fork a second living truth. |
+| **regime change** | New order. The living SSOT is no longer the regime. Mark it **Superseded**; one living SSOT remains. |
+| **orphan** | No living topic authority (no parent, no canonical doc). Propose a home (link as first SSOT) or HITL. Do not invent a parallel authority. |
+| **contradiction** | Two living docs assert incompatible facts on the same topic. **Forbidden to leave living.** Propose which is **Superseded**. |
+
+**No living contradictions.** Never leave two parallel contradicting SSOTs.
+
+#### Who wins
+
+1. From the change set — agent-written `docs/plans/**` and MDs that share a topic with a living doc (or with each other), or that cite a living authority.
+2. Classify with the closed set. Tool **proposes**.
+3. **Latest-by-date does not auto-win.** Date is evidence, not a verdict. Do not invent a recency rule.
+4. The **supersede / enslavement** verdict wins: still enslaved to the living SSOT → **evolution**; new order → **regime change** and supersede the old; no authority → **orphan**; two living truths → **contradiction**.
+5. Unclear who wins, or a tie (which doc is superseded; evolution vs regime change) → **HITL**. Captain (dev) decides. Do not pick a class to look decisive.
+
+#### Apply
+
+1. Trigger from the §6.0 pointer (or when this session writes a plan/MD on an existing topic).
+2. Propose one closed-set class (or HITL).
+3. On **regime change** or **contradiction**: mark the loser **Superseded** / **Superseded by** (existing ADR and plan status). Do not delete durable knowledge. Do not keep both living.
+4. On **evolution**: edit the living SSOT; do not promote the draft as a second living authority.
+5. On **orphan**: propose a single home; do not create a second SSOT for the same topic.
+6. Human is captain. Never override evolved layout. Do not auto-commit. Do not run a classifier engine.
+
+**Non-goals:** date-wins rules · auto-merge / reconcile engine · graph walker · cascade verdicts (stay in §6.7) · breadcrumb format · new class tokens.
 
 ---
 
@@ -661,7 +702,7 @@ Announce: `Telemetry: off|local-ledger | opt-in: no|yes | network: never`.
 5. **CI is the gate:** `critical` + `Contradicted` → non-zero from local air-gapped `scripts/audit-claims.sh` (example `.github/workflows/docs-audit.yml`). **No network** required. The gate parses the **whole matrix** (do not hide existing critical Contradicted). Agent **audit/reconcile reads** stay **diff-first** (§6.0); `--list-changed` is the change-set helper, not the gate.  
 6. Graceful v0: no matrix → skip/warn; missing severity → `normal`.  
 7. Do not invent code to match docs; do not auto-commit.  
-8. **Diff-first** — never a full-tree read by default; cascade = [§6.7](#67-cascade-verdicts-haken) (recommend review; no engine).
+8. **Diff-first** — never a full-tree read by default; cascade = [§6.7](#67-cascade-verdicts-haken) (recommend review; no engine); reconcile classification = [§6.8](#68-reconcile-classification-plansmds) (no living contradictions; no date-wins).
 
 Announce: `Living-claims: v0 | matrix: path|none | CI-gate: audit-claims | score: advisory | Audit-scope: diff-first`.
 
