@@ -125,7 +125,7 @@ for concept in \
   "audit-claims" \
   "diff-first" \
   "evolved layout" \
-  "silent structure rewrite"
+  "Silent structure rewrite"
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
