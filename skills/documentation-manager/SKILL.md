@@ -33,7 +33,7 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 6. Prefer accuracy and usefulness over volume. Core set first; optional docs on demand.
 7. **Intent first (project-level).** Classify **Intent**: `integrate` | `audit` | `from-zero` (and optional hybrid). See Step 0. **Not required** for pure feature/plan/sync.
 8. **Code wins on conflict.** Doc claims that fail structural verification are marked Contradicted/Missing — do not invent code to match docs; fix or flag the doc.
-9. **Integrate-first (when Intent=integrate).** Mature docs → index + gaps + canonical links; no parallel rewrite of product-vision/requirements/ADRs. See **adopt-integrate**.
+9. **Integrate-first (when Intent=integrate).** The default tree is a **proposal**. If the repo evolved its layout, **adopt it** — never force the template over the captain ([ADR-0002](../../docs/adr/0002-knowledge-enslavement-captain.md)). Mature docs → index + gaps + canonical links; no parallel rewrite of product-vision/requirements/ADRs. See **adopt-integrate**.
 10. **One authority per topic.** Each topic has one canonical doc; everything else links.
 11. **Coverage matrix on adopt/from-zero project.** Product surfaces (nav, ModuleId, package) appear as documented / linked / gap.
 12. **Feature atomicity.** One slug ≈ one ModuleId or bounded context. Clusters = **index** + **children**.
@@ -78,7 +78,7 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 
 | Intent | User signals (examples) | Behavior |
 |--------|-------------------------|----------|
-| **integrate** | “mejorar docs”, “ordenar”, “sync hub”, mature improve | adopt-integrate (or full if thin); optional pre-audit if drift suspected |
+| **integrate** | “mejorar docs”, “ordenar”, “sync hub”, mature improve | adopt-integrate (or full if thin); **adopt evolved layout**; optional pre-audit if drift suspected |
 | **audit** | “auditar”, “¿las docs mienten?”, “docs vs code”, “validar paths” | Code inventory + claim matrix only (or then hand off) |
 | **from-zero** | “toda nueva”, “de cero”, “generá docs en test/”, “full KB en carpeta X” | Full knowledge base; prefer **sandbox** if path given; code-inferred; old docs = hypothesis only |
 
@@ -107,9 +107,11 @@ If scope/mode still ambiguous after inference, ask once. Load procedures from [r
 Scope: <x> | Mode: <y> | Intent: <integrate|audit|from-zero|n/a> | Variant: <full|integrate|arkgate-bridge|n/a> | Maturity: <…|n/a> | Out: <root|sandbox:path> | Stack: <node-ts|python|go|mixed|unknown|n/a> | Monorepo: <yes|no|n/a> | ArkGate: <none|detected> | Slug: <slug|n/a>
 ```
 
-When **integrate**, list **non-writes** (include package non-writes when monorepo root-index only). When **audit**, list matrix path, **Audit-scope** (`diff-first` default, or `full-tree` if the user opted in), change-set size, and top contradictions. When **from-zero** + sandbox, include **promotion plan**. When **plan** or **feature**, list path + **default non-writes**. When **ArkGate bridge**, list signals and post-gate sync vs audit-enrich. When project-level, include **Stack** and **Monorepo** from discovery.
+When **integrate**, list **non-writes** (include package non-writes when monorepo root-index only) and whether layout was **adopted** (evolved) or **proposed** (thin / from-zero). When **audit**, list matrix path, **Audit-scope** (`diff-first` default, or `full-tree` if the user opted in), change-set size, and top contradictions. When **from-zero** + sandbox, include **promotion plan**. When **plan** or **feature**, list path + **default non-writes**. When **ArkGate bridge**, list signals and post-gate sync vs audit-enrich. When project-level, include **Stack** and **Monorepo** from discovery.
 
-## Recommended layout
+## Recommended layout (proposal)
+
+This tree is a **proposal** (bootstrap / from-zero / adopt-full on thin docs). If the repo already evolved a different layout, **adopt it**. Never force this tree over the captain ([ADR-0002](../../docs/adr/0002-knowledge-enslavement-captain.md); [modes.md §2](references/modes.md#2-adopt-project)).
 
 ```
 project-root/
@@ -159,7 +161,7 @@ Supporting docs only when justified (except **from-zero**, which may create a fu
 Greenfield interview **or** code archaeology for brownfield from-zero. Full core set + hub. Sandbox if Out says so. See [modes.md](references/modes.md#1-bootstrap-project) and [§ from-zero](references/modes.md#7-from-zero).
 
 ### Adopt / integrate
-Maturity → adopt-full or adopt-integrate. See [modes.md §2](references/modes.md#2-adopt-project).
+Maturity → adopt-full or adopt-integrate. Default layout is a **proposal**; evolved layout wins — adopt it, do not reshape the tree. See [modes.md §2](references/modes.md#2-adopt-project).
 
 ### Audit
 **Diff-first:** change set from `git diff` / changed files (or `audit-claims.sh --list-changed`). Never a full-tree read by default. Then structural claims → **living-claims** matrix (anchors + severity) → report. If a parent breadcrumb would require children, apply [modes.md §6.7](references/modes.md#67-cascade-verdicts-haken) (recommend review; no engine). Agent-written plans/MDs in the set: classify per [modes.md §6.8](references/modes.md#68-reconcile-classification-plansmds) (evolution / regime change / orphan / contradiction). **No living contradictions.** When cascade / reconcile / audit needs eyes, recommend review to a **human** or **agent** ([modes.md §6.9](references/modes.md#69-recommend-review-human-vs-agent)) — pointers only; no assign, notify, or merge. **Code wins.** CI gate separate from dashboard score. See [modes.md §6.0](references/modes.md#60-change-set-diff-first), [§6](references/modes.md#6-audit-project-or-feature), [§13](references/modes.md#13-living-claims--ci-structural-audit-v25), [living-claims.md](references/living-claims.md).
@@ -231,6 +233,7 @@ Follow [quality-checklist.md](references/quality-checklist.md).
 - Pure code with no doc intent
 - Throwaway notes outside the repo
 - **Silent overwrite** of productive SSOT without Intent from-zero or explicit user order
+- **Silent structure rewrite** of an evolved layout to match the recommended tree (captain decides; HITL)
 - Mature improve without audit request → **integrate** (not full parallel tree)
 - Replacing MkDocs/Docusaurus wholesale — integrate with it
 - **New feature request** → do **not** run full project from-zero; use plan/feature autopilot

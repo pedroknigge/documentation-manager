@@ -123,7 +123,9 @@ for concept in \
   "Living claims" \
   "2.5.0" \
   "audit-claims" \
-  "diff-first"
+  "diff-first" \
+  "evolved layout" \
+  "Silent structure rewrite"
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
@@ -179,7 +181,8 @@ for concept in \
   "No living contradictions" \
   "Recommend review" \
   "Audience (closed)" \
-  "auto-assign"
+  "auto-assign" \
+  "evolved layout"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
@@ -235,6 +238,7 @@ grep -F -q "Monorepo hubs" "$QC" || fail "quality-checklist missing Monorepo hub
 grep -F -q "Team governance" "$QC" || fail "quality-checklist missing Team governance section"
 grep -F -q "Template telemetry" "$QC" || fail "quality-checklist missing Template telemetry section"
 grep -F -q "Living claims" "$QC" || fail "quality-checklist missing Living claims section"
+grep -F -q "silent structure rewrite" "$QC" || fail "quality-checklist missing silent structure rewrite bar"
 ok "quality-checklist … + team + template telemetry + living-claims present"
 
 PT="$SKILL_DIR/references/plan-template.md"

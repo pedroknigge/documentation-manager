@@ -99,7 +99,7 @@ Same **hub + `docs/`** contract for all stacks (AGENTS.md, plans, features). Bia
 
 **Shared rules (all stacks):**
 
-- Docs tree shape stays agent-first: hub, `docs/plans/`, `docs/features/`, optional audit — **not** language-specific wiki roots.  
+- Docs tree shape stays agent-first: hub, `docs/plans/`, `docs/features/`, optional audit — **not** language-specific wiki roots. **Proposal only** — if the repo evolved a different layout, adopt it ([modes.md §2](modes.md#2-adopt-project)).  
 - Integrate-first: mature docs are not rewritten just because stack is non-TS.  
 - **Anti-hallucination:** never invent ModuleIds/endpoints/tables for frameworks not evidenced in code.  
 - Monorepo multi-package **hub index** is Slice B (next section).
