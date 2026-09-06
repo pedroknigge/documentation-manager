@@ -37,6 +37,7 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ### Fixed
 
+- **C-062 / ArkGate dogfood note:** §7 distinguishes origin package vs host/consumer — when the working tree is ArkGate, the bridge applies (code wins)  
 - **Cold-start survey heuristics** (LIVE FIELD DOGFOOD / [#11](https://github.com/pedroknigge/documentation-manager/issues/11)): case-insensitive root README (`Readme.md` counts); tight ADR homes/names (no `*adr*` substring — `TableHeadRenderer.tsx` is not an ADR); default claim/doc scope is `docs/` + root + `.github` and **excludes** `examples/**` unless you opt in  
 - Helper: `scripts/survey-docs.sh` (same shape as `detect-stack.sh` / `detect-packages.sh`)  
 - Flat CapCase `docs/*.md` stays **adopted** — never rewritten to the skill template tree  
