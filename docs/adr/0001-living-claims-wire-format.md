@@ -74,6 +74,7 @@ Graceful v0: no matrix → skip/warn (documented exit); matrix without severity 
 
 - Formal proof / SMT, auto-commit, and inventing code to match docs remain out of scope.
 - Full Knowledge OS (org hub, SaaS) is later; this ADR is the first OS foundation slice toward 100×.
+- Code comments MAY mirror the same `id` (plus parent/plane/status). The comment is not SSOT. Convention: [living-claims.md § Code breadcrumbs](../../skills/documentation-manager/references/living-claims.md#code-breadcrumbs-comment-mirror).
 
 ## Links
 
@@ -81,3 +82,4 @@ Graceful v0: no matrix → skip/warn (documented exit); matrix without severity 
 - Template: [../../skills/documentation-manager/references/audit-template.md](../../skills/documentation-manager/references/audit-template.md)
 - Feature pack: [../features/living-claims/README.md](../features/living-claims/README.md)
 - Epic: [../plans/knowledge-os/README.md](../plans/knowledge-os/README.md)
+- Code breadcrumbs (comment mirror of `id`): [living-claims.md § Code breadcrumbs](../../skills/documentation-manager/references/living-claims.md#code-breadcrumbs-comment-mirror)
