@@ -52,7 +52,7 @@ This ADR locks the goal and the captain rule. It does **not** specify implementa
 
 **Neutral / Notes — out of scope (other rows own these):**
 
-- Breadcrumbs format spec
+- Breadcrumbs format spec — [living-claims.md § Code breadcrumbs](../../skills/documentation-manager/references/living-claims.md#code-breadcrumbs-comment-mirror)
 - Cascade engine
 - Git-diff audit implementation
 - Reconcile logic
@@ -62,4 +62,5 @@ This ADR locks the goal and the captain rule. It does **not** specify implementa
 
 - First-contact pointer: [../../README.md](../../README.md)
 - Prior ADR in this series: [0001-living-claims-wire-format.md](./0001-living-claims-wire-format.md)
+- Breadcrumbs convention (owns the comment wire): [living-claims.md § Code breadcrumbs](../../skills/documentation-manager/references/living-claims.md#code-breadcrumbs-comment-mirror)
 - Epic (does not replace this lock): [../plans/knowledge-os/README.md](../plans/knowledge-os/README.md)

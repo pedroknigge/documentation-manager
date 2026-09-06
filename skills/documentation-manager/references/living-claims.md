@@ -4,7 +4,8 @@ Machine-anchored structural claims on top of the existing audit matrix. **Markdo
 
 **Package:** skill **2.5.0+** · Narrative: Knowledge OS **first increment toward 100×** (10× already shipped at v2.0; not a second 10× or full 100× leap).
 
-**Wire ADR:** [docs/adr/0001-living-claims-wire-format.md](../../../docs/adr/0001-living-claims-wire-format.md)
+**Wire ADR:** [docs/adr/0001-living-claims-wire-format.md](../../../docs/adr/0001-living-claims-wire-format.md)  
+**Captain / north star:** [ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md)
 
 ## When
 
@@ -13,6 +14,7 @@ Machine-anchored structural claims on top of the existing audit matrix. **Markdo
 | Intent / mode **audit** | Write matrix with living-claims columns (anchors + severity) |
 | “living claims”, “truth score”, “docs CI”, “fail on Contradicted” | Follow this procedure + modes §6 / §13 |
 | Integrate after audit | Patch Contradicted/Missing; keep anchors honest |
+| “breadcrumbs”, code-comment claim tags | Follow **Code breadcrumbs** below; propose only — no engines |
 
 ## Wire format (v0)
 
@@ -71,16 +73,88 @@ Consumers (and this package example workflow) run a pure local script — **no n
 
 Example GitHub Actions: copy `.github/workflows/docs-audit.yml` from the skill package (opt-in). Script + fixtures land with the CI slice; this document is the skill-side contract.
 
+## Code breadcrumbs (comment mirror)
+
+Optional one-line comments next to anchored code that **mirror** a living-claims `id`. The matrix row (and source doc) still holds the id. The comment is **not** the sole truth and **not** a second SSOT.
+
+Tool **proposes**. Human is captain. Never override an evolved layout or a developer decision ([ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md)). HITL when unclear.
+
+### Line format
+
+One line, host-language comment syntax, greppable `@claim`, space-separated `key=value` (lowercase keys):
+
+```text
+@claim id=<claim-id> [parent=<claim-id>] plane=<P3|P2|P1|P0> status=<changed|adjusted>
+```
+
+| Field | Required | Values |
+|-------|----------|--------|
+| `id` | yes | Same `id` as the matrix row ([ADR-0001](../../../docs/adr/0001-living-claims-wire-format.md)), e.g. `C-001` |
+| `parent` | no | At most **one** other claim `id`. Omit when there is no parent. |
+| `plane` | yes | Closed set **`P3` → `P2` → `P1` → `P0`** only. Do not invent `P4`, `P-1`, or open-ended planes. |
+| `status` | yes | `changed` \| `adjusted` only |
+
+**One parent max.** Do not write two `parent=` keys. Do not list children on the parent line.
+
+**Status** is *not* [status-taxonomy.md](status-taxonomy.md) (feature/doc maturity: `Real`, `Planned`, …). Breadcrumb status is only:
+
+| Token | Meaning |
+|-------|---------|
+| `changed` | The anchored claim/code surface itself changed |
+| `adjusted` | Adapted to a parent or plane shift without a primary rewrite |
+
+Do not extend this pair unless a later ADR says so.
+
+Place the line immediately above `anchor.symbol` when present; otherwise near the `anchor.path` evidence. Do not campaign a full-tree rewrite of existing comments.
+
+### Examples
+
+**TypeScript / JS**
+
+```ts
+// @claim id=C-001 parent=C-000 plane=P1 status=changed
+export function checkout() {}
+```
+
+**Python**
+
+```python
+# @claim id=C-001 parent=C-000 plane=P1 status=adjusted
+def checkout():
+    ...
+```
+
+**Go**
+
+```go
+// @claim id=C-001 parent=C-000 plane=P1 status=changed
+func Checkout() {}
+```
+
+**Shell**
+
+```bash
+# @claim id=C-010 plane=P0 status=changed
+checkout() { :; }
+```
+
+(Shell example omits `parent` — no parent.)
+
+### Non-goals (this section)
+
+Convention only. Do **not** implement here: cascade engine, git-diff audit runner, reconcile, breadcrumb parsers, or CI that fails on missing comments. `audit-claims.sh` stays matrix-only.
+
 ## Non-goals (v0)
 
 - SaaS / control-plane / org merge policy engines  
 - Formal proof / SMT  
 - Auto-commit; inventing implementation to match docs  
 - Replacing Notion/MkDocs  
+- Cascade / git-diff audit / reconcile / breadcrumb parsers (comment convention only)
 
 ## Concept anchors (greppable)
 
-`living claims` · `living-claims` · `anchor.path` · `severity` · `critical Contradicted` · `truth score` · `audit-claims` · `docs-audit`
+`living claims` · `living-claims` · `anchor.path` · `severity` · `critical Contradicted` · `truth score` · `audit-claims` · `docs-audit` · `@claim` · `breadcrumb` · `plane` · `changed` · `adjusted`
 
 ## Related
 
@@ -88,3 +162,4 @@ Example GitHub Actions: copy `.github/workflows/docs-audit.yml` from the skill p
 - Quality: [quality-checklist.md](quality-checklist.md)  
 - Feature pack: [docs/features/living-claims/README.md](../../../docs/features/living-claims/README.md)  
 - Epic: [docs/plans/knowledge-os/README.md](../../../docs/plans/knowledge-os/README.md)  
+- Captain lock: [ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md)  
