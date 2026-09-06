@@ -384,6 +384,7 @@ If sync reveals many Contradicted claims → suggest **audit** (still **diff-fir
    - User named a range / PR / `--base` → `git diff --name-only <base>...HEAD`
    - Else dirty worktree or untracked → `git diff --name-only HEAD` plus `git ls-files --others --exclude-standard`
    - Same rules, one helper: `./scripts/audit-claims.sh --list-changed [--base REF] [ROOT]`
+   - Breadcrumbs in that set: `./scripts/audit-claims.sh --list-claims [--base REF] [ROOT]` (path + `id` / `parent` / `plane` / `status`; malformed → HITL stderr + exit 1; never invent)
 2. Empty set, not a git repo, or unclear base → **HITL** (ask once: name a base, give a file list, or confirm full-tree opt-in). **Do not** fall back to reading the tree.
 3. Inventory (§6.1) and claim extraction (§6.2) **only** those paths, plus a specific `anchor.path` a changed doc cites. Do not glob `docs/**` or walk `src/`. If the user **did** opt into full-tree / cold-start: default claim/doc universe is `docs/` + root markdown + `.github` contributor docs; **exclude** `examples/**` unless they opted those in ([skill-discovery.md](skill-discovery.md) **Cold-start survey heuristics**; `./scripts/survey-docs.sh --claim-scope`).
 4. Named feature + change set → **intersect**. Empty intersection → HITL, not a feature-tree walk.

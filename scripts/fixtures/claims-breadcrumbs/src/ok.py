@@ -1,0 +1,3 @@
+# @claim id=C-002 plane=P2 status=adjusted
+def checkout():
+    ...

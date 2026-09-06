@@ -14,7 +14,7 @@ Machine-anchored structural claims on top of the existing audit matrix. **Markdo
 | Intent / mode **audit** | **Diff-first** change set ([modes.md §6.0](modes.md#60-change-set-diff-first)), then write matrix with living-claims columns (anchors + severity) |
 | “living claims”, “truth score”, “docs CI”, “fail on Contradicted” | Follow this procedure + modes §6 / §13 |
 | Integrate after audit | Patch Contradicted/Missing; keep anchors honest |
-| “breadcrumbs”, code-comment claim tags | Follow **Code breadcrumbs** below; propose only — no engines |
+| “breadcrumbs”, code-comment claim tags | Follow **Code breadcrumbs** below; parse with `--list-claims` (change set only); propose only — no engines |
 
 ## Wire format (v0)
 
@@ -55,7 +55,7 @@ score = (OK_N * 100 + PARTIAL_N * 50) / TOTAL_V   # TOTAL_V > 0
 
 ## Agent procedure
 
-1. **Diff-first** change set ([modes.md §6.0](modes.md#60-change-set-diff-first)): `./scripts/audit-claims.sh --list-changed [--base REF]` or the git commands there. Never a full-tree read by default.  
+1. **Diff-first** change set ([modes.md §6.0](modes.md#60-change-set-diff-first)): `./scripts/audit-claims.sh --list-changed [--base REF]` or the git commands there. Parse `@claim` in that set with `--list-claims` (same rules; never a full-tree grep). Malformed line → HITL (stderr + exit 1); do not invent fields.  
 2. Inventory **only those paths** ([modes.md §6.1](modes.md#61-code-inventory-change-set-only)). Extract structural claims only from the set. If the user opted into **full-tree / cold-start**, default that universe to `docs/` + root markdown + `.github` contributor docs and **exclude** `examples/**` unless they asked to include demos ([skill-discovery.md](skill-discovery.md) **Cold-start survey heuristics**; `./scripts/survey-docs.sh --claim-scope`).  
 3. For each claim: set `anchor.path` (and optional symbol/hash); set `severity=critical` only when a false claim would ship a lie about a shipped surface / security / install path.  
 4. Verdicts unchanged — **code wins**.  
@@ -77,8 +77,9 @@ The **merge gate** parses the **whole matrix**. Agent audit/reconcile **reads** 
 ./scripts/audit-claims.sh [PROJECT_ROOT]
 ./scripts/audit-claims.sh --matrix PATH
 
-# change-set helper (agent reads — not the CI gate):
+# change-set helpers (agent reads — not the CI gate):
 ./scripts/audit-claims.sh --list-changed [--base REF] [PROJECT_ROOT]
+./scripts/audit-claims.sh --list-claims [--base REF] [--matrix PATH] [PROJECT_ROOT]
 ```
 
 Copy both `.github/workflows/docs-audit.yml` and `scripts/audit-claims.sh` into the consumer repo (opt-in). Enable the workflow as a required check to fail merge on **critical Contradicted**.
@@ -152,7 +153,7 @@ checkout() { :; }
 
 ### Non-goals (this section)
 
-Convention only. Do **not** implement here: cascade engine (verdicts: [modes.md §6.7](modes.md#67-cascade-verdicts-haken)), reconcile classification (procedure: [modes.md §6.8](modes.md#68-reconcile-classification-plansmds)), recommend-review engine (audience: [modes.md §6.9](modes.md#69-recommend-review-human-vs-agent)), breadcrumb parsers, or CI that fails on missing comments. `audit-claims.sh` default remains the **matrix gate**; `--list-changed` is the change-set helper only.
+Convention only for the **comment wire** (do not reopen the format). Parse with `audit-claims.sh --list-claims` (change set only). Do **not** implement here: cascade engine (verdicts: [modes.md §6.7](modes.md#67-cascade-verdicts-haken)), reconcile classification (procedure: [modes.md §6.8](modes.md#68-reconcile-classification-plansmds)), recommend-review engine (audience: [modes.md §6.9](modes.md#69-recommend-review-human-vs-agent)), matrix write-back, or CI that fails on missing comments. `audit-claims.sh` default remains the **matrix gate**; `--list-changed` lists paths; `--list-claims` parses `@claim` in those paths.
 
 ## Non-goals (v0)
 
@@ -160,11 +161,11 @@ Convention only. Do **not** implement here: cascade engine (verdicts: [modes.md 
 - Formal proof / SMT  
 - Auto-commit; inventing implementation to match docs  
 - Replacing Notion/MkDocs  
-- Cascade engine / reconcile classification ([modes.md §6.8](modes.md#68-reconcile-classification-plansmds)) / recommend-review engine ([modes.md §6.9](modes.md#69-recommend-review-human-vs-agent)) / breadcrumb parsers (comment convention only)
+- Cascade engine / reconcile classification ([modes.md §6.8](modes.md#68-reconcile-classification-plansmds)) / recommend-review engine ([modes.md §6.9](modes.md#69-recommend-review-human-vs-agent)) / matrix write-back (persist is a later increment)
 
 ## Concept anchors (greppable)
 
-`living claims` · `living-claims` · `anchor.path` · `severity` · `critical Contradicted` · `truth score` · `audit-claims` · `docs-audit` · `@claim` · `breadcrumb` · `plane` · `changed` · `adjusted` · `diff-first` · `--list-changed` · `recommend review` · `whole matrix`
+`living claims` · `living-claims` · `anchor.path` · `severity` · `critical Contradicted` · `truth score` · `audit-claims` · `docs-audit` · `@claim` · `breadcrumb` · `plane` · `changed` · `adjusted` · `diff-first` · `--list-changed` · `--list-claims` · `recommend review` · `whole matrix`
 
 ## Related
 
