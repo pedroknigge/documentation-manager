@@ -149,7 +149,7 @@ Supporting docs only when justified (except **from-zero**, which may create a fu
 ## Workflow (all modes)
 
 1. **Step 0** — scope, mode, **Intent** (if project), maturity/variant, Out, slug; detect **ArkGate** signals when relevant; detect **Stack** and **Monorepo** for project work ([skill-discovery.md](references/skill-discovery.md) Polyglot + Monorepo hubs).
-2. **Discover code first** — stack-aware inventory; if monorepo, **Package index** + per-package inventory; tree, manifests, entry points, sample tests. Then docs (if any). For named features, search that surface first. If Ark detected, enrich inventory per [arkgate-bridge.md](references/arkgate-bridge.md). If mode/Intent is **audit** or this is the **reconciliation** pass: **diff-first** ([modes.md §6.0](references/modes.md#60-change-set-diff-first)) — change set only; do not walk the tree.
+2. **Discover code first** — stack-aware inventory; if monorepo, **Package index** + per-package inventory; tree, manifests, entry points, sample tests. Then docs (if any): **case-insensitive README** (`Readme.md` counts); **real ADR homes** only (never `*adr*` globs); cold-start claim/doc scope is `docs/` + root + `.github` and **excludes** `examples/**` unless opted in ([skill-discovery.md](references/skill-discovery.md) Cold-start survey heuristics). For named features, search that surface first. If Ark detected, enrich inventory per [arkgate-bridge.md](references/arkgate-bridge.md). If mode/Intent is **audit** or this is the **reconciliation** pass: **diff-first** ([modes.md §6.0](references/modes.md#60-change-set-diff-first)) — change set only; do not walk the tree.
 3. If **audit** or docs exist and Intent is integrate/from-zero with suspected drift: run **reconciliation** on the **git change set only** ([modes.md § Audit](references/modes.md#6-audit-project), [audit-template.md](references/audit-template.md)). Post-gate → bridge handoff ([modes.md §9](references/modes.md#9-arkgate-bridge-v14)).
 4. **Plan files** — creates/updates **and** non-writes (defaults for feature/plan).
 5. **Load templates** → write/edit → hub pass.
@@ -216,7 +216,7 @@ Follow [quality-checklist.md](references/quality-checklist.md).
 | [references/modes.md](references/modes.md) | Full procedures |
 | [references/arkgate-bridge.md](references/arkgate-bridge.md) | **ArkGate bridge** (detect, post-gate, violation→claim) |
 | [references/knowledge-dashboard.md](references/knowledge-dashboard.md) | **Knowledge dashboard** (static HTML view; score advisory) |
-| [references/skill-discovery.md](references/skill-discovery.md) | **Discovery / upgrade** + **Polyglot** + **Monorepo hubs** (package index) |
+| [references/skill-discovery.md](references/skill-discovery.md) | **Discovery / upgrade** + **Polyglot** + **Monorepo hubs** + **Cold-start survey heuristics** |
 | [references/team-governance.md](references/team-governance.md) | **Team governance** (create/link, non-writes) |
 | [references/team-owners-template.md](references/team-owners-template.md) | Consumer `docs/team/OWNERS.md` |
 | [references/team-approval-notes-template.md](references/team-approval-notes-template.md) | Consumer `docs/team/approval-notes.md` |

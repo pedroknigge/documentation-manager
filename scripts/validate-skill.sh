@@ -177,7 +177,12 @@ for concept in \
   "Recommend review" \
   "Audience (closed)" \
   "auto-assign" \
-  "evolved layout"
+  "evolved layout" \
+  "Cold-start survey heuristics" \
+  "case-insensitive" \
+  "*adr*" \
+  "examples/**" \
+  "survey-docs.sh"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
@@ -233,6 +238,9 @@ grep -F -q "Monorepo hubs" "$QC" || fail "quality-checklist missing Monorepo hub
 grep -F -q "Team governance" "$QC" || fail "quality-checklist missing Team governance section"
 grep -F -q "Living claims" "$QC" || fail "quality-checklist missing Living claims section"
 grep -F -q "silent structure rewrite" "$QC" || fail "quality-checklist missing silent structure rewrite bar"
+grep -F -q "Readme.md" "$QC" || fail "quality-checklist missing case-insensitive Readme.md"
+grep -F -q "*adr*" "$QC" || fail "quality-checklist missing tight ADR *adr* ban"
+grep -F -q "examples/**" "$QC" || fail "quality-checklist missing examples/** claim-scope exclude"
 ok "quality-checklist … + team + living-claims present"
 
 PT="$SKILL_DIR/references/plan-template.md"
@@ -265,6 +273,26 @@ do
   grep -F -qi -- "$concept" "$LC" || fail "living-claims.md missing: $concept"
 done
 ok "living-claims.md wire-format anchors present"
+
+DISC="$SKILL_DIR/references/skill-discovery.md"
+for concept in \
+  "Cold-start survey heuristics" \
+  "Readme.md" \
+  "*adr*" \
+  "TableHeadRenderer" \
+  "examples/**" \
+  "survey-docs.sh"
+do
+  grep -F -q -- "$concept" "$DISC" || fail "skill-discovery.md missing: $concept"
+done
+ok "skill-discovery.md cold-start survey heuristics present"
+
+[[ -f "$ROOT/scripts/survey-docs.sh" ]] || fail "missing scripts/survey-docs.sh"
+chmod +x "$ROOT/scripts/survey-docs.sh" 2>/dev/null || true
+if grep -E -q '\b(curl|wget|nc)\b|https?://' "$ROOT/scripts/survey-docs.sh"; then
+  fail "survey-docs.sh must not use network tools or URLs"
+fi
+ok "survey-docs.sh present (air-gapped)"
 
 [[ -f "$ROOT/scripts/audit-claims.sh" ]] || fail "missing scripts/audit-claims.sh"
 chmod +x "$ROOT/scripts/audit-claims.sh" 2>/dev/null || true

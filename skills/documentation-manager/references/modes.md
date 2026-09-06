@@ -108,7 +108,7 @@ On **from-zero / integrate / adopt / audit** when multi-package signals exist:
 | `docs/` with index + architecture or modules | high |
 | Existing ADRs | high |
 | Module/feature docs | medium |
-| Only thin README | low |
+| Only thin README (any case: `README.md` / `Readme.md`) | low |
 
 | Maturity | Variant | Behavior |
 |----------|---------|----------|
@@ -121,10 +121,10 @@ If Intent is **from-zero**, do **not** force adopt-integrate even when mature �
 
 1. **Stack detection** (§0.3 / [skill-discovery.md](skill-discovery.md) Polyglot stack detection)  
 2. **Monorepo detection** (§0.4 / Monorepo hubs) — package list / `detect-packages.sh`  
-3. Tree, README, manifests for the detected stack(s) and packages  
+3. Tree, **README (case-insensitive)** (`Readme.md` counts — do not report “no README”), manifests for the detected stack(s) and packages. Optional: `./scripts/survey-docs.sh --readme <root>` ([skill-discovery.md](skill-discovery.md) **Cold-start survey heuristics**).  
 4. **Code surfaces first** using the **Inventory by stack** table (not Node-only assumptions); per package when monorepo  
-5. Existing docs / authorities (root + package-local); **do not rewrite** mature package docs on root index-only work. If folder names or hub paths diverged from the SKILL proposal, **adopt them** — do not rename into the template tree.  
-6. Optional quick audit sample if claims look stale  
+5. Existing docs / authorities (root + package-local); **do not rewrite** mature package docs on root index-only work. If folder names or hub paths diverged from the SKILL proposal — including **flat CapCase** `docs/*.md` — **adopt them** — do not rename into the template tree.  
+6. Optional quick audit sample if claims look stale. Cold-start / full-tree claim universe: `docs/` + root markdown + `.github` contributor docs; **exclude** `examples/**` unless opted in (`survey-docs.sh --claim-scope`).  
 
 When monorepo: ensure root hub has **Package index** and multi-package **Surface coverage** rows (gap allowed).
 
@@ -177,10 +177,11 @@ Sandbox rules:
 
 ### 2.5 ADR placement
 
-1. Detect scheme (`0001-…`, `ADR-001-…`).  
-2. Continue scheme; no parallel series for the same decision.  
-3. Existing decision → link only.  
-4. Net-new only when filing new decisions.  
+1. Detect scheme (`0001-…`, `ADR-001-…`) in **real ADR homes** only: `docs/adr/`, `docs/adrs/`, `docs/decisions/`, `docs/architecture/decisions/`, `adr/`, `.adr/`, plus root `ADR-<n>-*.md`. Optional: `./scripts/survey-docs.sh --adrs <root>`.  
+2. Do **not** glob `*adr*` (false positive: `TableHeadRenderer.tsx`). Source files are never ADRs.  
+3. Continue scheme; no parallel series for the same decision.  
+4. Existing decision → link only.  
+5. Net-new only when filing new decisions.  
 
 ### 2.6 Snapshots (anti-rot)
 
@@ -384,7 +385,7 @@ If sync reveals many Contradicted claims → suggest **audit** (still **diff-fir
    - Else dirty worktree or untracked → `git diff --name-only HEAD` plus `git ls-files --others --exclude-standard`
    - Same rules, one helper: `./scripts/audit-claims.sh --list-changed [--base REF] [ROOT]`
 2. Empty set, not a git repo, or unclear base → **HITL** (ask once: name a base, give a file list, or confirm full-tree opt-in). **Do not** fall back to reading the tree.
-3. Inventory (§6.1) and claim extraction (§6.2) **only** those paths, plus a specific `anchor.path` a changed doc cites. Do not glob `docs/**` or walk `src/`.
+3. Inventory (§6.1) and claim extraction (§6.2) **only** those paths, plus a specific `anchor.path` a changed doc cites. Do not glob `docs/**` or walk `src/`. If the user **did** opt into full-tree / cold-start: default claim/doc universe is `docs/` + root markdown + `.github` contributor docs; **exclude** `examples/**` unless they opted those in ([skill-discovery.md](skill-discovery.md) **Cold-start survey heuristics**; `./scripts/survey-docs.sh --claim-scope`).
 4. Named feature + change set → **intersect**. Empty intersection → HITL, not a feature-tree walk.
 5. **Cascade pointer:** if a changed file has a breadcrumb `parent=` ([living-claims.md § Code breadcrumbs](living-claims.md#code-breadcrumbs-comment-mirror)) or a matrix row whose `id` is named as `parent` on a changed breadcrumb, **recommend review** of children ([§6.9](#69-recommend-review-human-vs-agent)) and apply [§6.7](#67-cascade-verdicts-haken) (hold / escalate / break / for-review). Do not run a cascade engine. Do not grep the repo for children.
 6. **Reconcile pointer:** if the change set includes agent-written plans/MDs that share a topic with a living doc (or with each other), apply [§6.8](#68-reconcile-classification-plansmds). Do not walk `docs/**` for a second tree.

@@ -212,6 +212,60 @@ Monorepo: yes | packages: <n> | root hub: map+index | package non-writes: defaul
 
 ---
 
+## Cold-start survey heuristics (README / ADR / claim-scope)
+
+**When:** first contact on adopt / integrate / from-zero, or a **full-tree** audit the user opted into.  
+**Not** the default audit read — that stays **diff-first** ([modes.md §6.0](modes.md#60-change-set-diff-first)).
+
+These three checks stop false “empty repo” / false ADR / demo-markdown thrash. They do **not** invent a second inventory engine.
+
+Optional helper (package repo / installed package scripts):
+
+```bash
+./scripts/survey-docs.sh [--readme|--adrs|--claim-scope|--include-examples] <consumer-repo-root>
+```
+
+Agents may also apply the tables by hand when the script is unavailable.
+
+### README (case-insensitive)
+
+| Do | Do not |
+|----|--------|
+| Treat root `README.md`, `Readme.md`, `readme.md` (and `.markdown`) as the project README | Report “no README” when only CapCase `Readme.md` exists |
+| Adopt the filename as-is | Rename it to `README.md` to match a template |
+
+Optional: `./scripts/survey-docs.sh --readme <root>` — prints the relative path(s), or nothing if truly absent.
+
+### ADR paths (tight)
+
+Look only in **real ADR homes** and **ADR-shaped names**:
+
+| Homes (dirs) | Names (files) |
+|--------------|---------------|
+| `docs/adr/`, `docs/adrs/`, `docs/decisions/`, `docs/architecture/decisions/`, `docs/architecture-decisions/`, `adr/`, `adrs/`, `doc/adr/`, `.adr/` | `ADR-001-….md`, `adr-0001-….md`, `ADR001-….md` |
+| Repo root | `ADR-<n>-*.md` only |
+| Inside an ADR home | Numbered `0001-title.md` / `0001-title.mdx` |
+
+**Forbidden:** substring globs like `*adr*`. That matches `TableHeadRenderer.tsx` (`adR`) and other source files. Source is never an ADR.
+
+Optional: `./scripts/survey-docs.sh --adrs <root>`.
+
+### Claim / doc scope (cold-start)
+
+Default universe when first surveying docs or when the user opted into **full-tree** claim extraction:
+
+| Include | Exclude unless opted in |
+|---------|-------------------------|
+| Root `*.md` | `examples/**` (demo / component markdown) |
+| `docs/**/*.md` — **adopt** CapCase / flat trees (`docs/Architecture.md`); never rewrite them to the skill template | Named example trees the user did not ask to audit |
+| `.github/**/*.md` (contributor docs) | |
+
+Opt-in signals: “include examples”, “audit examples too”, or `--include-examples`.
+
+Human is captain. Propose this default. Never override an evolved layout or a developer decision.
+
+---
+
 ## Pre-release gate (maintainers)
 
 Before tagging a release:
