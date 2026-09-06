@@ -176,7 +176,10 @@ for concept in \
   "for-review" \
   "Reconcile classification" \
   "regime change" \
-  "No living contradictions"
+  "No living contradictions" \
+  "Recommend review" \
+  "Audience (closed)" \
+  "auto-assign"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
