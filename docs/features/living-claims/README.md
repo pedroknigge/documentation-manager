@@ -6,7 +6,7 @@
 **Status:** Shipped  
 **Slug:** `living-claims`  
 **Owners:** skill maintainers  
-**Last updated:** 2026-08-30  
+**Last updated:** 2026-09-06  
 **Package version:** skill **2.5.0**  
 **Narrative:** Knowledge OS **first increment toward 100×** (not a second 10×; not a full 100× leap).
 
@@ -31,7 +31,7 @@ Turn documentation claims into **machine-anchored** rows (path / optional symbol
 - [x] Matrix-first template + `references/living-claims.md`  
 - [x] SKILL + modes + quality-checklist wired; concept anchors greppable  
 - [x] Feature pack promoted  
-- [ ] Local `audit-claims.sh` + example GHA + fixtures (scripts/CI exclusivity — same release)  
+- [x] Local `audit-claims.sh` + example GHA + fixtures — shipped in 2.5.0; gate is **whole matrix** (not `--list-changed`)  
 - [ ] Version/meta sync README/AGENTS/CHANGELOG (release-meta exclusivity — same release)
 
 ## Public surface
@@ -50,7 +50,7 @@ Turn documentation claims into **machine-anchored** rows (path / optional symbol
 1. Audit writes `docs/audit/claims-matrix.md` with Anchor path / symbol / hash + Severity.  
 2. Dashboard may show heuristic truth score (advisory).  
 3. `audit-claims.sh` parses the matrix; **critical + Contradicted → non-zero exit**.  
-4. Example GHA invokes the local script only (no network required).
+4. Example GHA invokes the local script on the **whole matrix** (no `--list-changed`; no network required). Agent audit reads stay **diff-first** ([modes.md §6.0](../../../skills/documentation-manager/references/modes.md#60-change-set-diff-first)).
 
 ```mermaid
 flowchart LR

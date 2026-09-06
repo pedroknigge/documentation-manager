@@ -468,7 +468,7 @@ Do **not** auto-start from-zero after audit without user Intent.
 
 ### 6.6 Living claims + local CI (pointer)
 
-After writing the matrix, remind: dashboard truth score is **advisory**; **CI / `scripts/audit-claims.sh` is the gate** (fail on **critical Contradicted**). Procedure: [§13](#13-living-claims--ci-structural-audit-v25) and [living-claims.md](living-claims.md).
+After writing the matrix, remind: dashboard truth score is **advisory**; **CI / `scripts/audit-claims.sh` is the gate** (fail on **critical Contradicted**). The gate parses the **whole matrix** (do not hide existing critical Contradicted). Agent **reads** stay **diff-first** ([§6.0](#60-change-set-diff-first)); `--list-changed` is not the gate. Procedure: [§13](#13-living-claims--ci-structural-audit-v25) and [living-claims.md](living-claims.md).
 
 ### 6.7 Cascade verdicts (Haken)
 

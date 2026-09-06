@@ -411,6 +411,11 @@ rm -rf "$TMPGIT"
 [[ -f "$ROOT/.github/workflows/docs-audit.yml" ]] || fail "missing .github/workflows/docs-audit.yml"
 grep -F -q "audit-claims.sh" "$ROOT/.github/workflows/docs-audit.yml" \
   || fail "docs-audit.yml must invoke audit-claims.sh"
+if grep -E -q 'run:.*--list-changed' "$ROOT/.github/workflows/docs-audit.yml"; then
+  fail "docs-audit.yml must not invoke --list-changed (CI gate is whole-matrix)"
+fi
+grep -E -q '\[x\].*\.github/workflows/docs-audit\.yml' "$ROOT/docs/plans/knowledge-os/README.md" \
+  || fail "knowledge-os plan must mark the GitHub Actions example AC satisfied"
 LC="$SKILL_DIR/references/living-claims.md"
 [[ -f "$LC" ]] || fail "missing references/living-claims.md"
 for anchor in "anchor.path" "severity" "critical" "Contradicted" "audit-claims"; do

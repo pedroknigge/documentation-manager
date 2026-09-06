@@ -265,7 +265,8 @@ for concept in \
   "Contradicted" \
   "truth score" \
   "audit-claims" \
-  "diff-first"
+  "diff-first" \
+  "whole matrix"
 do
   grep -F -qi -- "$concept" "$LC" || fail "living-claims.md missing: $concept"
 done
@@ -281,7 +282,12 @@ grep -F -q -- "--list-changed" "$ROOT/scripts/audit-claims.sh" \
 [[ -f "$ROOT/.github/workflows/docs-audit.yml" ]] || fail "missing .github/workflows/docs-audit.yml"
 grep -F -q "audit-claims.sh" "$ROOT/.github/workflows/docs-audit.yml" \
   || fail "docs-audit.yml must invoke audit-claims.sh"
-ok "audit-claims.sh present (air-gapped) + example docs-audit workflow"
+if grep -E -q 'run:.*--list-changed' "$ROOT/.github/workflows/docs-audit.yml"; then
+  fail "docs-audit.yml must not invoke --list-changed (CI gate is whole-matrix)"
+fi
+grep -E -q '\[x\].*\.github/workflows/docs-audit\.yml' "$ROOT/docs/plans/knowledge-os/README.md" \
+  || fail "knowledge-os plan must mark the GitHub Actions example AC satisfied (docs-audit.yml)"
+ok "audit-claims.sh present (air-gapped) + example docs-audit whole-matrix gate"
 
 PT="$SKILL_DIR/references/plan-template.md"
 for concept in "Promotion" "Acceptance criteria" "Open questions" "MVP scope" "docs/features"; do
