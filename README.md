@@ -31,6 +31,23 @@ What it usually lacks is a durable story of **what**, **why**, and **what’s ne
 
 Binding decision: [ADR-0002](./docs/adr/0002-knowledge-enslavement-captain.md). Audit procedure: [modes.md §6.0](./skills/documentation-manager/references/modes.md#60-change-set-diff-first). CI example (whole-matrix gate): [`.github/workflows/docs-audit.yml`](./.github/workflows/docs-audit.yml).
 
+<a id="honest-stage"></a>
+
+**Playbook vs motor (honest, ~30 seconds).** When you ask, agents follow **documented procedures**. Four **on-demand** loops on `audit-claims.sh` are real now — you run them; nothing watches the repo:
+
+| Loop | Flag | What it does |
+|------|------|--------------|
+| Parse | `--list-claims` | Read `@claim` from the **git change set** |
+| Persist | `--upsert-claims` | Write touched ids into the claims matrix |
+| Record | `--record-haken` | Note hold / for-review on **Action** (escalate/break → you decide) |
+| Cascade-recommend | `--cascade-recommend` | List children **already in the set** that need review when a parent was released |
+
+**Haken** is that parent/child test — a comment and a matrix note. It is **not** a database and **not** a daemon.
+
+Still not a motor: walking the whole repo for children · a background enslavement engine · Orderfield/ArkGate ports · the LLM inventing the regime.
+
+---
+
 | Hub | Narrative | Plans | Features | Truth check |
 |-----|-----------|-------|----------|-------------|
 | `AGENTS.md` | vision · requirements · architecture · roadmap · ADRs | `docs/plans/<slug>/` | `docs/features/<slug>/` | optional `docs/audit/` claims matrix |
@@ -212,7 +229,7 @@ scripts/
   detect-stack.sh          ← polyglot (v2.1)
   detect-packages.sh       ← monorepo (v2.2)
   survey-docs.sh           ← finds Readme.md, real ADRs only, skips examples unless you ask
-  audit-claims.sh          ← living-claims CI + --list-changed / --list-claims (v2.5, air-gapped)
+  audit-claims.sh          ← CI gate + on-demand parse / persist / record / cascade-recommend (not a daemon)
   generate-docs-dashboard.sh
 ```
 
@@ -255,6 +272,7 @@ Version notes, shipped packs, and epics live **off** this page:
 <p align="center">
   <a href="#install">Install</a> ·
   <a href="#north-star">North star</a> ·
+  <a href="#honest-stage">Honest stage</a> ·
   <a href="./docs/adr/0002-knowledge-enslavement-captain.md">ADR-0002</a> ·
   <a href="./skills/documentation-manager/SKILL.md">Skill source</a> ·
   <a href="./LICENSE">MIT License</a>

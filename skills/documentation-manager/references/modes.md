@@ -477,7 +477,7 @@ After writing the matrix, remind: dashboard truth score is **advisory**; **CI / 
 
 ### 6.7 Cascade verdicts (Haken)
 
-**Procedure only** — not a graph walker. Binding: [ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md) cascade row. The LLM does **not** invent the regime.
+**Procedure for the regime. On-demand recorder (`--record-haken`) and lister (`--cascade-recommend`) exist. Not a graph walker, not a daemon.** Binding: [ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md) cascade row. The LLM does **not** invent the regime. **Haken** here is a comment + matrix Action note — not a persistence DB.
 
 Breadcrumb wire is already specified ([living-claims.md § Code breadcrumbs](living-claims.md#code-breadcrumbs-comment-mirror)); do not reopen it.
 
