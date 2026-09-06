@@ -47,7 +47,7 @@ Run before reporting done.
 - [ ] Code inventory ran before trusting existing docs (audit, from-zero, or drift-prone integrate)
 - [ ] On conflict **code wins** — no inventing features to match docs
 - [ ] Audit (if run): claims matrix with verdicts OK / Partial / Missing / Contradicted
-- [ ] Audit / reconcile reads were **diff-first** (git change set); no full-tree scan unless the user opted in
+- [ ] Audit / reconcile reads were **diff-first** (git change set); no full-tree scan unless the user opted in. Valid-but-huge set → announced `docs-universe` and constrained to hub docs / Out sandbox ([modes.md §6.0](modes.md#60-change-set-diff-first)) — not a silent full-repo walk; HITL optional (do not block forever)
 - [ ] Cold-start / full-tree claim scope (if used) defaulted to `docs/` + root + `.github`; **`examples/**` excluded** unless opted in ([skill-discovery.md](skill-discovery.md) Cold-start survey heuristics)
 - [ ] Cascade: recommended review only when a parent breadcrumb appears in the change set; apply [modes.md §6.7](modes.md#67-cascade-verdicts-haken) (hold / escalate / break / for-review); record with `audit-claims.sh --record-haken` on **Action** (or an existing Haken column) — never Verdict; list for-review with `--cascade-recommend` (children in the set only); HITL when ambiguous — captain decides ties; no cascade engine
 - [ ] Reconcile: agent-written plans/MDs classified **evolution** / **regime change** / **orphan** / **contradiction** ([modes.md §6.8](modes.md#68-reconcile-classification-plansmds)); no living contradictions; **AS-IS** code wins / **TO-BE** one living SSOT; supersede marking — never parallel contradicting SSOT; latest-by-date does not auto-win on either plane; HITL when unclear — captain decides ties
@@ -126,7 +126,7 @@ Run before reporting done.
 
 ## Snapshots
 
-- [ ] No hardcoded table/route/endpoint counts
+- [ ] No hardcoded table/route/endpoint counts. Any published count carries its remeasure command beside it (or the number is omitted) — [modes.md §6.0](modes.md#60-change-set-diff-first)
 - [ ] `api.md` = conventions + discovery + authZ pattern (not full inventory unless asked)
 - [ ] `data-model.md` = invariants + ownership + links (not full schema dump)
 

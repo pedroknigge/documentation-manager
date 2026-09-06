@@ -390,14 +390,21 @@ If sync reveals many Contradicted claims → suggest **audit** (still **diff-fir
    - Record §6.7 Haken verdicts: `./scripts/audit-claims.sh --record-haken [--base REF] [ROOT]` (Action / existing Haken column; never Verdict; HITL if escalate vs break; not the CI gate)
    - Cascade recommend (read-only): `./scripts/audit-claims.sh --cascade-recommend [--base REF] [ROOT]` (parent released in the set → for-review children already in the set + §6.9; no write; no walker)
 2. Empty set, not a git repo, or unclear base → **HITL** (ask once: name a base, give a file list, or confirm full-tree opt-in). **Do not** fall back to reading the tree.
-3. Inventory (§6.1) and claim extraction (§6.2) **only** those paths, plus a specific `anchor.path` a changed doc cites. Do not glob `docs/**` or walk `src/`. If the user **did** opt into full-tree / cold-start: default claim/doc universe is `docs/` + root markdown + `.github` contributor docs; **exclude** `examples/**` unless they opted those in ([skill-discovery.md](skill-discovery.md) **Cold-start survey heuristics**; `./scripts/survey-docs.sh --claim-scope`).
-4. Named feature + change set → **intersect**. Empty intersection → HITL, not a feature-tree walk.
-5. **Cascade pointer:** if a changed file has a breadcrumb `parent=` ([living-claims.md § Code breadcrumbs](living-claims.md#code-breadcrumbs-comment-mirror)) or a matrix row whose `id` is named as `parent` on a changed breadcrumb, **recommend review** of children ([§6.9](#69-recommend-review-human-vs-agent)) and apply [§6.7](#67-cascade-verdicts-haken) (hold / escalate / break / for-review). Do not run a cascade engine. Do not grep the repo for children.
-6. **Reconcile pointer:** if the change set includes agent-written plans/MDs that share a topic with a living doc (or with each other), apply [§6.8](#68-reconcile-classification-plansmds). Do not walk `docs/**` for a second tree.
-7. **Narrative-comment pointer:** if a changed file has non-`@claim` prose comments (JSDoc, block, AI TODOs that assert facts) that look stale, redundant, snapshot, or fact-vs-changed-symbol, apply [§6.10](#610-narrative-comments-report-first) and emit [§6.9](#69-recommend-review-human-vs-agent). Report only; never auto-edit. Do not walk the tree.
-8. Human is captain. Propose matrix updates; HITL when who-wins is unclear. When cascade / reconcile / audit / narrative comments need eyes, [§6.9](#69-recommend-review-human-vs-agent) — recommend, do not assign or merge.
+3. **Valid-but-huge (docs-universe escape):** the base resolved (real commit / named ref) but the change set is too large to inventory and extract claims in this pass (thousands of files, or thousands of commits vs that base). This is **not** empty/unclear (step 2) and **not** a full-tree opt-in.
+   - **Announce** (required): `Audit-scope: docs-universe (change set unusable) | files: <n> | commits: <n> | base: <ref> | universe: <hub-docs|sandbox:path> | reason: huge`
+   - **Remeasure** `<n>` this session — do not inherit a prior session’s or another doc’s counts: `git diff --name-only <base>...HEAD | wc -l` · `git rev-list --count <base>..HEAD`.
+   - **Constrain** later steps (§6.1–§6.10) to the **docs universe** only: hub + `docs/` (or the evolved hub docs tree already adopted), or `Out: sandbox:path`. Prefer the named-base diff intersected with those paths. Do **not** walk `src/` or the rest of the repo. Do **not** treat this as `full-tree`.
+   - **HITL is optional** (ask once: tighter base, a file list, or confirm this constraint). Do **not** block forever. If the captain is silent, proceed on the announced docs universe.
+4. Inventory (§6.1) and claim extraction (§6.2) **only** those paths, plus a specific `anchor.path` a changed doc cites. Do not glob `docs/**` or walk `src/`. **Exception:** if step 3 applied, the path list **is** the announced docs universe (hub + `docs/` or sandbox) — still never `src/` / the repo. If the user **did** opt into full-tree / cold-start: default claim/doc universe is `docs/` + root markdown + `.github` contributor docs; **exclude** `examples/**` unless they opted those in ([skill-discovery.md](skill-discovery.md) **Cold-start survey heuristics**; `./scripts/survey-docs.sh --claim-scope`).
+5. Named feature + change set → **intersect**. Empty intersection → HITL, not a feature-tree walk.
+6. **Cascade pointer:** if a changed file has a breadcrumb `parent=` ([living-claims.md § Code breadcrumbs](living-claims.md#code-breadcrumbs-comment-mirror)) or a matrix row whose `id` is named as `parent` on a changed breadcrumb, **recommend review** of children ([§6.9](#69-recommend-review-human-vs-agent)) and apply [§6.7](#67-cascade-verdicts-haken) (hold / escalate / break / for-review). Do not run a cascade engine. Do not grep the repo for children.
+7. **Reconcile pointer:** if the change set includes agent-written plans/MDs that share a topic with a living doc (or with each other), apply [§6.8](#68-reconcile-classification-plansmds). Do not walk `docs/**` for a second tree.
+8. **Narrative-comment pointer:** if a changed file has non-`@claim` prose comments (JSDoc, block, AI TODOs that assert facts) that look stale, redundant, snapshot, or fact-vs-changed-symbol, apply [§6.10](#610-narrative-comments-report-first) and emit [§6.9](#69-recommend-review-human-vs-agent). Report only; never auto-edit. Do not walk the tree.
+9. Human is captain. Propose matrix updates; HITL when who-wins is unclear. When cascade / reconcile / audit / narrative comments need eyes, [§6.9](#69-recommend-review-human-vs-agent) — recommend, do not assign or merge.
 
-Announce: `Audit-scope: diff-first | files: <n> | base: <HEAD|ref|n/a>` or `Audit-scope: full-tree (user opt-in)`.
+Announce: `Audit-scope: diff-first | files: <n> | base: <HEAD|ref|n/a>` · `Audit-scope: docs-universe (change set unusable) | files: <n> | commits: <n> | base: <ref> | universe: <hub-docs|sandbox:path> | reason: huge` · or `Audit-scope: full-tree (user opt-in)`.
+
+**Anti-snapshot (counts):** any count written into docs must carry its remeasure command beside it, or omit the number. Do not inherit a count from a prior session or another doc.
 
 ### 6.1 Code inventory (change set only)
 
@@ -592,6 +599,7 @@ Emit a recommendation only when cascade, reconcile, audit, or a §6.10 comment r
 | **critical** + **Contradicted** | §6.3 | Shipping a lie |
 | **Unverifiable** | §6.3 | Not structural |
 | Empty / unclear change set | §6.0 | Already HITL |
+| Valid-but-huge change set | §6.0 | Announce `docs-universe`; HITL optional — do not block forever |
 | **stale** / **redundant** / **snapshot** / **fact-vs-changed-symbol** | §6.10 | Narrative comment in the change set |
 | Comment HITL | §6.10 | Class unclear |
 
@@ -644,7 +652,7 @@ This path is **non-`@claim` prose** (JSDoc, block comments, AI TODOs that assert
 | Durable fact / contract | → `@claim` + matrix row | Already (do not reopen wire) |
 | Local “why” (unverified) | May stay; if symbol/code changed and the comment asserts a **fact** → **report** | This section |
 | Narrative the code already says | Prefer delete / don’t write | Flag **redundant** |
-| Snapshot (counts, version stamps) | Same anti-snapshot as permanent docs | Flag **snapshot** |
+| Snapshot (counts, version stamps) | Same anti-snapshot as permanent docs — count + remeasure command, or omit the number ([§6.0](#60-change-set-diff-first)) | Flag **snapshot** |
 
 #### Vocabulary (closed)
 
@@ -654,7 +662,7 @@ These tokens are **not** [§6.3](#63-verdicts) matrix verdicts, **not** [§6.7](
 |-------|---------|
 | **stale** | Comment asserts something the current code in this file no longer matches (name, behavior, constraint). |
 | **redundant** | Narrative the adjacent code already says (restates the obvious). Prefer delete / don’t write. |
-| **snapshot** | Hardcoded counts, version stamps, or inventory totals — same anti-snapshot as permanent docs. |
+| **snapshot** | Hardcoded counts, version stamps, or inventory totals — same anti-snapshot as permanent docs. A published count without its remeasure command beside it is a snapshot ([§6.0](#60-change-set-diff-first)). |
 | **fact-vs-changed-symbol** | Adjacent symbol/code in the change set changed, and the comment asserts a **fact** (not a local unverified “why”). |
 
 Local “why” that does not assert a checkable fact may stay. Do not flag every comment.
@@ -835,7 +843,7 @@ Out: root | sandbox:path
 ArkGate: none | detected (<signals>)
 Code inventory: yes/no
 Claims matrix: path or n/a | OK/Partial/Missing/Contradicted counts
-Audit-scope: diff-first | full-tree (opt-in) | n/a
+Audit-scope: diff-first | docs-universe (change set unusable) | full-tree (opt-in) | n/a
 Created: …
 Updated: …
 Non-writes: …
