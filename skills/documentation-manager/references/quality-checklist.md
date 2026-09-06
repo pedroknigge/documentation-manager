@@ -46,6 +46,8 @@ Run before reporting done.
 - [ ] Code inventory ran before trusting existing docs (audit, from-zero, or drift-prone integrate)
 - [ ] On conflict **code wins** — no inventing features to match docs
 - [ ] Audit (if run): claims matrix with verdicts OK / Partial / Missing / Contradicted
+- [ ] Audit / reconcile reads were **diff-first** (git change set); no full-tree scan unless the user opted in
+- [ ] Cascade: recommended review only when a parent breadcrumb appears in the change set — no cascade engine
 - [ ] from-zero: full KB only with that Intent; sandbox when path requested; old docs treated as hypothesis
 - [ ] from-zero does not silently overwrite mature productive SSOT without confirm
 

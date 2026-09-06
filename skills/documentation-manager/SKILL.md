@@ -49,7 +49,7 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 22. **Monorepo hubs (v2.2 Slice B).** Detect multi-package trees (`pnpm-workspace.yaml`, `package.json` workspaces, `go.work`, multi-package dirs) via [skill-discovery.md](references/skill-discovery.md) **Monorepo hubs** (or `scripts/detect-packages.sh`). Root hub is a **map + Package index**, not a dump; multi-package coverage marks **gap** packages; default **package non-writes** when only indexing root. See [modes.md §0.4](references/modes.md#04-monorepo-hubs-v22-slice-b).
 23. **Team governance (v2.3 Slice C).** Optional `docs/team/` with **owners** + **approval notes** (last-approved style). Create vs link per [team-governance.md](references/team-governance.md); hub links Team without becoming an HR wiki; integrate-first — adding team must **not** rewrite product-vision / requirements / ADRs. No CODEOWNERS engine or BPM. See [modes.md §11](references/modes.md#11-team-governance-v23-slice-c).
 24. **Template telemetry (v2.4 Slice D).** Opt-in **local ledger** for **template/skill UX gaps only** ([template-telemetry.md](references/template-telemetry.md); `scripts/template-telemetry.sh`). **Default off**; never-send source/secrets/repo URLs; **network never**; air-gapped no-op when opt-in off. See [modes.md §12](references/modes.md#12-template-telemetry-v24-slice-d).
-25. **Living claims + CI structural audit (v2.5 / Knowledge OS first increment).** Audit matrices use **living claims v0**: `anchor.path` / optional `anchor.symbol` / optional `anchor.hash`, `severity` (`critical` \| `normal`), verdicts unchanged. Matrix-first ([audit-template.md](references/audit-template.md)); procedure [living-claims.md](references/living-claims.md); wire [ADR-0001](../../docs/adr/0001-living-claims-wire-format.md). Truth score stays **advisory** (dashboard heuristic); **local air-gapped** `scripts/audit-claims.sh` / example `docs-audit` CI is the **gate** (fail on critical Contradicted). No SaaS. Optional code-comment breadcrumbs (`id` + parent/plane + status) **mirror** the same `id` — [living-claims.md § Code breadcrumbs](references/living-claims.md#code-breadcrumbs-comment-mirror). See [modes.md §6](references/modes.md#6-audit-project-or-feature) / [§13](references/modes.md#13-living-claims--ci-structural-audit-v25).
+25. **Living claims + CI structural audit (v2.5 / Knowledge OS first increment).** Audit matrices use **living claims v0**: `anchor.path` / optional `anchor.symbol` / optional `anchor.hash`, `severity` (`critical` \| `normal`), verdicts unchanged. Matrix-first ([audit-template.md](references/audit-template.md)); procedure [living-claims.md](references/living-claims.md); wire [ADR-0001](../../docs/adr/0001-living-claims-wire-format.md). Truth score stays **advisory** (dashboard heuristic); **local air-gapped** `scripts/audit-claims.sh` / example `docs-audit` CI is the **gate** (fail on critical Contradicted). No SaaS. Optional code-comment breadcrumbs (`id` + parent/plane + status) **mirror** the same `id` — [living-claims.md § Code breadcrumbs](references/living-claims.md#code-breadcrumbs-comment-mirror). **Audit / reconcile reads are diff-first** (git change set only; never a full-tree scan unless the user opts in) — [modes.md §6.0](references/modes.md#60-change-set-diff-first). See [modes.md §6](references/modes.md#6-audit-project-or-feature) / [§13](references/modes.md#13-living-claims--ci-structural-audit-v25).
 
 ## Step 0 — Detect scope, mode, and Intent
 
@@ -68,7 +68,7 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 |------|---------|
 | **bootstrap** | Greenfield, no hub/docs, or Intent **from-zero** on empty/thin |
 | **adopt** | Code exists; docs thin/missing or Intent **integrate** |
-| **audit** | “audit docs”, “docs vs code”, drift, validate claims |
+| **audit** | “audit docs”, “docs vs code”, drift, validate claims; **diff-first** (git change set) |
 | **plan** | “new feature”, “plan”, “epic”, “vamos a construir X” without code |
 | **feature** | Document one feature/module that has (or is) code |
 | **sync** | Diff / PR / update docs for a change; **post-gate** when Ark just passed |
@@ -107,7 +107,7 @@ If scope/mode still ambiguous after inference, ask once. Load procedures from [r
 Scope: <x> | Mode: <y> | Intent: <integrate|audit|from-zero|n/a> | Variant: <full|integrate|arkgate-bridge|n/a> | Maturity: <…|n/a> | Out: <root|sandbox:path> | Stack: <node-ts|python|go|mixed|unknown|n/a> | Monorepo: <yes|no|n/a> | ArkGate: <none|detected> | Slug: <slug|n/a>
 ```
 
-When **integrate**, list **non-writes** (include package non-writes when monorepo root-index only). When **audit**, list matrix path and top contradictions. When **from-zero** + sandbox, include **promotion plan**. When **plan** or **feature**, list path + **default non-writes**. When **ArkGate bridge**, list signals and post-gate sync vs audit-enrich. When project-level, include **Stack** and **Monorepo** from discovery.
+When **integrate**, list **non-writes** (include package non-writes when monorepo root-index only). When **audit**, list matrix path, **Audit-scope** (`diff-first` default, or `full-tree` if the user opted in), change-set size, and top contradictions. When **from-zero** + sandbox, include **promotion plan**. When **plan** or **feature**, list path + **default non-writes**. When **ArkGate bridge**, list signals and post-gate sync vs audit-enrich. When project-level, include **Stack** and **Monorepo** from discovery.
 
 ## Recommended layout
 
@@ -149,8 +149,8 @@ Supporting docs only when justified (except **from-zero**, which may create a fu
 ## Workflow (all modes)
 
 1. **Step 0** — scope, mode, **Intent** (if project), maturity/variant, Out, slug; detect **ArkGate** signals when relevant; detect **Stack** and **Monorepo** for project work ([skill-discovery.md](references/skill-discovery.md) Polyglot + Monorepo hubs).
-2. **Discover code first** — stack-aware inventory; if monorepo, **Package index** + per-package inventory; tree, manifests, entry points, sample tests. Then docs (if any). For named features, search that surface first. If Ark detected, enrich inventory per [arkgate-bridge.md](references/arkgate-bridge.md).
-3. If **audit** or docs exist and Intent is integrate/from-zero with suspected drift: run **reconciliation** ([modes.md § Audit](references/modes.md#6-audit-project), [audit-template.md](references/audit-template.md)). Post-gate → bridge handoff ([modes.md §9](references/modes.md#9-arkgate-bridge-v14)).
+2. **Discover code first** — stack-aware inventory; if monorepo, **Package index** + per-package inventory; tree, manifests, entry points, sample tests. Then docs (if any). For named features, search that surface first. If Ark detected, enrich inventory per [arkgate-bridge.md](references/arkgate-bridge.md). If mode/Intent is **audit** or this is the **reconciliation** pass: **diff-first** ([modes.md §6.0](references/modes.md#60-change-set-diff-first)) — change set only; do not walk the tree.
+3. If **audit** or docs exist and Intent is integrate/from-zero with suspected drift: run **reconciliation** on the **git change set only** ([modes.md § Audit](references/modes.md#6-audit-project), [audit-template.md](references/audit-template.md)). Post-gate → bridge handoff ([modes.md §9](references/modes.md#9-arkgate-bridge-v14)).
 4. **Plan files** — creates/updates **and** non-writes (defaults for feature/plan).
 5. **Load templates** → write/edit → hub pass.
 6. **Summary** — Intent/mode, files, non-writes, matrix stats, ArkGate note, promotion notes. **No auto-commit.**
@@ -162,7 +162,7 @@ Greenfield interview **or** code archaeology for brownfield from-zero. Full core
 Maturity → adopt-full or adopt-integrate. See [modes.md §2](references/modes.md#2-adopt-project).
 
 ### Audit
-Code inventory → structural claims → **living-claims** matrix (anchors + severity) → report. **Code wins.** CI gate separate from dashboard score. See [modes.md §6](references/modes.md#6-audit-project-or-feature), [§13](references/modes.md#13-living-claims--ci-structural-audit-v25), [living-claims.md](references/living-claims.md).
+**Diff-first:** change set from `git diff` / changed files (or `audit-claims.sh --list-changed`). Never a full-tree read by default. Then structural claims → **living-claims** matrix (anchors + severity) → report. If a parent breadcrumb would require children, **recommend review** (no cascade engine). **Code wins.** CI gate separate from dashboard score. See [modes.md §6.0](references/modes.md#60-change-set-diff-first), [§6](references/modes.md#6-audit-project-or-feature), [§13](references/modes.md#13-living-claims--ci-structural-audit-v25), [living-claims.md](references/living-claims.md).
 
 ### Plan / Feature (autopilot v2)
 Named surface → **plan** (`docs/plans/<slug>/`) if no code / planning language; **feature** (`docs/features/<slug>/`) if code-backed. Kind spike/epic/redesign when signaled. Default non-writes always. Optional **Implementation bridge** on implement/stubs language. Promote plan → pack when **code** is real. See [modes.md §3](references/modes.md#3-feature-autopilot--plan-v13--v2--skill-v15) and [implementation-bridge.md](references/implementation-bridge.md).

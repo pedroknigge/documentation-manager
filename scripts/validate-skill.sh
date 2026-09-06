@@ -122,7 +122,8 @@ for concept in \
   "2.4.0" \
   "Living claims" \
   "2.5.0" \
-  "audit-claims"
+  "audit-claims" \
+  "diff-first"
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
@@ -167,7 +168,9 @@ for concept in \
   "Living claims" \
   "audit-claims" \
   "anchor.path" \
-  "severity"
+  "severity" \
+  "diff-first" \
+  "--list-changed"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
@@ -248,7 +251,8 @@ for concept in \
   "critical" \
   "Contradicted" \
   "truth score" \
-  "audit-claims"
+  "audit-claims" \
+  "diff-first"
 do
   grep -F -qi -- "$concept" "$LC" || fail "living-claims.md missing: $concept"
 done
@@ -259,6 +263,8 @@ chmod +x "$ROOT/scripts/audit-claims.sh" 2>/dev/null || true
 if grep -E -q '\b(curl|wget|nc)\b|https?://' "$ROOT/scripts/audit-claims.sh"; then
   fail "audit-claims.sh must not use network tools or URLs"
 fi
+grep -F -q -- "--list-changed" "$ROOT/scripts/audit-claims.sh" \
+  || fail "audit-claims.sh missing --list-changed helper"
 [[ -f "$ROOT/.github/workflows/docs-audit.yml" ]] || fail "missing .github/workflows/docs-audit.yml"
 grep -F -q "audit-claims.sh" "$ROOT/.github/workflows/docs-audit.yml" \
   || fail "docs-audit.yml must invoke audit-claims.sh"
