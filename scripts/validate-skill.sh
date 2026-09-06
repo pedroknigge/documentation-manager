@@ -122,6 +122,7 @@ for concept in \
   "2.5.0" \
   "audit-claims" \
   "diff-first" \
+  "docs-universe" \
   "§6.10" \
   "evolved layout" \
   "Silent structure rewrite"
@@ -193,7 +194,10 @@ for concept in \
   "case-insensitive" \
   "*adr*" \
   "examples/**" \
-  "survey-docs.sh"
+  "survey-docs.sh" \
+  "docs-universe" \
+  "Valid-but-huge" \
+  "remeasure"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
@@ -254,6 +258,8 @@ grep -F -q "silent structure rewrite" "$QC" || fail "quality-checklist missing s
 grep -F -q "Readme.md" "$QC" || fail "quality-checklist missing case-insensitive Readme.md"
 grep -F -q "*adr*" "$QC" || fail "quality-checklist missing tight ADR *adr* ban"
 grep -F -q "examples/**" "$QC" || fail "quality-checklist missing examples/** claim-scope exclude"
+grep -F -q "docs-universe" "$QC" || fail "quality-checklist missing docs-universe escape"
+grep -F -q "remeasure" "$QC" || fail "quality-checklist missing anti-snapshot remeasure"
 ok "quality-checklist … + team + living-claims present"
 
 PT="$SKILL_DIR/references/plan-template.md"

@@ -6,7 +6,7 @@
 
 **Date:** YYYY-MM-DD  
 **Scope:** project | feature:`slug`  
-**Audit-scope:** diff-first (default) | full-tree (opt-in)  
+**Audit-scope:** diff-first (default) | docs-universe (change set unusable) | full-tree (opt-in)  
 **Intent:** audit  
 **Out:** root | sandbox:path  
 **Auditor:** documentation-manager
