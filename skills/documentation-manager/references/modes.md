@@ -8,7 +8,7 @@ Load this file after Step 0 when you need detailed steps for the active mode.
 
 | Intent | Default Mode | Writing policy |
 |--------|--------------|----------------|
-| **integrate** | adopt | Improve/index existing; no parallel SSOT rewrite when mature |
+| **integrate** | adopt | Improve/index existing; **adopt evolved layout**; no parallel SSOT rewrite when mature; never force the recommended tree |
 | **audit** | audit | Read-only reconciliation matrix; optional follow-on Intent |
 | **from-zero** | bootstrap or adopt-full | Full knowledge base from **code** (+ user answers if greenfield); old docs = hypothesis only |
 
@@ -98,6 +98,8 @@ On **from-zero / integrate / adopt / audit** when multi-package signals exist:
 
 **When:** Code exists; docs missing, incomplete, drifted, or Intent **integrate**.
 
+**Layout:** the SKILL recommended tree is a **proposal**. If `docs/` (or the hub) already evolved, **adopt that layout**. Never force templates over the captain ([ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md)). HITL before any reshape.
+
 ### 2.0 Detect doc maturity
 
 | Signal | Weight |
@@ -111,7 +113,7 @@ On **from-zero / integrate / adopt / audit** when multi-package signals exist:
 | Maturity | Variant | Behavior |
 |----------|---------|----------|
 | **thin** | **adopt-full** | Create/complete core set from code |
-| **mixed** / **mature** | **adopt-integrate** | Index + gaps; no parallel full tree at productive root |
+| **mixed** / **mature** | **adopt-integrate** | Index + gaps; **adopt evolved layout**; no parallel full tree at productive root |
 
 If Intent is **from-zero**, do **not** force adopt-integrate even when mature — use §7 (often sandbox).
 
@@ -121,7 +123,7 @@ If Intent is **from-zero**, do **not** force adopt-integrate even when mature �
 2. **Monorepo detection** (§0.4 / Monorepo hubs) — package list / `detect-packages.sh`  
 3. Tree, README, manifests for the detected stack(s) and packages  
 4. **Code surfaces first** using the **Inventory by stack** table (not Node-only assumptions); per package when monorepo  
-5. Existing docs / authorities (root + package-local); **do not rewrite** mature package docs on root index-only work  
+5. Existing docs / authorities (root + package-local); **do not rewrite** mature package docs on root index-only work. If folder names or hub paths diverged from the SKILL proposal, **adopt them** — do not rename into the template tree.  
 6. Optional quick audit sample if claims look stale  
 
 When monorepo: ensure root hub has **Package index** and multi-package **Surface coverage** rows (gap allowed).
@@ -130,7 +132,7 @@ When monorepo: ensure root hub has **Package index** and multi-package **Surface
 
 1. Infer architecture, capabilities, tacit decisions.  
 2. Targeted questions only.  
-3. Core set + hub; ADRs `Accepted — inferred from code`.  
+3. Core set + hub from the **proposed** layout (thin — nothing evolved to adopt); ADRs `Accepted — inferred from code`.  
 4. **Coverage matrix required**.  
 5. Atomic feature packs for key domains.  
 6. Summarize inferred vs confirmed.  
@@ -150,13 +152,14 @@ Allowed: root hub Package index, coverage **gap** rows, links to existing packag
 
 ### 2.3 Adopt-integrate (mature / mixed) — Intent integrate
 
-1. Inventory authorities (what each doc owns).  
-2. Do **not** re-create product-vision / requirements / architecture / existing ADRs unless empty or user asked.  
-3. Hub: extend existing; second hub only as index.  
-4. Write only: coverage matrix, entry feature packs, net-new ADRs (same numbering), thin gaps.  
-5. Prefer a **claims audit** first if user mentioned drift or many path claims.  
-6. **Team governance** (§11): if user asked for owners/team → create or link `docs/team/`; if not asked, do not force; never rewrite product-vision to “add owners”.  
-7. Summary: authorities, created, **non-writes**, gaps, promotion if sandbox.  
+1. Detect the **evolved layout** (hub path, `docs/` shape, existing authorities). The recommended tree is a **proposal** only. Adopt existing folders; never force templates over the captain ([ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md)). Tempted to reshape → **HITL**.  
+2. Inventory authorities (what each doc owns).  
+3. Do **not** re-create product-vision / requirements / architecture / existing ADRs unless empty or user asked.  
+4. Hub: extend existing; second hub only as index.  
+5. Write only: coverage matrix, entry feature packs, net-new ADRs (same numbering), thin gaps — **into the evolved tree**, not a parallel template tree.  
+6. Prefer a **claims audit** first if user mentioned drift or many path claims.  
+7. **Team governance** (§11): if user asked for owners/team → create or link `docs/team/`; if not asked, do not force; never rewrite product-vision to “add owners”.  
+8. Summary: authorities, created, **non-writes**, **layout: adopted**, gaps, promotion if sandbox.  
 
 ### 2.4 Output location (sandbox)
 
@@ -627,6 +630,7 @@ Pointers stay inside the change set (plus a living SSOT a changed plan already c
 | | integrate | from-zero |
 |--|-----------|-----------|
 | Mature parallel tree at root | forbidden | only with explicit overwrite confirm |
+| Evolved layout | **adopt** (never force template) | may propose the default tree (sandbox / confirm overwrite) |
 | Sandbox full tree | rare | **first-class** |
 | Old module docs | authority (link) | hypothesis |
 | Goal | index + gaps | complete agent-ready KB |

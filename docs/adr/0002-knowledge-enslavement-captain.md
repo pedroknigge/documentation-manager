@@ -34,7 +34,7 @@ This ADR locks the goal and the captain rule. It does **not** specify implementa
 | Audit scope | From **git diff / changed files only**. Never full-tree scans. |
 | Cascade | Parent change → review children. **Haken Versklavungsprinzip** decides hold vs escalate/break: hold if still enslaved to parent (`s≈f(q)`); escalate/break when not. Downward for-review on parent release. The LLM does **not** invent the regime. |
 | Reconcile | Classify agent-written plans/MDs as evolution vs regime change vs orphan vs contradiction. No living contradictions. HITL when unclear who wins. Latest-by-date does **not** auto-win — the supersede / enslavement verdict does. |
-| Structure | Propose structure. Never override evolved layout or developer decisions. |
+| Structure | Propose structure. Never override evolved layout or developer decisions. Procedure: [modes.md §2](../../skills/documentation-manager/references/modes.md#2-adopt-project) (adopt-integrate). |
 | Later ports | Orderfield / ArkGate ports are optional and **out of scope** for this decision. |
 
 ## Consequences
@@ -57,6 +57,7 @@ This ADR locks the goal and the captain rule. It does **not** specify implementa
 - Git-diff audit **procedure** — [modes.md §6.0](../../skills/documentation-manager/references/modes.md#60-change-set-diff-first) (`audit-claims.sh --list-changed`)
 - Reconcile **logic** (auto-winner / date-wins / classifier engine) — classification vocabulary + procedure: [modes.md §6.8](../../skills/documentation-manager/references/modes.md#68-reconcile-classification-plansmds)
 - Recommend review **engine** (auto-assign / notify / merge) — audience + payload: [modes.md §6.9](../../skills/documentation-manager/references/modes.md#69-recommend-review-human-vs-agent)
+- Structure **rewrite** (force template tree / silent reshape) — proposal + adopt: [modes.md §2](../../skills/documentation-manager/references/modes.md#2-adopt-project)
 - Orderfield / ArkGate ports
 
 ## Links
@@ -68,4 +69,5 @@ This ADR locks the goal and the captain rule. It does **not** specify implementa
 - Cascade verdicts (procedure, not engine): [modes.md §6.7](../../skills/documentation-manager/references/modes.md#67-cascade-verdicts-haken)
 - Reconcile classification (procedure, not engine): [modes.md §6.8](../../skills/documentation-manager/references/modes.md#68-reconcile-classification-plansmds)
 - Recommend review (procedure, not engine/assign/notify): [modes.md §6.9](../../skills/documentation-manager/references/modes.md#69-recommend-review-human-vs-agent)
+- Structure (proposal / adopt evolved; not a rewrite engine): [modes.md §2](../../skills/documentation-manager/references/modes.md#2-adopt-project)
 - Epic (does not replace this lock): [../plans/knowledge-os/README.md](../plans/knowledge-os/README.md)

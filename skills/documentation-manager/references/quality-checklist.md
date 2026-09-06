@@ -11,7 +11,8 @@ Run before reporting done.
 ## Structure
 
 - [ ] Hub exists and links to every new/updated top-level doc
-- [ ] Feature docs live under `docs/features/<kebab-slug>/`
+- [ ] Feature docs live under `docs/features/<kebab-slug>/` **unless the repo already evolved a different feature-doc path** — then adopt that path
+- [ ] **No silent structure rewrite** — default layout is a proposal; templates were not forced over the captain ([ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md))
 - [ ] Relative links work from their file location
 - [ ] ADRs one decision per file; status + date present
 - [ ] Feature status uses [status-taxonomy.md](status-taxonomy.md) tokens
@@ -118,6 +119,7 @@ Run before reporting done.
 
 - [ ] Maturity classified (`thin` | `mixed` | `mature`); variant announced (`full` | `integrate`)
 - [ ] No parallel tree that rewrites existing ADRs/modules when mature **and Intent=integrate**
+- [ ] Evolved layout **adopted** (integrate) — did not reshape `docs/` to match the recommended tree; HITL before any reshape
 - [ ] Coverage matrix (Surface coverage) lists discovered surfaces; gaps explicit
 - [ ] ADR numbering matches repo scheme; no duplicate decisions
 - [ ] Feature packs are entry points (surface + links) when module docs already exist — not re-dumps
