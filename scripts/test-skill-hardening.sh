@@ -854,6 +854,9 @@ for anchor in "anchor.path" "severity" "critical" "Contradicted" "audit-claims";
 done
 grep -F -q "Living claims" "$SKILL_FILE" || fail "SKILL.md missing Living claims"
 grep -F -q "Living claims" "$MODES" || fail "modes.md missing Living claims"
+grep -F -q "Narrative comments" "$MODES" || fail "modes.md missing Narrative comments"
+grep -F -q "fact-vs-changed-symbol" "$MODES" || fail "modes.md missing fact-vs-changed-symbol"
+grep -F -q "auto-delete" "$MODES" || fail "modes.md missing auto-delete non-goal"
 grep -F -q "Severity" "$SKILL_DIR/references/audit-template.md" \
   || fail "audit-template missing Severity"
 ok "living-claims CI audit script + fixtures + GHA + skill anchors"

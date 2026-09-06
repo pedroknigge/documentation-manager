@@ -348,11 +348,12 @@ docs/
 
 **When:** Code changed; docs should follow.
 
-1. Change set (`git diff` / description).  
+1. Change set (`git diff` / description) — same **§6.0** rules.  
 2. Blast radius: project docs, features, coverage rows, ADRs.  
 3. Edit only impacted files.  
 4. Prefer Superseded ADR notes over deletion.  
 5. List file → change; flag debt without inventing pages.  
+6. **Narrative comments:** on files in this change set, apply [§6.10](#610-narrative-comments-report-first) — **report** stale / redundant / snapshot / fact-vs-changed-symbol via [§6.9](#69-recommend-review-human-vs-agent). Never auto-edit comments. Never a full-tree comment pass.
 
 If sync reveals many Contradicted claims → suggest **audit** (still **diff-first** on that change set; not a full-tree scan).
 
@@ -393,7 +394,8 @@ If sync reveals many Contradicted claims → suggest **audit** (still **diff-fir
 4. Named feature + change set → **intersect**. Empty intersection → HITL, not a feature-tree walk.
 5. **Cascade pointer:** if a changed file has a breadcrumb `parent=` ([living-claims.md § Code breadcrumbs](living-claims.md#code-breadcrumbs-comment-mirror)) or a matrix row whose `id` is named as `parent` on a changed breadcrumb, **recommend review** of children ([§6.9](#69-recommend-review-human-vs-agent)) and apply [§6.7](#67-cascade-verdicts-haken) (hold / escalate / break / for-review). Do not run a cascade engine. Do not grep the repo for children.
 6. **Reconcile pointer:** if the change set includes agent-written plans/MDs that share a topic with a living doc (or with each other), apply [§6.8](#68-reconcile-classification-plansmds). Do not walk `docs/**` for a second tree.
-7. Human is captain. Propose matrix updates; HITL when who-wins is unclear. When cascade / reconcile / audit needs eyes, [§6.9](#69-recommend-review-human-vs-agent) — recommend, do not assign or merge.
+7. **Narrative-comment pointer:** if a changed file has non-`@claim` prose comments (JSDoc, block, AI TODOs that assert facts) that look stale, redundant, snapshot, or fact-vs-changed-symbol, apply [§6.10](#610-narrative-comments-report-first) and emit [§6.9](#69-recommend-review-human-vs-agent). Report only; never auto-edit. Do not walk the tree.
+8. Human is captain. Propose matrix updates; HITL when who-wins is unclear. When cascade / reconcile / audit / narrative comments need eyes, [§6.9](#69-recommend-review-human-vs-agent) — recommend, do not assign or merge.
 
 Announce: `Audit-scope: diff-first | files: <n> | base: <HEAD|ref|n/a>` or `Audit-scope: full-tree (user opt-in)`.
 
@@ -563,11 +565,11 @@ These tokens are **not** [§6.3](#63-verdicts) matrix verdicts, **not** [§6.7](
 
 Stay on the **§6.0 change set**. Do not walk the tree to find reviewers or children.
 
-This is **not** a new verdict enum. Cascade stays in [§6.7](#67-cascade-verdicts-haken). Reconcile stays in [§6.8](#68-reconcile-classification-plansmds). Audit verdicts stay in [§6.3](#63-verdicts). **HITL** still means stop and ask the captain once.
+This is **not** a new verdict enum. Cascade stays in [§6.7](#67-cascade-verdicts-haken). Reconcile stays in [§6.8](#68-reconcile-classification-plansmds). Audit verdicts stay in [§6.3](#63-verdicts). Narrative-comment classes stay in [§6.10](#610-narrative-comments-report-first). **HITL** still means stop and ask the captain once.
 
 #### When (needs eyes)
 
-Emit a recommendation only when cascade, reconcile, or audit already surfaced something that needs eyes. Do **not** recommend review for **hold**, **OK**, or a clean **evolution** this session is already applying.
+Emit a recommendation only when cascade, reconcile, audit, or a §6.10 comment report already surfaced something that needs eyes. Do **not** recommend review for **hold**, **OK**, or a clean **evolution** this session is already applying.
 
 | Trigger | Source | Needs eyes |
 |---------|--------|------------|
@@ -579,13 +581,15 @@ Emit a recommendation only when cascade, reconcile, or audit already surfaced so
 | **critical** + **Contradicted** | §6.3 | Shipping a lie |
 | **Unverifiable** | §6.3 | Not structural |
 | Empty / unclear change set | §6.0 | Already HITL |
+| **stale** / **redundant** / **snapshot** / **fact-vs-changed-symbol** | §6.10 | Narrative comment in the change set |
+| Comment HITL | §6.10 | Class unclear |
 
 #### Audience (closed)
 
 | Audience | When |
 |----------|------|
-| **human** | HITL already required; the ask would supersede a living SSOT, change layout, or override a developer decision (`escalate`, `break`, `regime change`, `contradiction`, `orphan` home); `Unverifiable`; `critical` + `Contradicted`; children **not** in the change set (do not search — only the captain may expand the set); audience unclear → **human** (captain-first). |
-| **agent** | Follow-up is mechanical on paths **already in the set** and a closed-set class/verdict is already proposed: `for-review` children **in the set**; clear **evolution** not yet patched; **normal**-severity `Partial` / `Missing` / `Contradicted` (mark the matrix / propose a doc fix). |
+| **human** | HITL already required; the ask would supersede a living SSOT, change layout, or override a developer decision (`escalate`, `break`, `regime change`, `contradiction`, `orphan` home); `Unverifiable`; `critical` + `Contradicted`; children **not** in the change set (do not search — only the captain may expand the set); §6.10 class unclear or a local “why” that might still be true; audience unclear → **human** (captain-first). |
+| **agent** | Follow-up is mechanical on paths **already in the set** and a closed-set class/verdict is already proposed: `for-review` children **in the set**; clear **evolution** not yet patched; **normal**-severity `Partial` / `Missing` / `Contradicted` (mark the matrix / propose a doc fix); clear §6.10 `redundant` / `snapshot` / obvious `stale` or `fact-vs-changed-symbol` (**report** a delete/fix — this session still does not auto-edit). |
 
 Do **not** invent a third audience. Do **not** auto-assign a person or agent. Do **not** notify anyone.
 
@@ -595,9 +599,9 @@ One short recommendation, friendly, captain-first:
 
 ```text
 Recommend review: <human|agent>
-Trigger: <cascade|reconcile|audit>
-Class: <§6.7 verdict | §6.8 class | §6.3 verdict>
-Pointers: <paths in the change set> · <claim id(s)> · <parent= if visible>
+Trigger: <cascade|reconcile|audit|comment>
+Class: <§6.7 verdict | §6.8 class | §6.3 verdict | §6.10 class>
+Pointers: <paths in the change set> · <path:line for §6.10> · <claim id(s)> · <parent= if visible>
 Ask: <one question if human / HITL; else the mechanical next step>
 ```
 
@@ -605,7 +609,7 @@ Pointers stay inside the change set (plus a living SSOT a changed plan already c
 
 #### Apply
 
-1. Trigger from §6.7 / §6.8 / the audit matrix — not a second pass over the tree.
+1. Trigger from §6.7 / §6.8 / the audit matrix / §6.10 — not a second pass over the tree.
 2. Pick **human** or **agent** from the closed table. Unclear → **human**.
 3. Emit the block. Do not merge, assign, or notify.
 4. If audience is **human** and the case is HITL: **stop**. Wait for the captain.
@@ -613,6 +617,59 @@ Pointers stay inside the change set (plus a living SSOT a changed plan already c
 6. **Lister:** `./scripts/audit-claims.sh --cascade-recommend [--base REF] [ROOT]` emits this block for §6.7 **for-review** when the parent is released in the §6.0 set and the child is already in that set. Pointers + evidence only. Does not assign, notify, merge, or write. Children not in the set are not listed (no walker).
 
 **Non-goals:** review engine · auto-assign · notification system · auto-merge · graph walker · new CLI · new verdict/class tokens · reviewer roster / CODEOWNERS · version bump
+
+### 6.10 Narrative comments (report-first)
+
+**Procedure only** — not an auto-edit engine, not a full-tree comment campaign, not a CI gate. Binding: [ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md) captain rule. Human is captain. The skill **reports**. It never rewrites comments and never invents a second SSOT outside the matrix.
+
+Stay on the **§6.0 change set**. Do not walk the tree for comments. Do not grep for missing narrative comments.
+
+This path is **non-`@claim` prose** (JSDoc, block comments, AI TODOs that assert facts). `@claim` breadcrumbs stay in [living-claims.md § Code breadcrumbs](living-claims.md#code-breadcrumbs-comment-mirror). Do not reopen that wire. Do not treat free prose as a matrix row.
+
+#### Policy (closed)
+
+| Kind | Practice | Skill |
+|------|----------|-------|
+| Durable fact / contract | → `@claim` + matrix row | Already (do not reopen wire) |
+| Local “why” (unverified) | May stay; if symbol/code changed and the comment asserts a **fact** → **report** | This section |
+| Narrative the code already says | Prefer delete / don’t write | Flag **redundant** |
+| Snapshot (counts, version stamps) | Same anti-snapshot as permanent docs | Flag **snapshot** |
+
+#### Vocabulary (closed)
+
+These tokens are **not** [§6.3](#63-verdicts) matrix verdicts, **not** [§6.7](#67-cascade-verdicts-haken) cascade verdicts, **not** [§6.8](#68-reconcile-classification-plansmds) classes, and **not** breadcrumb `status=` (`changed` / `adjusted`).
+
+| Class | Meaning |
+|-------|---------|
+| **stale** | Comment asserts something the current code in this file no longer matches (name, behavior, constraint). |
+| **redundant** | Narrative the adjacent code already says (restates the obvious). Prefer delete / don’t write. |
+| **snapshot** | Hardcoded counts, version stamps, or inventory totals — same anti-snapshot as permanent docs. |
+| **fact-vs-changed-symbol** | Adjacent symbol/code in the change set changed, and the comment asserts a **fact** (not a local unverified “why”). |
+
+Local “why” that does not assert a checkable fact may stay. Do not flag every comment.
+
+#### Apply (audit + sync)
+
+1. Take the §6.0 path list. Scan **only** those files for non-`@claim` prose comments (JSDoc / block / line / AI TODOs that assert facts). Skip `@claim` lines (already parsed by `--list-claims`). Prefer comments the diff touched or that sit next to a changed symbol; do not campaign every comment in a large changed file.
+2. Classify report candidates with the closed set. Tool **proposes**. Unclear → **HITL**.
+3. Emit one [§6.9](#69-recommend-review-human-vs-agent) block per candidate (or one block listing pointers). Required pointer shape: `path:line` + class.
+4. **Never** auto-edit, auto-delete, or rewrite the comment. Captain (or a later agent, if audience=agent) decides.
+5. Do **not** insert a matrix row for free prose. If the comment is actually a durable contract, **recommend** promoting it to `@claim` + matrix — do not invent the row here.
+6. Human is captain. Do not auto-commit.
+
+#### What to include
+
+Reuse the §6.9 block (`Trigger: comment`):
+
+```text
+Recommend review: <human|agent>
+Trigger: comment
+Class: <stale | redundant | snapshot | fact-vs-changed-symbol>
+Pointers: <path:line> · <path:line>
+Ask: <one question if human / HITL; else "review then delete or rewrite — do not auto-edit">
+```
+
+**Non-goals:** auto-delete · auto-edit engine · full-tree comment scan · CI gate on narrative comments / missing comments · treating free prose as matrix rows · second SSOT · new CLI · reopening `@claim` wire · graph walker · C-055 / C-056 / C-059 · Orderfield / ArkGate ports
 
 ---
 
@@ -749,7 +806,7 @@ Announce: `Team: create|link|skip | docs/team | owners | approval-notes`.
 5. **CI is the gate:** `critical` + `Contradicted` → non-zero from local air-gapped `scripts/audit-claims.sh` (example `.github/workflows/docs-audit.yml`). **No network** required. The gate parses the **whole matrix** (do not hide existing critical Contradicted). Agent **audit/reconcile reads** stay **diff-first** (§6.0); `--list-changed` / `--list-claims` / `--upsert-claims` / `--record-haken` / `--cascade-recommend` are change-set helpers, not the gate.  
 6. Graceful v0: no matrix → skip/warn; missing severity → `normal`.  
 7. Do not invent code to match docs; do not auto-commit.  
-8. **Diff-first** — never a full-tree read by default; cascade = [§6.7](#67-cascade-verdicts-haken) (recommend review; no engine); reconcile classification = [§6.8](#68-reconcile-classification-plansmds) (no living contradictions; no date-wins); recommend review = [§6.9](#69-recommend-review-human-vs-agent) (human vs agent; no assign).
+8. **Diff-first** — never a full-tree read by default; cascade = [§6.7](#67-cascade-verdicts-haken) (recommend review; no engine); reconcile classification = [§6.8](#68-reconcile-classification-plansmds) (no living contradictions; no date-wins); recommend review = [§6.9](#69-recommend-review-human-vs-agent) (human vs agent; no assign); narrative comments = [§6.10](#610-narrative-comments-report-first) (report-first; no auto-edit).
 
 Announce: `Living-claims: v0 | matrix: path|none | CI-gate: audit-claims | score: advisory | Audit-scope: diff-first`.
 
