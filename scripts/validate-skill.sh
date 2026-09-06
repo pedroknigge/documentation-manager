@@ -122,6 +122,7 @@ for concept in \
   "2.5.0" \
   "audit-claims" \
   "diff-first" \
+  "§6.10" \
   "evolved layout" \
   "Silent structure rewrite"
 do
@@ -181,6 +182,9 @@ for concept in \
   "Recommend review" \
   "Audience (closed)" \
   "auto-assign" \
+  "Narrative comments" \
+  "fact-vs-changed-symbol" \
+  "auto-delete" \
   "evolved layout" \
   "Cold-start survey heuristics" \
   "case-insensitive" \
@@ -241,6 +245,8 @@ grep -F -q "Polyglot stack detection" "$QC" || fail "quality-checklist missing P
 grep -F -q "Monorepo hubs" "$QC" || fail "quality-checklist missing Monorepo hubs section"
 grep -F -q "Team governance" "$QC" || fail "quality-checklist missing Team governance section"
 grep -F -q "Living claims" "$QC" || fail "quality-checklist missing Living claims section"
+grep -F -q "Narrative comments" "$QC" || fail "quality-checklist missing Narrative comments"
+grep -F -q "fact-vs-changed-symbol" "$QC" || fail "quality-checklist missing fact-vs-changed-symbol"
 grep -F -q "silent structure rewrite" "$QC" || fail "quality-checklist missing silent structure rewrite bar"
 grep -F -q "Readme.md" "$QC" || fail "quality-checklist missing case-insensitive Readme.md"
 grep -F -q "*adr*" "$QC" || fail "quality-checklist missing tight ADR *adr* ban"
@@ -276,7 +282,9 @@ for concept in \
   "--list-claims" \
   "--upsert-claims" \
   "--record-haken" \
-  "--cascade-recommend"
+  "--cascade-recommend" \
+  "Narrative comments" \
+  "fact-vs-changed-symbol"
 do
   grep -F -qi -- "$concept" "$LC" || fail "living-claims.md missing: $concept"
 done

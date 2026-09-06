@@ -15,6 +15,12 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ### Added
 
+- **P1 Audit:** report stale / redundant / snapshot / fact-vs-changed-symbol narrative comments in the git change set (audit + sync)  
+- Procedure [modes.md §6.10](skills/documentation-manager/references/modes.md#610-narrative-comments-report-first) — classify and emit §6.9 recommend-review (`path:line` + class); never auto-edit  
+- Non-goals: auto-delete, full-tree campaign, CI gate on narrative comments, treating free prose as matrix rows  
+- No new CLI (procedure over helper; `--list-changed` already scopes files)  
+- No version bump — install floor stays **2.5.0**
+
 - **P1 Kernel:** cascade recommend from `parent=` in the change set (`audit-claims.sh --cascade-recommend`)  
 - Parent released in the set (`status=changed`) → list **for-review** children already in the set that name that `parent=` + evidence + modes.md §6.9 block  
 - Read-only (does not write the matrix); children not in the set are not listed (no repo-wide grep; documented gap)  

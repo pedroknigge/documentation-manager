@@ -15,6 +15,7 @@ Machine-anchored structural claims on top of the existing audit matrix. **Markdo
 | “living claims”, “truth score”, “docs CI”, “fail on Contradicted” | Follow this procedure + modes §6 / §13 |
 | Integrate after audit | Patch Contradicted/Missing; keep anchors honest |
 | “breadcrumbs”, code-comment claim tags | Follow **Code breadcrumbs** below; parse with `--list-claims` (change set only); propose only — no engines |
+| stale / redundant narrative comments | **Report only** ([modes.md §6.10](modes.md#610-narrative-comments-report-first) + [§6.9](modes.md#69-recommend-review-human-vs-agent)); not this wire; never auto-edit |
 
 ## Wire format (v0)
 
@@ -63,8 +64,9 @@ score = (OK_N * 100 + PARTIAL_N * 50) / TOTAL_V   # TOTAL_V > 0
 6. Offer dashboard ([knowledge-dashboard.md](knowledge-dashboard.md)) as view; remind that **CI is the gate**.  
 7. If a changed breadcrumb names `parent=` (or a changed id is a parent), apply [modes.md §6.7](modes.md#67-cascade-verdicts-haken) and record with `./scripts/audit-claims.sh --record-haken` (same change set). Writes **Action** (or an existing **Haken** column) with evidence `path:line` + parent id — **never** Verdict. hold / for-review from documented criteria; escalate vs break → **HITL**. List for-review recommends with `./scripts/audit-claims.sh --cascade-recommend` (children already in the set that name a released parent; [§6.9](modes.md#69-recommend-review-human-vs-agent)). Do not run a cascade engine. Children not in the set are not listed.  
 8. If the set includes agent-written plans/MDs that share a topic with a living doc, apply [modes.md §6.8](modes.md#68-reconcile-classification-plansmds) — classify; **no living contradictions**; latest-by-date does not auto-win.  
-9. When cascade / reconcile / audit needs eyes, recommend review per [modes.md §6.9](modes.md#69-recommend-review-human-vs-agent) (**human** vs **agent**; pointers into the set / claims / class). Do not assign, notify, or merge.  
-10. Never invent code to satisfy a claim; never auto-commit. HITL when who-wins is unclear.
+9. When cascade / reconcile / audit / narrative comments need eyes, recommend review per [modes.md §6.9](modes.md#69-recommend-review-human-vs-agent) (**human** vs **agent**; pointers into the set / claims / class / `path:line`). Do not assign, notify, or merge.  
+10. Non-`@claim` prose comments in the set: classify and **report** per [modes.md §6.10](modes.md#610-narrative-comments-report-first). Never auto-edit. Never treat free prose as a matrix row.  
+11. Never invent code to satisfy a claim; never auto-commit. HITL when who-wins is unclear.
 
 ## CI (local / air-gapped)
 
@@ -158,21 +160,26 @@ checkout() { :; }
 
 Convention only for the **comment wire** (do not reopen the format). Parse with `audit-claims.sh --list-claims` (change set only). Persist touched ids with `--upsert-claims` (matrix SSOT; HITL when supersede is unclear; no date-wins). Record §6.7 verdicts with `--record-haken` (Action / existing Haken column; never Verdict). List §6.9 for-review recommends with `--cascade-recommend` (released parent in the set → children already in the set; no write; no walker). Do **not** implement here: cascade engine (graph walker), reconcile classification (procedure: [modes.md §6.8](modes.md#68-reconcile-classification-plansmds)), recommend-review engine (auto-assign / notify / merge), or CI that fails on missing comments. `audit-claims.sh` default remains the **matrix gate**; `--list-changed` lists paths; `--list-claims` parses `@claim` in those paths; `--upsert-claims` writes those ids back; `--record-haken` records hold / for-review from the same set; `--cascade-recommend` lists the §6.9 payload.
 
+## Narrative comments (not this wire)
+
+Non-`@claim` prose (JSDoc, block comments, AI TODOs that assert facts) is **not** a matrix row and **not** a second SSOT. Durable facts belong above (`@claim` + matrix). Local “why” may stay. On audit/sync, **report** stale / redundant / snapshot / fact-vs-changed-symbol comments in the §6.0 change set via [modes.md §6.10](modes.md#610-narrative-comments-report-first) + [§6.9](modes.md#69-recommend-review-human-vs-agent). Never auto-edit. Never CI-fail on missing narrative comments.
+
 ## Non-goals (v0)
 
 - SaaS / control-plane / org merge policy engines  
 - Formal proof / SMT  
 - Auto-commit; inventing implementation to match docs  
 - Replacing Notion/MkDocs  
-- Cascade engine / reconcile classification ([modes.md §6.8](modes.md#68-reconcile-classification-plansmds)) / recommend-review engine ([modes.md §6.9](modes.md#69-recommend-review-human-vs-agent)) (Haken **recorder** is `--record-haken`; **lister** is `--cascade-recommend`; the walker is still out)
+- Cascade engine / reconcile classification ([modes.md §6.8](modes.md#68-reconcile-classification-plansmds)) / recommend-review engine ([modes.md §6.9](modes.md#69-recommend-review-human-vs-agent)) (Haken **recorder** is `--record-haken`; **lister** is `--cascade-recommend`; the walker is still out)  
+- Auto-edit / auto-delete of narrative comments; CI gate on missing comments; treating free prose as matrix rows ([modes.md §6.10](modes.md#610-narrative-comments-report-first))
 
 ## Concept anchors (greppable)
 
-`living claims` · `living-claims` · `anchor.path` · `severity` · `critical Contradicted` · `truth score` · `audit-claims` · `docs-audit` · `@claim` · `breadcrumb` · `plane` · `changed` · `adjusted` · `diff-first` · `--list-changed` · `--list-claims` · `--upsert-claims` · `--record-haken` · `--cascade-recommend` · `recommend review` · `whole matrix`
+`living claims` · `living-claims` · `anchor.path` · `severity` · `critical Contradicted` · `truth score` · `audit-claims` · `docs-audit` · `@claim` · `breadcrumb` · `plane` · `changed` · `adjusted` · `diff-first` · `--list-changed` · `--list-claims` · `--upsert-claims` · `--record-haken` · `--cascade-recommend` · `recommend review` · `whole matrix` · `narrative comments` · `fact-vs-changed-symbol`
 
 ## Related
 
-- Modes: [modes.md §6](modes.md#6-audit-project-or-feature) · [§6.7](modes.md#67-cascade-verdicts-haken) · [§6.8](modes.md#68-reconcile-classification-plansmds) · [§6.9](modes.md#69-recommend-review-human-vs-agent) · [§13](modes.md#13-living-claims--ci-structural-audit-v25)  
+- Modes: [modes.md §6](modes.md#6-audit-project-or-feature) · [§6.7](modes.md#67-cascade-verdicts-haken) · [§6.8](modes.md#68-reconcile-classification-plansmds) · [§6.9](modes.md#69-recommend-review-human-vs-agent) · [§6.10](modes.md#610-narrative-comments-report-first) · [§13](modes.md#13-living-claims--ci-structural-audit-v25)  
 - Quality: [quality-checklist.md](quality-checklist.md)  
 - Feature pack: [docs/features/living-claims/README.md](../../../docs/features/living-claims/README.md)  
 - Epic: [docs/plans/knowledge-os/README.md](../../../docs/plans/knowledge-os/README.md)  
