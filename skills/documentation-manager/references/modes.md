@@ -383,7 +383,7 @@ If sync reveals many Contradicted claims → suggest **audit** (still **diff-fir
 2. Empty set, not a git repo, or unclear base → **HITL** (ask once: name a base, give a file list, or confirm full-tree opt-in). **Do not** fall back to reading the tree.
 3. Inventory (§6.1) and claim extraction (§6.2) **only** those paths, plus a specific `anchor.path` a changed doc cites. Do not glob `docs/**` or walk `src/`.
 4. Named feature + change set → **intersect**. Empty intersection → HITL, not a feature-tree walk.
-5. **Cascade pointer:** if a changed file has a breadcrumb `parent=` ([living-claims.md § Code breadcrumbs](living-claims.md#code-breadcrumbs-comment-mirror)) or a matrix row whose `id` is named as `parent` on a changed breadcrumb, **recommend review of children**. Do not run a cascade engine (separate P0). Do not grep the repo for children.
+5. **Cascade pointer:** if a changed file has a breadcrumb `parent=` ([living-claims.md § Code breadcrumbs](living-claims.md#code-breadcrumbs-comment-mirror)) or a matrix row whose `id` is named as `parent` on a changed breadcrumb, **recommend review of children** and apply [§6.7](#67-cascade-verdicts-haken) (hold / escalate / break / for-review). Do not run a cascade engine. Do not grep the repo for children.
 6. Human is captain. Propose matrix updates; HITL when who-wins is unclear.
 
 Announce: `Audit-scope: diff-first | files: <n> | base: <HEAD|ref|n/a>` or `Audit-scope: full-tree (user opt-in)`.
@@ -465,6 +465,44 @@ Do **not** auto-start from-zero after audit without user Intent.
 ### 6.6 Living claims + local CI (pointer)
 
 After writing the matrix, remind: dashboard truth score is **advisory**; **CI / `scripts/audit-claims.sh` is the gate** (fail on **critical Contradicted**). Procedure: [§13](#13-living-claims--ci-structural-audit-v25) and [living-claims.md](living-claims.md).
+
+### 6.7 Cascade verdicts (Haken)
+
+**Procedure only** — not a graph walker. Binding: [ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md) cascade row. The LLM does **not** invent the regime.
+
+Breadcrumb wire is already specified ([living-claims.md § Code breadcrumbs](living-claims.md#code-breadcrumbs-comment-mirror)); do not reopen it.
+
+Stay on the **§6.0 change set**. Do not grep the repo for children.
+
+#### Vocabulary (closed)
+
+These tokens are **not** [§6.3](#63-verdicts) matrix verdicts and **not** breadcrumb `status=` (`changed` / `adjusted`).
+
+| Verdict | Meaning |
+|---------|---------|
+| **hold** | Child still enslaved to parent (`s≈f(q)`). Stay on the current plane. |
+| **escalate** | Child no longer enslaved. Raise toward the parent / next plane. |
+| **break** | Parent insufficient as order parameter. Break upward. |
+| **for-review** | Parent released. Mark children downward for review against the new `q`. |
+
+#### Enslavement test
+
+**Haken Versklavungsprinzip:** hold if still enslaved (`s≈f(q)`); escalate or break when not.
+
+1. From the change set only — same trigger as the §6.0 pointer: a changed breadcrumb with `parent=`, or a changed `id` that is named as `parent` on a changed breadcrumb.
+2. Ask: does `s≈f(q)` still hold for that child vs its named parent?
+   - **Yes** → **hold**.
+   - **No** → **escalate** (no longer enslaved) or **break** (parent insufficient).
+3. If the **parent released** → **for-review** downward for children visible in the set; for children not in the set, **recommend review** only (do not search).
+4. Ambiguous whether `s≈f(q)` holds, or escalate vs break is a tie → **HITL**. Captain decides. Do not pick a token to look decisive.
+
+#### Apply
+
+1. Trigger from the §6.0 pointer.
+2. Propose one closed-set verdict (or HITL).
+3. Human is captain. Do not override evolved layout. Do not auto-commit. Do not run an engine.
+
+**Non-goals:** cascade graph walker · repo-wide child grep · reconcile classification (other P0) · new breadcrumb keys or planes · new verdict tokens.
 
 ---
 
@@ -623,7 +661,7 @@ Announce: `Telemetry: off|local-ledger | opt-in: no|yes | network: never`.
 5. **CI is the gate:** `critical` + `Contradicted` → non-zero from local air-gapped `scripts/audit-claims.sh` (example `.github/workflows/docs-audit.yml`). **No network** required. The gate parses the **whole matrix** (do not hide existing critical Contradicted). Agent **audit/reconcile reads** stay **diff-first** (§6.0); `--list-changed` is the change-set helper, not the gate.  
 6. Graceful v0: no matrix → skip/warn; missing severity → `normal`.  
 7. Do not invent code to match docs; do not auto-commit.  
-8. **Diff-first** — never a full-tree read by default; cascade = recommend review only (no engine).
+8. **Diff-first** — never a full-tree read by default; cascade = [§6.7](#67-cascade-verdicts-haken) (recommend review; no engine).
 
 Announce: `Living-claims: v0 | matrix: path|none | CI-gate: audit-claims | score: advisory | Audit-scope: diff-first`.
 

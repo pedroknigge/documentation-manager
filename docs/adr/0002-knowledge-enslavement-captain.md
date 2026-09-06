@@ -53,7 +53,7 @@ This ADR locks the goal and the captain rule. It does **not** specify implementa
 **Neutral / Notes — out of scope (other rows own these):**
 
 - Breadcrumbs format spec — [living-claims.md § Code breadcrumbs](../../skills/documentation-manager/references/living-claims.md#code-breadcrumbs-comment-mirror)
-- Cascade engine
+- Cascade **engine** (graph walker / repo-wide child grep) — verdict vocabulary + procedure: [modes.md §6.7](../../skills/documentation-manager/references/modes.md#67-cascade-verdicts-haken)
 - Git-diff audit **procedure** — [modes.md §6.0](../../skills/documentation-manager/references/modes.md#60-change-set-diff-first) (`audit-claims.sh --list-changed`)
 - Reconcile logic
 - Orderfield / ArkGate ports
@@ -64,4 +64,5 @@ This ADR locks the goal and the captain rule. It does **not** specify implementa
 - Prior ADR in this series: [0001-living-claims-wire-format.md](./0001-living-claims-wire-format.md)
 - Breadcrumbs convention (owns the comment wire): [living-claims.md § Code breadcrumbs](../../skills/documentation-manager/references/living-claims.md#code-breadcrumbs-comment-mirror)
 - Diff-first audit procedure: [modes.md §6.0](../../skills/documentation-manager/references/modes.md#60-change-set-diff-first)
+- Cascade verdicts (procedure, not engine): [modes.md §6.7](../../skills/documentation-manager/references/modes.md#67-cascade-verdicts-haken)
 - Epic (does not replace this lock): [../plans/knowledge-os/README.md](../plans/knowledge-os/README.md)
