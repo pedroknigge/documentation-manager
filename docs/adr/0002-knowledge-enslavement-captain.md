@@ -33,7 +33,7 @@ This ADR locks the goal and the captain rule. It does **not** specify implementa
 | Breadcrumbs in code | `id` + Haken parent/plane + status, mirroring docs. The comment is a **mirror**, not the sole truth. |
 | Audit scope | From **git diff / changed files only**. Never full-tree scans. |
 | Cascade | Parent change → review children. **Haken Versklavungsprinzip** decides hold vs escalate/break: hold if still enslaved to parent (`s≈f(q)`); escalate/break when not. Downward for-review on parent release. The LLM does **not** invent the regime. |
-| Reconcile | Classify agent-written plans/MDs as evolution vs regime change vs orphan vs contradiction. No living contradictions. HITL when unclear who wins. Latest-by-date does **not** auto-win — the supersede / enslavement verdict does. |
+| Reconcile | Classify agent-written plans/MDs as evolution vs regime change vs orphan vs contradiction. No living contradictions. HITL when unclear who wins. Date / mtime does **not** auto-win on either plane. **AS-IS:** code (and anchored matrix claims) wins; docs that fight code are Contradicted/Partial — never rewrite code identity. **TO-BE:** one living SSOT per topic (latest living regime after classification, not latest mtime); mark the rest Superseded. |
 | Structure | Propose structure. Never override evolved layout or developer decisions. Procedure: [modes.md §2](../../skills/documentation-manager/references/modes.md#2-adopt-project) (adopt-integrate). |
 | Later ports | Orderfield / ArkGate ports are optional and **out of scope** for this decision. |
 
