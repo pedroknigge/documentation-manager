@@ -115,6 +115,13 @@ code change
 - After `/ark-explain` or a fresh HTML report: optional link from hub to `ark-report.html` / `.ark/reports/latest.html` as **external architecture view** (not a second SSOT for product vision).
 - After `/ark-adopt` contract stabilizes: refresh architecture.md only if Intent integrate/audit and claims fail.
 
-## 7. Dogfood note (this skill package)
+## 7. Dogfood note (origin vs host)
 
-This repository **ships** Documentation Manager; it typically **does not** run ArkGate on itself (skill package, not an app). Bridge procedures still apply when **consumers** have Ark. For dogfood of the bridge, use a sample app repo that has both skills installed.
+This file ships with the skill and is often **copied into a host repo**. Judge the **working tree**, not the origin-package story.
+
+| Where you are | What is true |
+|---------------|----------------|
+| **Origin package** (`pedroknigge/documentation-manager`) | Ships Documentation Manager. That tree typically does **not** self-host ArkGate (skill package, not an app). |
+| **Host / consumer** (this copy inside another repo) | If that tree **is** ArkGate — or any app with Ark signals (§1) — the bridge **does** apply. Documentation Manager is a host skill, not the app’s npm name. Do not claim “this repo does not run ArkGate.” |
+
+Code and detection (§1) win. Do not rewrite the host’s identity to match origin-package prose.
