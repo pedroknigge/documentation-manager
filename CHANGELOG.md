@@ -6,60 +6,55 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.1] — 2026-09-06
+
+Catch-up patch on the Knowledge OS floor after many merges stayed frozen on 2.5.0. **Not** a new major; **not** a second Knowledge OS leap. Going forward: patch-per-PR.
+
 ### Changed
 
 - **P1 Install honesty:** upgrade order is **npx first → then `./install.sh`** (or the curl/bash install.sh); `npx skills add` replaces the skill folder and **wipes** `scripts/`  
 - README Upgrade row no longer treats the two paths as interchangeable / idempotent  
-- No version bump — install floor stays **2.5.0**
 
 - **P1 Reconcile:** dual-plane who-wins — **AS-IS** code (and anchored matrix claims); **TO-BE** one living SSOT after classification  
 - Date / mtime remains **evidence**, not a silent winner, on both planes (no date-wins engine)  
 - Procedure [modes.md §6.8](skills/documentation-manager/references/modes.md#who-wins-as-is-vs-to-be); ADR-0002 reconcile row  
-- No version bump — install floor stays **2.5.0**
 
-- **Glance version:** `SKILL.md` `description` starts with `v2.5.0 —` (Orderfield habit); `metadata.version` unchanged  
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.1 —` (Orderfield habit); `metadata.version` **2.5.1**  
 - **P1 Docs:** first-contact honesty — documented procedures vs four on-demand loops (parse / persist / record / cascade-recommend); “has Haken” ≠ DB / daemon  
 - **P1 Docs:** skill entry names the four on-demand kernel loops (`--list-claims` / `--upsert-claims` / `--record-haken` / `--cascade-recommend`); Haken ≠ DB / daemon  
-- No version bump — install floor stays **2.5.0**
 
 ### Added
 
 - **P1 Install:** `install.sh` ships `audit-claims.sh` (required) plus `detect-stack.sh` / `detect-packages.sh` / `survey-docs.sh` / `generate-docs-dashboard.sh` into the installed skill `scripts/` (local clone and raw GitHub curl)  
 - Agent resolve: installed skill `scripts/` first; consumer-repo `./scripts/` is opt-in CI only — [skill-discovery.md](skills/documentation-manager/references/skill-discovery.md#skill-runtime-scripts)  
-- No version bump — install floor stays **2.5.0**
 
 - **P1 Audit:** valid-but-huge change set escape in [modes.md §6.0](skills/documentation-manager/references/modes.md#60-change-set-diff-first) — base is a real commit but the set is unusable → announce `docs-universe`, constrain to hub docs / Out sandbox, HITL optional (do not block forever); never a silent full-repo walk; never full-tree by default  
 - Anti-snapshot: any count written into docs must carry its remeasure command beside it, or omit the number (do not inherit)  
-- No new CLI walker; no auto-pick base; no version bump — install floor stays **2.5.0**
+- No new CLI walker; no auto-pick base  
 
 - **P1 Docs:** English starter / follow-up prompt on the public README (copy-paste; first run or audit/sync)  
-- No version bump — install floor stays **2.5.0**
 
 - **P1 Audit:** report stale / redundant / snapshot / fact-vs-changed-symbol narrative comments in the git change set (audit + sync)  
 - Procedure [modes.md §6.10](skills/documentation-manager/references/modes.md#610-narrative-comments-report-first) — classify and emit §6.9 recommend-review (`path:line` + class); never auto-edit  
 - Non-goals: auto-delete, full-tree campaign, CI gate on narrative comments, treating free prose as matrix rows  
 - No new CLI (procedure over helper; `--list-changed` already scopes files)  
-- No version bump — install floor stays **2.5.0**
 
 - **P1 Kernel:** cascade recommend from `parent=` in the change set (`audit-claims.sh --cascade-recommend`)  
 - Parent released in the set (`status=changed`) → list **for-review** children already in the set that name that `parent=` + evidence + modes.md §6.9 block  
 - Read-only (does not write the matrix); children not in the set are not listed (no repo-wide grep; documented gap)  
 - Reuses `--list-claims` change-set parse; no graph walker  
 - Fixture + hardening asserts on `scripts/fixtures/claims-breadcrumbs/`  
-- No version bump — install floor stays **2.5.0**
 
 - **P0 Kernel:** record Haken verdicts on audit (`audit-claims.sh --record-haken`)  
 - Writes hold / for-review to matrix **Action** (or an existing **Haken** column) with `path:line` + parent id; never into Verdict  
 - escalate vs break / unclear `s≈f(q)` → HITL stderr; no silent invent; captain supersedes (not date-wins)  
 - Reuses `--list-claims` change-set parse; no graph walker  
 - Fixture + hardening asserts on `scripts/fixtures/claims-breadcrumbs/`  
-- No version bump — install floor stays **2.5.0**
 
 - **P0 Kernel:** parse `@claim` breadcrumbs from the git change set only (`audit-claims.sh --list-claims`)  
 - Reports `id` / `parent` / `plane` / `status` (path + line); malformed → HITL stderr + exit 1; never invents fields  
 - Optional read-only note when a comment id is missing from the matrix (no matrix write)  
 - Fixture: `scripts/fixtures/claims-breadcrumbs/` + hardening asserts  
-- No version bump — install floor stays **2.5.0**
 
 ### Fixed
 
@@ -67,7 +62,6 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 - **Cold-start survey heuristics** (LIVE FIELD DOGFOOD / [#11](https://github.com/pedroknigge/documentation-manager/issues/11)): case-insensitive root README (`Readme.md` counts); tight ADR homes/names (no `*adr*` substring — `TableHeadRenderer.tsx` is not an ADR); default claim/doc scope is `docs/` + root + `.github` and **excludes** `examples/**` unless you opt in  
 - Helper: `scripts/survey-docs.sh` (same shape as `detect-stack.sh` / `detect-packages.sh`)  
 - Flat CapCase `docs/*.md` stays **adopted** — never rewritten to the skill template tree  
-- No version bump — install floor stays **2.5.0**
 
 ### Removed
 
@@ -75,7 +69,6 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 - Deleted `scripts/template-telemetry.sh` and `references/template-telemetry.md`  
 - Agents no longer load a telemetry mode, rule, or quality-checklist ritual  
 - History: shipped in **2.4.0**; pack marked [Withdrawn](docs/features/template-telemetry/README.md)  
-- No version bump — install floor stays **2.5.0**
 
 ## [2.5.0] — 2026-08-30
 

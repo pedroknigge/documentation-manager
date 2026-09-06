@@ -2,7 +2,7 @@
 
 > Hub: [AGENTS.md](../AGENTS.md) · Planes: [docs/plans/](./plans/)  
 > **Producto:** Agent Skill (knowledge base viva, agent-first). No es una app de producto genérica.  
-> **Última actualización:** 2026-08-30 · **Versión actual:** 2.5.0
+> **Última actualización:** 2026-09-06 · **Versión actual:** 2.5.1
 
 ## Principios (axiomas)
 
