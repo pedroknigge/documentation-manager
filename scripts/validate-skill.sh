@@ -120,7 +120,7 @@ for concept in \
   "2.4.0" \
   "Living claims" \
   "2.5.0" \
-  "2.5.1" \
+  "2.5.2" \
   "audit-claims" \
   "diff-first" \
   "docs-universe" \
@@ -130,7 +130,7 @@ for concept in \
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, current 2.5.1)"
+ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, current 2.5.2)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \

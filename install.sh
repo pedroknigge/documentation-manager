@@ -211,6 +211,30 @@ if command -v grok >/dev/null 2>&1 || [[ -d "${HOME}/.grok" ]]; then
   fi
 fi
 
+# ─── Gemini CLI (+ Antigravity / config if those parents already exist) ───────
+if command -v gemini >/dev/null 2>&1 || [[ -d "${HOME}/.gemini" ]]; then
+  gemini_parents=("${HOME}/.gemini/skills")
+  if [[ "$UNINSTALL" -eq 1 ]]; then
+    gemini_parents+=("${HOME}/.gemini/config/skills")
+    gemini_parents+=("${HOME}/.gemini/antigravity/skills")
+  else
+    [[ -d "${HOME}/.gemini/config/skills" ]] && gemini_parents+=("${HOME}/.gemini/config/skills")
+    [[ -d "${HOME}/.gemini/antigravity/skills" ]] && gemini_parents+=("${HOME}/.gemini/antigravity/skills")
+  fi
+  for parent in "${gemini_parents[@]}"; do
+    if [[ "$UNINSTALL" -eq 1 ]]; then
+      if remove_skill_tree "$parent"; then
+        green "✓ Removed from Gemini         → ${parent}/${SKILL_NAME}"
+        removed_any=1
+      fi
+    else
+      path="$(install_skill_tree "$parent")"
+      green "✓ Installed for Gemini         → $path"
+      installed_any=1
+    fi
+  done
+fi
+
 # ─── Open agent skills path (~/.agents/skills) ────────────────────────────────
 if [[ -d "${HOME}/.agents" ]] || command -v codex >/dev/null 2>&1 || true; then
   parent="${HOME}/.agents/skills"

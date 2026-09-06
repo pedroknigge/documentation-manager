@@ -4,7 +4,7 @@
 > **Purpose:** Track where this skill is (or should be) installed, and the ArkGate pairing path.  
 > **Honesty rule:** only mark **Verified** when someone ran install/validate against that target. Hypotheses stay **Candidate**.
 
-**Last updated:** 2026-09-06 · Skill version **2.5.1**
+**Last updated:** 2026-09-06 · Skill version **2.5.2**
 
 ## How to use
 
@@ -20,7 +20,7 @@
 | GitHub source | [pedroknigge/documentation-manager](https://github.com/pedroknigge/documentation-manager) | Verified | Skill package repo |
 | npx skills | `npx skills add pedroknigge/documentation-manager` | Candidate | Re-verify after each publish |
 | Classic install | `./install.sh` or curl main install.sh | Verified | Covered by `install-smoke.sh` |
-| Hosts | Claude Code · Grok · Codex · Cursor | Candidate | Any host that loads `SKILL.md` |
+| Hosts | Claude Code · Grok · Codex · Cursor · Gemini CLI | Candidate | Any host that loads `SKILL.md`; Gemini via `~/.gemini/skills/` |
 
 ## 10× capability surface (what adopters get in v2.0)
 

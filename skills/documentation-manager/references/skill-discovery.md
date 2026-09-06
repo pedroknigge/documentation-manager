@@ -6,7 +6,7 @@ How agents and humans detect that Documentation Manager is installed, current, a
 
 | Signal | Meaning |
 |--------|---------|
-| Skill path exists | e.g. `~/.agents/skills/documentation-manager/SKILL.md`, `~/.claude/skills/…`, `~/.grok/skills/…` |
+| Skill path exists | e.g. `~/.agents/skills/documentation-manager/SKILL.md`, `~/.claude/skills/…`, `~/.grok/skills/…`, `~/.gemini/skills/…` (also `~/.gemini/config/skills/` and `~/.gemini/antigravity/skills/` when those parents exist) |
 | Host skill list | `npx skills list` / agent UI shows `documentation-manager` |
 | Version in frontmatter | YAML `metadata.version` or `version:` in `SKILL.md`. Glance: `description` starts with `vX.Y.Z —` (same number) |
 

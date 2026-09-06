@@ -6,6 +6,22 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.2] — 2026-09-06
+
+Classic installer covers Gemini CLI (and Antigravity “agy” when that parent already exists). **Not** a new major; **not** a Knowledge OS leap.
+
+### Added
+
+- **Install:** `install.sh` writes `~/.gemini/skills/documentation-manager` when `gemini` is on PATH or `~/.gemini` exists (official Gemini CLI user skills path)
+- **Install:** also writes `~/.gemini/config/skills/` if that parent already exists (Antigravity/config layout)
+- **Install:** also writes `~/.gemini/antigravity/skills/` if that parent already exists (agy)
+- Uninstall removes the same paths when present
+- Honesty: [skill-discovery.md](skills/documentation-manager/references/skill-discovery.md) + README Install name Gemini paths; `install-smoke` + hardening cover the anchors
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.2 —`; `metadata.version` **2.5.2**
+
 ## [2.5.1] — 2026-09-06
 
 Catch-up patch on the Knowledge OS floor after many merges stayed frozen on 2.5.0. **Not** a new major; **not** a second Knowledge OS leap. Going forward: patch-per-PR.

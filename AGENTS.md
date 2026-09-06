@@ -1,6 +1,6 @@
 # AGENTS.md — documentation-manager (skill package)
 
-**Status:** skill development repo · last updated 2026-09-06 · skill version **2.5.1**
+**Status:** skill development repo · last updated 2026-09-06 · skill version **2.5.2**
 
 ## What this folder is
 
