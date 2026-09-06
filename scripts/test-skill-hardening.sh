@@ -426,7 +426,7 @@ CHANGED="$(bash "$AUDIT" --list-changed "$TMPGIT" || true)"
 echo "$CHANGED" | grep -qx "tracked.txt" || fail "--list-changed must list dirty tracked.txt"
 echo "$CHANGED" | grep -qx "untracked.txt" || fail "--list-changed must list untracked.txt"
 if bash "$AUDIT" --base main "$TMPGIT" >/dev/null 2>&1; then
-  fail "--base without --list-changed or --list-claims must fail"
+  fail "--base without --list-changed/--list-claims/--upsert-claims must fail"
 fi
 rm -rf "$TMPGIT"
 
@@ -511,11 +511,103 @@ echo "$base_out" | grep -F "untouched.ts" \
   && fail "--list-claims --base must not walk the tree, got: $base_out"
 rm -rf "$BCGIT" "$BCBAD" "$BCUNK" "$BCBASE" "$bad_err" "$unk_err"
 ok "--list-claims change-set only + HITL + matrix note"
+
+# --upsert-claims: write-back loop on the same change-set / fixture
+grep -F -q -- "--upsert-claims" "$AUDIT" || fail "audit-claims.sh missing --upsert-claims"
+# existing id: update Action touch/status; never overwrite Verdict / Claim
+BCUP="$(mktemp -d)"
+setup_bc_git "$BCUP"
+printf '\n' >> "$BCUP/src/ok.ts"
+up_out="$(bash "$AUDIT" --upsert-claims "$BCUP" 2>/dev/null || true)"
+echo "$up_out" | grep -E -q '^upsert[[:space:]]+update[[:space:]]+id=C-001[[:space:]]+src/ok\.ts:[0-9]+[[:space:]]+status=changed$' \
+  || fail "--upsert-claims must update C-001, got: $up_out"
+c001="$(grep -F '| C-001 ' "$BCUP/docs/audit/claims-matrix.md")"
+echo "$c001" | grep -F -q "| OK |" || fail "--upsert-claims must keep C-001 Verdict=OK, got: $c001"
+echo "$c001" | grep -F -q "Checkout export exists" || fail "--upsert-claims must keep C-001 Claim, got: $c001"
+echo "$c001" | grep -E -q 'touched src/ok\.ts:[0-9]+ status=changed' \
+  || fail "--upsert-claims must record touch/status on C-001, got: $c001"
+echo "$c001" | grep -E -q 'hold|escalate|break|for-review' \
+  && fail "--upsert-claims must not invent Haken verdicts, got: $c001"
+c002="$(grep -F '| C-002 ' "$BCUP/docs/audit/claims-matrix.md")"
+echo "$c002" | grep -F -q "| keep |" || fail "--upsert-claims must not touch untouched C-002, got: $c002"
+# new id: insert safe defaults + captain note
+BCNEW="$(mktemp -d)"
+setup_bc_git "$BCNEW"
+printf '\n' >> "$BCNEW/src/unknown-id.ts"
+new_up="$(bash "$AUDIT" --upsert-claims "$BCNEW" 2>/dev/null || true)"
+echo "$new_up" | grep -E -q '^upsert[[:space:]]+insert[[:space:]]+id=C-999[[:space:]]+src/unknown-id\.ts:[0-9]+[[:space:]]+status=changed$' \
+  || fail "--upsert-claims must insert C-999, got: $new_up"
+c999="$(grep -F '| C-999 ' "$BCNEW/docs/audit/claims-matrix.md")"
+echo "$c999" | grep -F -q "| Unverifiable |" || fail "--upsert-claims new id must be Unverifiable, got: $c999"
+echo "$c999" | grep -F -q "| normal |" || fail "--upsert-claims new id must be severity=normal, got: $c999"
+echo "$c999" | grep -F -q "captain" || fail "--upsert-claims new id must note captain, got: $c999"
+echo "$c999" | grep -F -q "| OK |" && fail "--upsert-claims must not invent Verdict=OK for new id, got: $c999"
+# change-set only: dirty ok.ts must not upsert untouched.ts location
+echo "$c001" | grep -F "untouched.ts" \
+  && fail "--upsert-claims must not write untouched.ts outside the change set, got: $c001"
+# conflicting breadcrumbs / newer mtime must not date-win
+BCCON="$(mktemp -d)"
+setup_bc_git "$BCCON"
+before_con="$(cat "$BCCON/docs/audit/claims-matrix.md")"
+printf '\n' >> "$BCCON/src/ok.ts"
+printf '\n' >> "$BCCON/src/untouched.ts"
+touch -t 202001010000 "$BCCON/src/ok.ts"
+touch -t 202612312359 "$BCCON/src/untouched.ts"
+con_err="$(mktemp)"
+con_rc=0
+bash "$AUDIT" --upsert-claims "$BCCON" >/dev/null 2>"$con_err" || con_rc=$?
+[[ "$con_rc" -eq 1 ]] || fail "--upsert-claims conflict must exit 1, got $con_rc"
+grep -F -q "HITL" "$con_err" && grep -F -q "refuse overwrite" "$con_err" \
+  || fail "--upsert-claims conflict must HITL refuse overwrite, got: $(cat "$con_err")"
+grep -F -q "not date-wins" "$con_err" \
+  || fail "--upsert-claims conflict must say not date-wins, got: $(cat "$con_err")"
+[[ "$(cat "$BCCON/docs/audit/claims-matrix.md")" == "$before_con" ]] \
+  || fail "--upsert-claims conflict must not write C-001 (no date-wins)"
+# existing id, breadcrumb path ≠ Anchor → HITL refuse
+BCMIS="$(mktemp -d)"
+setup_bc_git "$BCMIS"
+before_mis="$(cat "$BCMIS/docs/audit/claims-matrix.md")"
+printf '\n' >> "$BCMIS/src/untouched.ts"
+mis_err="$(mktemp)"
+mis_rc=0
+bash "$AUDIT" --upsert-claims "$BCMIS" >/dev/null 2>"$mis_err" || mis_rc=$?
+[[ "$mis_rc" -eq 1 ]] || fail "--upsert-claims anchor mismatch must exit 1, got $mis_rc"
+grep -F -q "existing anchor=" "$mis_err" \
+  || fail "--upsert-claims anchor mismatch must HITL, got: $(cat "$mis_err")"
+[[ "$(cat "$BCMIS/docs/audit/claims-matrix.md")" == "$before_mis" ]] \
+  || fail "--upsert-claims anchor mismatch must not overwrite C-001"
+# malformed → no write
+BCMAL="$(mktemp -d)"
+setup_bc_git "$BCMAL"
+before_mal="$(cat "$BCMAL/docs/audit/claims-matrix.md")"
+printf '\n' >> "$BCMAL/src/malformed.ts"
+mal_rc=0
+bash "$AUDIT" --upsert-claims "$BCMAL" >/dev/null 2>/dev/null || mal_rc=$?
+[[ "$mal_rc" -eq 1 ]] || fail "--upsert-claims malformed must exit 1, got $mal_rc"
+[[ "$(cat "$BCMAL/docs/audit/claims-matrix.md")" == "$before_mal" ]] \
+  || fail "--upsert-claims malformed must not write the matrix"
+# missing matrix: create SSOT + insert from breadcrumb id (never invent)
+BCABS="$(mktemp -d)"
+setup_bc_git "$BCABS"
+rm -f "$BCABS/docs/audit/claims-matrix.md"
+printf '\n' >> "$BCABS/src/unknown-id.ts"
+abs_err="$(mktemp)"
+abs_rc=0
+abs_out="$(bash "$AUDIT" --upsert-claims "$BCABS" 2>"$abs_err")" || abs_rc=$?
+[[ "$abs_rc" -eq 0 ]] || fail "--upsert-claims missing matrix must exit 0, got $abs_rc"
+[[ -f "$BCABS/docs/audit/claims-matrix.md" ]] || fail "--upsert-claims must create missing matrix"
+grep -F -q "created matrix" "$abs_err" || fail "--upsert-claims must note created matrix, got: $(cat "$abs_err")"
+echo "$abs_out" | grep -F -q "insert" && echo "$abs_out" | grep -F -q "id=C-999" \
+  || fail "--upsert-claims created matrix must insert C-999, got: $abs_out"
+grep -F '| C-001 ' "$BCABS/docs/audit/claims-matrix.md" \
+  && fail "--upsert-claims must not invent C-001 when it is not in the change set"
+rm -rf "$BCUP" "$BCNEW" "$BCCON" "$BCMIS" "$BCMAL" "$BCABS" "$con_err" "$mis_err" "$abs_err"
+ok "--upsert-claims write-back + HITL refuse + no date-wins"
 [[ -f "$ROOT/.github/workflows/docs-audit.yml" ]] || fail "missing .github/workflows/docs-audit.yml"
 grep -F -q "audit-claims.sh" "$ROOT/.github/workflows/docs-audit.yml" \
   || fail "docs-audit.yml must invoke audit-claims.sh"
-if grep -E -q 'run:.*--list-(changed|claims)' "$ROOT/.github/workflows/docs-audit.yml"; then
-  fail "docs-audit.yml must not invoke --list-changed/--list-claims (CI gate is whole-matrix)"
+if grep -E -q 'run:.*--(list-changed|list-claims|upsert-claims)' "$ROOT/.github/workflows/docs-audit.yml"; then
+  fail "docs-audit.yml must not invoke change-set helpers (CI gate is whole-matrix)"
 fi
 grep -E -q '\[x\].*\.github/workflows/docs-audit\.yml' "$ROOT/docs/plans/knowledge-os/README.md" \
   || fail "knowledge-os plan must mark the GitHub Actions example AC satisfied"
