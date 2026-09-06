@@ -6,6 +6,11 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+### Changed
+
+- **P1 Docs:** first-contact honesty — documented procedures vs four on-demand loops (parse / persist / record / cascade-recommend); “has Haken” ≠ DB / daemon  
+- No version bump — install floor stays **2.5.0**
+
 ### Added
 
 - **P1 Kernel:** cascade recommend from `parent=` in the change set (`audit-claims.sh --cascade-recommend`)  

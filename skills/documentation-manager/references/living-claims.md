@@ -1,6 +1,6 @@
 # Living claims (v0) — Knowledge OS first increment
 
-Machine-anchored structural claims on top of the existing audit matrix. **Markdown matrix is SSOT.** Dashboard truth score is **advisory**; **CI / local `audit-claims.sh` is the gate**.
+Machine-anchored structural claims on top of the existing audit matrix. **Markdown matrix is SSOT.** Dashboard truth score is **advisory**; **CI / local `audit-claims.sh` is the gate**. **Haken** here is a comment plus a matrix Action note — not a persistence database and not a daemon.
 
 **Package:** skill **2.5.0+** · Narrative: Knowledge OS **first increment toward 100×** (10× already shipped at v2.0; not a second 10× or full 100× leap).
 
