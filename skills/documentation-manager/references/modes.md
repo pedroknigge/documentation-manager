@@ -726,29 +726,6 @@ Announce: `Team: create|link|skip | docs/team | owners | approval-notes`.
 
 ---
 
-## 12. Template telemetry (v2.4 Slice D)
-
-**When:** User explicitly opts in to template-gap telemetry, or maintainers dogfood with `DOCS_TELEMETRY_OPT_IN` / opt-in file. **Default: do nothing.**
-
-**Full procedure + privacy:** [template-telemetry.md](template-telemetry.md)
-
-### 12.1 Rules
-
-1. **Default off** — never enable opt-in without user consent.  
-2. Record only **template / skill UX gaps** (`gap_kind` allowlist); never product source, secrets, or repo URLs.  
-3. Use local ledger only:
-
-   ```bash
-   ./scripts/template-telemetry.sh record --gap-kind TEMPLATE_MISSING --template-id plan-template --opt-in
-   ```
-
-4. **Air-gapped:** with opt-in off, `record` is no-op; skill remains fully usable; **network: never**.  
-5. Do not use telemetry as a substitute for audit/claims matrices.
-
-Announce: `Telemetry: off|local-ledger | opt-in: no|yes | network: never`.
-
----
-
 ## 13. Living claims + CI structural audit (v2.5)
 
 **When:** Mode/Intent **audit**; user asks for living claims, truth score, docs CI, or fail-on-Contradicted; maintainers shipping Knowledge OS first increment.

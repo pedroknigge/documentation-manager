@@ -116,7 +116,7 @@ Orden pensado por **dependencia y riesgo**, no por glamour. Cada slice puede shi
 **In scope:** Markdown owners list, “last approved” notes, link desde hub.  
 **Out:** CODEOWNERS enforcement engine, bots de merge, roles IAM.
 
-### Slice D — Opt-in template telemetry (`template-telemetry`) · P1 · **Shipped** (v2.4.0)
+### Slice D — Opt-in template telemetry (`template-telemetry`) · P1 · **Shipped** (v2.4.0); **runtime withdrawn** from the current skill surface (does not serve [ADR-0002](../../adr/0002-knowledge-enslavement-captain.md))
 
 | | |
 |--|--|
@@ -291,10 +291,10 @@ Versions are **not** locked; adjust at ship time.
 
 | Area | Path | Status |
 |------|------|--------|
-| Procedure | `references/template-telemetry.md` | Real |
-| Script | `scripts/template-telemetry.sh` | Real |
-| Modes | `references/modes.md` §12 | Real |
-| Feature pack | `docs/features/template-telemetry/` | Real |
+| Procedure | `references/template-telemetry.md` | **Withdrawn** |
+| Script | `scripts/template-telemetry.sh` | **Withdrawn** |
+| Modes | `references/modes.md` §12 | **Withdrawn** |
+| Feature pack | `docs/features/template-telemetry/` | Withdrawn (history) |
 
 ## Promotion
 

@@ -79,12 +79,11 @@ for ref in \
   team-governance.md \
   team-owners-template.md \
   team-approval-notes-template.md \
-  template-telemetry.md \
   living-claims.md
 do
   [[ -f "$SKILL_DIR/references/$ref" ]] || fail "Missing references/$ref"
 done
-ok "all references present (incl. bridges + dashboard + discovery + team + telemetry + living-claims)"
+ok "all references present (incl. bridges + dashboard + discovery + team + living-claims)"
 
 for concept in \
   "Step 0" \
@@ -118,7 +117,6 @@ for concept in \
   "Team governance" \
   "2.3.0" \
   "docs/team" \
-  "Template telemetry" \
   "2.4.0" \
   "Living claims" \
   "2.5.0" \
@@ -129,7 +127,7 @@ for concept in \
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (… team 2.3.0, telemetry 2.4.0, living-claims 2.5.0)"
+ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -164,9 +162,6 @@ for concept in \
   "Team governance" \
   "docs/team" \
   "approval notes" \
-  "Template telemetry" \
-  "Default off" \
-  "network: never" \
   "Living claims" \
   "audit-claims" \
   "anchor.path" \
@@ -186,7 +181,7 @@ for concept in \
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md … + team + template telemetry + living-claims procedures present"
+ok "modes.md … + team + living-claims procedures present"
 
 [[ -x "$ROOT/scripts/generate-docs-dashboard.sh" ]] || [[ -f "$ROOT/scripts/generate-docs-dashboard.sh" ]] \
   || fail "Missing scripts/generate-docs-dashboard.sh"
@@ -236,10 +231,9 @@ grep -F -q "Knowledge dashboard" "$QC" || fail "quality-checklist missing Knowle
 grep -F -q "Polyglot stack detection" "$QC" || fail "quality-checklist missing Polyglot stack detection section"
 grep -F -q "Monorepo hubs" "$QC" || fail "quality-checklist missing Monorepo hubs section"
 grep -F -q "Team governance" "$QC" || fail "quality-checklist missing Team governance section"
-grep -F -q "Template telemetry" "$QC" || fail "quality-checklist missing Template telemetry section"
 grep -F -q "Living claims" "$QC" || fail "quality-checklist missing Living claims section"
 grep -F -q "silent structure rewrite" "$QC" || fail "quality-checklist missing silent structure rewrite bar"
-ok "quality-checklist … + team + template telemetry + living-claims present"
+ok "quality-checklist … + team + living-claims present"
 
 PT="$SKILL_DIR/references/plan-template.md"
 grep -F -q "Implementation bridge" "$PT" || fail "plan-template missing Implementation bridge section"
@@ -322,23 +316,12 @@ grep -F -q "last approved" "$SKILL_DIR/references/team-approval-notes-template.m
   fail "team-approval-notes-template missing last approved"
 ok "team owner + approval-notes templates present"
 
-TT="$SKILL_DIR/references/template-telemetry.md"
-for concept in \
-  "Default off" \
-  "Never-send" \
-  "Air-gapped" \
-  "template_gap" \
-  "local ledger" \
-  "network"
-do
-  grep -F -q -- "$concept" "$TT" || fail "template-telemetry.md missing: $concept"
-done
-[[ -f "$ROOT/scripts/template-telemetry.sh" ]] || fail "missing scripts/template-telemetry.sh"
-# Air-gapped: shipped script must not call network tools
-if grep -E -q '\b(curl|wget|nc)\b|https?://' "$ROOT/scripts/template-telemetry.sh"; then
-  fail "template-telemetry.sh must not use network tools or URLs"
-fi
-ok "template-telemetry procedure + local script (no network tools)"
+# Template telemetry was withdrawn from the skill surface (does not serve north star).
+[[ ! -f "$SKILL_DIR/references/template-telemetry.md" ]] \
+  || fail "template-telemetry.md must stay withdrawn (no skill-tree procedure)"
+[[ ! -f "$ROOT/scripts/template-telemetry.sh" ]] \
+  || fail "template-telemetry.sh must stay withdrawn (no shipped ledger ritual)"
+ok "template telemetry withdrawn from skill tree + scripts"
 
 grep -F -q "Canonical authority" "$SKILL_DIR/references/feature-readme-template.md" || \
   fail "feature-readme-template missing Canonical authority"

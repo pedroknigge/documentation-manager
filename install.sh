@@ -71,7 +71,6 @@ install_skill_tree() {
       team-governance.md \
       team-owners-template.md \
       team-approval-notes-template.md \
-      template-telemetry.md \
       living-claims.md
     do
       curl -fsSL "${REPO_RAW}/${SKILL_REL}/references/${ref}" -o "$dest/references/${ref}" || true

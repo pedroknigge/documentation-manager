@@ -98,14 +98,6 @@ Run before reporting done.
 - [ ] No invented owner names; empty owner = gap
 - [ ] Approval notes are last-approved style only — no BPM / ticket clone
 
-## Template telemetry (v2.4)
-
-- [ ] Telemetry **default off**; enabled only with explicit user opt-in
-- [ ] Events are **template/skill UX gaps** only — no product source, secrets, or repo URLs
-- [ ] Local ledger only (`template-telemetry.sh`); **network never**
-- [ ] Air-gapped path verified: skill usable with opt-in off (no-op record)
-- [ ] Never-send list respected ([template-telemetry.md](template-telemetry.md))
-
 ## Knowledge dashboard (v1.6)
 
 - [ ] Generated only from existing docs (no invented features/claims for the UI)
