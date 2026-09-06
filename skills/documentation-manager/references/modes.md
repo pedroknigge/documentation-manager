@@ -385,6 +385,7 @@ If sync reveals many Contradicted claims → suggest **audit** (still **diff-fir
    - Else dirty worktree or untracked → `git diff --name-only HEAD` plus `git ls-files --others --exclude-standard`
    - Same rules, one helper: `./scripts/audit-claims.sh --list-changed [--base REF] [ROOT]`
    - Breadcrumbs in that set: `./scripts/audit-claims.sh --list-claims [--base REF] [ROOT]` (path + `id` / `parent` / `plane` / `status`; malformed → HITL stderr + exit 1; never invent)
+   - Persist touched ids: `./scripts/audit-claims.sh --upsert-claims [--base REF] [ROOT]` (matrix SSOT write-back; HITL if supersede is unclear; **not** date-wins; not the CI gate)
 2. Empty set, not a git repo, or unclear base → **HITL** (ask once: name a base, give a file list, or confirm full-tree opt-in). **Do not** fall back to reading the tree.
 3. Inventory (§6.1) and claim extraction (§6.2) **only** those paths, plus a specific `anchor.path` a changed doc cites. Do not glob `docs/**` or walk `src/`. If the user **did** opt into full-tree / cold-start: default claim/doc universe is `docs/` + root markdown + `.github` contributor docs; **exclude** `examples/**` unless they opted those in ([skill-discovery.md](skill-discovery.md) **Cold-start survey heuristics**; `./scripts/survey-docs.sh --claim-scope`).
 4. Named feature + change set → **intersect**. Empty intersection → HITL, not a feature-tree walk.
@@ -470,7 +471,7 @@ Do **not** auto-start from-zero after audit without user Intent.
 
 ### 6.6 Living claims + local CI (pointer)
 
-After writing the matrix, remind: dashboard truth score is **advisory**; **CI / `scripts/audit-claims.sh` is the gate** (fail on **critical Contradicted**). The gate parses the **whole matrix** (do not hide existing critical Contradicted). Agent **reads** stay **diff-first** ([§6.0](#60-change-set-diff-first)); `--list-changed` is not the gate. Procedure: [§13](#13-living-claims--ci-structural-audit-v25) and [living-claims.md](living-claims.md).
+After writing the matrix, remind: dashboard truth score is **advisory**; **CI / `scripts/audit-claims.sh` is the gate** (fail on **critical Contradicted**). The gate parses the **whole matrix** (do not hide existing critical Contradicted). Agent **reads** stay **diff-first** ([§6.0](#60-change-set-diff-first)); `--list-changed` / `--list-claims` / `--upsert-claims` are not the gate. Procedure: [§13](#13-living-claims--ci-structural-audit-v25) and [living-claims.md](living-claims.md).
 
 ### 6.7 Cascade verdicts (Haken)
 
@@ -740,7 +741,7 @@ Announce: `Team: create|link|skip | docs/team | owners | approval-notes`.
 2. Anchors: `anchor.path` (+ optional `symbol` / `hash`); severity `critical` \| `normal`.  
 3. Verdicts unchanged; **code wins**.  
 4. **Truth score** formula matches dashboard heuristic; score is **advisory**.  
-5. **CI is the gate:** `critical` + `Contradicted` → non-zero from local air-gapped `scripts/audit-claims.sh` (example `.github/workflows/docs-audit.yml`). **No network** required. The gate parses the **whole matrix** (do not hide existing critical Contradicted). Agent **audit/reconcile reads** stay **diff-first** (§6.0); `--list-changed` is the change-set helper, not the gate.  
+5. **CI is the gate:** `critical` + `Contradicted` → non-zero from local air-gapped `scripts/audit-claims.sh` (example `.github/workflows/docs-audit.yml`). **No network** required. The gate parses the **whole matrix** (do not hide existing critical Contradicted). Agent **audit/reconcile reads** stay **diff-first** (§6.0); `--list-changed` / `--list-claims` / `--upsert-claims` are change-set helpers, not the gate.  
 6. Graceful v0: no matrix → skip/warn; missing severity → `normal`.  
 7. Do not invent code to match docs; do not auto-commit.  
 8. **Diff-first** — never a full-tree read by default; cascade = [§6.7](#67-cascade-verdicts-haken) (recommend review; no engine); reconcile classification = [§6.8](#68-reconcile-classification-plansmds) (no living contradictions; no date-wins); recommend review = [§6.9](#69-recommend-review-human-vs-agent) (human vs agent; no assign).

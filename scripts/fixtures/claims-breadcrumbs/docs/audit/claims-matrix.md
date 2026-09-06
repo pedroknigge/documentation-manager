@@ -1,4 +1,4 @@
-# Claims matrix fixture — breadcrumb id cross-check (read-only)
+# Claims matrix fixture — breadcrumb id SSOT (list-claims read / upsert-claims write)
 
 ## Claims matrix
 
