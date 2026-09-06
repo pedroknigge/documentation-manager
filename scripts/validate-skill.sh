@@ -306,11 +306,15 @@ for concept in \
   "*adr*" \
   "TableHeadRenderer" \
   "examples/**" \
-  "survey-docs.sh"
+  "survey-docs.sh" \
+  "Skill-runtime scripts"
 do
   grep -F -q -- "$concept" "$DISC" || fail "skill-discovery.md missing: $concept"
 done
 ok "skill-discovery.md cold-start survey heuristics present"
+
+grep -F -q "audit-claims.sh" "$ROOT/install.sh" \
+  || fail "install.sh must ship audit-claims.sh into the skill tree"
 
 [[ -f "$ROOT/scripts/survey-docs.sh" ]] || fail "missing scripts/survey-docs.sh"
 chmod +x "$ROOT/scripts/survey-docs.sh" 2>/dev/null || true

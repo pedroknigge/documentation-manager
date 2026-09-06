@@ -6,8 +6,10 @@
 #   ./install.sh
 #   ./install.sh --uninstall
 #
-# Copies the full skill directory (SKILL.md + references/) into detected agent skill paths.
+# Copies the full skill directory (SKILL.md + references/) into detected agent skill paths
+# and ships the runtime CLI into <skill>/scripts/ (package-root scripts/ is SSOT).
 # Codex gets a marked pointer block in ~/.codex/AGENTS.md (full skill lives under ~/.agents/skills).
+# Does not auto-copy scripts into consumer repos (CI copy stays opt-in).
 
 set -euo pipefail
 
@@ -31,6 +33,39 @@ SCRIPT_DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]:-$0}")" 2>/dev/null && pwd || t
 
 have_local() {
   [[ -n "${SCRIPT_DIR}" && -f "${SCRIPT_DIR}/${SKILL_REL}/SKILL.md" ]]
+}
+
+# Runtime CLI shipped into the installed skill. Package-root scripts/ is SSOT.
+# Maintainer validate/hardening/smoke and fixtures stay at package root.
+install_skill_scripts() {
+  local dest="$1"
+  mkdir -p "$dest/scripts"
+  local script dest_script
+  for script in \
+    audit-claims.sh \
+    detect-stack.sh \
+    detect-packages.sh \
+    survey-docs.sh \
+    generate-docs-dashboard.sh
+  do
+    dest_script="${dest}/scripts/${script}"
+    if have_local && [[ -f "${SCRIPT_DIR}/scripts/${script}" ]]; then
+      cp -f "${SCRIPT_DIR}/scripts/${script}" "$dest_script"
+      chmod +x "$dest_script"
+    elif ! have_local; then
+      if [[ "$script" == "audit-claims.sh" ]]; then
+        curl -fsSL "${REPO_RAW}/scripts/${script}" -o "$dest_script"
+        chmod +x "$dest_script"
+      else
+        curl -fsSL "${REPO_RAW}/scripts/${script}" -o "$dest_script" 2>/dev/null \
+          && chmod +x "$dest_script" || true
+      fi
+    fi
+  done
+  if [[ ! -x "$dest/scripts/audit-claims.sh" ]]; then
+    red "Failed to install audit-claims.sh into $dest/scripts"
+    return 1
+  fi
 }
 
 # Install full skill tree into destination directory (parent of skill folder name).
@@ -75,18 +110,9 @@ install_skill_tree() {
     do
       curl -fsSL "${REPO_RAW}/${SKILL_REL}/references/${ref}" -o "$dest/references/${ref}" || true
     done
-    # Optional package-root dashboard generator (best-effort when installing from GitHub)
-    mkdir -p "$dest/scripts"
-    curl -fsSL "${REPO_RAW}/scripts/generate-docs-dashboard.sh" -o "$dest/scripts/generate-docs-dashboard.sh" 2>/dev/null \
-      && chmod +x "$dest/scripts/generate-docs-dashboard.sh" || true
   fi
 
-  # When installing from a local clone, also ship the dashboard generator next to the skill.
-  if have_local && [[ -f "${SCRIPT_DIR}/scripts/generate-docs-dashboard.sh" ]]; then
-    mkdir -p "$dest/scripts"
-    cp -f "${SCRIPT_DIR}/scripts/generate-docs-dashboard.sh" "$dest/scripts/generate-docs-dashboard.sh"
-    chmod +x "$dest/scripts/generate-docs-dashboard.sh"
-  fi
+  install_skill_scripts "$dest" || return 1
 
   if [[ ! -f "$dest/SKILL.md" ]]; then
     red "Failed to install skill to $dest"

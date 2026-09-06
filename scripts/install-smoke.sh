@@ -28,12 +28,21 @@ for path in \
   "$FAKE_HOME/.agents/skills/documentation-manager/references/skill-discovery.md" \
   "$FAKE_HOME/.agents/skills/documentation-manager/references/plan-template.md" \
   "$FAKE_HOME/.agents/skills/documentation-manager/references/living-claims.md" \
-  "$FAKE_HOME/.agents/skills/documentation-manager/scripts/generate-docs-dashboard.sh"
+  "$FAKE_HOME/.agents/skills/documentation-manager/scripts/generate-docs-dashboard.sh" \
+  "$FAKE_HOME/.agents/skills/documentation-manager/scripts/audit-claims.sh" \
+  "$FAKE_HOME/.agents/skills/documentation-manager/scripts/detect-stack.sh" \
+  "$FAKE_HOME/.agents/skills/documentation-manager/scripts/detect-packages.sh" \
+  "$FAKE_HOME/.agents/skills/documentation-manager/scripts/survey-docs.sh"
 do
   [[ -f "$path" ]] || { echo "FAIL: missing $path"; exit 1; }
 done
 
-# Package-root CI gate (not copied into skill install tree; must exist for consumers)
+for script in audit-claims.sh detect-stack.sh detect-packages.sh survey-docs.sh generate-docs-dashboard.sh; do
+  [[ -x "$FAKE_HOME/.agents/skills/documentation-manager/scripts/$script" ]] \
+    || { echo "FAIL: not executable: $script"; exit 1; }
+done
+
+# Package-root copies remain SSOT (CI example + maintainer scripts stay here)
 [[ -f "$ROOT/scripts/audit-claims.sh" ]] || { echo "FAIL: missing scripts/audit-claims.sh"; exit 1; }
 [[ -f "$ROOT/.github/workflows/docs-audit.yml" ]] || { echo "FAIL: missing docs-audit workflow"; exit 1; }
 
@@ -41,6 +50,29 @@ grep -q "BEGIN documentation-manager skill" "$FAKE_HOME/.codex/AGENTS.md" \
   || { echo "FAIL: codex block missing"; exit 1; }
 
 echo "✓ First install OK"
+
+echo "→ Raw / curl install path (file:// stand-in, no local skill tree)"
+RAW="$TMPDIR/raw"
+mkdir -p "$RAW/skills/documentation-manager/references" "$RAW/scripts"
+cp "$SKILL_SRC" "$RAW/skills/documentation-manager/SKILL.md"
+cp "$ROOT/skills/documentation-manager/references/"*.md "$RAW/skills/documentation-manager/references/"
+for script in audit-claims.sh detect-stack.sh detect-packages.sh survey-docs.sh generate-docs-dashboard.sh; do
+  cp "$ROOT/scripts/$script" "$RAW/scripts/$script"
+done
+INSTALLER="$TMPDIR/installer"
+mkdir -p "$INSTALLER"
+cp "$INSTALL_SH" "$INSTALLER/install.sh"
+FAKE_HOME_RAW="$TMPDIR/fakehome-raw"
+mkdir -p "$FAKE_HOME_RAW/.claude" "$FAKE_HOME_RAW/.agents"
+(
+  cd "$INSTALLER"
+  HOME="$FAKE_HOME_RAW" DOCUMENTATION_MANAGER_RAW="file://${RAW}" bash "$INSTALLER/install.sh"
+) 2>&1 | cat
+for script in audit-claims.sh detect-stack.sh detect-packages.sh survey-docs.sh generate-docs-dashboard.sh; do
+  raw_script="$FAKE_HOME_RAW/.agents/skills/documentation-manager/scripts/$script"
+  [[ -x "$raw_script" ]] || { echo "FAIL: raw install missing executable $script"; exit 1; }
+done
+echo "✓ Raw install path OK"
 
 echo "→ Re-run (idempotent)"
 HOME="$FAKE_HOME" bash "$INSTALL_SH" 2>&1 | cat

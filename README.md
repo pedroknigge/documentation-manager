@@ -247,6 +247,7 @@ scripts/
   survey-docs.sh           ← finds Readme.md, real ADRs only, skips examples unless you ask
   audit-claims.sh          ← CI gate + on-demand parse / persist / record / cascade-recommend (not a daemon)
   generate-docs-dashboard.sh
+  (install.sh ships this runtime subset into the installed skill’s scripts/)
 ```
 
 **Developers of the skill**

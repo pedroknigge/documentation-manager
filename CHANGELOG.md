@@ -20,6 +20,10 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ### Added
 
+- **P1 Install:** `install.sh` ships `audit-claims.sh` (required) plus `detect-stack.sh` / `detect-packages.sh` / `survey-docs.sh` / `generate-docs-dashboard.sh` into the installed skill `scripts/` (local clone and raw GitHub curl)  
+- Agent resolve: installed skill `scripts/` first; consumer-repo `./scripts/` is opt-in CI only — [skill-discovery.md](skills/documentation-manager/references/skill-discovery.md#skill-runtime-scripts)  
+- No version bump — install floor stays **2.5.0**
+
 - **P1 Audit:** valid-but-huge change set escape in [modes.md §6.0](skills/documentation-manager/references/modes.md#60-change-set-diff-first) — base is a real commit but the set is unusable → announce `docs-universe`, constrain to hub docs / Out sandbox, HITL optional (do not block forever); never a silent full-repo walk; never full-tree by default  
 - Anti-snapshot: any count written into docs must carry its remeasure command beside it, or omit the number (do not inherit)  
 - No new CLI walker; no auto-pick base; no version bump — install floor stays **2.5.0**

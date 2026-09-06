@@ -389,6 +389,7 @@ If sync reveals many Contradicted claims → suggest **audit** (still **diff-fir
    - Persist touched ids: `./scripts/audit-claims.sh --upsert-claims [--base REF] [ROOT]` (matrix SSOT write-back; HITL if supersede is unclear; **not** date-wins; not the CI gate)
    - Record §6.7 Haken verdicts: `./scripts/audit-claims.sh --record-haken [--base REF] [ROOT]` (Action / existing Haken column; never Verdict; HITL if escalate vs break; not the CI gate)
    - Cascade recommend (read-only): `./scripts/audit-claims.sh --cascade-recommend [--base REF] [ROOT]` (parent released in the set → for-review children already in the set + §6.9; no write; no walker)
+   - `./scripts/…` is shorthand: resolve the **installed skill** `scripts/` first (what `install.sh` ships), then an optional consumer-repo copy for CI. See [skill-discovery.md — Skill-runtime scripts](skill-discovery.md#skill-runtime-scripts).
 2. Empty set, not a git repo, or unclear base → **HITL** (ask once: name a base, give a file list, or confirm full-tree opt-in). **Do not** fall back to reading the tree.
 3. **Valid-but-huge (docs-universe escape):** the base resolved (real commit / named ref) but the change set is too large to inventory and extract claims in this pass (thousands of files, or thousands of commits vs that base). This is **not** empty/unclear (step 2) and **not** a full-tree opt-in.
    - **Announce** (required): `Audit-scope: docs-universe (change set unusable) | files: <n> | commits: <n> | base: <ref> | universe: <hub-docs|sandbox:path> | reason: huge`
