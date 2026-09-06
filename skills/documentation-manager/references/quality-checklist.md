@@ -49,7 +49,7 @@ Run before reporting done.
 - [ ] Audit (if run): claims matrix with verdicts OK / Partial / Missing / Contradicted
 - [ ] Audit / reconcile reads were **diff-first** (git change set); no full-tree scan unless the user opted in
 - [ ] Cold-start / full-tree claim scope (if used) defaulted to `docs/` + root + `.github`; **`examples/**` excluded** unless opted in ([skill-discovery.md](skill-discovery.md) Cold-start survey heuristics)
-- [ ] Cascade: recommended review only when a parent breadcrumb appears in the change set; apply [modes.md §6.7](modes.md#67-cascade-verdicts-haken) (hold / escalate / break / for-review); HITL when ambiguous — captain decides ties; no cascade engine
+- [ ] Cascade: recommended review only when a parent breadcrumb appears in the change set; apply [modes.md §6.7](modes.md#67-cascade-verdicts-haken) (hold / escalate / break / for-review); record with `audit-claims.sh --record-haken` on **Action** (or an existing Haken column) — never Verdict; HITL when ambiguous — captain decides ties; no cascade engine
 - [ ] Reconcile: agent-written plans/MDs classified **evolution** / **regime change** / **orphan** / **contradiction** ([modes.md §6.8](modes.md#68-reconcile-classification-plansmds)); no living contradictions; supersede marking — never parallel contradicting SSOT; latest-by-date does not auto-win; HITL when unclear — captain decides ties
 - [ ] Recommend review: when cascade / reconcile / audit needs eyes, recommend **human** or **agent** ([modes.md §6.9](modes.md#69-recommend-review-human-vs-agent)) with pointers into the change set / claims / class; HITL → human; no assign, notify, merge, or engine
 - [ ] from-zero: full KB only with that Intent; sandbox when path requested; old docs treated as hypothesis
@@ -61,7 +61,7 @@ Run before reporting done.
 - [ ] Wire matches [living-claims.md](living-claims.md) / [ADR-0001](../../../docs/adr/0001-living-claims-wire-format.md) — matrix-first, no parallel wiki
 - [ ] Verdict enum unchanged; omitted severity treated as `normal`
 - [ ] Truth score described as **advisory**; **CI / `audit-claims.sh`** is the gate for critical Contradicted (whole matrix; agent reads stay **diff-first**)
-- [ ] Breadcrumbs: `audit-claims.sh --list-claims` on the §6.0 set; HITL if malformed; do not invent ids; do not write the matrix
+- [ ] Breadcrumbs: `audit-claims.sh --list-claims` on the §6.0 set; HITL if malformed; do not invent ids; persist with `--upsert-claims`; record §6.7 with `--record-haken` (Action / existing Haken column; never Verdict)
 - [ ] Did not invent code to satisfy a claim; did not auto-commit
 - [ ] No SaaS/control-plane invented for the core gate (local/air-gapped)
 

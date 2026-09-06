@@ -8,6 +8,7 @@
 #   --list-changed [--base REF]   print git-changed paths (one per line)
 #   --list-claims  [--base REF]   parse @claim breadcrumbs in that set only
 #   --upsert-claims [--base REF]  write-back touched ids into the matrix (SSOT)
+#   --record-haken [--base REF]   record §6.7 Haken verdicts for touched claims
 #
 # Usage:
 #   audit-claims.sh [PROJECT_ROOT]
@@ -15,14 +16,15 @@
 #   audit-claims.sh --list-changed [--base REF] [PROJECT_ROOT]
 #   audit-claims.sh --list-claims [--base REF] [--matrix PATH] [PROJECT_ROOT]
 #   audit-claims.sh --upsert-claims [--base REF] [--matrix PATH] [PROJECT_ROOT]
+#   audit-claims.sh --record-haken [--base REF] [--matrix PATH] [PROJECT_ROOT]
 #   audit-claims.sh --help
 #
 # Exit codes:
 #   0 — pass, or no matrix (skip/warn), or --list-changed printed (even if empty),
 #       or --list-claims printed with no malformed lines (missing-from-matrix is a note),
-#       or --upsert-claims wrote / no-op with no HITL
+#       or --upsert-claims / --record-haken wrote / no-op with no HITL
 #   1 — one or more critical Contradicted claims (gate), or malformed @claim (HITL),
-#       or --upsert-claims refused a supersede (captain)
+#       or --upsert-claims / --record-haken refused a supersede or invent (captain)
 #   2 — usage / unreadable matrix path when explicitly required / not a git repo
 set -euo pipefail
 
@@ -36,6 +38,7 @@ Usage:
   $SCRIPT_NAME --list-changed [--base REF] [PROJECT_ROOT]
   $SCRIPT_NAME --list-claims [--base REF] [--matrix PATH] [PROJECT_ROOT]
   $SCRIPT_NAME --upsert-claims [--base REF] [--matrix PATH] [PROJECT_ROOT]
+  $SCRIPT_NAME --record-haken [--base REF] [--matrix PATH] [PROJECT_ROOT]
   $SCRIPT_NAME -h | --help
 
 Air-gapped structural audit of a claims matrix (Markdown table).
@@ -63,6 +66,18 @@ update Action touch/status only; never overwrite Claim / Verdict / Severity /
 Anchor; never write Haken tokens into Verdict. Conflicting breadcrumbs for
 the same id, or breadcrumb path ≠ existing Anchor → HITL, refuse overwrite
 (captain decides supersede; latest-by-date does not auto-win). Not the CI gate.
+
+--record-haken reuses the --list-claims parse (same change set; never a
+full-tree grep; never a graph walker). Applies modes.md §6.7 on touched
+claims that name parent= (children not in the set are not searched).
+Writes a captain-visible trace: matrix Action note
+  haken=<hold|for-review> parent=<id> evidence=<path:line>
+or a Haken column if that header already exists. Never writes Haken tokens
+into Verdict (§6.3 SSOT). hold when status=adjusted and the parent is not
+released in the set; for-review when the parent is in the set with
+status=changed. escalate vs break, or unclear s≈f(q) → HITL, refuse invent.
+Existing Action/Haken token that disagrees → HITL (captain supersedes; not
+date-wins). Not the CI gate.
 EOF
 }
 
@@ -72,6 +87,7 @@ EXPLICIT_MATRIX=0
 LIST_CHANGED=0
 LIST_CLAIMS=0
 UPSERT_CLAIMS=0
+RECORD_HAKEN=0
 BASE=""
 
 while [[ $# -gt 0 ]]; do
@@ -96,6 +112,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --upsert-claims)
       UPSERT_CLAIMS=1
+      shift
+      ;;
+    --record-haken)
+      RECORD_HAKEN=1
       shift
       ;;
     --base)
@@ -129,12 +149,12 @@ if [[ -z "$ROOT" ]]; then
 fi
 ROOT="$(cd -P "$ROOT" 2>/dev/null && pwd || echo "$ROOT")"
 
-if [[ -n "$BASE" && "$LIST_CHANGED" -eq 0 && "$LIST_CLAIMS" -eq 0 && "$UPSERT_CLAIMS" -eq 0 ]]; then
-  echo "$SCRIPT_NAME: --base requires --list-changed, --list-claims, or --upsert-claims" >&2
+if [[ -n "$BASE" && "$LIST_CHANGED" -eq 0 && "$LIST_CLAIMS" -eq 0 && "$UPSERT_CLAIMS" -eq 0 && "$RECORD_HAKEN" -eq 0 ]]; then
+  echo "$SCRIPT_NAME: --base requires --list-changed, --list-claims, --upsert-claims, or --record-haken" >&2
   exit 2
 fi
-if [[ "$((LIST_CHANGED + LIST_CLAIMS + UPSERT_CLAIMS))" -gt 1 ]]; then
-  echo "$SCRIPT_NAME: --list-changed, --list-claims, and --upsert-claims are mutually exclusive" >&2
+if [[ "$((LIST_CHANGED + LIST_CLAIMS + UPSERT_CLAIMS + RECORD_HAKEN))" -gt 1 ]]; then
+  echo "$SCRIPT_NAME: --list-changed, --list-claims, --upsert-claims, and --record-haken are mutually exclusive" >&2
   exit 2
 fi
 if [[ "$LIST_CHANGED" -eq 1 && "$EXPLICIT_MATRIX" -eq 1 ]]; then
@@ -391,6 +411,68 @@ get_matrix_anchor() {
   ' "$matrix"
 }
 
+# Existing captain Haken token from a Haken column or Action note (empty if none).
+get_matrix_haken() {
+  local matrix="$1" want="$2"
+  awk -v want="$want" '
+  function trim(s) {
+    gsub(/^[[:space:]]+|[[:space:]]+$/, "", s)
+    gsub(/^\*\*|\*\*$/, "", s)
+    gsub(/`/, "", s)
+    return s
+  }
+  function split_cells(line, cells,   n, i, raw) {
+    sub(/^\|/, "", line)
+    sub(/\|$/, "", line)
+    n = split(line, raw, "|")
+    for (i = 1; i <= n; i++) cells[i] = trim(raw[i])
+    return n
+  }
+  function is_sep_row(line) {
+    return (line ~ /^\|[-:|[:space:]]+\|$/)
+  }
+  function token_in(s,   n, i, t) {
+    n = split(s, t, /[^A-Za-z-]+/)
+    for (i = 1; i <= n; i++) {
+      if (t[i] ~ /^(hold|escalate|break|for-review)$/) return t[i]
+    }
+    return ""
+  }
+  BEGIN { id_col = 0; haken_col = 0; action_col = 0; in_table = 0 }
+  /^[[:space:]]*\|/ {
+    if (is_sep_row($0)) next
+    n = split_cells($0, cells)
+    if (!in_table) {
+      id_col = 0; haken_col = 0; action_col = 0
+      for (i = 1; i <= n; i++) {
+        low = tolower(cells[i])
+        if (low == "id" || low == "claim id") id_col = i
+        if (low == "haken") haken_col = i
+        if (low == "action") action_col = i
+      }
+      if (id_col > 0) { in_table = 1; next }
+      next
+    }
+    if (id_col > 0 && id_col <= n && cells[id_col] == want) {
+      if (haken_col > 0 && haken_col <= n) {
+        tok = token_in(cells[haken_col])
+        if (tok != "") { print tok; exit }
+      }
+      if (action_col > 0 && action_col <= n && cells[action_col] ~ /haken=/) {
+        if (match(cells[action_col], /haken=(hold|escalate|break|for-review)/)) {
+          print substr(cells[action_col], RSTART + 6, RLENGTH - 6)
+          exit
+        }
+      }
+      print ""
+      exit
+    }
+    next
+  }
+  { in_table = 0; id_col = 0; haken_col = 0; action_col = 0 }
+  ' "$matrix"
+}
+
 # Ops TSV: mode<TAB>id<TAB>path<TAB>lineno<TAB>status
 # update → Action touch/status only (never Claim / Verdict / Severity / Anchor).
 # insert → safe defaults + captain note. Does not invent ids.
@@ -526,6 +608,152 @@ apply_matrix_ops() {
   mv "$tmp" "$matrix"
 }
 
+# Ops TSV: mode<TAB>id<TAB>path<TAB>lineno<TAB>haken<TAB>parent
+# update → Action (and Haken column if present) only. Never Verdict.
+# insert → safe defaults + haken note. Does not invent ids.
+apply_haken_ops() {
+  local matrix="$1" ops="$2"
+  local tmp
+  tmp="$(mktemp)"
+  awk -v OPS="$ops" '
+  function trim(s) {
+    gsub(/^[[:space:]]+|[[:space:]]+$/, "", s)
+    return s
+  }
+  function split_cells(line, cells,   n, i, raw) {
+    sub(/^\|/, "", line)
+    sub(/\|$/, "", line)
+    n = split(line, raw, "|")
+    for (i = 1; i <= n; i++) cells[i] = trim(raw[i])
+    return n
+  }
+  function is_sep_row(line) {
+    return (line ~ /^\|[-:|[:space:]]+\|$/)
+  }
+  function join_row(cells, n,   i, out) {
+    out = "|"
+    for (i = 1; i <= n; i++) out = out " " cells[i] " |"
+    return out
+  }
+  function apply_haken_note(action, token, parent, path, lineno,   note) {
+    note = "haken=" token " parent=" parent " evidence=" path ":" lineno
+    gsub(/[[:space:]]*[·][[:space:]]*haken=(hold|escalate|break|for-review)([[:space:]]+parent=[^[:space:]]+)?([[:space:]]+evidence=[^[:space:]]+)?/, "", action)
+    gsub(/^haken=(hold|escalate|break|for-review)([[:space:]]+parent=[^[:space:]]+)?([[:space:]]+evidence=[^[:space:]]+)?[[:space:]]*[·]?[[:space:]]*/, "", action)
+    gsub(/^[[:space:]]+|[[:space:]]+$/, "", action)
+    if (action == "") return note
+    return action " · " note
+  }
+  function insert_row(id, path, lineno, token, parent,   cells, i, n) {
+    n = ncol
+    for (i = 1; i <= n; i++) cells[i] = ""
+    if (id_col) cells[id_col] = id
+    if (claim_col) cells[claim_col] = "Touched via @claim — captain to fill"
+    if (source_col) cells[source_col] = path
+    if (evidence_col) cells[evidence_col] = "`" path ":" lineno "`"
+    if (anchor_col) cells[anchor_col] = "`anchor.path=" path "`"
+    if (severity_col) cells[severity_col] = "normal"
+    if (verdict_col) cells[verdict_col] = "Unverifiable"
+    if (haken_col) cells[haken_col] = token
+    if (action_col) cells[action_col] = "captain: new id from breadcrumb; fill claim · haken=" token " parent=" parent " evidence=" path ":" lineno
+    return join_row(cells, n)
+  }
+  BEGIN {
+    nops = 0
+    while ((getline line < OPS) > 0) {
+      if (line == "") continue
+      n = split(line, f, "\t")
+      if (n < 6) continue
+      nops++
+      op_mode[nops] = f[1]
+      op_id[nops] = f[2]
+      op_path[nops] = f[3]
+      op_line[nops] = f[4]
+      op_haken[nops] = f[5]
+      op_parent[nops] = f[6]
+      op_of[f[2]] = nops
+    }
+    close(OPS)
+    id_col = 0; claim_col = 0; source_col = 0; evidence_col = 0
+    anchor_col = 0; severity_col = 0; verdict_col = 0; action_col = 0
+    haken_col = 0
+    in_table = 0
+    flushed = 0
+    ncol = 0
+  }
+  function flush_inserts(   i) {
+    if (flushed) return
+    flushed = 1
+    for (i = 1; i <= nops; i++) {
+      if (op_mode[i] == "insert") print insert_row(op_id[i], op_path[i], op_line[i], op_haken[i], op_parent[i])
+    }
+  }
+  /^[[:space:]]*\|/ {
+    if (is_sep_row($0)) { print; next }
+    n = split_cells($0, cells)
+    if (!in_table) {
+      id_col = 0; claim_col = 0; source_col = 0; evidence_col = 0
+      anchor_col = 0; severity_col = 0; verdict_col = 0; action_col = 0
+      haken_col = 0
+      for (i = 1; i <= n; i++) {
+        low = tolower(cells[i])
+        if (low == "id" || low == "claim id") id_col = i
+        else if (low == "claim" || low == "claim (quote or paraphrase)") claim_col = i
+        else if (low == "source doc" || low == "source") source_col = i
+        else if (low == "code evidence" || low == "evidence") evidence_col = i
+        else if (low == "anchor" || low == "anchor path") anchor_col = i
+        else if (low == "severity") severity_col = i
+        else if (low == "verdict") verdict_col = i
+        else if (low == "haken") haken_col = i
+        else if (low == "action") action_col = i
+      }
+      if (id_col > 0) {
+        in_table = 1
+        ncol = n
+        print
+        next
+      }
+      print
+      next
+    }
+    cid = (id_col > 0 && id_col <= n) ? cells[id_col] : ""
+    if (cid != "" && (cid in op_of) && op_mode[op_of[cid]] == "update") {
+      i = op_of[cid]
+      if (haken_col > 0) {
+        if (haken_col > n) {
+          for (j = n + 1; j <= haken_col; j++) cells[j] = ""
+          n = haken_col
+        }
+        cells[haken_col] = op_haken[i]
+      }
+      if (action_col > 0) {
+        if (action_col > n) {
+          for (j = n + 1; j <= action_col; j++) cells[j] = ""
+          n = action_col
+        }
+        cells[action_col] = apply_haken_note(cells[action_col], op_haken[i], op_parent[i], op_path[i], op_line[i])
+      }
+      if (evidence_col > 0 && evidence_col <= n && cells[evidence_col] == "") {
+        cells[evidence_col] = "`" op_path[i] ":" op_line[i] "`"
+      }
+      print join_row(cells, n)
+      next
+    }
+    print
+    next
+  }
+  {
+    if (in_table) {
+      flush_inserts()
+      in_table = 0
+      id_col = 0
+    }
+    print
+  }
+  END { if (in_table) flush_inserts() }
+  ' "$matrix" > "$tmp"
+  mv "$tmp" "$matrix"
+}
+
 if [[ "$UPSERT_CLAIMS" -eq 1 ]]; then
   if [[ -z "$MATRIX" ]]; then
     MATRIX="$ROOT/docs/audit/claims-matrix.md"
@@ -625,6 +853,149 @@ EOF
 
   if [[ "$HITL_REFUSE" -gt 0 ]]; then
     echo "$SCRIPT_NAME: HITL ($HITL_REFUSE id(s) not written; captain decides supersede)" >&2
+    exit 1
+  fi
+  exit 0
+fi
+
+if [[ "$RECORD_HAKEN" -eq 1 ]]; then
+  if [[ -z "$MATRIX" ]]; then
+    MATRIX="$ROOT/docs/audit/claims-matrix.md"
+  fi
+
+  parse_in="$(collect_change_set_hits)" || exit $?
+
+  FAILS=0
+  parsed=""
+  if [[ -n "$parse_in" ]]; then
+    while IFS=$'\t' read -r kind path lineno a b c d; do
+      [[ -z "${kind:-}" ]] && continue
+      if [[ "$kind" == "HITL" ]]; then
+        FAILS=$((FAILS + 1))
+        echo "$SCRIPT_NAME: HITL: malformed @claim in ${path}:${lineno} — ${a}" >&2
+        continue
+      fi
+      parsed+="${path}"$'\t'"${lineno}"$'\t'"${a}"$'\t'"${b}"$'\t'"${c}"$'\t'"${d}"$'\n'
+    done < <(printf '%s\n' "$parse_in" | parse_claim_lines)
+  fi
+
+  if [[ "$FAILS" -gt 0 ]]; then
+    echo "$SCRIPT_NAME: HITL ($FAILS malformed @claim; do not invent fields; matrix not written)" >&2
+    exit 1
+  fi
+
+  if [[ -z "$parsed" ]]; then
+    exit 0
+  fi
+
+  declare -A id_parent=() id_plane=() id_status=() id_path=() id_line=() id_conflict=()
+  ids_ordered=()
+
+  while IFS=$'\t' read -r path lineno cid parent plane status; do
+    [[ -z "${cid:-}" ]] && continue
+    if [[ -v id_parent[$cid] ]]; then
+      if [[ "${id_parent[$cid]}|${id_plane[$cid]}|${id_status[$cid]}" != "${parent}|${plane}|${status}" ]]; then
+        id_conflict[$cid]=1
+      elif [[ "${id_path[$cid]}" != "$path" ]]; then
+        id_conflict[$cid]=1
+      fi
+      continue
+    fi
+    ids_ordered+=("$cid")
+    id_parent[$cid]="$parent"
+    id_plane[$cid]="$plane"
+    id_status[$cid]="$status"
+    id_path[$cid]="$path"
+    id_line[$cid]="$lineno"
+  done <<< "$parsed"
+
+  MATRIX_IDS=$'\n\n'
+  if [[ -f "$MATRIX" ]]; then
+    MATRIX_IDS=$'\n'"$(list_matrix_ids "$MATRIX")"$'\n'
+  fi
+  HITL_REFUSE=0
+  ops="$(mktemp)"
+  : > "$ops"
+
+  for cid in "${ids_ordered[@]}"; do
+    parent="${id_parent[$cid]}"
+    # §6.7 trigger: a changed breadcrumb with parent=. Do not search for children.
+    if [[ "$parent" == "-" ]]; then
+      continue
+    fi
+    if [[ -v id_conflict[$cid] ]]; then
+      HITL_REFUSE=$((HITL_REFUSE + 1))
+      echo "$SCRIPT_NAME: HITL: refuse overwrite id=${cid} — conflicting breadcrumbs (captain decides supersede; not date-wins)" >&2
+      continue
+    fi
+    if [[ -v id_conflict[$parent] ]]; then
+      HITL_REFUSE=$((HITL_REFUSE + 1))
+      echo "$SCRIPT_NAME: HITL: refuse invent id=${cid} — parent=${parent} has conflicting breadcrumbs (captain decides supersede; not date-wins)" >&2
+      continue
+    fi
+    path="${id_path[$cid]}"
+    lineno="${id_line[$cid]}"
+    status="${id_status[$cid]}"
+    if [[ -f "$MATRIX" && "$MATRIX_IDS" == *$'\n'"$cid"$'\n'* ]]; then
+      existing_anchor="$(get_matrix_anchor "$MATRIX" "$cid")"
+      if [[ -n "$existing_anchor" && "$existing_anchor" != "$path" ]]; then
+        HITL_REFUSE=$((HITL_REFUSE + 1))
+        echo "$SCRIPT_NAME: HITL: refuse overwrite id=${cid} — existing anchor=${existing_anchor} breadcrumb=${path} (captain decides supersede; not date-wins)" >&2
+        continue
+      fi
+    fi
+
+    token=""
+    parent_released=0
+    if [[ -v id_status[$parent] && "${id_status[$parent]}" == "changed" ]]; then
+      parent_released=1
+    fi
+    if [[ "$parent_released" -eq 1 ]]; then
+      token="for-review"
+    elif [[ "$status" == "adjusted" ]]; then
+      token="hold"
+    else
+      HITL_REFUSE=$((HITL_REFUSE + 1))
+      echo "$SCRIPT_NAME: HITL: refuse invent id=${cid} — ambiguous s≈f(q) (escalate vs break; captain decides; not date-wins) evidence=${path}:${lineno} parent=${parent}" >&2
+      continue
+    fi
+
+    existing_haken=""
+    if [[ -f "$MATRIX" ]]; then
+      existing_haken="$(get_matrix_haken "$MATRIX" "$cid")"
+    fi
+    if [[ -n "$existing_haken" && "$existing_haken" != "$token" ]]; then
+      HITL_REFUSE=$((HITL_REFUSE + 1))
+      echo "$SCRIPT_NAME: HITL: refuse overwrite id=${cid} — existing haken=${existing_haken} proposed=${token} (captain decides supersede; not date-wins)" >&2
+      continue
+    fi
+
+    if [[ "$MATRIX_IDS" == *$'\n'"$cid"$'\n'* ]]; then
+      printf 'update\t%s\t%s\t%s\t%s\t%s\n' "$cid" "$path" "$lineno" "$token" "$parent" >> "$ops"
+      echo "haken"$'\t'"record"$'\t'"id=${cid}"$'\t'"${path}:${lineno}"$'\t'"parent=${parent}"$'\t'"${token}"
+    else
+      printf 'insert\t%s\t%s\t%s\t%s\t%s\n' "$cid" "$path" "$lineno" "$token" "$parent" >> "$ops"
+      echo "haken"$'\t'"insert"$'\t'"id=${cid}"$'\t'"${path}:${lineno}"$'\t'"parent=${parent}"$'\t'"${token}"
+    fi
+  done
+
+  if [[ -s "$ops" ]]; then
+    if [[ ! -f "$MATRIX" ]]; then
+      mkdir -p "$(dirname "$MATRIX")"
+      cat > "$MATRIX" <<'EOF'
+# Claims matrix
+
+| ID | Claim | Source doc | Code evidence | Anchor | Severity | Verdict | Action |
+|----|-------|------------|---------------|--------|----------|---------|--------|
+EOF
+      echo "$SCRIPT_NAME: note: created matrix $MATRIX (captain: new SSOT of ids)" >&2
+    fi
+    apply_haken_ops "$MATRIX" "$ops"
+  fi
+  rm -f "$ops"
+
+  if [[ "$HITL_REFUSE" -gt 0 ]]; then
+    echo "$SCRIPT_NAME: HITL ($HITL_REFUSE id(s) not written; captain decides; do not invent)" >&2
     exit 1
   fi
   exit 0

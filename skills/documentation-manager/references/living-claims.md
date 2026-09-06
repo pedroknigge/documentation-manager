@@ -61,7 +61,7 @@ score = (OK_N * 100 + PARTIAL_N * 50) / TOTAL_V   # TOTAL_V > 0
 4. Verdicts unchanged — **code wins**.  
 5. Persist touched ids: `./scripts/audit-claims.sh --upsert-claims [--base REF] [--matrix PATH]` (same change set as `--list-claims`; matrix is SSOT of ids). New `id=` → add a row with safe defaults (`Unverifiable` / `normal`) + a captain note. Existing `id=` → update Action touch/status only; **do not** overwrite Claim, Verdict, Severity, or Anchor; **do not** invent Haken verdicts. Conflicting breadcrumbs for one id, or breadcrumb path ≠ existing Anchor → **HITL, refuse overwrite** (captain decides supersede; latest-by-date does **not** auto-win). Then finish the matrix from [audit-template.md](audit-template.md) as needed.  
 6. Offer dashboard ([knowledge-dashboard.md](knowledge-dashboard.md)) as view; remind that **CI is the gate**.  
-7. If a changed breadcrumb names `parent=` (or a changed id is a parent), apply [modes.md §6.7](modes.md#67-cascade-verdicts-haken) — **recommend review** of children ([§6.9](modes.md#69-recommend-review-human-vs-agent)); do not run a cascade engine.  
+7. If a changed breadcrumb names `parent=` (or a changed id is a parent), apply [modes.md §6.7](modes.md#67-cascade-verdicts-haken) and record with `./scripts/audit-claims.sh --record-haken` (same change set). Writes **Action** (or an existing **Haken** column) with evidence `path:line` + parent id — **never** Verdict. hold / for-review from documented criteria; escalate vs break → **HITL**. Recommend review of children ([§6.9](modes.md#69-recommend-review-human-vs-agent)); do not run a cascade engine.  
 8. If the set includes agent-written plans/MDs that share a topic with a living doc, apply [modes.md §6.8](modes.md#68-reconcile-classification-plansmds) — classify; **no living contradictions**; latest-by-date does not auto-win.  
 9. When cascade / reconcile / audit needs eyes, recommend review per [modes.md §6.9](modes.md#69-recommend-review-human-vs-agent) (**human** vs **agent**; pointers into the set / claims / class). Do not assign, notify, or merge.  
 10. Never invent code to satisfy a claim; never auto-commit. HITL when who-wins is unclear.
@@ -70,7 +70,7 @@ score = (OK_N * 100 + PARTIAL_N * 50) / TOTAL_V   # TOTAL_V > 0
 
 Consumers (and this package example workflow) run a pure local script — **no network**.
 
-The **merge gate** parses the **whole matrix**. Agent audit/reconcile **reads** stay **diff-first** ([modes.md §6.0](modes.md#60-change-set-diff-first)). Do not pass `--list-changed` / `--list-claims` / `--upsert-claims` to the CI job (that would hide existing critical Contradicted).
+The **merge gate** parses the **whole matrix**. Agent audit/reconcile **reads** stay **diff-first** ([modes.md §6.0](modes.md#60-change-set-diff-first)). Do not pass `--list-changed` / `--list-claims` / `--upsert-claims` / `--record-haken` to the CI job (that would hide existing critical Contradicted).
 
 ```bash
 # gate (whole matrix — what CI runs):
@@ -81,6 +81,7 @@ The **merge gate** parses the **whole matrix**. Agent audit/reconcile **reads** 
 ./scripts/audit-claims.sh --list-changed [--base REF] [PROJECT_ROOT]
 ./scripts/audit-claims.sh --list-claims [--base REF] [--matrix PATH] [PROJECT_ROOT]
 ./scripts/audit-claims.sh --upsert-claims [--base REF] [--matrix PATH] [PROJECT_ROOT]
+./scripts/audit-claims.sh --record-haken [--base REF] [--matrix PATH] [PROJECT_ROOT]
 ```
 
 Copy both `.github/workflows/docs-audit.yml` and `scripts/audit-claims.sh` into the consumer repo (opt-in). Enable the workflow as a required check to fail merge on **critical Contradicted**.
@@ -154,7 +155,7 @@ checkout() { :; }
 
 ### Non-goals (this section)
 
-Convention only for the **comment wire** (do not reopen the format). Parse with `audit-claims.sh --list-claims` (change set only). Persist touched ids with `--upsert-claims` (matrix SSOT; HITL when supersede is unclear; no date-wins). Do **not** implement here: cascade engine (verdicts: [modes.md §6.7](modes.md#67-cascade-verdicts-haken)), reconcile classification (procedure: [modes.md §6.8](modes.md#68-reconcile-classification-plansmds)), recommend-review engine (audience: [modes.md §6.9](modes.md#69-recommend-review-human-vs-agent)), Haken verdict recorder, or CI that fails on missing comments. `audit-claims.sh` default remains the **matrix gate**; `--list-changed` lists paths; `--list-claims` parses `@claim` in those paths; `--upsert-claims` writes those ids back.
+Convention only for the **comment wire** (do not reopen the format). Parse with `audit-claims.sh --list-claims` (change set only). Persist touched ids with `--upsert-claims` (matrix SSOT; HITL when supersede is unclear; no date-wins). Record §6.7 verdicts with `--record-haken` (Action / existing Haken column; never Verdict). Do **not** implement here: cascade engine (graph walker), reconcile classification (procedure: [modes.md §6.8](modes.md#68-reconcile-classification-plansmds)), recommend-review engine (audience: [modes.md §6.9](modes.md#69-recommend-review-human-vs-agent)), or CI that fails on missing comments. `audit-claims.sh` default remains the **matrix gate**; `--list-changed` lists paths; `--list-claims` parses `@claim` in those paths; `--upsert-claims` writes those ids back; `--record-haken` records hold / for-review from the same set.
 
 ## Non-goals (v0)
 
@@ -162,11 +163,11 @@ Convention only for the **comment wire** (do not reopen the format). Parse with 
 - Formal proof / SMT  
 - Auto-commit; inventing implementation to match docs  
 - Replacing Notion/MkDocs  
-- Cascade engine / reconcile classification ([modes.md §6.8](modes.md#68-reconcile-classification-plansmds)) / recommend-review engine ([modes.md §6.9](modes.md#69-recommend-review-human-vs-agent)) / Haken verdict recorder (next increment)
+- Cascade engine / reconcile classification ([modes.md §6.8](modes.md#68-reconcile-classification-plansmds)) / recommend-review engine ([modes.md §6.9](modes.md#69-recommend-review-human-vs-agent)) (Haken **recorder** is `--record-haken`; the walker is still out)
 
 ## Concept anchors (greppable)
 
-`living claims` · `living-claims` · `anchor.path` · `severity` · `critical Contradicted` · `truth score` · `audit-claims` · `docs-audit` · `@claim` · `breadcrumb` · `plane` · `changed` · `adjusted` · `diff-first` · `--list-changed` · `--list-claims` · `--upsert-claims` · `recommend review` · `whole matrix`
+`living claims` · `living-claims` · `anchor.path` · `severity` · `critical Contradicted` · `truth score` · `audit-claims` · `docs-audit` · `@claim` · `breadcrumb` · `plane` · `changed` · `adjusted` · `diff-first` · `--list-changed` · `--list-claims` · `--upsert-claims` · `--record-haken` · `recommend review` · `whole matrix`
 
 ## Related
 

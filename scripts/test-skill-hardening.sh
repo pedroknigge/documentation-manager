@@ -426,7 +426,7 @@ CHANGED="$(bash "$AUDIT" --list-changed "$TMPGIT" || true)"
 echo "$CHANGED" | grep -qx "tracked.txt" || fail "--list-changed must list dirty tracked.txt"
 echo "$CHANGED" | grep -qx "untracked.txt" || fail "--list-changed must list untracked.txt"
 if bash "$AUDIT" --base main "$TMPGIT" >/dev/null 2>&1; then
-  fail "--base without --list-changed/--list-claims/--upsert-claims must fail"
+  fail "--base without --list-changed/--list-claims/--upsert-claims/--record-haken must fail"
 fi
 rm -rf "$TMPGIT"
 
@@ -603,10 +603,154 @@ grep -F '| C-001 ' "$BCABS/docs/audit/claims-matrix.md" \
   && fail "--upsert-claims must not invent C-001 when it is not in the change set"
 rm -rf "$BCUP" "$BCNEW" "$BCCON" "$BCMIS" "$BCMAL" "$BCABS" "$con_err" "$mis_err" "$abs_err"
 ok "--upsert-claims write-back + HITL refuse + no date-wins"
+
+# --record-haken: §6.7 on the same change-set / fixture
+grep -F -q -- "--record-haken" "$AUDIT" || fail "audit-claims.sh missing --record-haken"
+[[ -f "$BCFIX/src/haken-hold.ts" ]] || fail "claims-breadcrumbs missing src/haken-hold.ts"
+[[ -f "$BCFIX/src/haken-child.ts" ]] || fail "claims-breadcrumbs missing src/haken-child.ts"
+[[ -f "$BCFIX/src/haken-released.ts" ]] || fail "claims-breadcrumbs missing src/haken-released.ts"
+[[ -f "$BCFIX/src/haken-new.ts" ]] || fail "claims-breadcrumbs missing src/haken-new.ts"
+# hold: adjusted child, parent not released in the set
+BCHOLD="$(mktemp -d)"
+setup_bc_git "$BCHOLD"
+printf '\n' >> "$BCHOLD/src/haken-hold.ts"
+hold_out="$(bash "$AUDIT" --record-haken "$BCHOLD" 2>/dev/null || true)"
+echo "$hold_out" | grep -E -q '^haken[[:space:]]+record[[:space:]]+id=C-010[[:space:]]+src/haken-hold\.ts:[0-9]+[[:space:]]+parent=C-002[[:space:]]+hold$' \
+  || fail "--record-haken must record hold for C-010, got: $hold_out"
+c010="$(grep -F '| C-010 ' "$BCHOLD/docs/audit/claims-matrix.md")"
+echo "$c010" | grep -F -q "| OK |" || fail "--record-haken must keep C-010 Verdict=OK, got: $c010"
+echo "$c010" | grep -E -q 'haken=hold parent=C-002 evidence=src/haken-hold\.ts:[0-9]+' \
+  || fail "--record-haken must write Action haken=hold for C-010, got: $c010"
+echo "$c010" | grep -E -q 'escalate|break|for-review' \
+  && fail "--record-haken must not invent escalate/break/for-review on hold, got: $c010"
+echo "$c010" | grep -F "haken-child.ts" \
+  && fail "--record-haken must not walk to haken-child.ts, got: $c010"
+c001_hold="$(grep -F '| C-001 ' "$BCHOLD/docs/audit/claims-matrix.md")"
+echo "$c001_hold" | grep -F -q "| keep |" || fail "--record-haken must not touch untouched C-001, got: $c001_hold"
+# for-review: parent released in the set (child + released parent dirty)
+BCFR="$(mktemp -d)"
+setup_bc_git "$BCFR"
+printf '\n' >> "$BCFR/src/haken-child.ts"
+printf '\n' >> "$BCFR/src/haken-released.ts"
+fr_out="$(bash "$AUDIT" --record-haken "$BCFR" 2>/dev/null || true)"
+echo "$fr_out" | grep -E -q '^haken[[:space:]]+record[[:space:]]+id=C-011[[:space:]]+src/haken-child\.ts:[0-9]+[[:space:]]+parent=C-012[[:space:]]+for-review$' \
+  || fail "--record-haken must record for-review for C-011, got: $fr_out"
+echo "$fr_out" | grep -F "id=C-012" \
+  && fail "--record-haken must not record a token on released parent C-012, got: $fr_out"
+c011="$(grep -F '| C-011 ' "$BCFR/docs/audit/claims-matrix.md")"
+echo "$c011" | grep -F -q "| OK |" || fail "--record-haken must keep C-011 Verdict=OK, got: $c011"
+echo "$c011" | grep -E -q 'haken=for-review parent=C-012 evidence=src/haken-child\.ts:[0-9]+' \
+  || fail "--record-haken must write Action for-review for C-011, got: $c011"
+c012="$(grep -F '| C-012 ' "$BCFR/docs/audit/claims-matrix.md")"
+echo "$c012" | grep -E -q 'hold|escalate|break|for-review' \
+  && fail "--record-haken must not write Haken on parent-only C-012, got: $c012"
+# Haken column present → write token there; Verdict stays
+BCCOL="$(mktemp -d)"
+setup_bc_git "$BCCOL"
+awk '
+  /^\| ID \|/ { print "| ID | Claim | Source doc | Code evidence | Anchor | Severity | Verdict | Haken | Action |"; next }
+  /^\|----/ { print "|----|-------|------------|---------------|--------|----------|---------|-------|--------|"; next }
+  /^\| C-/ {
+    sub(/\| keep \|$/, "|  | keep |")
+    print
+    next
+  }
+  { print }
+' "$BCCOL/docs/audit/claims-matrix.md" > "$BCCOL/docs/audit/claims-matrix.md.tmp"
+mv "$BCCOL/docs/audit/claims-matrix.md.tmp" "$BCCOL/docs/audit/claims-matrix.md"
+printf '\n' >> "$BCCOL/src/haken-hold.ts"
+col_out="$(bash "$AUDIT" --record-haken "$BCCOL" 2>/dev/null || true)"
+echo "$col_out" | grep -F -q "hold" || fail "--record-haken Haken-col must still record hold, got: $col_out"
+c010c="$(grep -F '| C-010 ' "$BCCOL/docs/audit/claims-matrix.md")"
+echo "$c010c" | grep -F -q "| OK |" || fail "--record-haken Haken-col must keep Verdict=OK, got: $c010c"
+echo "$c010c" | grep -E -q '\| hold \|' || fail "--record-haken must fill existing Haken column, got: $c010c"
+# ambiguous s≈f(q) (changed child, parent not released) → HITL, no write
+BCHITL="$(mktemp -d)"
+setup_bc_git "$BCHITL"
+before_hitl="$(cat "$BCHITL/docs/audit/claims-matrix.md")"
+printf '\n' >> "$BCHITL/src/ok.ts"
+hitl_err="$(mktemp)"
+hitl_rc=0
+bash "$AUDIT" --record-haken "$BCHITL" >/dev/null 2>"$hitl_err" || hitl_rc=$?
+[[ "$hitl_rc" -eq 1 ]] || fail "--record-haken ambiguous must exit 1, got $hitl_rc"
+grep -F -q "HITL" "$hitl_err" && grep -F -q "escalate vs break" "$hitl_err" \
+  || fail "--record-haken ambiguous must HITL escalate vs break, got: $(cat "$hitl_err")"
+grep -F -q "id=C-001" "$hitl_err" || fail "--record-haken ambiguous must name C-001, got: $(cat "$hitl_err")"
+[[ "$(cat "$BCHITL/docs/audit/claims-matrix.md")" == "$before_hitl" ]] \
+  || fail "--record-haken ambiguous must not write the matrix"
+# captain Action haken= disagrees → HITL, no overwrite
+BCCAP="$(mktemp -d)"
+setup_bc_git "$BCCAP"
+awk '
+  /^\| C-010 / { gsub(/\| keep \|/, "| keep · haken=break |") }
+  { print }
+' "$BCCAP/docs/audit/claims-matrix.md" > "$BCCAP/docs/audit/claims-matrix.md.tmp"
+mv "$BCCAP/docs/audit/claims-matrix.md.tmp" "$BCCAP/docs/audit/claims-matrix.md"
+before_cap="$(cat "$BCCAP/docs/audit/claims-matrix.md")"
+printf '\n' >> "$BCCAP/src/haken-hold.ts"
+cap_err="$(mktemp)"
+cap_rc=0
+bash "$AUDIT" --record-haken "$BCCAP" >/dev/null 2>"$cap_err" || cap_rc=$?
+[[ "$cap_rc" -eq 1 ]] || fail "--record-haken captain disagree must exit 1, got $cap_rc"
+grep -F -q "existing haken=break" "$cap_err" && grep -F -q "proposed=hold" "$cap_err" \
+  || fail "--record-haken captain disagree must HITL, got: $(cat "$cap_err")"
+grep -F -q "not date-wins" "$cap_err" \
+  || fail "--record-haken captain disagree must say not date-wins, got: $(cat "$cap_err")"
+[[ "$(cat "$BCCAP/docs/audit/claims-matrix.md")" == "$before_cap" ]] \
+  || fail "--record-haken captain disagree must not overwrite C-010"
+# insert new id + hold
+BCINS="$(mktemp -d)"
+setup_bc_git "$BCINS"
+printf '\n' >> "$BCINS/src/haken-new.ts"
+ins_out="$(bash "$AUDIT" --record-haken "$BCINS" 2>/dev/null || true)"
+echo "$ins_out" | grep -E -q '^haken[[:space:]]+insert[[:space:]]+id=C-998[[:space:]]+src/haken-new\.ts:[0-9]+[[:space:]]+parent=C-002[[:space:]]+hold$' \
+  || fail "--record-haken must insert C-998 hold, got: $ins_out"
+c998="$(grep -F '| C-998 ' "$BCINS/docs/audit/claims-matrix.md")"
+echo "$c998" | grep -F -q "| Unverifiable |" || fail "--record-haken new id must be Unverifiable, got: $c998"
+echo "$c998" | grep -F -q "haken=hold" || fail "--record-haken new id must note haken=hold, got: $c998"
+echo "$c998" | grep -F -q "| OK |" && fail "--record-haken must not invent Verdict=OK for new id, got: $c998"
+# no parent trigger: dirty ok.py only → no write
+BCNOP="$(mktemp -d)"
+setup_bc_git "$BCNOP"
+before_nop="$(cat "$BCNOP/docs/audit/claims-matrix.md")"
+printf '\n' >> "$BCNOP/src/ok.py"
+nop_out="$(bash "$AUDIT" --record-haken "$BCNOP" 2>/dev/null || true)"
+[[ -z "${nop_out// }" ]] || fail "--record-haken parent-only must be empty stdout, got: $nop_out"
+[[ "$(cat "$BCNOP/docs/audit/claims-matrix.md")" == "$before_nop" ]] \
+  || fail "--record-haken parent-only must not write the matrix"
+# malformed → no write
+BCMH="$(mktemp -d)"
+setup_bc_git "$BCMH"
+before_mh="$(cat "$BCMH/docs/audit/claims-matrix.md")"
+printf '\n' >> "$BCMH/src/malformed.ts"
+mh_rc=0
+bash "$AUDIT" --record-haken "$BCMH" >/dev/null 2>/dev/null || mh_rc=$?
+[[ "$mh_rc" -eq 1 ]] || fail "--record-haken malformed must exit 1, got $mh_rc"
+[[ "$(cat "$BCMH/docs/audit/claims-matrix.md")" == "$before_mh" ]] \
+  || fail "--record-haken malformed must not write the matrix"
+# conflicting breadcrumbs / newer mtime must not date-win
+BCDC="$(mktemp -d)"
+setup_bc_git "$BCDC"
+before_dc="$(cat "$BCDC/docs/audit/claims-matrix.md")"
+printf '\n' >> "$BCDC/src/ok.ts"
+printf '\n' >> "$BCDC/src/untouched.ts"
+touch -t 202001010000 "$BCDC/src/ok.ts"
+touch -t 202612312359 "$BCDC/src/untouched.ts"
+dc_err="$(mktemp)"
+dc_rc=0
+bash "$AUDIT" --record-haken "$BCDC" >/dev/null 2>"$dc_err" || dc_rc=$?
+[[ "$dc_rc" -eq 1 ]] || fail "--record-haken conflict must exit 1, got $dc_rc"
+grep -F -q "HITL" "$dc_err" && grep -F -q "not date-wins" "$dc_err" \
+  || fail "--record-haken conflict must HITL not date-wins, got: $(cat "$dc_err")"
+[[ "$(cat "$BCDC/docs/audit/claims-matrix.md")" == "$before_dc" ]] \
+  || fail "--record-haken conflict must not write (no date-wins)"
+rm -rf "$BCHOLD" "$BCFR" "$BCCOL" "$BCHITL" "$BCCAP" "$BCINS" "$BCNOP" "$BCMH" "$BCDC" \
+  "$hitl_err" "$cap_err" "$dc_err"
+ok "--record-haken hold/for-review + HITL refuse + no date-wins"
 [[ -f "$ROOT/.github/workflows/docs-audit.yml" ]] || fail "missing .github/workflows/docs-audit.yml"
 grep -F -q "audit-claims.sh" "$ROOT/.github/workflows/docs-audit.yml" \
   || fail "docs-audit.yml must invoke audit-claims.sh"
-if grep -E -q 'run:.*--(list-changed|list-claims|upsert-claims)' "$ROOT/.github/workflows/docs-audit.yml"; then
+if grep -E -q 'run:.*--(list-changed|list-claims|upsert-claims|record-haken)' "$ROOT/.github/workflows/docs-audit.yml"; then
   fail "docs-audit.yml must not invoke change-set helpers (CI gate is whole-matrix)"
 fi
 grep -E -q '\[x\].*\.github/workflows/docs-audit\.yml' "$ROOT/docs/plans/knowledge-os/README.md" \
