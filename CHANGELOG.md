@@ -9,6 +9,7 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 ### Changed
 
 - **P1 Docs:** first-contact honesty — documented procedures vs four on-demand loops (parse / persist / record / cascade-recommend); “has Haken” ≠ DB / daemon  
+- **P1 Docs:** skill entry names the four on-demand kernel loops (`--list-claims` / `--upsert-claims` / `--record-haken` / `--cascade-recommend`); Haken ≠ DB / daemon  
 - No version bump — install floor stays **2.5.0**
 
 ### Added
