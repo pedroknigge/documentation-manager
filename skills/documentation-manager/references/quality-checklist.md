@@ -49,6 +49,7 @@ Run before reporting done.
 - [ ] Audit / reconcile reads were **diff-first** (git change set); no full-tree scan unless the user opted in
 - [ ] Cascade: recommended review only when a parent breadcrumb appears in the change set; apply [modes.md §6.7](modes.md#67-cascade-verdicts-haken) (hold / escalate / break / for-review); HITL when ambiguous — captain decides ties; no cascade engine
 - [ ] Reconcile: agent-written plans/MDs classified **evolution** / **regime change** / **orphan** / **contradiction** ([modes.md §6.8](modes.md#68-reconcile-classification-plansmds)); no living contradictions; supersede marking — never parallel contradicting SSOT; latest-by-date does not auto-win; HITL when unclear — captain decides ties
+- [ ] Recommend review: when cascade / reconcile / audit needs eyes, recommend **human** or **agent** ([modes.md §6.9](modes.md#69-recommend-review-human-vs-agent)) with pointers into the change set / claims / class; HITL → human; no assign, notify, merge, or engine
 - [ ] from-zero: full KB only with that Intent; sandbox when path requested; old docs treated as hypothesis
 - [ ] from-zero does not silently overwrite mature productive SSOT without confirm
 

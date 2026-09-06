@@ -383,9 +383,9 @@ If sync reveals many Contradicted claims → suggest **audit** (still **diff-fir
 2. Empty set, not a git repo, or unclear base → **HITL** (ask once: name a base, give a file list, or confirm full-tree opt-in). **Do not** fall back to reading the tree.
 3. Inventory (§6.1) and claim extraction (§6.2) **only** those paths, plus a specific `anchor.path` a changed doc cites. Do not glob `docs/**` or walk `src/`.
 4. Named feature + change set → **intersect**. Empty intersection → HITL, not a feature-tree walk.
-5. **Cascade pointer:** if a changed file has a breadcrumb `parent=` ([living-claims.md § Code breadcrumbs](living-claims.md#code-breadcrumbs-comment-mirror)) or a matrix row whose `id` is named as `parent` on a changed breadcrumb, **recommend review of children** and apply [§6.7](#67-cascade-verdicts-haken) (hold / escalate / break / for-review). Do not run a cascade engine. Do not grep the repo for children.
+5. **Cascade pointer:** if a changed file has a breadcrumb `parent=` ([living-claims.md § Code breadcrumbs](living-claims.md#code-breadcrumbs-comment-mirror)) or a matrix row whose `id` is named as `parent` on a changed breadcrumb, **recommend review** of children ([§6.9](#69-recommend-review-human-vs-agent)) and apply [§6.7](#67-cascade-verdicts-haken) (hold / escalate / break / for-review). Do not run a cascade engine. Do not grep the repo for children.
 6. **Reconcile pointer:** if the change set includes agent-written plans/MDs that share a topic with a living doc (or with each other), apply [§6.8](#68-reconcile-classification-plansmds). Do not walk `docs/**` for a second tree.
-7. Human is captain. Propose matrix updates; HITL when who-wins is unclear.
+7. Human is captain. Propose matrix updates; HITL when who-wins is unclear. When cascade / reconcile / audit needs eyes, [§6.9](#69-recommend-review-human-vs-agent) — recommend, do not assign or merge.
 
 Announce: `Audit-scope: diff-first | files: <n> | base: <HEAD|ref|n/a>` or `Audit-scope: full-tree (user opt-in)`.
 
@@ -494,16 +494,17 @@ These tokens are **not** [§6.3](#63-verdicts) matrix verdicts and **not** bread
 2. Ask: does `s≈f(q)` still hold for that child vs its named parent?
    - **Yes** → **hold**.
    - **No** → **escalate** (no longer enslaved) or **break** (parent insufficient).
-3. If the **parent released** → **for-review** downward for children visible in the set; for children not in the set, **recommend review** only (do not search).
+3. If the **parent released** → **for-review** downward for children visible in the set; for children not in the set, **recommend review** only ([§6.9](#69-recommend-review-human-vs-agent); do not search).
 4. Ambiguous whether `s≈f(q)` holds, or escalate vs break is a tie → **HITL**. Captain decides. Do not pick a token to look decisive.
 
 #### Apply
 
 1. Trigger from the §6.0 pointer.
 2. Propose one closed-set verdict (or HITL).
-3. Human is captain. Do not override evolved layout. Do not auto-commit. Do not run an engine.
+3. If the verdict needs eyes, recommend review per [§6.9](#69-recommend-review-human-vs-agent).
+4. Human is captain. Do not override evolved layout. Do not auto-commit. Do not run an engine.
 
-**Non-goals:** cascade graph walker · repo-wide child grep · reconcile classification ([§6.8](#68-reconcile-classification-plansmds)) · new breadcrumb keys or planes · new verdict tokens.
+**Non-goals:** cascade graph walker · repo-wide child grep · reconcile classification ([§6.8](#68-reconcile-classification-plansmds)) · recommend-review audience ([§6.9](#69-recommend-review-human-vs-agent)) · new breadcrumb keys or planes · new verdict tokens.
 
 ### 6.8 Reconcile classification (plans/MDs)
 
@@ -541,9 +542,66 @@ These tokens are **not** [§6.3](#63-verdicts) matrix verdicts, **not** [§6.7](
 3. On **regime change** or **contradiction**: mark the loser **Superseded** / **Superseded by** (existing ADR and plan status). Do not delete durable knowledge. Do not keep both living.
 4. On **evolution**: edit the living SSOT; do not promote the draft as a second living authority.
 5. On **orphan**: propose a single home; do not create a second SSOT for the same topic.
-6. Human is captain. Never override evolved layout. Do not auto-commit. Do not run a classifier engine.
+6. If the class needs eyes, recommend review per [§6.9](#69-recommend-review-human-vs-agent).
+7. Human is captain. Never override evolved layout. Do not auto-commit. Do not run a classifier engine.
 
-**Non-goals:** date-wins rules · auto-merge / reconcile engine · graph walker · cascade verdicts (stay in §6.7) · breadcrumb format · new class tokens.
+**Non-goals:** date-wins rules · auto-merge / reconcile engine · graph walker · cascade verdicts (stay in §6.7) · recommend-review audience (stay in §6.9) · breadcrumb format · new class tokens.
+
+### 6.9 Recommend review (human vs agent)
+
+**Procedure only** — not an engine, not auto-assign, not a notification system, not auto-merge. Binding: [ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md) captain rule. Human is captain. The skill **proposes** that someone look; it never overrides an evolved layout or a developer decision.
+
+Stay on the **§6.0 change set**. Do not walk the tree to find reviewers or children.
+
+This is **not** a new verdict enum. Cascade stays in [§6.7](#67-cascade-verdicts-haken). Reconcile stays in [§6.8](#68-reconcile-classification-plansmds). Audit verdicts stay in [§6.3](#63-verdicts). **HITL** still means stop and ask the captain once.
+
+#### When (needs eyes)
+
+Emit a recommendation only when cascade, reconcile, or audit already surfaced something that needs eyes. Do **not** recommend review for **hold**, **OK**, or a clean **evolution** this session is already applying.
+
+| Trigger | Source | Needs eyes |
+|---------|--------|------------|
+| **for-review** | §6.7 | Children vs the new `q` |
+| **escalate** / **break** | §6.7 | Order change |
+| Cascade HITL | §6.7 | Ambiguous `s≈f(q)` |
+| **contradiction** / **regime change** / **orphan** | §6.8 | Living SSOT at risk |
+| Reconcile HITL | §6.8 | Who-wins unclear |
+| **critical** + **Contradicted** | §6.3 | Shipping a lie |
+| **Unverifiable** | §6.3 | Not structural |
+| Empty / unclear change set | §6.0 | Already HITL |
+
+#### Audience (closed)
+
+| Audience | When |
+|----------|------|
+| **human** | HITL already required; the ask would supersede a living SSOT, change layout, or override a developer decision (`escalate`, `break`, `regime change`, `contradiction`, `orphan` home); `Unverifiable`; `critical` + `Contradicted`; children **not** in the change set (do not search — only the captain may expand the set); audience unclear → **human** (captain-first). |
+| **agent** | Follow-up is mechanical on paths **already in the set** and a closed-set class/verdict is already proposed: `for-review` children **in the set**; clear **evolution** not yet patched; **normal**-severity `Partial` / `Missing` / `Contradicted` (mark the matrix / propose a doc fix). |
+
+Do **not** invent a third audience. Do **not** auto-assign a person or agent. Do **not** notify anyone.
+
+#### What to include (required)
+
+One short recommendation, friendly, captain-first:
+
+```text
+Recommend review: <human|agent>
+Trigger: <cascade|reconcile|audit>
+Class: <§6.7 verdict | §6.8 class | §6.3 verdict>
+Pointers: <paths in the change set> · <claim id(s)> · <parent= if visible>
+Ask: <one question if human / HITL; else the mechanical next step>
+```
+
+Pointers stay inside the change set (plus a living SSOT a changed plan already cites). No new files, no child grep, no reviewer roster.
+
+#### Apply
+
+1. Trigger from §6.7 / §6.8 / the audit matrix — not a second pass over the tree.
+2. Pick **human** or **agent** from the closed table. Unclear → **human**.
+3. Emit the block. Do not merge, assign, or notify.
+4. If audience is **human** and the case is HITL: **stop**. Wait for the captain.
+5. If audience is **agent**: this session or a later one may continue on those pointers only.
+
+**Non-goals:** review engine · auto-assign · notification system · auto-merge · graph walker · new CLI · new verdict/class tokens · reviewer roster / CODEOWNERS · version bump
 
 ---
 
@@ -702,7 +760,7 @@ Announce: `Telemetry: off|local-ledger | opt-in: no|yes | network: never`.
 5. **CI is the gate:** `critical` + `Contradicted` → non-zero from local air-gapped `scripts/audit-claims.sh` (example `.github/workflows/docs-audit.yml`). **No network** required. The gate parses the **whole matrix** (do not hide existing critical Contradicted). Agent **audit/reconcile reads** stay **diff-first** (§6.0); `--list-changed` is the change-set helper, not the gate.  
 6. Graceful v0: no matrix → skip/warn; missing severity → `normal`.  
 7. Do not invent code to match docs; do not auto-commit.  
-8. **Diff-first** — never a full-tree read by default; cascade = [§6.7](#67-cascade-verdicts-haken) (recommend review; no engine); reconcile classification = [§6.8](#68-reconcile-classification-plansmds) (no living contradictions; no date-wins).
+8. **Diff-first** — never a full-tree read by default; cascade = [§6.7](#67-cascade-verdicts-haken) (recommend review; no engine); reconcile classification = [§6.8](#68-reconcile-classification-plansmds) (no living contradictions; no date-wins); recommend review = [§6.9](#69-recommend-review-human-vs-agent) (human vs agent; no assign).
 
 Announce: `Living-claims: v0 | matrix: path|none | CI-gate: audit-claims | score: advisory | Audit-scope: diff-first`.
 
@@ -728,5 +786,6 @@ ADRs: …
 Coverage matrix: yes/no
 Promotion plan: …       # sandbox
 Open questions: …
+Recommend review: n/a | human | agent  # trigger / class / pointers — §6.9
 Suggested next Intent: …
 ```

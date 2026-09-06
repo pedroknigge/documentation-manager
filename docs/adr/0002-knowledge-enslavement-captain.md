@@ -56,6 +56,7 @@ This ADR locks the goal and the captain rule. It does **not** specify implementa
 - Cascade **engine** (graph walker / repo-wide child grep) — verdict vocabulary + procedure: [modes.md §6.7](../../skills/documentation-manager/references/modes.md#67-cascade-verdicts-haken)
 - Git-diff audit **procedure** — [modes.md §6.0](../../skills/documentation-manager/references/modes.md#60-change-set-diff-first) (`audit-claims.sh --list-changed`)
 - Reconcile **logic** (auto-winner / date-wins / classifier engine) — classification vocabulary + procedure: [modes.md §6.8](../../skills/documentation-manager/references/modes.md#68-reconcile-classification-plansmds)
+- Recommend review **engine** (auto-assign / notify / merge) — audience + payload: [modes.md §6.9](../../skills/documentation-manager/references/modes.md#69-recommend-review-human-vs-agent)
 - Orderfield / ArkGate ports
 
 ## Links
@@ -66,4 +67,5 @@ This ADR locks the goal and the captain rule. It does **not** specify implementa
 - Diff-first audit procedure: [modes.md §6.0](../../skills/documentation-manager/references/modes.md#60-change-set-diff-first)
 - Cascade verdicts (procedure, not engine): [modes.md §6.7](../../skills/documentation-manager/references/modes.md#67-cascade-verdicts-haken)
 - Reconcile classification (procedure, not engine): [modes.md §6.8](../../skills/documentation-manager/references/modes.md#68-reconcile-classification-plansmds)
+- Recommend review (procedure, not engine/assign/notify): [modes.md §6.9](../../skills/documentation-manager/references/modes.md#69-recommend-review-human-vs-agent)
 - Epic (does not replace this lock): [../plans/knowledge-os/README.md](../plans/knowledge-os/README.md)
