@@ -62,7 +62,8 @@ score = (OK_N * 100 + PARTIAL_N * 50) / TOTAL_V   # TOTAL_V > 0
 5. Write `docs/audit/claims-matrix.md` (or sandbox) from [audit-template.md](audit-template.md).  
 6. Offer dashboard ([knowledge-dashboard.md](knowledge-dashboard.md)) as view; remind that **CI is the gate**.  
 7. If a changed breadcrumb names `parent=` (or a changed id is a parent), apply [modes.md §6.7](modes.md#67-cascade-verdicts-haken) — **recommend review of children**; do not run a cascade engine.  
-8. Never invent code to satisfy a claim; never auto-commit. HITL when who-wins is unclear.
+8. If the set includes agent-written plans/MDs that share a topic with a living doc, apply [modes.md §6.8](modes.md#68-reconcile-classification-plansmds) — classify; **no living contradictions**; latest-by-date does not auto-win.  
+9. Never invent code to satisfy a claim; never auto-commit. HITL when who-wins is unclear.
 
 ## CI (local / air-gapped)
 
@@ -145,7 +146,7 @@ checkout() { :; }
 
 ### Non-goals (this section)
 
-Convention only. Do **not** implement here: cascade engine (verdicts: [modes.md §6.7](modes.md#67-cascade-verdicts-haken)), reconcile classification, breadcrumb parsers, or CI that fails on missing comments. `audit-claims.sh` default remains the **matrix gate**; `--list-changed` is the change-set helper only.
+Convention only. Do **not** implement here: cascade engine (verdicts: [modes.md §6.7](modes.md#67-cascade-verdicts-haken)), reconcile classification (procedure: [modes.md §6.8](modes.md#68-reconcile-classification-plansmds)), breadcrumb parsers, or CI that fails on missing comments. `audit-claims.sh` default remains the **matrix gate**; `--list-changed` is the change-set helper only.
 
 ## Non-goals (v0)
 
@@ -153,7 +154,7 @@ Convention only. Do **not** implement here: cascade engine (verdicts: [modes.md 
 - Formal proof / SMT  
 - Auto-commit; inventing implementation to match docs  
 - Replacing Notion/MkDocs  
-- Cascade engine / reconcile classification / breadcrumb parsers (comment convention only)
+- Cascade engine / reconcile classification ([modes.md §6.8](modes.md#68-reconcile-classification-plansmds)) / breadcrumb parsers (comment convention only)
 
 ## Concept anchors (greppable)
 
@@ -161,7 +162,7 @@ Convention only. Do **not** implement here: cascade engine (verdicts: [modes.md 
 
 ## Related
 
-- Modes: [modes.md §6](modes.md#6-audit-project-or-feature) · [§6.7](modes.md#67-cascade-verdicts-haken) · [§13](modes.md#13-living-claims--ci-structural-audit-v25)  
+- Modes: [modes.md §6](modes.md#6-audit-project-or-feature) · [§6.7](modes.md#67-cascade-verdicts-haken) · [§6.8](modes.md#68-reconcile-classification-plansmds) · [§13](modes.md#13-living-claims--ci-structural-audit-v25)  
 - Quality: [quality-checklist.md](quality-checklist.md)  
 - Feature pack: [docs/features/living-claims/README.md](../../../docs/features/living-claims/README.md)  
 - Epic: [docs/plans/knowledge-os/README.md](../../../docs/plans/knowledge-os/README.md)  

@@ -173,7 +173,10 @@ for concept in \
   "--list-changed" \
   "Cascade verdicts" \
   "Versklavungsprinzip" \
-  "for-review"
+  "for-review" \
+  "Reconcile classification" \
+  "regime change" \
+  "No living contradictions"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
