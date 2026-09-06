@@ -20,6 +20,9 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ### Added
 
+- **P1 Docs:** English starter / follow-up prompt on the public README (copy-paste; first run or audit/sync)  
+- No version bump — install floor stays **2.5.0**
+
 - **P1 Audit:** report stale / redundant / snapshot / fact-vs-changed-symbol narrative comments in the git change set (audit + sync)  
 - Procedure [modes.md §6.10](skills/documentation-manager/references/modes.md#610-narrative-comments-report-first) — classify and emit §6.9 recommend-review (`path:line` + class); never auto-edit  
 - Non-goals: auto-delete, full-tree campaign, CI gate on narrative comments, treating free prose as matrix rows  
