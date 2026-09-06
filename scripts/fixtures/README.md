@@ -14,7 +14,7 @@ Synthetic **project roots** and **golden tables** used by `scripts/validate-skil
 | `claims-pass/` | audit-claims.sh PASS | matrix with OK / Partial only |
 | `claims-fail/` | audit-claims.sh FAIL | critical + Contradicted row |
 | `claims-none/` | audit-claims.sh skip | no `docs/audit/claims-matrix.md` |
-| `claims-breadcrumbs/` | `--list-claims` / `--upsert-claims` / `--record-haken` | `@claim` corpus; hardening copies into a temp git repo |
+| `claims-breadcrumbs/` | `--list-claims` / `--upsert-claims` / `--record-haken` / `--cascade-recommend` | `@claim` corpus; hardening copies into a temp git repo |
 | `survey-heuristics/` | survey-docs.sh | CapCase `Readme.md`; `docs/adr/0001-…`; `examples/` demo MD; `TableHeadRenderer.tsx` |
 
 Stack detection smoke: `scripts/detect-stack.sh scripts/fixtures/<fixture>`.  

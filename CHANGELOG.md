@@ -8,6 +8,13 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ### Added
 
+- **P1 Kernel:** cascade recommend from `parent=` in the change set (`audit-claims.sh --cascade-recommend`)  
+- Parent released in the set (`status=changed`) → list **for-review** children already in the set that name that `parent=` + evidence + modes.md §6.9 block  
+- Read-only (does not write the matrix); children not in the set are not listed (no repo-wide grep; documented gap)  
+- Reuses `--list-claims` change-set parse; no graph walker  
+- Fixture + hardening asserts on `scripts/fixtures/claims-breadcrumbs/`  
+- No version bump — install floor stays **2.5.0**
+
 - **P0 Kernel:** record Haken verdicts on audit (`audit-claims.sh --record-haken`)  
 - Writes hold / for-review to matrix **Action** (or an existing **Haken** column) with `path:line` + parent id; never into Verdict  
 - escalate vs break / unclear `s≈f(q)` → HITL stderr; no silent invent; captain supersedes (not date-wins)  

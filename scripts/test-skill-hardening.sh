@@ -426,7 +426,7 @@ CHANGED="$(bash "$AUDIT" --list-changed "$TMPGIT" || true)"
 echo "$CHANGED" | grep -qx "tracked.txt" || fail "--list-changed must list dirty tracked.txt"
 echo "$CHANGED" | grep -qx "untracked.txt" || fail "--list-changed must list untracked.txt"
 if bash "$AUDIT" --base main "$TMPGIT" >/dev/null 2>&1; then
-  fail "--base without --list-changed/--list-claims/--upsert-claims/--record-haken must fail"
+  fail "--base without a change-set helper must fail"
 fi
 rm -rf "$TMPGIT"
 
@@ -747,10 +747,102 @@ grep -F -q "HITL" "$dc_err" && grep -F -q "not date-wins" "$dc_err" \
 rm -rf "$BCHOLD" "$BCFR" "$BCCOL" "$BCHITL" "$BCCAP" "$BCINS" "$BCNOP" "$BCMH" "$BCDC" \
   "$hitl_err" "$cap_err" "$dc_err"
 ok "--record-haken hold/for-review + HITL refuse + no date-wins"
+
+# --cascade-recommend: §6.9 list on the same change-set / fixture (no write, no walker)
+grep -F -q -- "--cascade-recommend" "$AUDIT" || fail "audit-claims.sh missing --cascade-recommend"
+# parent released + child in set → for-review + §6.9 (agent); matrix unchanged
+BCCR="$(mktemp -d)"
+setup_bc_git "$BCCR"
+before_cr="$(cat "$BCCR/docs/audit/claims-matrix.md")"
+printf '\n' >> "$BCCR/src/haken-child.ts"
+printf '\n' >> "$BCCR/src/haken-released.ts"
+cr_err="$(mktemp)"
+cr_out="$(bash "$AUDIT" --cascade-recommend "$BCCR" 2>"$cr_err")" || true
+echo "$cr_out" | grep -E -q '^cascade[[:space:]]+recommend[[:space:]]+parent=C-012[[:space:]]+child=C-011[[:space:]]+src/haken-child\.ts:[0-9]+[[:space:]]+for-review$' \
+  || fail "--cascade-recommend must list C-012 → C-011 for-review, got: $cr_out"
+echo "$cr_out" | grep -F -q "Recommend review: agent" \
+  || fail "--cascade-recommend must emit §6.9 audience=agent, got: $cr_out"
+echo "$cr_out" | grep -F -q "Trigger: cascade" \
+  || fail "--cascade-recommend must emit Trigger: cascade, got: $cr_out"
+echo "$cr_out" | grep -F -q "Class: for-review" \
+  || fail "--cascade-recommend must emit Class: for-review, got: $cr_out"
+echo "$cr_out" | grep -E -q 'Pointers:.*src/haken-child\.ts:[0-9]+' \
+  || fail "--cascade-recommend must pointer child evidence, got: $cr_out"
+echo "$cr_out" | grep -E -q 'Pointers:.*src/haken-released\.ts:[0-9]+' \
+  || fail "--cascade-recommend must pointer parent evidence, got: $cr_out"
+echo "$cr_out" | grep -F -q "parent=C-012" \
+  || fail "--cascade-recommend must pointer parent=C-012, got: $cr_out"
+echo "$cr_out" | grep -F -q "modes.md §6.9" \
+  || fail "--cascade-recommend must pointer §6.9, got: $cr_out"
+echo "$cr_out" | grep -E -q 'hold|escalate|break' \
+  && fail "--cascade-recommend must not invent hold/escalate/break, got: $cr_out"
+echo "$cr_out" | grep -F "haken-hold.ts" \
+  && fail "--cascade-recommend must not walk to haken-hold.ts, got: $cr_out"
+grep -F -q "not listed" "$cr_err" && grep -F -q "no repo-wide" "$cr_err" \
+  || fail "--cascade-recommend must document the set-only gap, got: $(cat "$cr_err")"
+[[ "$(cat "$BCCR/docs/audit/claims-matrix.md")" == "$before_cr" ]] \
+  || fail "--cascade-recommend must not write the matrix"
+# parent released, child not in the set → no invent / no grep
+BCPAR="$(mktemp -d)"
+setup_bc_git "$BCPAR"
+before_par="$(cat "$BCPAR/docs/audit/claims-matrix.md")"
+printf '\n' >> "$BCPAR/src/haken-released.ts"
+par_err="$(mktemp)"
+par_out="$(bash "$AUDIT" --cascade-recommend "$BCPAR" 2>"$par_err")" || true
+echo "$par_out" | grep -F "C-011" \
+  && fail "--cascade-recommend parent-only must not invent C-011, got: $par_out"
+echo "$par_out" | grep -F "haken-child.ts" \
+  && fail "--cascade-recommend parent-only must not grep haken-child.ts, got: $par_out"
+echo "$par_out" | grep -F "for-review" \
+  && fail "--cascade-recommend parent-only must not emit for-review, got: $par_out"
+grep -F -q "not listed" "$par_err" \
+  || fail "--cascade-recommend parent-only must document the gap, got: $(cat "$par_err")"
+[[ "$(cat "$BCPAR/docs/audit/claims-matrix.md")" == "$before_par" ]] \
+  || fail "--cascade-recommend parent-only must not write the matrix"
+# child in set, parent not released in the set → no for-review
+BCCLD="$(mktemp -d)"
+setup_bc_git "$BCCLD"
+printf '\n' >> "$BCCLD/src/haken-child.ts"
+cld_out="$(bash "$AUDIT" --cascade-recommend "$BCCLD" 2>/dev/null || true)"
+echo "$cld_out" | grep -F "for-review" \
+  && fail "--cascade-recommend child-only must not treat parent as released, got: $cld_out"
+# hold child + adjusted parent in set → parent not released
+BCHLD="$(mktemp -d)"
+setup_bc_git "$BCHLD"
+printf '\n' >> "$BCHLD/src/haken-hold.ts"
+printf '\n' >> "$BCHLD/src/ok.py"
+hld_out="$(bash "$AUDIT" --cascade-recommend "$BCHLD" 2>/dev/null || true)"
+echo "$hld_out" | grep -F "for-review" \
+  && fail "--cascade-recommend must not for-review when parent is adjusted, got: $hld_out"
+# malformed → HITL, no invent
+BCMCR="$(mktemp -d)"
+setup_bc_git "$BCMCR"
+printf '\n' >> "$BCMCR/src/malformed.ts"
+mcr_rc=0
+bash "$AUDIT" --cascade-recommend "$BCMCR" >/dev/null 2>/dev/null || mcr_rc=$?
+[[ "$mcr_rc" -eq 1 ]] || fail "--cascade-recommend malformed must exit 1, got $mcr_rc"
+# conflicting breadcrumbs / newer mtime must not date-win
+BCCRC="$(mktemp -d)"
+setup_bc_git "$BCCRC"
+printf '\n' >> "$BCCRC/src/haken-child.ts"
+printf '\n' >> "$BCCRC/src/haken-released.ts"
+printf '\n// @claim id=C-011 parent=C-012 plane=P0 status=changed\n' >> "$BCCRC/src/haken-released.ts"
+touch -t 202001010000 "$BCCRC/src/haken-child.ts"
+touch -t 202612312359 "$BCCRC/src/haken-released.ts"
+crc_err="$(mktemp)"
+crc_rc=0
+crc_out="$(bash "$AUDIT" --cascade-recommend "$BCCRC" 2>"$crc_err")" || crc_rc=$?
+[[ "$crc_rc" -eq 1 ]] || fail "--cascade-recommend conflict must exit 1, got $crc_rc"
+grep -F -q "HITL" "$crc_err" && grep -F -q "not date-wins" "$crc_err" \
+  || fail "--cascade-recommend conflict must HITL not date-wins, got: $(cat "$crc_err")"
+echo "$crc_out" | grep -F "child=C-011" \
+  && fail "--cascade-recommend conflict must not pick a winner, got: $crc_out"
+rm -rf "$BCCR" "$BCPAR" "$BCCLD" "$BCHLD" "$BCMCR" "$BCCRC" "$cr_err" "$par_err" "$crc_err"
+ok "--cascade-recommend for-review + set-only gap + HITL refuse + no date-wins"
 [[ -f "$ROOT/.github/workflows/docs-audit.yml" ]] || fail "missing .github/workflows/docs-audit.yml"
 grep -F -q "audit-claims.sh" "$ROOT/.github/workflows/docs-audit.yml" \
   || fail "docs-audit.yml must invoke audit-claims.sh"
-if grep -E -q 'run:.*--(list-changed|list-claims|upsert-claims|record-haken)' "$ROOT/.github/workflows/docs-audit.yml"; then
+if grep -E -q 'run:.*--(list-changed|list-claims|upsert-claims|record-haken|cascade-recommend)' "$ROOT/.github/workflows/docs-audit.yml"; then
   fail "docs-audit.yml must not invoke change-set helpers (CI gate is whole-matrix)"
 fi
 grep -E -q '\[x\].*\.github/workflows/docs-audit\.yml' "$ROOT/docs/plans/knowledge-os/README.md" \

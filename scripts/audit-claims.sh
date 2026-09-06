@@ -5,10 +5,11 @@
 # **critical** + **Contradicted**. No network. Graceful when matrix absent.
 #
 # Change-set helpers (audit/reconcile — not the CI gate):
-#   --list-changed [--base REF]   print git-changed paths (one per line)
-#   --list-claims  [--base REF]   parse @claim breadcrumbs in that set only
-#   --upsert-claims [--base REF]  write-back touched ids into the matrix (SSOT)
-#   --record-haken [--base REF]   record §6.7 Haken verdicts for touched claims
+#   --list-changed [--base REF]        print git-changed paths (one per line)
+#   --list-claims  [--base REF]        parse @claim breadcrumbs in that set only
+#   --upsert-claims [--base REF]       write-back touched ids into the matrix (SSOT)
+#   --record-haken [--base REF]        record §6.7 Haken verdicts for touched claims
+#   --cascade-recommend [--base REF]   list §6.9 for-review recommends (read-only)
 #
 # Usage:
 #   audit-claims.sh [PROJECT_ROOT]
@@ -17,14 +18,17 @@
 #   audit-claims.sh --list-claims [--base REF] [--matrix PATH] [PROJECT_ROOT]
 #   audit-claims.sh --upsert-claims [--base REF] [--matrix PATH] [PROJECT_ROOT]
 #   audit-claims.sh --record-haken [--base REF] [--matrix PATH] [PROJECT_ROOT]
+#   audit-claims.sh --cascade-recommend [--base REF] [PROJECT_ROOT]
 #   audit-claims.sh --help
 #
 # Exit codes:
 #   0 — pass, or no matrix (skip/warn), or --list-changed printed (even if empty),
 #       or --list-claims printed with no malformed lines (missing-from-matrix is a note),
-#       or --upsert-claims / --record-haken wrote / no-op with no HITL
+#       or --upsert-claims / --record-haken wrote / no-op with no HITL,
+#       or --cascade-recommend listed / no-op with no HITL
 #   1 — one or more critical Contradicted claims (gate), or malformed @claim (HITL),
-#       or --upsert-claims / --record-haken refused a supersede or invent (captain)
+#       or --upsert-claims / --record-haken / --cascade-recommend refused a
+#       supersede or invent (captain)
 #   2 — usage / unreadable matrix path when explicitly required / not a git repo
 set -euo pipefail
 
@@ -39,6 +43,7 @@ Usage:
   $SCRIPT_NAME --list-claims [--base REF] [--matrix PATH] [PROJECT_ROOT]
   $SCRIPT_NAME --upsert-claims [--base REF] [--matrix PATH] [PROJECT_ROOT]
   $SCRIPT_NAME --record-haken [--base REF] [--matrix PATH] [PROJECT_ROOT]
+  $SCRIPT_NAME --cascade-recommend [--base REF] [PROJECT_ROOT]
   $SCRIPT_NAME -h | --help
 
 Air-gapped structural audit of a claims matrix (Markdown table).
@@ -78,6 +83,18 @@ released in the set; for-review when the parent is in the set with
 status=changed. escalate vs break, or unclear s≈f(q) → HITL, refuse invent.
 Existing Action/Haken token that disagrees → HITL (captain supersedes; not
 date-wins). Not the CI gate.
+
+--cascade-recommend reuses the --list-claims parse (same change set; never a
+full-tree grep; never a graph walker). When a parent id is in the set with
+status=changed (released), lists §6.9 for-review recommends for children
+already in that set that name parent=<that id>. Stdout: one machine line
+  cascade  recommend  parent=<id>  child=<id>  <path>:<line>  for-review
+plus the §6.9 block (audience=agent; trigger=cascade; class=for-review;
+evidence pointers). Does not write the matrix (--record-haken does that).
+Children not in the set are not listed (no repo-wide parent= grep; captain
+may expand — documented gap, not fake completeness). Conflicting
+breadcrumbs → HITL, refuse invent (captain decides supersede; not
+date-wins). Not the CI gate.
 EOF
 }
 
@@ -88,6 +105,7 @@ LIST_CHANGED=0
 LIST_CLAIMS=0
 UPSERT_CLAIMS=0
 RECORD_HAKEN=0
+CASCADE_RECOMMEND=0
 BASE=""
 
 while [[ $# -gt 0 ]]; do
@@ -116,6 +134,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --record-haken)
       RECORD_HAKEN=1
+      shift
+      ;;
+    --cascade-recommend)
+      CASCADE_RECOMMEND=1
       shift
       ;;
     --base)
@@ -149,16 +171,20 @@ if [[ -z "$ROOT" ]]; then
 fi
 ROOT="$(cd -P "$ROOT" 2>/dev/null && pwd || echo "$ROOT")"
 
-if [[ -n "$BASE" && "$LIST_CHANGED" -eq 0 && "$LIST_CLAIMS" -eq 0 && "$UPSERT_CLAIMS" -eq 0 && "$RECORD_HAKEN" -eq 0 ]]; then
-  echo "$SCRIPT_NAME: --base requires --list-changed, --list-claims, --upsert-claims, or --record-haken" >&2
+if [[ -n "$BASE" && "$LIST_CHANGED" -eq 0 && "$LIST_CLAIMS" -eq 0 && "$UPSERT_CLAIMS" -eq 0 && "$RECORD_HAKEN" -eq 0 && "$CASCADE_RECOMMEND" -eq 0 ]]; then
+  echo "$SCRIPT_NAME: --base requires --list-changed, --list-claims, --upsert-claims, --record-haken, or --cascade-recommend" >&2
   exit 2
 fi
-if [[ "$((LIST_CHANGED + LIST_CLAIMS + UPSERT_CLAIMS + RECORD_HAKEN))" -gt 1 ]]; then
-  echo "$SCRIPT_NAME: --list-changed, --list-claims, --upsert-claims, and --record-haken are mutually exclusive" >&2
+if [[ "$((LIST_CHANGED + LIST_CLAIMS + UPSERT_CLAIMS + RECORD_HAKEN + CASCADE_RECOMMEND))" -gt 1 ]]; then
+  echo "$SCRIPT_NAME: --list-changed, --list-claims, --upsert-claims, --record-haken, and --cascade-recommend are mutually exclusive" >&2
   exit 2
 fi
 if [[ "$LIST_CHANGED" -eq 1 && "$EXPLICIT_MATRIX" -eq 1 ]]; then
   echo "$SCRIPT_NAME: --list-changed and --matrix are mutually exclusive" >&2
+  exit 2
+fi
+if [[ "$CASCADE_RECOMMEND" -eq 1 && "$EXPLICIT_MATRIX" -eq 1 ]]; then
+  echo "$SCRIPT_NAME: --cascade-recommend and --matrix are mutually exclusive" >&2
   exit 2
 fi
 
@@ -996,6 +1022,104 @@ EOF
 
   if [[ "$HITL_REFUSE" -gt 0 ]]; then
     echo "$SCRIPT_NAME: HITL ($HITL_REFUSE id(s) not written; captain decides; do not invent)" >&2
+    exit 1
+  fi
+  exit 0
+fi
+
+if [[ "$CASCADE_RECOMMEND" -eq 1 ]]; then
+  parse_in="$(collect_change_set_hits)" || exit $?
+
+  FAILS=0
+  parsed=""
+  if [[ -n "$parse_in" ]]; then
+    while IFS=$'\t' read -r kind path lineno a b c d; do
+      [[ -z "${kind:-}" ]] && continue
+      if [[ "$kind" == "HITL" ]]; then
+        FAILS=$((FAILS + 1))
+        echo "$SCRIPT_NAME: HITL: malformed @claim in ${path}:${lineno} — ${a}" >&2
+        continue
+      fi
+      parsed+="${path}"$'\t'"${lineno}"$'\t'"${a}"$'\t'"${b}"$'\t'"${c}"$'\t'"${d}"$'\n'
+    done < <(printf '%s\n' "$parse_in" | parse_claim_lines)
+  fi
+
+  if [[ "$FAILS" -gt 0 ]]; then
+    echo "$SCRIPT_NAME: HITL ($FAILS malformed @claim; do not invent fields)" >&2
+    exit 1
+  fi
+
+  if [[ -z "$parsed" ]]; then
+    exit 0
+  fi
+
+  declare -A id_parent=() id_plane=() id_status=() id_path=() id_line=() id_conflict=()
+  ids_ordered=()
+
+  while IFS=$'\t' read -r path lineno cid parent plane status; do
+    [[ -z "${cid:-}" ]] && continue
+    if [[ -v id_parent[$cid] ]]; then
+      if [[ "${id_parent[$cid]}|${id_plane[$cid]}|${id_status[$cid]}" != "${parent}|${plane}|${status}" ]]; then
+        id_conflict[$cid]=1
+      elif [[ "${id_path[$cid]}" != "$path" ]]; then
+        id_conflict[$cid]=1
+      fi
+      continue
+    fi
+    ids_ordered+=("$cid")
+    id_parent[$cid]="$parent"
+    id_plane[$cid]="$plane"
+    id_status[$cid]="$status"
+    id_path[$cid]="$path"
+    id_line[$cid]="$lineno"
+  done <<< "$parsed"
+
+  echo "$SCRIPT_NAME: note: scope is the change set + parent= visible in that set only; children not in the set are not listed (no repo-wide parent= grep; captain may expand — modes.md §6.9)" >&2
+
+  HITL_REFUSE=0
+  recs=()
+
+  for cid in "${ids_ordered[@]}"; do
+    parent="${id_parent[$cid]}"
+    # Children visible in the set only: a line already in the set names parent=.
+    if [[ "$parent" == "-" ]]; then
+      continue
+    fi
+    parent_released=0
+    if [[ -v id_status[$parent] && "${id_status[$parent]}" == "changed" ]]; then
+      parent_released=1
+    fi
+    # Parent must be in the set and released (status=changed). Do not infer.
+    if [[ "$parent_released" -eq 0 ]]; then
+      continue
+    fi
+    if [[ -v id_conflict[$cid] ]]; then
+      HITL_REFUSE=$((HITL_REFUSE + 1))
+      echo "$SCRIPT_NAME: HITL: refuse invent id=${cid} — conflicting breadcrumbs (captain decides supersede; not date-wins)" >&2
+      continue
+    fi
+    if [[ -v id_conflict[$parent] ]]; then
+      HITL_REFUSE=$((HITL_REFUSE + 1))
+      echo "$SCRIPT_NAME: HITL: refuse invent id=${cid} — parent=${parent} has conflicting breadcrumbs (captain decides supersede; not date-wins)" >&2
+      continue
+    fi
+    recs+=("${parent}"$'\t'"${cid}"$'\t'"${id_path[$cid]}"$'\t'"${id_line[$cid]}")
+  done
+
+  if [[ ${#recs[@]} -gt 0 ]]; then
+    while IFS=$'\t' read -r parent cid path lineno; do
+      [[ -z "${cid:-}" ]] && continue
+      echo "cascade"$'\t'"recommend"$'\t'"parent=${parent}"$'\t'"child=${cid}"$'\t'"${path}:${lineno}"$'\t'"for-review"
+      echo "Recommend review: agent"
+      echo "Trigger: cascade"
+      echo "Class: for-review"
+      echo "Pointers: ${path}:${lineno} · ${id_path[$parent]}:${id_line[$parent]} · ${cid} · parent=${parent}"
+      echo "Ask: review child ${cid} against the new q from released parent ${parent} (modes.md §6.9); do not assign, notify, or merge"
+    done < <(printf '%s\n' "${recs[@]}" | sort)
+  fi
+
+  if [[ "$HITL_REFUSE" -gt 0 ]]; then
+    echo "$SCRIPT_NAME: HITL ($HITL_REFUSE id(s) not recommended; captain decides; do not invent)" >&2
     exit 1
   fi
   exit 0
