@@ -3,58 +3,34 @@
 > Part of the skill-package knowledge base. Hub: [AGENTS.md](../../../AGENTS.md)  
 > Related: [Roadmap](../../roadmap.md) · Plan: [../../plans/phase-2-bridge/README.md](../../plans/phase-2-bridge/README.md)
 
-**Status:** Shipped  
+**Status:** Withdrawn  
 **Slug:** `template-telemetry`  
 **Owners:** skill maintainers  
-**Last updated:** 2026-07-17  
-**Package version:** skill **2.4.0**
+**Last updated:** 2026-09-06  
+**Package version:** shipped in skill **2.4.0**; withdrawn from the current skill surface
 
-## Purpose
+## Purpose (historical)
 
-Capture **template / skill UX gaps** in an opt-in **local ledger** so maintainers can improve templates — without network, product code profiling, or secrets.
+Capture **template / skill UX gaps** in an opt-in **local ledger** so maintainers could improve templates — without network, product code profiling, or secrets.
 
-## Canonical authority
+## Why withdrawn
 
-| Topic | Authority | Role |
-|-------|-----------|------|
-| Privacy + payload contract | [template-telemetry.md](../../../skills/documentation-manager/references/template-telemetry.md) | SSOT |
-| Local entry point | [scripts/template-telemetry.sh](../../../scripts/template-telemetry.sh) | Real CLI |
-| Modes | [modes.md §12](../../../skills/documentation-manager/references/modes.md#12-template-telemetry-v24-slice-d) | Wiring |
-| Core rule | [SKILL.md](../../../skills/documentation-manager/SKILL.md) rule 24 | Index |
+This ritual does **not** make knowledge enslavement inevitable. It recorded skill UX gaps for maintainers; it did not bind claims to code, audit a git change set, cascade, or reconcile. Default was already **off**.
 
-## Acceptance criteria
+North star: [ADR-0002](../../adr/0002-knowledge-enslavement-captain.md). Captain stays captain — no ledger, no silent opt-in, no replacement ritual.
 
-- [x] Payload allowlist + never-send documented  
-- [x] Default off; opt-in path; air-gapped no-op  
-- [x] Local ledger script (no network tools)  
-- [x] Hardening drives on/off + never-send rejections  
-- [x] validate green  
+## What left the skill surface
 
-## Public surface
+| Removed | Why the cut is safe |
+|---------|---------------------|
+| `references/template-telemetry.md` | Agents no longer load a telemetry mode |
+| `scripts/template-telemetry.sh` | No default-off JSONL ritual to install or test |
+| SKILL rule + modes §12 + quality-checklist section | Not on the adopter path |
+| `install.sh` remote fetch of the procedure | Classic install no longer ships it |
 
-| Kind | Surface | Notes |
-|------|---------|-------|
-| Procedure | `references/template-telemetry.md` | **Real** |
-| CLI | `scripts/template-telemetry.sh` | **Real** — status / record |
-| Package version | **2.4.0** | |
-
-## How it works
-
-1. Default: do nothing.  
-2. User opts in (`DOCS_TELEMETRY_OPT_IN=1`, opt-in file, or `--opt-in`).  
-3. `record --gap-kind … --template-id …` appends one JSONL line to a local ledger.  
-4. Network never; no source/secrets/repo URLs.
-
-```mermaid
-flowchart LR
-  Gap[Template UX gap] --> Opt{opt-in?}
-  Opt -->|no| Noop[no-op]
-  Opt -->|yes| Led[local JSONL ledger]
-  Led -.->|never| Net[network]
-```
+History of the 2.4.0 ship remains in [CHANGELOG](../../../CHANGELOG.md#240--2026-07-17).
 
 ## Related docs
 
-- Umbrella: [phase-2-bridge](../../plans/phase-2-bridge/README.md)  
-- Prior: [team-governance](../team-governance/README.md) · [monorepo-hubs](../monorepo-hubs/README.md) · [polyglot-mvp](../polyglot-mvp/README.md)  
-- Next horizon: [knowledge-os](../../plans/knowledge-os/README.md) (Fase 3)  
+- Umbrella (historical ship): [phase-2-bridge](../../plans/phase-2-bridge/README.md)  
+- Binding north star: [ADR-0002](../../adr/0002-knowledge-enslavement-captain.md)  

@@ -69,7 +69,7 @@ Humanos y agentes consultan una **única narrativa verificable** del proyecto (y
 - [x] **Fase Bridge** cerrada según epic AC del [plan phase-2-bridge](../phase-2-bridge/README.md) ([roadmap Fase 2](../../roadmap.md#fase-2-bridge)) — skill **v2.4.0**.
 - [x] Example GitHub Actions pipeline runs the local structural audit — [`.github/workflows/docs-audit.yml`](../../../.github/workflows/docs-audit.yml) + [`scripts/audit-claims.sh`](../../../scripts/audit-claims.sh). Consumer-copyable, air-gapped (no network beyond checkout). **Gate = whole matrix** (fail merge on any **critical Contradicted**). Agent audit **reads** stay **diff-first** ([modes §6.0](../../../skills/documentation-manager/references/modes.md#60-change-set-diff-first)); the CI job must not pass `--list-changed`.
 - [x] Spec de living claims (formato, veredictos, truth score) en ADR + template — [ADR-0001](../../adr/0001-living-claims-wire-format.md), [living-claims.md](../../../skills/documentation-manager/references/living-claims.md), [feature pack](../../features/living-claims/README.md).
-- [ ] Política de privacidad: opt-in, anonymized, air-gapped path documentado. _(template telemetry covers opt-in; OS SaaS privacy still open)_
+- [ ] Política de privacidad: opt-in, anonymized, air-gapped path documentado. _(OS SaaS privacy still open; template telemetry is withdrawn from the skill surface)_
 - [x] Core local sigue funcionando **sin** cuenta SaaS.
 - [x] Quality bar anti over-documentation intacto.
 

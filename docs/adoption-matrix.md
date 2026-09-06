@@ -4,7 +4,7 @@
 > **Purpose:** Track where this skill is (or should be) installed, and the ArkGate pairing path.  
 > **Honesty rule:** only mark **Verified** when someone ran install/validate against that target. Hypotheses stay **Candidate**.
 
-**Last updated:** 2026-08-30 · Skill version **2.5.0**
+**Last updated:** 2026-09-06 · Skill version **2.5.0**
 
 ## How to use
 
@@ -36,7 +36,7 @@
 | Polyglot stack detection (Python/Go/Node-TS) | **2.1** | [polyglot-mvp](./features/polyglot-mvp/README.md) · `detect-stack.sh` |
 | Monorepo hubs (package index + root map) | **2.2** | [monorepo-hubs](./features/monorepo-hubs/README.md) · `detect-packages.sh` |
 | Team governance (`docs/team/` owners + notes) | **2.3** | [team-governance](./features/team-governance/README.md) |
-| Template telemetry (opt-in local ledger) | **2.4** | [template-telemetry](./features/template-telemetry/README.md) · `template-telemetry.sh` |
+| Template telemetry (opt-in local ledger) | **2.4** | [Withdrawn](./features/template-telemetry/README.md) — not on the current skill surface (does not serve north star) |
 | Living claims v0 + local CI structural audit | **2.5** | [living-claims](./features/living-claims/README.md) · `audit-claims.sh` — Knowledge OS **first increment** (toward 100×; not a second 10×) |
 
 ## Target projects

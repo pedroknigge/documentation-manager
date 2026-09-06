@@ -4,6 +4,16 @@ All notable changes to the **documentation-manager** skill package.
 
 Format: keep entries scannable. Versions follow semver for the skill package (`SKILL.md` metadata).
 
+## [Unreleased]
+
+### Removed
+
+- **Template telemetry** withdrawn from the skill surface (P2 subtract vs [ADR-0002](docs/adr/0002-knowledge-enslavement-captain.md))  
+- Deleted `scripts/template-telemetry.sh` and `references/template-telemetry.md`  
+- Agents no longer load a telemetry mode, rule, or quality-checklist ritual  
+- History: shipped in **2.4.0**; pack marked [Withdrawn](docs/features/template-telemetry/README.md)  
+- No version bump — install floor stays **2.5.0**
+
 ## [2.5.0] — 2026-08-30
 
 ### Added

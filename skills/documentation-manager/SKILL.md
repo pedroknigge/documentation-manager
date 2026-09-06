@@ -9,8 +9,8 @@ description: >
   "arkgate bridge", "knowledge dashboard", /documentation-manager. Intents:
   integrate, audit, from-zero. Feature autopilot v2; Implementation bridge
   opt-in; ArkGate post-gate sync; dashboard HTML; polyglot + monorepo hubs;
-  team governance (docs/team); opt-in template-gap telemetry (default off);
-  living claims v0 + local CI structural audit (Knowledge OS first increment).
+  team governance (docs/team); living claims v0 + local CI structural audit
+  (Knowledge OS first increment).
   v2.5 Knowledge OS first increment (toward 100×). On conflict code wins.
 license: MIT
 metadata:
@@ -48,8 +48,7 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 21. **Polyglot stack detection (v2.1 Slice A / skill 2.1.0).** On project discover (integrate / audit / from-zero / adopt), detect stack from filesystem (`package.json`, `pyproject.toml`, `go.mod`, …) via [skill-discovery.md](references/skill-discovery.md) **Polyglot stack detection** (or `scripts/detect-stack.sh`). Use **Inventory by stack** and **Docs layout guidance by stack** — do **not** assume Node/TS. Never invent ModuleIds/endpoints for frameworks without code evidence. See [modes.md §0.3](references/modes.md#03-stack-detection-polyglot-mvp--v21).
 22. **Monorepo hubs (v2.2 Slice B).** Detect multi-package trees (`pnpm-workspace.yaml`, `package.json` workspaces, `go.work`, multi-package dirs) via [skill-discovery.md](references/skill-discovery.md) **Monorepo hubs** (or `scripts/detect-packages.sh`). Root hub is a **map + Package index**, not a dump; multi-package coverage marks **gap** packages; default **package non-writes** when only indexing root. See [modes.md §0.4](references/modes.md#04-monorepo-hubs-v22-slice-b).
 23. **Team governance (v2.3 Slice C).** Optional `docs/team/` with **owners** + **approval notes** (last-approved style). Create vs link per [team-governance.md](references/team-governance.md); hub links Team without becoming an HR wiki; integrate-first — adding team must **not** rewrite product-vision / requirements / ADRs. No CODEOWNERS engine or BPM. See [modes.md §11](references/modes.md#11-team-governance-v23-slice-c).
-24. **Template telemetry (v2.4 Slice D).** Opt-in **local ledger** for **template/skill UX gaps only** ([template-telemetry.md](references/template-telemetry.md); `scripts/template-telemetry.sh`). **Default off**; never-send source/secrets/repo URLs; **network never**; air-gapped no-op when opt-in off. See [modes.md §12](references/modes.md#12-template-telemetry-v24-slice-d).
-25. **Living claims + CI structural audit (v2.5 / Knowledge OS first increment).** Audit matrices use **living claims v0**: `anchor.path` / optional `anchor.symbol` / optional `anchor.hash`, `severity` (`critical` \| `normal`), verdicts unchanged. Matrix-first ([audit-template.md](references/audit-template.md)); procedure [living-claims.md](references/living-claims.md); wire [ADR-0001](../../docs/adr/0001-living-claims-wire-format.md). Truth score stays **advisory** (dashboard heuristic); **local air-gapped** `scripts/audit-claims.sh` / example `docs-audit` CI is the **gate** (fail on critical Contradicted). No SaaS. Optional code-comment breadcrumbs (`id` + parent/plane + status) **mirror** the same `id` — [living-claims.md § Code breadcrumbs](references/living-claims.md#code-breadcrumbs-comment-mirror). **Audit / reconcile reads are diff-first** (git change set only; never a full-tree scan unless the user opts in) — [modes.md §6.0](references/modes.md#60-change-set-diff-first). See [modes.md §6](references/modes.md#6-audit-project-or-feature) / [§13](references/modes.md#13-living-claims--ci-structural-audit-v25).
+24. **Living claims + CI structural audit (v2.5 / Knowledge OS first increment).** Audit matrices use **living claims v0**: `anchor.path` / optional `anchor.symbol` / optional `anchor.hash`, `severity` (`critical` \| `normal`), verdicts unchanged. Matrix-first ([audit-template.md](references/audit-template.md)); procedure [living-claims.md](references/living-claims.md); wire [ADR-0001](../../docs/adr/0001-living-claims-wire-format.md). Truth score stays **advisory** (dashboard heuristic); **local air-gapped** `scripts/audit-claims.sh` / example `docs-audit` CI is the **gate** (fail on critical Contradicted). No SaaS. Optional code-comment breadcrumbs (`id` + parent/plane + status) **mirror** the same `id` — [living-claims.md § Code breadcrumbs](references/living-claims.md#code-breadcrumbs-comment-mirror). **Audit / reconcile reads are diff-first** (git change set only; never a full-tree scan unless the user opts in) — [modes.md §6.0](references/modes.md#60-change-set-diff-first). See [modes.md §6](references/modes.md#6-audit-project-or-feature) / [§13](references/modes.md#13-living-claims--ci-structural-audit-v25).
 
 ## Step 0 — Detect scope, mode, and Intent
 
@@ -94,7 +93,6 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 - “after ark-check” / “post-gate docs” / gate just ran + docs intent → **sync** or **audit** with **ArkGate bridge**
 - “dashboard” / “docs HTML” / “knowledge report” → generate **Knowledge dashboard** ([knowledge-dashboard.md](references/knowledge-dashboard.md))
 - “owners” / “quién es dueño” / “team docs” / “approval notes” / “docs/team” → **Team governance** ([team-governance.md](references/team-governance.md); modes §11)
-- “template telemetry” / “opt-in telemetry” / “record template gap” → **Template telemetry** only if user opts in ([template-telemetry.md](references/template-telemetry.md); modes §12); default off
 - “living claims” / “truth score” / “docs CI” / “fail on Contradicted” → **Living claims** + local CI gate ([living-claims.md](references/living-claims.md); modes §13)
 
 **Maturity** (when relevant): thin | mixed | mature — see [modes.md](references/modes.md#2-adopt-project).
@@ -181,9 +179,6 @@ Static HTML from existing docs only (`generate-docs-dashboard.sh`). View-only; m
 ### Team governance (v2.3)
 Optional `docs/team/` owners + approval notes; create vs link; integrate-first. See [team-governance.md](references/team-governance.md) and modes §11.
 
-### Template telemetry (v2.4)
-Opt-in local ledger for template gaps only; default off; air-gapped no-op. See [template-telemetry.md](references/template-telemetry.md) and modes §12.
-
 ### Living claims + CI audit (v2.5)
 Matrix-first living claims; local `audit-claims.sh` / example docs-audit GHA; score advisory. See [living-claims.md](references/living-claims.md) and modes §13.
 
@@ -225,7 +220,6 @@ Follow [quality-checklist.md](references/quality-checklist.md).
 | [references/team-governance.md](references/team-governance.md) | **Team governance** (create/link, non-writes) |
 | [references/team-owners-template.md](references/team-owners-template.md) | Consumer `docs/team/OWNERS.md` |
 | [references/team-approval-notes-template.md](references/team-approval-notes-template.md) | Consumer `docs/team/approval-notes.md` |
-| [references/template-telemetry.md](references/template-telemetry.md) | **Template telemetry** (opt-in, privacy, local ledger) |
 | [references/quality-checklist.md](references/quality-checklist.md) | Done criteria |
 
 ## When NOT to use / defaults

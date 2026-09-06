@@ -211,7 +211,6 @@ scripts/
   install-smoke.sh
   detect-stack.sh          ← polyglot (v2.1)
   detect-packages.sh       ← monorepo (v2.2)
-  template-telemetry.sh    ← opt-in local ledger (v2.4)
   audit-claims.sh          ← living-claims CI (v2.5, air-gapped)
   generate-docs-dashboard.sh
 ```
