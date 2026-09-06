@@ -14,9 +14,11 @@ Synthetic **project roots** and **golden tables** used by `scripts/validate-skil
 | `claims-pass/` | audit-claims.sh PASS | matrix with OK / Partial only |
 | `claims-fail/` | audit-claims.sh FAIL | critical + Contradicted row |
 | `claims-none/` | audit-claims.sh skip | no `docs/audit/claims-matrix.md` |
+| `survey-heuristics/` | survey-docs.sh | CapCase `Readme.md`; `docs/adr/0001-…`; `examples/` demo MD; `TableHeadRenderer.tsx` |
 
 Stack detection smoke: `scripts/detect-stack.sh scripts/fixtures/<fixture>`.  
 Package list smoke: `scripts/detect-packages.sh scripts/fixtures/monorepo-thin`.  
-Claims gate smoke: `scripts/audit-claims.sh scripts/fixtures/claims-{pass,fail,none}`.
+Claims gate smoke: `scripts/audit-claims.sh scripts/fixtures/claims-{pass,fail,none}`.  
+Survey heuristics smoke: `scripts/survey-docs.sh --readme|--adrs|--claim-scope scripts/fixtures/survey-heuristics`.
 
 These are **not** full agent e2e runs. They lock layout expectations and decision-table contracts so refactors fail fast.

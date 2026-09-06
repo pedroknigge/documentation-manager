@@ -31,10 +31,10 @@ ok "version sync README + AGENTS ↔ SKILL ($VER)"
 
 # ─── Fixtures present ───────────────────────────────────────────────────────
 for f in thin-repo mature-repo no-docs-repo python-thin-repo go-thin-repo monorepo-thin \
-  golden/autopilot-cases.tsv claims-pass claims-fail claims-none; do
+  golden/autopilot-cases.tsv claims-pass claims-fail claims-none survey-heuristics; do
   [[ -e "$FIX/$f" ]] || fail "missing fixture $f"
 done
-ok "fixtures present (thin, mature, no-docs, python-thin, go-thin, monorepo-thin, golden, claims-*)"
+ok "fixtures present (thin, mature, no-docs, python-thin, go-thin, monorepo-thin, golden, claims-*, survey-heuristics)"
 
 # thin: code, no hub/docs
 [[ -f "$FIX/thin-repo/src/app/index.ts" ]] || fail "thin-repo missing code"
@@ -145,6 +145,42 @@ echo "$nw_out" | grep -qx "packages/a" || fail "detect-packages npm workspaces e
 echo "$nw_out" | grep -qx "packages/b" || fail "detect-packages npm workspaces expected packages/b, got: $nw_out"
 rm -rf "$_nw"
 ok "detect-packages.sh on monorepo-thin (+ empty thin + go.work + npm workspaces)"
+
+# ─── survey-docs.sh cold-start heuristics (issue #11) ────────────────────────
+SURVEY="$ROOT/scripts/survey-docs.sh"
+SURVFIX="$FIX/survey-heuristics"
+[[ -f "$SURVEY" ]] || fail "missing scripts/survey-docs.sh"
+chmod +x "$SURVEY" 2>/dev/null || true
+if grep -E -q '\b(curl|wget|nc)\b|https?://' "$SURVEY"; then
+  fail "survey-docs.sh must not use network tools or URLs"
+fi
+[[ -f "$SURVFIX/Readme.md" ]] || fail "survey-heuristics missing CapCase Readme.md"
+[[ ! -f "$SURVFIX/README.md" ]] || fail "survey-heuristics must not also have README.md"
+[[ -f "$SURVFIX/src/TableHeadRenderer.tsx" ]] || fail "survey-heuristics missing TableHeadRenderer.tsx"
+[[ -f "$SURVFIX/examples/Button.md" ]] || fail "survey-heuristics missing examples/Button.md"
+readme_out=$(bash "$SURVEY" --readme "$SURVFIX")
+echo "$readme_out" | grep -qx "Readme.md" \
+  || fail "survey-docs --readme must find CapCase Readme.md, got: $readme_out"
+echo "$readme_out" | grep -qi "no README" \
+  && fail "survey-docs --readme must not say no README when Readme.md exists"
+adrs_out=$(bash "$SURVEY" --adrs "$SURVFIX")
+echo "$adrs_out" | grep -qx "docs/adr/0001-use-x.md" \
+  || fail "survey-docs --adrs must list docs/adr/0001-use-x.md, got: $adrs_out"
+echo "$adrs_out" | grep -Fi "TableHeadRenderer" \
+  && fail "survey-docs --adrs must not treat TableHeadRenderer as ADR, got: $adrs_out"
+scope_out=$(bash "$SURVEY" --claim-scope "$SURVFIX")
+echo "$scope_out" | grep -qx "Readme.md" \
+  || fail "survey-docs --claim-scope must include root Readme.md, got: $scope_out"
+echo "$scope_out" | grep -qx "docs/Architecture.md" \
+  || fail "survey-docs --claim-scope must include CapCase docs/Architecture.md, got: $scope_out"
+echo "$scope_out" | grep -qx ".github/CONTRIBUTING.md" \
+  || fail "survey-docs --claim-scope must include .github/CONTRIBUTING.md, got: $scope_out"
+echo "$scope_out" | grep -E '^(examples/|.*\/examples\/)' \
+  && fail "survey-docs --claim-scope must exclude examples/** by default, got: $scope_out"
+opt_in=$(bash "$SURVEY" --claim-scope --include-examples "$SURVFIX")
+echo "$opt_in" | grep -qx "examples/Button.md" \
+  || fail "survey-docs --include-examples must list examples/Button.md, got: $opt_in"
+ok "survey-docs.sh CapCase README + tight ADR + examples/** excluded"
 
 # ─── Golden autopilot anchors (regression of decision table prose) ───────────
 GOLDEN="$FIX/golden/autopilot-cases.tsv"
@@ -265,6 +301,29 @@ grep -F -q "Monorepo hubs" "$SKILL_DIR/references/quality-checklist.md" \
 grep -F -q "Package index" "$SKILL_DIR/references/agents-md-template.md" \
   || fail "agents-md-template missing Package index"
 ok "monorepo hubs anchors (discovery + modes + SKILL + QC + hub template)"
+
+# ─── Cold-start survey heuristic anchors (issue #11) ─────────────────────────
+DISC="$SKILL_DIR/references/skill-discovery.md"
+for anchor in \
+  "Cold-start survey heuristics" \
+  "Readme.md" \
+  "*adr*" \
+  "TableHeadRenderer" \
+  "examples/**" \
+  "survey-docs.sh"
+do
+  grep -F -q -- "$anchor" "$DISC" || fail "skill-discovery missing survey anchor: $anchor"
+  grep -F -q -- "$anchor" "$MODES" || fail "modes.md missing survey anchor: $anchor"
+done
+grep -F -q "Cold-start survey heuristics" "$SKILL_FILE" \
+  || fail "SKILL.md missing Cold-start survey heuristics"
+grep -F -q "Readme.md" "$SKILL_DIR/references/quality-checklist.md" \
+  || fail "quality-checklist missing case-insensitive Readme.md"
+grep -F -q "*adr*" "$SKILL_DIR/references/quality-checklist.md" \
+  || fail "quality-checklist missing *adr* ban"
+grep -F -q "examples/**" "$SKILL_DIR/references/quality-checklist.md" \
+  || fail "quality-checklist missing examples/** exclude"
+ok "cold-start survey heuristic anchors (discovery + modes + SKILL + QC)"
 
 # ─── Team governance anchors (Slice C) ───────────────────────────────────────
 for f in team-governance.md team-owners-template.md team-approval-notes-template.md; do

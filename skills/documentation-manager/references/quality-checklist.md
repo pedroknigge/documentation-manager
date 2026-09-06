@@ -48,6 +48,7 @@ Run before reporting done.
 - [ ] On conflict **code wins** — no inventing features to match docs
 - [ ] Audit (if run): claims matrix with verdicts OK / Partial / Missing / Contradicted
 - [ ] Audit / reconcile reads were **diff-first** (git change set); no full-tree scan unless the user opted in
+- [ ] Cold-start / full-tree claim scope (if used) defaulted to `docs/` + root + `.github`; **`examples/**` excluded** unless opted in ([skill-discovery.md](skill-discovery.md) Cold-start survey heuristics)
 - [ ] Cascade: recommended review only when a parent breadcrumb appears in the change set; apply [modes.md §6.7](modes.md#67-cascade-verdicts-haken) (hold / escalate / break / for-review); HITL when ambiguous — captain decides ties; no cascade engine
 - [ ] Reconcile: agent-written plans/MDs classified **evolution** / **regime change** / **orphan** / **contradiction** ([modes.md §6.8](modes.md#68-reconcile-classification-plansmds)); no living contradictions; supersede marking — never parallel contradicting SSOT; latest-by-date does not auto-win; HITL when unclear — captain decides ties
 - [ ] Recommend review: when cascade / reconcile / audit needs eyes, recommend **human** or **agent** ([modes.md §6.9](modes.md#69-recommend-review-human-vs-agent)) with pointers into the change set / claims / class; HITL → human; no assign, notify, merge, or engine
@@ -112,6 +113,8 @@ Run before reporting done.
 - [ ] Maturity classified (`thin` | `mixed` | `mature`); variant announced (`full` | `integrate`)
 - [ ] No parallel tree that rewrites existing ADRs/modules when mature **and Intent=integrate**
 - [ ] Evolved layout **adopted** (integrate) — did not reshape `docs/` to match the recommended tree; HITL before any reshape
+- [ ] Root README detected **case-insensitively** (`Readme.md` counts — do not report “no README”)
+- [ ] ADRs from **real ADR homes/names** only — no `*adr*` substring glob (e.g. `TableHeadRenderer.tsx` is not an ADR)
 - [ ] Coverage matrix (Surface coverage) lists discovered surfaces; gaps explicit
 - [ ] ADR numbering matches repo scheme; no duplicate decisions
 - [ ] Feature packs are entry points (surface + links) when module docs already exist — not re-dumps

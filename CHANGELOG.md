@@ -6,6 +6,13 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+### Fixed
+
+- **Cold-start survey heuristics** (LIVE FIELD DOGFOOD / [#11](https://github.com/pedroknigge/documentation-manager/issues/11)): case-insensitive root README (`Readme.md` counts); tight ADR homes/names (no `*adr*` substring — `TableHeadRenderer.tsx` is not an ADR); default claim/doc scope is `docs/` + root + `.github` and **excludes** `examples/**` unless you opt in  
+- Helper: `scripts/survey-docs.sh` (same shape as `detect-stack.sh` / `detect-packages.sh`)  
+- Flat CapCase `docs/*.md` stays **adopted** — never rewritten to the skill template tree  
+- No version bump — install floor stays **2.5.0**
+
 ### Removed
 
 - **Template telemetry** withdrawn from the skill surface (P2 subtract vs [ADR-0002](docs/adr/0002-knowledge-enslavement-captain.md))  

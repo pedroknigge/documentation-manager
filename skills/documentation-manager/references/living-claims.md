@@ -56,7 +56,7 @@ score = (OK_N * 100 + PARTIAL_N * 50) / TOTAL_V   # TOTAL_V > 0
 ## Agent procedure
 
 1. **Diff-first** change set ([modes.md §6.0](modes.md#60-change-set-diff-first)): `./scripts/audit-claims.sh --list-changed [--base REF]` or the git commands there. Never a full-tree read by default.  
-2. Inventory **only those paths** ([modes.md §6.1](modes.md#61-code-inventory-change-set-only)). Extract structural claims only from the set.  
+2. Inventory **only those paths** ([modes.md §6.1](modes.md#61-code-inventory-change-set-only)). Extract structural claims only from the set. If the user opted into **full-tree / cold-start**, default that universe to `docs/` + root markdown + `.github` contributor docs and **exclude** `examples/**` unless they asked to include demos ([skill-discovery.md](skill-discovery.md) **Cold-start survey heuristics**; `./scripts/survey-docs.sh --claim-scope`).  
 3. For each claim: set `anchor.path` (and optional symbol/hash); set `severity=critical` only when a false claim would ship a lie about a shipped surface / security / install path.  
 4. Verdicts unchanged — **code wins**.  
 5. Write `docs/audit/claims-matrix.md` (or sandbox) from [audit-template.md](audit-template.md).  
