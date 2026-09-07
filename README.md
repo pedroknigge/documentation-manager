@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v2.5.2</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT
+  <strong>v2.5.3</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.2-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.3-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -279,6 +279,7 @@ Version notes, shipped packs, and epics live **off** this page:
 | **Shipped packs** | [AGENTS.md](./AGENTS.md#features-shipped-skill-behavior) |
 | **Roadmap / plans** | [docs/roadmap.md](./docs/roadmap.md) · [docs/plans/](./docs/plans/) |
 | **Adoption** | [docs/adoption-matrix.md](./docs/adoption-matrix.md) |
+| **Sales / dogfood** | [docs/sales-stats.json](./docs/sales-stats.json) — anonymous aggregates also back or lower README claims when evidence changes (code wins; no target names) |
 | **Upgrade** | **npx first**, then `./install.sh` (or the curl/bash install.sh). `npx` last **wipes** `scripts/`. · [skill-discovery.md](./skills/documentation-manager/references/skill-discovery.md) |
 
 ---

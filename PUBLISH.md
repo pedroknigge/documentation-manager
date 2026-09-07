@@ -67,6 +67,16 @@ Version must match across:
 - `CHANGELOG.md` section for that version
 - `docs/adoption-matrix.md` version line (when cutting a major)
 
+### Cutting **2.5.3** (anonymous sales/GTM dogfood stats)
+
+Narrative: empty schema v1 ledger at `docs/sales-stats.json` for LIVE FIELD DOGFOOD (every 72h, off-repo). Public rows never include target owner/repo/URLs. Aggregates may back or lower README product claims (never invent numbers). **Not** a new major; **not** a Knowledge OS leap.
+
+```bash
+# after gate is green:
+git tag -a v2.5.3 -m "documentation-manager skill v2.5.3 — anonymous sales/GTM dogfood stats"
+git push origin main --tags   # only when you intend to publish
+```
+
 ### Cutting **2.5.2** (Gemini / agy classic install)
 
 Narrative: classic `install.sh` covers Gemini CLI (`~/.gemini/skills/`) plus existing `~/.gemini/config/skills/` and `~/.gemini/antigravity/skills/` parents. **Not** a new major; **not** a Knowledge OS leap.
@@ -89,7 +99,7 @@ git push origin main --tags   # only when you intend to publish
 
 ### Cutting **2.5.0** (Knowledge OS first increment)
 
-Narrative: **first OS foundation slice toward 100×** (living claims v0 + local CI audit). Do **not** market as a second 10× or a full 100× leap. Historical — current install floor is **2.5.2**.
+Narrative: **first OS foundation slice toward 100×** (living claims v0 + local CI audit). Do **not** market as a second 10× or a full 100× leap. Historical — current install floor is **2.5.3**.
 
 ```bash
 # after gate is green:

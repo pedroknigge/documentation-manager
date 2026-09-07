@@ -6,6 +6,20 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.3] — 2026-09-07
+
+Anonymous sales/GTM dogfood stats file for LIVE FIELD DOGFOOD (every 72h, off-repo). **Not** a new major; **not** a Knowledge OS leap.
+
+### Added
+
+- **GTM:** [docs/sales-stats.json](docs/sales-stats.json) — schema v1 empty ledger (`runs: []`); later anonymized rows: `{ at, ok, duration_s, skill_version, phases[], findings, finding_kinds[] }`
+- Privacy: public rows never include target owner, repo, URLs, or identifiable foreign content; aggregates may back or lower README product claims (never invent numbers; never name target repos)
+- Pointers: README History one-liner + [docs/adoption-matrix.md](docs/adoption-matrix.md) — marketing agents; README-claims coupling
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.3 —`; `metadata.version` **2.5.3**
+
 ## [2.5.2] — 2026-09-06
 
 Classic installer covers Gemini CLI (and Antigravity “agy” when that parent already exists). **Not** a new major; **not** a Knowledge OS leap.
