@@ -13,8 +13,8 @@ Anonymous sales/GTM dogfood stats file for LIVE FIELD DOGFOOD (every 72h, off-re
 ### Added
 
 - **GTM:** [docs/sales-stats.json](docs/sales-stats.json) — schema v1 empty ledger (`runs: []`); later anonymized rows: `{ at, ok, duration_s, skill_version, phases[], findings, finding_kinds[] }`
-- Privacy: public rows never include target owner, repo, URLs, or identifiable foreign content
-- Pointer: [docs/adoption-matrix.md](docs/adoption-matrix.md) one line for marketing agents
+- Privacy: public rows never include target owner, repo, URLs, or identifiable foreign content; aggregates may back or lower README product claims (never invent numbers; never name target repos)
+- Pointers: README History one-liner + [docs/adoption-matrix.md](docs/adoption-matrix.md) — marketing agents; README-claims coupling
 
 ### Changed
 

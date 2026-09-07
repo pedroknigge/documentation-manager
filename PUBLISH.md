@@ -69,7 +69,7 @@ Version must match across:
 
 ### Cutting **2.5.3** (anonymous sales/GTM dogfood stats)
 
-Narrative: empty schema v1 ledger at `docs/sales-stats.json` for LIVE FIELD DOGFOOD (every 72h, off-repo). Public rows never include target owner/repo/URLs. **Not** a new major; **not** a Knowledge OS leap.
+Narrative: empty schema v1 ledger at `docs/sales-stats.json` for LIVE FIELD DOGFOOD (every 72h, off-repo). Public rows never include target owner/repo/URLs. Aggregates may back or lower README product claims (never invent numbers). **Not** a new major; **not** a Knowledge OS leap.
 
 ```bash
 # after gate is green:

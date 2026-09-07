@@ -3,7 +3,7 @@
   "product": "documentation-manager",
   "updated_at": null,
   "skill_version_floor": "2.5.2",
-  "privacy": "Public rows never include target owner, repo, URLs, or identifiable foreign content.",
+  "privacy": "Public rows never include target owner, repo, URLs, or identifiable foreign content. Aggregates may back or lower README product claims; never invent numbers; never name target repos.",
   "aggregates": {
     "runs_total": 0,
     "runs_ok": 0,

@@ -71,7 +71,7 @@ Update the public table above only when install is intentional and recorded.
 
 ## Metrics (honest)
 
-Sales/dogfood anonymous metrics live at [sales-stats.json](./sales-stats.json) (usable by marketing agents; no target names).
+Sales/dogfood anonymous metrics live at [sales-stats.json](./sales-stats.json) (usable by marketing agents; no target names). Aggregates also back or lower README claims when evidence changes (code wins).
 
 | Metric | Baseline (v1.3 era) | v2.0 packaging | How measured |
 |--------|---------------------|----------------|--------------|

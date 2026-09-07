@@ -279,6 +279,7 @@ Version notes, shipped packs, and epics live **off** this page:
 | **Shipped packs** | [AGENTS.md](./AGENTS.md#features-shipped-skill-behavior) |
 | **Roadmap / plans** | [docs/roadmap.md](./docs/roadmap.md) · [docs/plans/](./docs/plans/) |
 | **Adoption** | [docs/adoption-matrix.md](./docs/adoption-matrix.md) |
+| **Sales / dogfood** | [docs/sales-stats.json](./docs/sales-stats.json) — anonymous aggregates also back or lower README claims when evidence changes (code wins; no target names) |
 | **Upgrade** | **npx first**, then `./install.sh` (or the curl/bash install.sh). `npx` last **wipes** `scripts/`. · [skill-discovery.md](./skills/documentation-manager/references/skill-discovery.md) |
 
 ---
