@@ -73,7 +73,7 @@ On **from-zero / integrate / adopt / audit** when multi-package signals exist:
    - Existing hard decisions
 3. Create **hub first** (`AGENTS.md` preferred).
 4. Create core set:
-   - `docs/product-vision.md` — product outcomes only (not process)
+   - `docs/product-vision.md` — product outcomes only (not process); include the **§16** Mínimo pack (problem·user·JTBD, MVP + non-goals, critical flows, 1–2 metrics, killer assumptions). **Never invent product facts** — ask, mark Inferred from code, or leave gap/TBD.
    - `docs/requirements.md` (RF-IDs + evidence when possible)
    - `docs/architecture.md`
    - `docs/roadmap.md`
@@ -88,7 +88,7 @@ On **from-zero / integrate / adopt / audit** when multi-package signals exist:
 
 | Doc | Owns |
 |-----|------|
-| product-vision | Problem, users, promise, product outcomes |
+| product-vision | Problem, users, JTBD, promise, product outcomes — plus the rest of the [§16](#16-product-domain-minimo) Mínimo pack (or one linked authority each) |
 | requirements NFR / operations / hub | Process, ownership, gates |
 | architecture | Technical form, boundaries |
 
@@ -134,8 +134,9 @@ When monorepo: ensure root hub has **Package index** and multi-package **Surface
 2. Targeted questions only.  
 3. Core set + hub from the **proposed** layout (thin — nothing evolved to adopt); ADRs `Accepted — inferred from code`.  
 4. **Coverage matrix required**.  
-5. Atomic feature packs for key domains.  
-6. Summarize inferred vs confirmed.  
+5. **§2 Mínimo** ([§16](#16-product-domain-minimo)): propose the closed pack; inferred vs confirmed; never invent product facts.  
+6. Atomic feature packs for key domains.  
+7. Summarize inferred vs confirmed.  
 
 ### 2.2b Monorepo package non-writes (integrate)
 
@@ -159,7 +160,8 @@ Allowed: root hub Package index, coverage **gap** rows, links to existing packag
 5. Write only: coverage matrix, entry feature packs, net-new ADRs (same numbering), thin gaps — **into the evolved tree**, not a parallel template tree.  
 6. Prefer a **claims audit** first if user mentioned drift or many path claims.  
 7. **Team governance** (§11): if user asked for owners/team → create or link `docs/team/`; if not asked, do not force; never rewrite product-vision to “add owners”.  
-8. Summary: authorities, created, **non-writes**, **layout: adopted**, gaps, promotion if sandbox.  
+8. **§2 Mínimo** ([§16](#16-product-domain-minimo)): **map** the closed pack onto the evolved product-domain home; write gap notes — do **not** force `product-vision.md` or rewrite the captain’s vision.  
+9. Summary: authorities, created, **non-writes**, **layout: adopted**, gaps, **§2 Mínimo** mapped/gaps, promotion if sandbox.  
 
 ### 2.4 Output location (sandbox)
 
@@ -402,6 +404,7 @@ If sync reveals many Contradicted claims → suggest **audit** (still **diff-fir
 7. **Reconcile pointer:** if the change set includes agent-written plans/MDs that share a topic with a living doc (or with each other), apply [§6.8](#68-reconcile-classification-plansmds). Do not walk `docs/**` for a second tree.
 8. **Narrative-comment pointer:** if a changed file has non-`@claim` prose comments (JSDoc, block, AI TODOs that assert facts) that look stale, redundant, snapshot, or fact-vs-changed-symbol, apply [§6.10](#610-narrative-comments-report-first) and emit [§6.9](#69-recommend-review-human-vs-agent). Report only; never auto-edit. Do not walk the tree.
 9. Human is captain. Propose matrix updates; HITL when who-wins is unclear. When cascade / reconcile / audit / narrative comments need eyes, [§6.9](#69-recommend-review-human-vs-agent) — recommend, do not assign or merge.
+10. **§2 Mínimo presence:** if a product-domain doc is already in the path list / announced docs-universe, apply [§16.5](#165-audit-presence). Do **not** walk the tree to find vision. Diff-first / docs-universe stay unchanged.
 
 Announce: `Audit-scope: diff-first | files: <n> | base: <HEAD|ref|n/a>` · `Audit-scope: docs-universe (change set unusable) | files: <n> | commits: <n> | base: <ref> | universe: <hub-docs|sandbox:path> | reason: huge` · or `Audit-scope: full-tree (user opt-in)`.
 
@@ -707,8 +710,9 @@ Ask: <one question if human / HITL; else "review then delete or rewrite — do n
 6. If user named a folder (`test/`, `docs-sandbox/`) → **Out: sandbox:path** with banners + promotion plan.  
 7. Do **not** silently overwrite productive `docs/` + `CLAUDE.md` SSOT; if they insist on root from-zero on a mature monorepo, confirm once that overwrite is intended.  
 8. Status tokens from taxonomy; process rules stay out of product-vision.  
-9. Optional: run audit matrix against *old* docs as appendix (“what the previous docs got wrong”).  
-10. Hub + `docs/` shape is **shared** across stacks; only inventory vocabulary and feature boundaries change.  
+9. **§2 Mínimo** ([§16](#16-product-domain-minimo)): **propose** the closed pack into the proposed or adopted product-domain home. Never invent JTBD, metrics, flows, or assumptions.  
+10. Optional: run audit matrix against *old* docs as appendix (“what the previous docs got wrong”).  
+11. Hub + `docs/` shape is **shared** across stacks; only inventory vocabulary and feature boundaries change.  
 
 ### 7.2 Difference from adopt-integrate
 
@@ -885,6 +889,102 @@ Announce: `P2P-coverage: loaded | generate: … | audit: … | captain: …`
 
 ---
 
+<a id="16-product-domain-minimo"></a>
+
+## 16. Product domain Mínimo (v2.5.6 · Pedro norte §2)
+
+**When:** Project-level **from-zero** / **bootstrap** / **adopt-full**; **integrate** (map + gaps); **audit** when a product-domain doc is already in the [§6.0](#60-change-set-diff-first) set or the announced docs-universe.
+
+**Not when:** named feature/plan only (that slug’s MVP lives on the plan/pack template); **Sólido** edges/states (other increment); writing a real product’s JTBD inside **this** skill-package repo; go/no-go / Gate A/B (that is [§14](#14-gono-go-decision-trail-v254)); Appendix A honesty map (that is [§15](#15-prototype--production-coverage-apendice-a)).
+
+Parent: Pedro norte **§2 Producto y dominio** (Mínimo). Captain: [ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md). **[§6.0](#60-change-set-diff-first) diff-first / docs-universe unchanged** — this section does not authorize a tree walk. **Does not reuse §14 or §15.**
+
+### 16.1 Closed checklist (Mínimo)
+
+Presence items — **closed**. Do not add Sólido items here.
+
+| # | Item | What counts as present |
+|---|------|------------------------|
+| 1 | Problem · user · JTBD | One page (or one authority) names the problem, the user, and the job-to-be-done |
+| 2 | MVP scope + non-goals | In vs later/out — **both** listed |
+| 3 | Critical flows | **alta** · **login** · **valor** · **pago** · **baja/export** — each Present, Partial, Missing, or N/A-with-evidence |
+| 4 | Success metrics | **1–2** metrics (not a dashboard dump) |
+| 5 | Killer assumptions | Named assumptions that would kill the bet if false |
+
+**Home (proposal):** `docs/product-vision.md` (or the evolved equivalent). Other items may live on that page or on **one** linked authority each. Never a parallel vision tree.
+
+**Adopt evolved layout.** If the repo already has `VISION.md`, a README product section, `docs/domain.md`, CapCase vision, etc. — **that** is the home. Do **not** force `product-vision.md` over the captain.
+
+<a id="162-presence-tokens-closed"></a>
+
+### 16.2 Presence tokens (closed)
+
+These tokens are **not** [§6.3](#63-verdicts) matrix verdicts. Do not insert matrix rows for product narrative unless the user asked for living claims on those sentences.
+
+| Token | Meaning |
+|-------|---------|
+| **Present** | Named section or page with real content (not an empty heading) |
+| **Partial** | Topic mentioned but incomplete (users without JTBD; a metric with no definition) |
+| **Missing** | Not found in the in-scope docs |
+| **N/A** | Only for a **critical flow** when code or the user shows that flow does not apply. Requires a one-line evidence note. **Not** a synonym for Missing. |
+
+**Missing stays Missing.** Do not mark Missing as OK, Present, or N/A to look complete. Empty headings / leftover “TBD” after a propose pass = **Partial** (gap), not Present. **Never greenwash.**
+
+### 16.3 Propose (from-zero / bootstrap / adopt-full)
+
+1. Use the existing product interview (§1). Do **not** invent answers.  
+2. Write the checklist into the **adopted or proposed** home. Label each fact **Confirmed** / **Inferred** (code) / **gap/TBD**.  
+3. Never invent JTBD, metrics, flows, or assumptions. Unknown → gap + ask once.  
+4. Critical flows: list all five. **N/A** only with evidence (e.g. no auth in a library → login N/A). Do not invent a payment flow.  
+5. Thin repo, nothing evolved → proposed path `docs/product-vision.md`.  
+6. Announce: `§2 Mínimo: proposed | home: <path> | gaps: <n>`
+
+### 16.4 Propose (integrate / adopt-integrate)
+
+1. Detect the evolved product-domain authority. **Adopt it.**  
+2. Map the five items. Write **gap** notes / coverage — do **not** rewrite the captain’s vision.  
+3. Do not create `docs/product-vision.md` beside an existing authority.  
+4. HITL before any reshape.  
+5. Announce: `§2 Mínimo: mapped | home: <evolved path> | layout: adopted | gaps: <ids>`
+
+<a id="165-audit-presence"></a>
+
+### 16.5 Audit presence
+
+1. Stay on the **§6.0** path list (diff-first default; docs-universe if announced; full-tree only on user opt-in). Do **not** walk the tree to find vision.  
+2. If no product-domain doc is in scope → skip §2 presence. Announce `§2 Mínimo: n/a (not in audit scope)`. Do not escalate to full-tree.  
+3. If in scope → score each checklist item with [§16.2](#162-presence-tokens-closed) tokens. Flows are **five** rows.  
+4. **Missing stays Missing.** Never OK. Never invent product facts to fill a hole.  
+5. Emit the presence table in the audit summary. Optional: one [§6.9](#69-recommend-review-human-vs-agent) block if the captain should fill gaps (`Audience: human`). No auto-write of JTBD.  
+6. Announce: `§2 Mínimo: presence | Present/Partial/Missing/N/A | home: <path|n/a>`
+
+```text
+§2 Mínimo presence
+  problem-user-JTBD: Present|Partial|Missing
+  mvp-non-goals:     Present|Partial|Missing
+  flow/alta:         Present|Partial|Missing|N/A (<evidence>)
+  flow/login:        Present|Partial|Missing|N/A (<evidence>)
+  flow/valor:        Present|Partial|Missing|N/A (<evidence>)
+  flow/pago:         Present|Partial|Missing|N/A (<evidence>)
+  flow/baja-export:  Present|Partial|Missing|N/A (<evidence>)
+  success-metrics:   Present|Partial|Missing
+  killer-assumptions: Present|Partial|Missing
+  home: <path|n/a>
+```
+
+### 16.6 Non-goals
+
+- Writing a real product’s JTBD in **this** skill repo (meta)  
+- Sólido edges/states (other P1/P2)  
+- Greenwashing Missing as OK  
+- Forcing `product-vision.md` over an evolved home  
+- Reusing or rewriting [§14](#14-gono-go-decision-trail-v254) go/no-go  
+- Reusing or rewriting [§15](#15-prototype--production-coverage-apendice-a) Appendix A  
+- New CLI · new matrix verdicts · living-claims wire change  
+- Changing §6.0 diff-first / docs-universe  
+
+---
+
 ## Completion template (all modes)
 
 ```
@@ -906,5 +1006,6 @@ Coverage matrix: yes/no
 Promotion plan: …       # sandbox
 Open questions: …
 Recommend review: n/a | human | agent  # trigger / class / pointers — §6.9
+§2 Mínimo: n/a | proposed | mapped | presence   # §16; Missing ≠ OK
 Suggested next Intent: …
 ```

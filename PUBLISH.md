@@ -67,6 +67,16 @@ Version must match across:
 - `CHANGELOG.md` section for that version
 - `docs/adoption-matrix.md` version line (when cutting a major)
 
+### Cutting **2.5.6** (P1 §2 Mínimo pack)
+
+Narrative: closed product-domain Mínimo (Pedro norte §2) — propose on from-zero/integrate; audit presence in-scope only. Missing stays Missing. Adopt evolved home. Never invent product facts. Lives in **modes §16** (does not reuse §14 go/no-go or §15 Appendix A). **Not** a new major; **not** a Knowledge OS leap.
+
+```bash
+# after gate is green:
+git tag -a v2.5.6 -m "documentation-manager skill v2.5.6 — §2 Mínimo product-domain pack"
+git push origin main --tags   # only when you intend to publish
+```
+
 ### Cutting **2.5.5** (Appendix A skill coverage map)
 
 Narrative: honesty map for Pedro norte *De prototipo a producción* v1.0 Apéndice A — each artifact is **generates** | **audits** | **out-of-scope (captain)**. Human captain; tool proposes; never claim generate for audit/out rows. Does not replace the v2.5.4 go/no-go trail (modes §14). **Not** a new major; **not** a Knowledge OS leap. Parent tags.
@@ -119,7 +129,7 @@ git push origin main --tags   # only when you intend to publish
 
 ### Cutting **2.5.0** (Knowledge OS first increment)
 
-Narrative: **first OS foundation slice toward 100×** (living claims v0 + local CI audit). Do **not** market as a second 10× or a full 100× leap. Historical — current install floor is **2.5.5**.
+Narrative: **first OS foundation slice toward 100×** (living claims v0 + local CI audit). Do **not** market as a second 10× or a full 100× leap. Historical — current install floor is **2.5.6**.
 
 ```bash
 # after gate is green:
