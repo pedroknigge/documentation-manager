@@ -987,6 +987,25 @@ grep -F -q "## 14. Go/no-go decision trail" "$MODES" || fail "modes.md must keep
 grep -F -q "## 15. Prototype → production coverage" "$MODES" || fail "modes.md must keep §15 Appendix A (must not steal §14 or §15)"
 ok "§2 Mínimo pack anchors (modes §16 + SKILL + QC; §14 go/no-go + §15 Appendix A intact)"
 
+# ─── Production-harden DoD (v2.5.8 · modes §17 · §2 / §20) ───────────────────
+for anchor in \
+  "Production-harden DoD" \
+  "production-harden" \
+  "no volver a prototipo" \
+  "no greenwash OK"
+do
+  grep -F -q -- "$anchor" "$MODES" || fail "modes.md missing production-harden DoD anchor: $anchor"
+  grep -F -q -- "$anchor" "$QC" || fail "quality-checklist missing production-harden DoD anchor: $anchor"
+done
+grep -F -q "Production-harden DoD" "$SKILL_FILE" || fail "SKILL.md missing Production-harden DoD"
+grep -F -q "Intent=\`production-harden\`" "$SKILL_FILE" || fail "SKILL.md missing Intent=production-harden"
+grep -F -q "## 17. Production-harden DoD" "$MODES" || fail "modes.md missing §17 Production-harden DoD heading"
+grep -F -q "## 14. Go/no-go decision trail" "$MODES" || fail "modes.md must keep §14 Go/no-go (production-harden must not steal it)"
+grep -F -q "## 15. Prototype → production coverage" "$MODES" || fail "modes.md must keep §15 Appendix A"
+grep -F -q "## 16. Product domain Mínimo" "$MODES" || fail "modes.md must keep §16 §2 Mínimo"
+grep -F -q "Production-harden DoD" "$P2P" || fail "prototype-to-production.md missing Production-harden DoD on Definition of Done row"
+ok "production-harden DoD anchors (modes §17 + SKILL + QC; §14/§15/§16 intact)"
+
 if [[ "$FAILS" -gt 0 ]]; then
   echo ""
   echo "❌ Hardening failed: $FAILS issue(s)"

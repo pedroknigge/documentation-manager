@@ -67,6 +67,16 @@ Version must match across:
 - `CHANGELOG.md` section for that version
 - `docs/adoption-matrix.md` version line (when cutting a major)
 
+### Cutting **2.5.8** (production-harden DoD)
+
+Narrative: product Definition of Done when Intent=`production-harden` — domain-changing PRs update claims/matrix; §2 Mínimo not dropped; §20 / Gate A/B never invent a Sí. Quality-checklist row + modes §17 overlay. Still not a signed Go. **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.7.
+
+```bash
+# after gate is green:
+git tag -a v2.5.8 -m "documentation-manager skill v2.5.8 — production-harden DoD (§2/§20)"
+git push origin main --tags   # only when you intend to publish
+```
+
 ### Cutting **2.5.7** (domain invariants as living claims)
 
 Narrative: cookbook — encode domain invariants as `@claim` + matrix rows on the locked dual-plane (AS-IS code / TO-BE one living plan/claim). No greenwash; HITL when who-wins unclear; date is evidence. **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.6 §2 Mínimo.
@@ -139,7 +149,7 @@ git push origin main --tags   # only when you intend to publish
 
 ### Cutting **2.5.0** (Knowledge OS first increment)
 
-Narrative: **first OS foundation slice toward 100×** (living claims v0 + local CI audit). Do **not** market as a second 10× or a full 100× leap. Historical — current install floor is **2.5.7**.
+Narrative: **first OS foundation slice toward 100×** (living claims v0 + local CI audit). Do **not** market as a second 10× or a full 100× leap. Historical — current install floor is **2.5.8**.
 
 ```bash
 # after gate is green:

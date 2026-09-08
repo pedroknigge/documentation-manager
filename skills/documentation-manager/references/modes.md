@@ -11,6 +11,7 @@ Load this file after Step 0 when you need detailed steps for the active mode.
 | **integrate** | adopt | Improve/index existing; **adopt evolved layout**; no parallel SSOT rewrite when mature; never force the recommended tree |
 | **audit** | audit | Read-only reconciliation matrix; optional follow-on Intent |
 | **from-zero** | bootstrap or adopt-full | Full knowledge base from **code** (+ user answers if greenfield); old docs = hypothesis only |
+| **production-harden** | sync + scoped audit | **DoD overlay** (not a fourth write-policy). Domain-changing PRs update claims/matrix; do not drop §2 / invent §20 Sí. See [§17](#17-production-harden-dod). |
 
 ### 0.1 Infer Intent from phrases
 
@@ -21,8 +22,9 @@ Load this file after Step 0 when you need detailed steps for the active mode.
 | “mejorar docs”, “ordenar”, “integrar hub”, “coverage matrix” | integrate | root |
 | “auditar”, “docs vs code”, “¿las docs mienten?”, “validar que exista” | audit | root (matrix may live under `docs/audit/` or sandbox) |
 | “audit then fix” / “auditar y corregir” | audit → then integrate or selective patch | root |
+| “production-harden”, “no volver a prototipo”, “endurecer a producción” | **production-harden** (DoD overlay on sync/audit) | root (change set only) |
 
-If docs exist and user intent is unclear → **ask once**: integrate | audit | from-zero.
+If docs exist and user intent is unclear → **ask once**: integrate | audit | from-zero. Do **not** add production-harden to that fork — infer it from the phrases above.
 
 ### 0.2 Pipeline order
 
@@ -878,7 +880,7 @@ Announce: `Go-nogo: create|link|skip | path | Decision: unanswered|Go|No-Go | re
 
 ## 15. Prototype → production coverage (Apéndice A)
 
-**When:** User mentions Apéndice A, production checklist, SEV runbooks, threat model, or the honesty map. For a signed Gate A/B decision, use **§14** (do not steal it).
+**When:** User mentions Apéndice A, production checklist, SEV runbooks, threat model, or the honesty map. For a signed Gate A/B decision, use **§14** (do not steal it). For Intent=`production-harden` / “no volver a prototipo”, use **[§17](#17-production-harden-dod)** (do not invent a second Appendix A table).
 
 **SSOT:** [prototype-to-production.md](prototype-to-production.md) — honesty matrix only. Do not copy the table here.
 
@@ -987,12 +989,43 @@ These tokens are **not** [§6.3](#63-verdicts) matrix verdicts. Do not insert ma
 
 ---
 
+<a id="17-production-harden-dod"></a>
+
+## 17. Production-harden DoD (v2.5.8 · Pedro norte §2 / §20)
+
+**When:** User says production-harden, “no volver a prototipo”, “endurecer a producción”, or Intent=`production-harden`. Typical after a **domain-changing** PR.
+
+**Not when:** named feature/plan only with no domain change; **Sólido** states/transitions (other P2); signing Gate A/B **Go** (that is [§14](#14-gono-go-decision-trail-v254)); proposing a new product-domain pack (that is [§16](#16-product-domain-minimo)).
+
+This is a **DoD overlay**, not a fourth write-policy that replaces integrate / audit / from-zero. Default mode is **sync** + scoped **audit**. **[§6.0](#60-change-set-diff-first) stays locked** — no tree walk. Quality-checklist SSOT: [quality-checklist.md](quality-checklist.md) **Production-harden DoD**. Appendix A honesty: [prototype-to-production.md](prototype-to-production.md) Definition of Done row.
+
+### 17.1 DoD (closed)
+
+1. Classify Intent=`production-harden`. Stay on the §6.0 change set.  
+2. If the set changes **domain** (invariants, critical flows, product-domain home, money / auth / slot rules) → **update living claims / matrix**. Do not skip. Missing / Contradicted stay honest — **no greenwash OK**.  
+3. Re-check **§2** Mínimo presence if a product-domain doc is already in the set or announced docs-universe — do not walk the tree. Do not drop the pack so the product looks like a prototype again.  
+4. If a **§20** / go-nogo trail is in scope → copy criteria; **never invent a Sí**; do not auto-sign Go. Point at [§14](#14-gono-go-decision-trail-v254). living-claims CI ≠ production go/no-go.  
+5. Tick the quality-checklist **Production-harden DoD** rows before reporting done.  
+6. **Human captain** signs. HITL when unclear. No auto-merge.
+
+Announce: `Production-harden DoD: applied|n/a | domain-changed: yes|no | claims: updated|unchanged|gap | §2: … | §20: … | captain: HITL`
+
+### 17.2 Non-goals
+
+- Sólido edges / states / transitions (other P2)  
+- New CLI · new matrix verdicts · living-claims wire change · new CI product  
+- Orderfield / ArkGate ports  
+- Inventing a Sí or auto-signing Go  
+- Forcing `product-vision.md` over an evolved home  
+
+---
+
 ## Completion template (all modes)
 
 ```
 Scope: …
 Mode: …
-Intent: integrate | audit | from-zero | n/a
+Intent: integrate | audit | from-zero | production-harden | n/a
 Variant: …              # adopt only; arkgate-bridge when bridge sub-flow
 Maturity: …
 Out: root | sandbox:path
@@ -1009,5 +1042,6 @@ Promotion plan: …       # sandbox
 Open questions: …
 Recommend review: n/a | human | agent  # trigger / class / pointers — §6.9
 §2 Mínimo: n/a | proposed | mapped | presence   # §16; Missing ≠ OK
+Production-harden DoD: n/a | applied            # §17; domain change → claims/matrix
 Suggested next Intent: …
 ```

@@ -6,6 +6,28 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.8] — 2026-09-08
+
+Production-harden Definition of Done (Pedro norte §2 / §20). **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.7 (`3e3d00b`).
+
+### Added
+
+- **P2 DoD:** quality-checklist **Production-harden DoD** row — when Intent=`production-harden` (“no volver a prototipo”), PRs that change **domain** must update claims/matrix (diff-first)
+- Procedure [modes.md §17](skills/documentation-manager/references/modes.md#17-production-harden-dod): overlay on sync/audit; §2 Mínimo not dropped; §20 / Gate A/B never invent a Sí; captain signs; no auto-merge
+- Appendix A Definition of Done honesty: checklist is the skill’s harden bar — still **not** a signed production Go ([prototype-to-production.md](skills/documentation-manager/references/prototype-to-production.md))
+- SKILL rule 28 + Intent overlay + announce `Production-harden DoD`
+
+### Unchanged (locked)
+
+- **§14** go/no-go · **§15** Appendix A · **§16** §2 Mínimo stay numbered as shipped
+- Diff-first / docs-universe — no tree walk
+- Never invent a Sí · no greenwash OK
+- Sólido states/transitions held (other P2)
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.8 —`; `metadata.version` **2.5.8**
+
 ## [2.5.7] — 2026-09-08
 
 Domain invariants as living claims (dual-plane cookbook). **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.6 (`b223580`).

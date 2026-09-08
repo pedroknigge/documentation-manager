@@ -125,9 +125,11 @@ for concept in \
   "2.5.4" \
   "2.5.5" \
   "2.5.6" \
-  "2.5.7" \
+  "2.5.8" \
   "Go/no-go" \
   "§2 Mínimo" \
+  "production-harden" \
+  "Production-harden DoD" \
   "Gate A" \
   "audit-claims" \
   "diff-first" \
@@ -140,7 +142,7 @@ for concept in \
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.7, §2 Mínimo)"
+ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.8, §2 Mínimo + production-harden DoD)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -221,11 +223,13 @@ for concept in \
   "§2 Mínimo" \
   "killer assumptions" \
   "Missing stays Missing" \
-  "JTBD"
+  "JTBD" \
+  "Production-harden DoD" \
+  "production-harden"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md … + team + living-claims + go/no-go + p2p + §2 Mínimo procedures present"
+ok "modes.md … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD procedures present"
 
 [[ -x "$ROOT/scripts/generate-docs-dashboard.sh" ]] || [[ -f "$ROOT/scripts/generate-docs-dashboard.sh" ]] \
   || fail "Missing scripts/generate-docs-dashboard.sh"
@@ -294,7 +298,9 @@ grep -F -q "§2 Mínimo" "$QC" || fail "quality-checklist missing §2 Mínimo"
 grep -F -q "JTBD" "$QC" || fail "quality-checklist missing JTBD"
 grep -F -q "killer assumptions" "$QC" || fail "quality-checklist missing killer assumptions"
 grep -F -q "Missing stays Missing" "$QC" || fail "quality-checklist missing Missing stays Missing"
-ok "quality-checklist … + team + living-claims + go/no-go + p2p + §2 Mínimo present"
+grep -F -q "Production-harden DoD" "$QC" || fail "quality-checklist missing Production-harden DoD"
+grep -F -q "no greenwash OK" "$QC" || fail "quality-checklist missing no greenwash OK"
+ok "quality-checklist … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD present"
 
 PT="$SKILL_DIR/references/plan-template.md"
 grep -F -q "Implementation bridge" "$PT" || fail "plan-template missing Implementation bridge section"
