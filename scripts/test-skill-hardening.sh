@@ -883,7 +883,7 @@ grep -E -q '\[x\].*\.github/workflows/docs-audit\.yml' "$ROOT/docs/plans/knowled
   || fail "knowledge-os plan must mark the GitHub Actions example AC satisfied"
 LC="$SKILL_DIR/references/living-claims.md"
 [[ -f "$LC" ]] || fail "missing references/living-claims.md"
-for anchor in "anchor.path" "severity" "critical" "Contradicted" "audit-claims"; do
+for anchor in "anchor.path" "severity" "critical" "Contradicted" "audit-claims" "Domain invariants" "no greenwash"; do
   grep -F -qi -- "$anchor" "$LC" || fail "living-claims.md missing: $anchor"
 done
 grep -F -q "Living claims" "$SKILL_FILE" || fail "SKILL.md missing Living claims"

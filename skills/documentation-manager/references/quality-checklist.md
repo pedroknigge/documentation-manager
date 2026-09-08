@@ -76,6 +76,7 @@ Run before reporting done.
 - [ ] Verdict enum unchanged; omitted severity treated as `normal`
 - [ ] Truth score described as **advisory**; **CI / `audit-claims.sh`** is the gate for critical Contradicted (whole matrix; agent reads stay **diff-first**)
 - [ ] Breadcrumbs: `audit-claims.sh --list-claims` on the §6.0 set; HITL if malformed; do not invent ids; persist with `--upsert-claims`; record §6.7 with `--record-haken` (Action / existing Haken column; never Verdict); list §6.9 for-review with `--cascade-recommend` (set + visible `parent=` only)
+- [ ] Domain invariants encoded as `@claim` + matrix rows ([living-claims.md](living-claims.md#domain-invariants-dual-plane-cookbook)); same dual-plane who-wins — no second regime; no greenwash OK
 - [ ] Did not invent code to satisfy a claim; did not auto-commit
 - [ ] No SaaS/control-plane invented for the core gate (local/air-gapped)
 
