@@ -6,6 +6,22 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.7] — 2026-09-08
+
+Domain invariants as living claims (dual-plane cookbook). **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.6 (`b223580`).
+
+### Added
+
+- **P1 Living claims:** cookbook — encode domain invariants as `@claim` + matrix rows ([living-claims.md](skills/documentation-manager/references/living-claims.md#domain-invariants-dual-plane-cookbook))
+- Same locked dual-plane: **AS-IS** = code / anchored claims win; **TO-BE** = one living plan/claim per topic
+- **No greenwash:** do not mark OK because the sentence sounds right or the doc is newer
+- HITL when who-wins is unclear; date / mtime remains evidence, not a silent winner
+- One modes pointer: [modes.md §6.8 Who wins](skills/documentation-manager/references/modes.md#who-wins-as-is-vs-to-be)
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.7 —`; `metadata.version` **2.5.7**
+
 ## [2.5.6] — 2026-09-08
 
 **P1 — §2 Mínimo pack** (Pedro norte §2 Producto y dominio). Skill can **propose** (from-zero / integrate) and **audit presence** of the closed product-domain checklist. **Not** a new major; **not** a Knowledge OS leap.
@@ -35,7 +51,6 @@ Parent: [ADR-0002](docs/adr/0002-knowledge-enslavement-captain.md) (propose; nev
 ### Changed
 
 - **Glance version:** `SKILL.md` `description` starts with `v2.5.6 —`; `metadata.version` **2.5.6**
-
 ## [2.5.5] — 2026-09-08
 
 Appendix A honesty map for Pedro norte *De prototipo a producción* v1.0. **Not** a new major; **not** a Knowledge OS leap.

@@ -13,6 +13,7 @@ Machine-anchored structural claims on top of the existing audit matrix. **Markdo
 |--------|--------|
 | Intent / mode **audit** | **Diff-first** change set ([modes.md §6.0](modes.md#60-change-set-diff-first)), then write matrix with living-claims columns (anchors + severity) |
 | “living claims”, “truth score”, “docs CI”, “fail on Contradicted” | Follow this procedure + modes §6 / §13 |
+| domain invariant / “invariante de dominio” / “the code must never…” | Encode as `@claim` + matrix — [Domain invariants](#domain-invariants-dual-plane-cookbook). Same dual-plane; no second regime |
 | Integrate after audit | Patch Contradicted/Missing; keep anchors honest |
 | “breadcrumbs”, code-comment claim tags | Follow **Code breadcrumbs** below; parse with `--list-claims` (change set only); propose only — no engines |
 | stale / redundant narrative comments | **Report only** ([modes.md §6.10](modes.md#610-narrative-comments-report-first) + [§6.9](modes.md#69-recommend-review-human-vs-agent)); not this wire; never auto-edit |
@@ -63,7 +64,7 @@ score = (OK_N * 100 + PARTIAL_N * 50) / TOTAL_V   # TOTAL_V > 0
 5. Persist touched ids: `./scripts/audit-claims.sh --upsert-claims [--base REF] [--matrix PATH]` (same change set as `--list-claims`; matrix is SSOT of ids). New `id=` → add a row with safe defaults (`Unverifiable` / `normal`) + a captain note. Existing `id=` → update Action touch/status only; **do not** overwrite Claim, Verdict, Severity, or Anchor; **do not** invent Haken verdicts. Conflicting breadcrumbs for one id, or breadcrumb path ≠ existing Anchor → **HITL, refuse overwrite** (captain decides supersede; latest-by-date does **not** auto-win). Then finish the matrix from [audit-template.md](audit-template.md) as needed.  
 6. Offer dashboard ([knowledge-dashboard.md](knowledge-dashboard.md)) as view; remind that **CI is the gate**.  
 7. If a changed breadcrumb names `parent=` (or a changed id is a parent), apply [modes.md §6.7](modes.md#67-cascade-verdicts-haken) and record with `./scripts/audit-claims.sh --record-haken` (same change set). Writes **Action** (or an existing **Haken** column) with evidence `path:line` + parent id — **never** Verdict. hold / for-review from documented criteria; escalate vs break → **HITL**. List for-review recommends with `./scripts/audit-claims.sh --cascade-recommend` (children already in the set that name a released parent; [§6.9](modes.md#69-recommend-review-human-vs-agent)). Do not run a cascade engine. Children not in the set are not listed.  
-8. If the set includes agent-written plans/MDs that share a topic with a living doc, apply [modes.md §6.8](modes.md#68-reconcile-classification-plansmds) — classify; **no living contradictions**; **AS-IS** code wins / **TO-BE** one living SSOT; date does not auto-win on either plane.  
+8. If the set includes agent-written plans/MDs that share a topic with a living doc, apply [modes.md §6.8](modes.md#68-reconcile-classification-plansmds) — classify; **no living contradictions**; **AS-IS** code wins / **TO-BE** one living SSOT; date does not auto-win on either plane. Domain invariants use the same planes — [Domain invariants](#domain-invariants-dual-plane-cookbook).  
 9. When cascade / reconcile / audit / narrative comments need eyes, recommend review per [modes.md §6.9](modes.md#69-recommend-review-human-vs-agent) (**human** vs **agent**; pointers into the set / claims / class / `path:line`). Do not assign, notify, or merge.  
 10. Non-`@claim` prose comments in the set: classify and **report** per [modes.md §6.10](modes.md#610-narrative-comments-report-first). Never auto-edit. Never treat free prose as a matrix row.  
 11. Never invent code to satisfy a claim; never auto-commit. HITL when who-wins is unclear.
@@ -160,6 +161,48 @@ checkout() { :; }
 
 Convention only for the **comment wire** (do not reopen the format). Parse with `audit-claims.sh --list-claims` (change set only). Persist touched ids with `--upsert-claims` (matrix SSOT; HITL when supersede is unclear; no date-wins). Record §6.7 verdicts with `--record-haken` (Action / existing Haken column; never Verdict). List §6.9 for-review recommends with `--cascade-recommend` (released parent in the set → children already in the set; no write; no walker). Do **not** implement here: cascade engine (graph walker), reconcile classification (procedure: [modes.md §6.8](modes.md#68-reconcile-classification-plansmds)), recommend-review engine (auto-assign / notify / merge), or CI that fails on missing comments. `audit-claims.sh` default remains the **matrix gate**; `--list-changed` lists paths; `--list-claims` parses `@claim` in those paths; `--upsert-claims` writes those ids back; `--record-haken` records hold / for-review from the same set; `--cascade-recommend` lists the §6.9 payload.
 
+## Domain invariants (dual-plane cookbook)
+
+Domain invariants are **sentences the code must preserve** (e.g. “Nunca dos turnos confirmados ocupan el mismo slot.”). Encode each as a living claim — same `@claim` wire + matrix row. **Do not invent a second reconcile regime.** Planes stay [modes.md §6.8 Who wins](modes.md#who-wins-as-is-vs-to-be): **AS-IS** vs **TO-BE**.
+
+### Encode
+
+| Step | What |
+|------|------|
+| 1. Write the sentence | One invariant = one `id`. Falsifiable. Not a wish list. |
+| 2. Name the plane | **AS-IS** if the live system must already hold it. **TO-BE** if it is intended / not yet in code. Reconcile plane ≠ breadcrumb `plane=` P3–P0. |
+| 3. Matrix row | Same v0 columns. Claim text = the sentence. `anchor.path` (+ optional symbol) when **AS-IS** and path-backed. `severity=critical` when a false OK would ship a lie about a shipped domain rule (overlap, money, auth). |
+| 4. `@claim` breadcrumb | Optional mirror next to the anchored symbol. Same `id`. Locked format — no new keys (`invariant=`, `as-is=`). |
+| 5. Who wins | **AS-IS:** code + anchored claims win. Docs that fight the guard → Contradicted/Partial. Never rewrite code identity so the sentence looks true. **TO-BE:** one living plan/claim per topic; mark the rest Superseded. |
+| 6. Unclear | **HITL.** Date / mtime is evidence, not a silent winner. |
+
+### No greenwash
+
+Do **not** mark Verdict `OK` because the sentence sounds right, the doc is newer, or a plan exists. **AS-IS `OK`** only when the anchored code preserves the sentence. If the code does not, the claim is Contradicted / Missing — fix the doc or (captain) the code. A **TO-BE** invariant is not AS-IS `OK`. Do not invent implementation to satisfy the sentence.
+
+### Example (shape only)
+
+Sentence: *Nunca dos turnos confirmados ocupan el mismo slot.*
+
+```ts
+// @claim id=C-SLOT-001 plane=P1 status=changed
+export function confirmAppointment() {}
+```
+
+| ID | Claim | Source doc | Anchor | Severity | Verdict |
+|----|-------|------------|--------|----------|---------|
+| C-SLOT-001 | Never two confirmed appointments occupy the same slot. | docs/architecture.md | `anchor.path=src/booking.ts` `anchor.symbol=confirmAppointment` | critical | from **code**, not hope |
+
+If a second living plan asserts a different slot rule for the same topic → **TO-BE contradiction**; propose Superseded; HITL if unclear. Same [§6.8](modes.md#68-reconcile-classification-plansmds) classes.
+
+### Non-goals (this cookbook)
+
+- New breadcrumb keys or a third plane  
+- States / transitions pack  
+- Orderfield / ArkGate ports  
+- Formal proof / SMT  
+- Auto-mark OK / date-wins  
+
 ## Narrative comments (not this wire)
 
 Non-`@claim` prose (JSDoc, block comments, AI TODOs that assert facts) is **not** a matrix row and **not** a second SSOT. Durable facts belong above (`@claim` + matrix). Local “why” may stay. On audit/sync, **report** stale / redundant / snapshot / fact-vs-changed-symbol comments in the §6.0 change set via [modes.md §6.10](modes.md#610-narrative-comments-report-first) + [§6.9](modes.md#69-recommend-review-human-vs-agent). Never auto-edit. Never CI-fail on missing narrative comments.
@@ -175,11 +218,11 @@ Non-`@claim` prose (JSDoc, block comments, AI TODOs that assert facts) is **not*
 
 ## Concept anchors (greppable)
 
-`living claims` · `living-claims` · `anchor.path` · `severity` · `critical Contradicted` · `truth score` · `audit-claims` · `docs-audit` · `@claim` · `breadcrumb` · `plane` · `changed` · `adjusted` · `diff-first` · `--list-changed` · `--list-claims` · `--upsert-claims` · `--record-haken` · `--cascade-recommend` · `recommend review` · `whole matrix` · `narrative comments` · `fact-vs-changed-symbol`
+`living claims` · `living-claims` · `anchor.path` · `severity` · `critical Contradicted` · `truth score` · `audit-claims` · `docs-audit` · `@claim` · `breadcrumb` · `plane` · `changed` · `adjusted` · `diff-first` · `--list-changed` · `--list-claims` · `--upsert-claims` · `--record-haken` · `--cascade-recommend` · `recommend review` · `whole matrix` · `narrative comments` · `fact-vs-changed-symbol` · `Domain invariants` · `no greenwash`
 
 ## Related
 
-- Modes: [modes.md §6](modes.md#6-audit-project-or-feature) · [§6.7](modes.md#67-cascade-verdicts-haken) · [§6.8](modes.md#68-reconcile-classification-plansmds) · [§6.9](modes.md#69-recommend-review-human-vs-agent) · [§6.10](modes.md#610-narrative-comments-report-first) · [§13](modes.md#13-living-claims--ci-structural-audit-v25)  
+- Modes: [modes.md §6](modes.md#6-audit-project-or-feature) · [§6.7](modes.md#67-cascade-verdicts-haken) · [§6.8](modes.md#68-reconcile-classification-plansmds) · [Who wins](modes.md#who-wins-as-is-vs-to-be) · [§6.9](modes.md#69-recommend-review-human-vs-agent) · [§6.10](modes.md#610-narrative-comments-report-first) · [§13](modes.md#13-living-claims--ci-structural-audit-v25)  
 - Quality: [quality-checklist.md](quality-checklist.md)  
 - Feature pack: [docs/features/living-claims/README.md](../../../docs/features/living-claims/README.md)  
 - Epic: [docs/plans/knowledge-os/README.md](../../../docs/plans/knowledge-os/README.md)  

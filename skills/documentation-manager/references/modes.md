@@ -559,6 +559,8 @@ Name the **reconcile plane** first (not breadcrumb `plane=` P3–P0). Closed cla
 | **AS-IS** | Facts about the live system | **Code** (and matrix claims anchored to code). Docs that fight code → Contradicted/Partial; never “fix” by rewriting code identity. |
 | **TO-BE** | Intent / future plans / design claims | **One living SSOT per topic.** Among many partial/evolved plans, keep one living; mark others **Superseded**. |
 
+Domain invariants (sentences the code must preserve) use this same table — encode as `@claim` + matrix; cookbook: [living-claims.md § Domain invariants](living-claims.md#domain-invariants-dual-plane-cookbook). No third plane.
+
 “Latest wins” for **TO-BE** means the **latest living regime after classification** (regime change → supersede old; evolution → patch living) — not “touched yesterday wins.”
 
 1. From the change set — agent-written `docs/plans/**` and MDs that share a topic with a living doc (or with each other), or that cite a living authority. Name the plane.

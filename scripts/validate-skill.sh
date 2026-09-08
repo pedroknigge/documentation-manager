@@ -125,6 +125,7 @@ for concept in \
   "2.5.4" \
   "2.5.5" \
   "2.5.6" \
+  "2.5.7" \
   "Go/no-go" \
   "§2 Mínimo" \
   "Gate A" \
@@ -139,7 +140,7 @@ for concept in \
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.6, §2 Mínimo)"
+ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.7, §2 Mínimo)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -193,6 +194,7 @@ for concept in \
   "Who wins (AS-IS vs TO-BE)" \
   "AS-IS" \
   "TO-BE" \
+  "Domain invariants" \
   "Recommend review" \
   "Audience (closed)" \
   "auto-assign" \
@@ -325,7 +327,9 @@ for concept in \
   "--record-haken" \
   "--cascade-recommend" \
   "Narrative comments" \
-  "fact-vs-changed-symbol"
+  "fact-vs-changed-symbol" \
+  "Domain invariants" \
+  "no greenwash"
 do
   grep -F -qi -- "$concept" "$LC" || fail "living-claims.md missing: $concept"
 done
