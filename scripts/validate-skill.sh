@@ -126,10 +126,12 @@ for concept in \
   "2.5.5" \
   "2.5.6" \
   "2.5.8" \
+  "2.5.9" \
   "Go/no-go" \
   "§2 Mínimo" \
   "production-harden" \
   "Production-harden DoD" \
+  "Sólido states/transitions" \
   "Gate A" \
   "audit-claims" \
   "diff-first" \
@@ -142,7 +144,7 @@ for concept in \
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.8, §2 Mínimo + production-harden DoD)"
+ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.9, §2 Mínimo + production-harden DoD + Sólido states/transitions)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -225,11 +227,13 @@ for concept in \
   "Missing stays Missing" \
   "JTBD" \
   "Production-harden DoD" \
-  "production-harden"
+  "production-harden" \
+  "Sólido states/transitions" \
+  "no flag soup"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD procedures present"
+ok "modes.md … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions procedures present"
 
 [[ -x "$ROOT/scripts/generate-docs-dashboard.sh" ]] || [[ -f "$ROOT/scripts/generate-docs-dashboard.sh" ]] \
   || fail "Missing scripts/generate-docs-dashboard.sh"
@@ -300,7 +304,9 @@ grep -F -q "killer assumptions" "$QC" || fail "quality-checklist missing killer 
 grep -F -q "Missing stays Missing" "$QC" || fail "quality-checklist missing Missing stays Missing"
 grep -F -q "Production-harden DoD" "$QC" || fail "quality-checklist missing Production-harden DoD"
 grep -F -q "no greenwash OK" "$QC" || fail "quality-checklist missing no greenwash OK"
-ok "quality-checklist … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD present"
+grep -F -q "Sólido states/transitions" "$QC" || fail "quality-checklist missing Sólido states/transitions"
+grep -F -q "no flag soup" "$QC" || fail "quality-checklist missing no flag soup"
+ok "quality-checklist … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions present"
 
 PT="$SKILL_DIR/references/plan-template.md"
 grep -F -q "Implementation bridge" "$PT" || fail "plan-template missing Implementation bridge section"

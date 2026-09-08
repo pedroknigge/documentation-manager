@@ -180,12 +180,25 @@ Closed checklist: [modes.md §16](modes.md#16-product-domain-minimo). Parent: §
 
 ## Production-harden DoD (Pedro norte §2 / §20)
 
-When Intent is **production-harden** (“no volver a prototipo”, “endurecer a producción”, harden for production). Product Definition of Done — **not** a signed Gate A/B **Go** (that stays [modes.md §14](modes.md#14-gono-go-decision-trail-v254) / captain). Reuses [§16](modes.md#16-product-domain-minimo) Mínimo + §14 §20 trail + living claims. Procedure: [modes.md §17](modes.md#17-production-harden-dod). Does **not** add Sólido states/transitions (other P2).
+When Intent is **production-harden** (“no volver a prototipo”, “endurecer a producción”, harden for production). Product Definition of Done — **not** a signed Gate A/B **Go** (that stays [modes.md §14](modes.md#14-gono-go-decision-trail-v254) / captain). Reuses [§16](modes.md#16-product-domain-minimo) Mínimo + §14 §20 trail + living claims. Procedure: [modes.md §17](modes.md#17-production-harden-dod). Critical-entity transition maps: [modes.md §18](modes.md#18-solido-statestransitions) — Missing stays Missing when shipping.
 
 - [ ] Domain-changing PR / change set: **claims/matrix updated** (diff-first) — new or changed domain sentences have `@claim` + matrix rows, or an honest Missing / Contradicted; **no greenwash OK**
 - [ ] **§2** Mínimo not dropped: presence or mapped still scored if in scope; Missing stays Missing ([modes.md §16](modes.md#16-product-domain-minimo))
+- [ ] Shipping / production-harden: if a critical entity in the in-scope domain doc has no states/transitions map → **Missing** ([modes.md §18](modes.md#18-solido-statestransitions)) — never OK
 - [ ] **§20** / Apéndice A Gate A/B criteria still copied (not invented); never invent a Sí; living-claims CI ≠ production go/no-go
 - [ ] Captain / HITL: skill proposes; human signs; no auto-merge; no invented Sí
+
+## Sólido states/transitions (v2.5.9 · Pedro norte §2)
+
+Closed artifact: [modes.md §18](modes.md#18-solido-statestransitions). Parent: §2 Producto y dominio (Sólido — estados y transiciones). Does **not** reuse modes §14–§17 as the procedure (those stay numbered as shipped). Presence tokens: [§16.2](modes.md#162-presence-tokens-closed).
+
+- [ ] Artifact is a compact table (**entity** | **states** | **allowed transitions** | **notes**) **or** one link to the captain’s existing authority — **no flag soup**
+- [ ] from-zero / bootstrap / adopt-full: **proposed** into the adopted or proposed home — Confirmed / Inferred / gap; **never invent domain states**
+- [ ] integrate: **mapped** onto the evolved home; gaps listed; did **not** force a filename over the captain
+- [ ] audit: presence scored **only** if a product-domain / domain-model doc is in the §6.0 set or announced docs-universe — no tree walk to find vision/domain
+- [ ] Presence tokens Present / Partial / **Missing** / N/A-with-evidence; **Missing stays Missing** (never OK; never greenwash)
+- [ ] Intent=`production-harden` / shipping language: critical entity with no transition map reported **Missing** (DoD tie §17)
+- [ ] Did not invent a real product’s state machine for this skill-package repo; did not add CLI / matrix verdicts / living-claims wire
 
 ## Voice
 

@@ -67,6 +67,16 @@ Version must match across:
 - `CHANGELOG.md` section for that version
 - `docs/adoption-matrix.md` version line (when cutting a major)
 
+### Cutting **2.5.9** (Sólido states/transitions)
+
+Narrative: propose / map / presence-audit a short states/transitions table (or one link) for core entities. No flag soup. Missing stays Missing. Light §17 DoD tie when shipping. **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.8.
+
+```bash
+# after gate is green:
+git tag -a v2.5.9 -m "documentation-manager skill v2.5.9 — Sólido states/transitions guidance"
+git push origin main --tags   # only when you intend to publish
+```
+
 ### Cutting **2.5.8** (production-harden DoD)
 
 Narrative: product Definition of Done when Intent=`production-harden` — domain-changing PRs update claims/matrix; §2 Mínimo not dropped; §20 / Gate A/B never invent a Sí. Quality-checklist row + modes §17 overlay. Still not a signed Go. **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.7.
