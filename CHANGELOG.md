@@ -6,6 +6,29 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.11] — 2026-09-08
+
+Plans layout: creator GitHub folder + multi-doc grouping + archive-on-finish (Pedro 2026-09-08). **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.10 (`b211225`).
+
+### Added
+
+- **New writes:** plans live under `docs/plans/<github-login>/<slug>/` — `README.md` is the index; companions stay in that folder
+- Procedure [modes.md §20](skills/documentation-manager/references/modes.md#20-plans-layout): creator path · multi-doc rule · detect `github-login` (`gh api user -q .login` / unambiguous git→GitHub / HITL) · archive-on-finish · stubs vs move
+- **Archive-on-finish:** on plan / promote / sync / audit of plans in the change set, when Status is **Shipped | Cancelled | Superseded** or the plan was **promoted**, move the slug folder to `docs/plans/<github-login>/_archive/<slug>/` when possible
+- Quality-checklist section **Plans layout / archive-on-finish** + SKILL rule 31 + plan-template banner + tree diagram
+
+### Unchanged (locked)
+
+- **§14** go/no-go · **§15** Appendix A · **§16** §2 Mínimo · **§17** production-harden DoD · **§18** Sólido states/transitions · **§19** cold-agent readable stay numbered as shipped
+- Human captain · never invent a GitHub login · Missing stays Missing · no greenwash
+- No new CLI · no new Status tokens · no second SSOT · no living-claims wire change
+- Existing consumer `docs/plans/<slug>/` trees adopted — no force-migrate without HITL
+- Orderfield / ArkGate ports · P3 Ports · rewriting all historical plans in this repo (out of scope)
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.11 —`; `metadata.version` **2.5.11**
+
 ## [2.5.10] — 2026-09-08
 
 Cold-agent readable bar (Pedro 2026-09-08). **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.9 (`ff6ea34`).

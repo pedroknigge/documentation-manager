@@ -23,7 +23,7 @@ ArkGate placement: none | layer-aware (<layers>)
 
 ## Steps
 
-1. Ensure Stage A exists: `docs/plans/<slug>/` and/or `docs/features/<slug>/`.
+1. Ensure Stage A exists: `docs/plans/<github-login>/<slug>/` (or an adopted evolved plan path — [modes.md §20](modes.md#20-plans-layout)) and/or `docs/features/<slug>/`.
 2. Fill **Implementation bridge** section in that doc (template below) — or sibling `implementation.md` only if the section would dominate the README (>~40 lines of placement detail).
 3. **Placement**
    - If ArkGate detected ([arkgate-bridge.md](arkgate-bridge.md)): map proposed dirs to **layer globs** from `ark.config.json`. Prefer `/ark-place` / contract layers when those skills exist — do not reimplement Ark.
@@ -88,7 +88,7 @@ When code is real (“promové el plan” / implementation landed):
 3. [ ] Acceptance criteria re-checked against code (not against stubs)
 4. [ ] Implementation bridge: mark stubs superseded or delete inventory rows that diverged
 5. [ ] Plan status → `Shipped` or `Superseded` + link pack
-6. [ ] Hub: Features primary; Plans historical
+6. [ ] Hub: Features primary; **archive-on-finish** ([modes.md §20](modes.md#20-plans-layout)) — move the slug folder to `docs/plans/<github-login>/_archive/<slug>/` when possible
 7. [ ] Surface coverage row → documented
 8. [ ] Optional: scoped audit on new claims
 9. [ ] **Cold-agent readable:** pack recovers the same intent / success / non-goals / next actions from the file alone ([modes.md §19](modes.md#19-cold-agent-readable)) — or names the regime change; no “as we discussed”

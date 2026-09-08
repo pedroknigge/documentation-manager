@@ -1048,6 +1048,53 @@ grep -F -q "Cold-agent readable" "$SKILL_DIR/references/plan-template.md" || fai
 grep -F -q "Cold-agent readable" "$SKILL_DIR/references/implementation-bridge.md" || fail "implementation-bridge missing Cold-agent readable on promote"
 ok "Cold-agent readable anchors (modes §19 + SKILL + QC + templates; §14–§18 intact)"
 
+# ─── Plans layout (v2.5.11 · modes §20) ──────────────────────────────────────
+for anchor in \
+  "Plans layout" \
+  "docs/plans/<github-login>" \
+  "_archive" \
+  "gh api user -q .login" \
+  "archive-on-finish" \
+  "never invent"
+do
+  grep -F -q -- "$anchor" "$MODES" || fail "modes.md missing Plans layout anchor: $anchor"
+done
+for anchor in \
+  "Plans layout" \
+  "docs/plans/<github-login>" \
+  "_archive" \
+  "archive-on-finish" \
+  "never invent"
+do
+  grep -F -q -- "$anchor" "$QC" || fail "quality-checklist missing Plans layout anchor: $anchor"
+done
+grep -F -q "Plans layout" "$SKILL_FILE" || fail "SKILL.md missing Plans layout"
+grep -F -q "docs/plans/<github-login>" "$SKILL_FILE" || fail "SKILL.md missing docs/plans/<github-login>"
+grep -F -q "_archive" "$SKILL_FILE" || fail "SKILL.md missing _archive"
+grep -F -q "never invent" "$SKILL_FILE" || fail "SKILL.md missing never invent (Plans layout)"
+grep -F -q "## 20. Plans layout" "$MODES" || fail "modes.md missing §20 Plans layout heading"
+grep -F -q "## 14. Go/no-go decision trail" "$MODES" || fail "modes.md must keep §14 Go/no-go (plans layout must not steal it)"
+grep -F -q "## 15. Prototype → production coverage" "$MODES" || fail "modes.md must keep §15 Appendix A"
+grep -F -q "## 16. Product domain Mínimo" "$MODES" || fail "modes.md must keep §16 §2 Mínimo"
+grep -F -q "## 17. Production-harden DoD" "$MODES" || fail "modes.md must keep §17 production-harden DoD"
+grep -F -q "## 18. Sólido states/transitions" "$MODES" || fail "modes.md must keep §18 Sólido states/transitions"
+grep -F -q "## 19. Cold-agent readable" "$MODES" || fail "modes.md must keep §19 Cold-agent readable"
+grep -F -q "docs/plans/<github-login>" "$SKILL_DIR/references/plan-template.md" || fail "plan-template missing docs/plans/<github-login>"
+grep -F -q "_archive" "$SKILL_DIR/references/plan-template.md" || fail "plan-template missing _archive"
+DESC_START=$(awk 'BEGIN{n=0} /^---$/{n++; next} n==1{print} n==2{exit}' "$SKILL_FILE" | awk '
+  /^description:/{
+    sub(/^description:[[:space:]]*/, "")
+    if ($0 == ">" || $0 == "|" || $0 == ">-" || $0 == "|-") { grab=1; next }
+    print $0
+    grab=1
+    next
+  }
+  grab && /^[a-zA-Z0-9_-]+:/ { exit }
+  grab { print }
+' | tr '\n' ' ' | sed 's/  */ /g;s/^ *//;s/ *$//')
+echo "$DESC_START" | grep -q "^v${VER} —" || fail "SKILL.md description must start with v${VER} —"
+ok "Plans layout anchors (modes §20 + SKILL + QC + templates; §14–§19 intact)"
+
 if [[ "$FAILS" -gt 0 ]]; then
   echo ""
   echo "❌ Hardening failed: $FAILS issue(s)"

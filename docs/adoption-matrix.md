@@ -4,7 +4,7 @@
 > **Purpose:** Track where this skill is (or should be) installed, and the ArkGate pairing path.  
 > **Honesty rule:** only mark **Verified** when someone ran install/validate against that target. Hypotheses stay **Candidate**.
 
-**Last updated:** 2026-09-08 · Skill version **2.5.10**
+**Last updated:** 2026-09-08 · Skill version **2.5.11**
 
 ## How to use
 
@@ -42,6 +42,7 @@
 | §2 Mínimo product-domain (propose + presence) | **2.5.6** | [modes.md §16](../skills/documentation-manager/references/modes.md#16-product-domain-minimo) — Missing ≠ OK; adopt evolved home |
 | Production-harden DoD (§2 / §20 + claims/matrix) | **2.5.8** | [modes.md §17](../skills/documentation-manager/references/modes.md#17-production-harden-dod) · [quality-checklist.md](../skills/documentation-manager/references/quality-checklist.md) — not a signed Go |
 | Cold-agent readable (file-alone intent) | **2.5.10** | [modes.md §19](../skills/documentation-manager/references/modes.md#19-cold-agent-readable) · [quality-checklist.md](../skills/documentation-manager/references/quality-checklist.md) — dual reading → gap / HITL |
+| Plans layout (creator folder + archive-on-finish) | **2.5.11** | [modes.md §20](../skills/documentation-manager/references/modes.md#20-plans-layout) · [quality-checklist.md](../skills/documentation-manager/references/quality-checklist.md) — never invent a login; no force-migrate |
 
 ## Target projects
 

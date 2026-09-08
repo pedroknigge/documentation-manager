@@ -31,9 +31,9 @@
 
 | Plan | Doc | Status |
 |------|-----|--------|
-| [Name] | [docs/plans/slug/README.md](./docs/plans/slug/README.md) | Planned / In progress / … |
+| [Name] | [docs/plans/github-login/slug/README.md](./docs/plans/github-login/slug/README.md) | Planned / In progress / … |
 
-*(Pre-code features and epics under `docs/plans/`. Promote to a feature pack when code is real.)*
+*(New writes: `docs/plans/<github-login>/<slug>/`. Finished plans: `docs/plans/<github-login>/_archive/<slug>/`. Adopt existing flat `docs/plans/<slug>/` trees — no force-migrate. Promote to a feature pack when code is real.)*
 
 ## Features
 
@@ -79,7 +79,7 @@ Rules:
 - Consult this hub and relevant `docs/` files at the start of any significant task.
 - After work that affects architecture, requirements, decisions, features, or plans, update the corresponding documents and this hub (including coverage matrix rows).
 - Prefer creating or updating ADRs for significant technical decisions (one decision per file; continue the repo's numbering scheme).
-- Document **plans** under `docs/plans/<kebab-slug>/` for new work without solid code; **features** under `docs/features/<kebab-slug>/` when code-backed. One primary ModuleId per slug unless this is a cluster **Index**. Promote plans → feature packs when implementation lands.
+- Document **plans** under `docs/plans/<github-login>/<kebab-slug>/` for new work without solid code (never invent a login; HITL if unknown); **features** under `docs/features/<kebab-slug>/` when code-backed. One primary ModuleId per slug unless this is a cluster **Index**. Promote plans → feature packs when implementation lands, then archive-on-finish.
 - Keep documentation living and accurate — usefulness over volume; one authority per topic.
 - When uncertain about product intent, ask clarifying questions rather than assuming.
 - Do not delete durable decisions; mark ADRs as Deprecated or Superseded instead.

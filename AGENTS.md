@@ -1,6 +1,6 @@
 # AGENTS.md — documentation-manager (skill package)
 
-**Status:** skill development repo · last updated 2026-09-08 · skill version **2.5.10**
+**Status:** skill development repo · last updated 2026-09-08 · skill version **2.5.11**
 
 ## What this folder is
 
@@ -24,7 +24,7 @@ documentation-manager/          ← this git root (skill development)
 ├── install.sh                  ← classic installer
 ├── docs/                       ← meta knowledge (roadmap + plans for the skill itself)
 │   ├── roadmap.md
-│   └── plans/<slug>/
+│   └── plans/<slug>/          # historical (this repo); new writes: plans/<github-login>/<slug>/
 ├── scripts/                    ← validate / smoke
 └── skills/documentation-manager/
     ├── SKILL.md                ← skill entry (source of truth for behavior)
@@ -86,7 +86,7 @@ documentation-manager/          ← this git root (skill development)
 | **Phase 2 Bridge** | [docs/plans/phase-2-bridge/README.md](docs/plans/phase-2-bridge/README.md) | **Shipped** (A–D complete, v2.4.0) | Bridge |
 | Knowledge OS | [docs/plans/knowledge-os/README.md](docs/plans/knowledge-os/README.md) | **First increment** (living-claims v0 + CI audit, v2.5.0); epic continues toward 100× | 100× (post-Bridge) |
 
-*(Pre-code epics under `docs/plans/`. Promote to `docs/features/<slug>/` when behavior lands in the skill tree.)*
+*(Historical plans in this repo stay at `docs/plans/<slug>/` — no bulk migrate. **New** writes: `docs/plans/<github-login>/<slug>/`; finished → `_archive/<slug>/`. Promote to `docs/features/<slug>/` when behavior lands in the skill tree.)*
 
 ## Scope reminder
 
