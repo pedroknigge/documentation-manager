@@ -6,6 +6,30 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.9] — 2026-09-08
+
+Sólido states/transitions artifact guidance (Pedro norte §2). **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.8 (`95f679d`).
+
+### Added
+
+- **P2 §2 Sólido:** skill **proposes** (from-zero / integrate) and **audits presence** of a short states/transitions table (or one link) for core entities — closed vocabulary, no flag soup
+- Procedure [modes.md §18](skills/documentation-manager/references/modes.md#18-solido-statestransitions): propose · map (evolved home) · presence (in-scope only)
+- Presence tokens reuse §16.2 — **Missing stays Missing** (never OK; never greenwash)
+- When Intent=`production-harden` / shipping language, a critical entity with no transition map is **Missing** (light §17 DoD tie)
+- Quality-checklist section + SKILL rule 29 + artifact-matrix row + announce `Sólido states/transitions`
+
+### Unchanged (locked)
+
+- **§14** go/no-go · **§15** Appendix A · **§16** §2 Mínimo · **§17** production-harden DoD stay numbered as shipped
+- Diff-first / docs-universe — no tree walk to find vision/domain
+- Never invent domain states · no flag soup · captain remains captain
+- No new CLI · no living-claims wire change · no new matrix verdicts · no cascade engine
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.9 —`; `metadata.version` **2.5.9**
+- SKILL rule 28 lock flipped: this slice **is** the Sólido states/transitions P2 (pointer to §18)
+
 ## [2.5.8] — 2026-09-08
 
 Production-harden Definition of Done (Pedro norte §2 / §20). **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.7 (`3e3d00b`).

@@ -1006,6 +1006,25 @@ grep -F -q "## 16. Product domain Mínimo" "$MODES" || fail "modes.md must keep 
 grep -F -q "Production-harden DoD" "$P2P" || fail "prototype-to-production.md missing Production-harden DoD on Definition of Done row"
 ok "production-harden DoD anchors (modes §17 + SKILL + QC; §14/§15/§16 intact)"
 
+# ─── Sólido states/transitions (v2.5.9 · modes §18 · Pedro norte §2) ─────────
+for anchor in \
+  "Sólido states/transitions" \
+  "no flag soup" \
+  "never invent domain states" \
+  "Missing stays Missing"
+do
+  grep -F -q -- "$anchor" "$MODES" || fail "modes.md missing Sólido states/transitions anchor: $anchor"
+  grep -F -q -- "$anchor" "$QC" || fail "quality-checklist missing Sólido states/transitions anchor: $anchor"
+done
+grep -F -q "Sólido states/transitions" "$SKILL_FILE" || fail "SKILL.md missing Sólido states/transitions"
+grep -F -q "never invent domain states" "$SKILL_FILE" || fail "SKILL.md missing never invent domain states"
+grep -F -q "## 18. Sólido states/transitions" "$MODES" || fail "modes.md missing §18 Sólido states/transitions heading"
+grep -F -q "## 14. Go/no-go decision trail" "$MODES" || fail "modes.md must keep §14 Go/no-go (states/transitions must not steal it)"
+grep -F -q "## 15. Prototype → production coverage" "$MODES" || fail "modes.md must keep §15 Appendix A"
+grep -F -q "## 16. Product domain Mínimo" "$MODES" || fail "modes.md must keep §16 §2 Mínimo"
+grep -F -q "## 17. Production-harden DoD" "$MODES" || fail "modes.md must keep §17 production-harden DoD"
+ok "Sólido states/transitions anchors (modes §18 + SKILL + QC; §14/§15/§16/§17 intact)"
+
 if [[ "$FAILS" -gt 0 ]]; then
   echo ""
   echo "❌ Hardening failed: $FAILS issue(s)"

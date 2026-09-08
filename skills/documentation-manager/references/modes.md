@@ -137,8 +137,9 @@ When monorepo: ensure root hub has **Package index** and multi-package **Surface
 3. Core set + hub from the **proposed** layout (thin — nothing evolved to adopt); ADRs `Accepted — inferred from code`.  
 4. **Coverage matrix required**.  
 5. **§2 Mínimo** ([§16](#16-product-domain-minimo)): propose the closed pack; inferred vs confirmed; never invent product facts.  
-6. Atomic feature packs for key domains.  
-7. Summarize inferred vs confirmed.  
+6. **Sólido states/transitions** ([§18](#18-solido-statestransitions)): propose a short table or link for core entities; never invent domain states.  
+7. Atomic feature packs for key domains.  
+8. Summarize inferred vs confirmed.  
 
 ### 2.2b Monorepo package non-writes (integrate)
 
@@ -163,7 +164,8 @@ Allowed: root hub Package index, coverage **gap** rows, links to existing packag
 6. Prefer a **claims audit** first if user mentioned drift or many path claims.  
 7. **Team governance** (§11): if user asked for owners/team → create or link `docs/team/`; if not asked, do not force; never rewrite product-vision to “add owners”.  
 8. **§2 Mínimo** ([§16](#16-product-domain-minimo)): **map** the closed pack onto the evolved product-domain home; write gap notes — do **not** force `product-vision.md` or rewrite the captain’s vision.  
-9. Summary: authorities, created, **non-writes**, **layout: adopted**, gaps, **§2 Mínimo** mapped/gaps, promotion if sandbox.  
+9. **Sólido states/transitions** ([§18](#18-solido-statestransitions)): **map** onto the evolved home; gap notes; never force a filename.  
+10. Summary: authorities, created, **non-writes**, **layout: adopted**, gaps, **§2 Mínimo** mapped/gaps, **Sólido states/transitions** mapped/gaps, promotion if sandbox.  
 
 ### 2.4 Output location (sandbox)
 
@@ -407,6 +409,7 @@ If sync reveals many Contradicted claims → suggest **audit** (still **diff-fir
 8. **Narrative-comment pointer:** if a changed file has non-`@claim` prose comments (JSDoc, block, AI TODOs that assert facts) that look stale, redundant, snapshot, or fact-vs-changed-symbol, apply [§6.10](#610-narrative-comments-report-first) and emit [§6.9](#69-recommend-review-human-vs-agent). Report only; never auto-edit. Do not walk the tree.
 9. Human is captain. Propose matrix updates; HITL when who-wins is unclear. When cascade / reconcile / audit / narrative comments need eyes, [§6.9](#69-recommend-review-human-vs-agent) — recommend, do not assign or merge.
 10. **§2 Mínimo presence:** if a product-domain doc is already in the path list / announced docs-universe, apply [§16.5](#165-audit-presence). Do **not** walk the tree to find vision. Diff-first / docs-universe stay unchanged.
+11. **Sólido states/transitions presence:** if a product-domain / domain-model doc is already in the path list / announced docs-universe, apply [§18.4](#184-audit-presence). Do **not** walk the tree to find vision/domain. Diff-first / docs-universe stay unchanged.
 
 Announce: `Audit-scope: diff-first | files: <n> | base: <HEAD|ref|n/a>` · `Audit-scope: docs-universe (change set unusable) | files: <n> | commits: <n> | base: <ref> | universe: <hub-docs|sandbox:path> | reason: huge` · or `Audit-scope: full-tree (user opt-in)`.
 
@@ -715,8 +718,9 @@ Ask: <one question if human / HITL; else "review then delete or rewrite — do n
 7. Do **not** silently overwrite productive `docs/` + `CLAUDE.md` SSOT; if they insist on root from-zero on a mature monorepo, confirm once that overwrite is intended.  
 8. Status tokens from taxonomy; process rules stay out of product-vision.  
 9. **§2 Mínimo** ([§16](#16-product-domain-minimo)): **propose** the closed pack into the proposed or adopted product-domain home. Never invent JTBD, metrics, flows, or assumptions.  
-10. Optional: run audit matrix against *old* docs as appendix (“what the previous docs got wrong”).  
-11. Hub + `docs/` shape is **shared** across stacks; only inventory vocabulary and feature boundaries change.  
+10. **Sólido states/transitions** ([§18](#18-solido-statestransitions)): **propose** a short table or link; never invent domain states.  
+11. Optional: run audit matrix against *old* docs as appendix (“what the previous docs got wrong”).  
+12. Hub + `docs/` shape is **shared** across stacks; only inventory vocabulary and feature boundaries change.  
 
 ### 7.2 Difference from adopt-integrate
 
@@ -995,7 +999,7 @@ These tokens are **not** [§6.3](#63-verdicts) matrix verdicts. Do not insert ma
 
 **When:** User says production-harden, “no volver a prototipo”, “endurecer a producción”, or Intent=`production-harden`. Typical after a **domain-changing** PR.
 
-**Not when:** named feature/plan only with no domain change; **Sólido** states/transitions (other P2); signing Gate A/B **Go** (that is [§14](#14-gono-go-decision-trail-v254)); proposing a new product-domain pack (that is [§16](#16-product-domain-minimo)).
+**Not when:** named feature/plan only with no domain change; inventing entity state machines (propose/map/presence is [§18](#18-solido-statestransitions)); signing Gate A/B **Go** (that is [§14](#14-gono-go-decision-trail-v254)); proposing a new product-domain pack (that is [§16](#16-product-domain-minimo)).
 
 This is a **DoD overlay**, not a fourth write-policy that replaces integrate / audit / from-zero. Default mode is **sync** + scoped **audit**. **[§6.0](#60-change-set-diff-first) stays locked** — no tree walk. Quality-checklist SSOT: [quality-checklist.md](quality-checklist.md) **Production-harden DoD**. Appendix A honesty: [prototype-to-production.md](prototype-to-production.md) Definition of Done row.
 
@@ -1004,19 +1008,96 @@ This is a **DoD overlay**, not a fourth write-policy that replaces integrate / a
 1. Classify Intent=`production-harden`. Stay on the §6.0 change set.  
 2. If the set changes **domain** (invariants, critical flows, product-domain home, money / auth / slot rules) → **update living claims / matrix**. Do not skip. Missing / Contradicted stay honest — **no greenwash OK**.  
 3. Re-check **§2** Mínimo presence if a product-domain doc is already in the set or announced docs-universe — do not walk the tree. Do not drop the pack so the product looks like a prototype again.  
-4. If a **§20** / go-nogo trail is in scope → copy criteria; **never invent a Sí**; do not auto-sign Go. Point at [§14](#14-gono-go-decision-trail-v254). living-claims CI ≠ production go/no-go.  
-5. Tick the quality-checklist **Production-harden DoD** rows before reporting done.  
-6. **Human captain** signs. HITL when unclear. No auto-merge.
+4. If a product-domain / domain-model doc is already in the set, score [§18](#18-solido-statestransitions) presence. A critical entity with no transition map is **Missing**.  
+5. If a **§20** / go-nogo trail is in scope → copy criteria; **never invent a Sí**; do not auto-sign Go. Point at [§14](#14-gono-go-decision-trail-v254). living-claims CI ≠ production go/no-go.  
+6. Tick the quality-checklist **Production-harden DoD** rows before reporting done.  
+7. **Human captain** signs. HITL when unclear. No auto-merge.
 
 Announce: `Production-harden DoD: applied|n/a | domain-changed: yes|no | claims: updated|unchanged|gap | §2: … | §20: … | captain: HITL`
 
 ### 17.2 Non-goals
 
-- Sólido edges / states / transitions (other P2)  
+- Inventing entity states or flag soup (propose/map/presence is [§18](#18-solido-statestransitions))  
 - New CLI · new matrix verdicts · living-claims wire change · new CI product  
 - Orderfield / ArkGate ports  
 - Inventing a Sí or auto-signing Go  
 - Forcing `product-vision.md` over an evolved home  
+
+---
+
+<a id="18-solido-statestransitions"></a>
+
+## 18. Sólido states/transitions (v2.5.9 · Pedro norte §2)
+
+**When:** Project-level **from-zero** / **bootstrap** / **adopt-full**; **integrate** (map + gaps); **audit** when a product-domain / domain-model doc is already in the [§6.0](#60-change-set-diff-first) set or the announced docs-universe; Intent=`production-harden` / shipping language when those docs are already in scope.
+
+**Not when:** named feature/plan only; inventing a real product’s entity state machine; go/no-go / Gate A/B ([§14](#14-gono-go-decision-trail-v254)); Appendix A honesty map ([§15](#15-prototype--production-coverage-apendice-a)); writing the §2 Mínimo pack ([§16](#16-product-domain-minimo)); signing a production Go ([§17](#17-production-harden-dod) is the DoD overlay — this section only scores the transition map).
+
+Parent: Pedro norte **§2 Producto y dominio** (Sólido — estados y transiciones; Apéndice A). Captain: [ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md). **[§6.0](#60-change-set-diff-first) diff-first / docs-universe unchanged** — this section does not authorize a tree walk. **Does not renumber or replace §14–§17.**
+
+### 18.1 Closed artifact (no flag soup)
+
+One short table **or** one link to the captain’s existing authority. Do not invent a parallel state wiki. Do not invent domain states.
+
+| Column | Meaning |
+|--------|---------|
+| **entity** | A core entity already named in the product-domain / domain-model doc (or confirmed by the captain / code). |
+| **states** | Closed vocabulary for that entity. Names from code or the captain — never invented. |
+| **allowed transitions** | From → to (and who/what may fire them), only if known. Unknown → gap. |
+| **notes** | Evidence, N/A-with-evidence, or a link to the captain’s authority. |
+
+**No flag soup:** booleans / feature flags are not states. Prefer the table or a single link.
+
+**Home (proposal):** the adopted product-domain / domain-model / architecture authority (often `docs/architecture.md` or `docs/data-model.md`). Never a second domain tree. **Adopt evolved layout.** If the captain already has `docs/domain.md`, a README states section, etc. — **that** is the home. Do **not** force a filename.
+
+**Critical entity:** an entity the in-scope domain doc (or code evidence in the change set) treats as core to the product bet (money, auth, lifecycle, slot). Do not invent a roster by walking the tree.
+
+Presence tokens: reuse [§16.2](#162-presence-tokens-closed). **Missing stays Missing.** Never OK. Never greenwash.
+
+### 18.2 Propose (from-zero / bootstrap / adopt-full)
+
+1. List only entities already named (interview, code, or the §16 home). Do **not** invent entities or states.  
+2. Write the table **or** link the captain’s existing map into the **adopted or proposed** home. Label Confirmed / Inferred (code) / gap/TBD.  
+3. Unknown transitions → gap + ask once. Empty table of invented rows is worse than a gap.  
+4. Thin repo, nothing evolved → propose the table on the product-domain / architecture home — do not create `docs/states.md` beside an existing authority.  
+5. Announce: `Sólido states/transitions: proposed | home: <path> | entities: <n> | gaps: <n>`
+
+### 18.3 Map (integrate / adopt-integrate)
+
+1. Detect the evolved home for states/transitions. **Adopt it.**  
+2. Map core entities → table or link. Write **gap** notes — do **not** rewrite the captain’s domain model.  
+3. Do not force a filename over the captain.  
+4. HITL before any reshape.  
+5. Announce: `Sólido states/transitions: mapped | home: <evolved path> | layout: adopted | gaps: <ids>`
+
+<a id="184-audit-presence"></a>
+
+### 18.4 Audit presence
+
+1. Stay on the **§6.0** path list. Do **not** walk the tree to find vision/domain.  
+2. If no product-domain / domain-model doc is in scope → skip. Announce `Sólido states/transitions: n/a (not in audit scope)`.  
+3. If in scope → for each **critical entity** named there, score the transition map with [§16.2](#162-presence-tokens-closed) tokens.  
+4. **Missing stays Missing.** A heading “States” with no table or link = **Partial**. Flags-as-states = **Partial** (flag soup). Never invent states to fill a hole. Never OK.  
+5. When Intent=`production-harden` or shipping language (“no volver a prototipo”) — a critical entity with no transition map is **Missing** (DoD tie: [§17](#17-production-harden-dod)).  
+6. Emit the presence table. Optional [§6.9](#69-recommend-review-human-vs-agent) if the captain should fill gaps (`Audience: human`). No auto-write of state machines.  
+7. Announce: `Sólido states/transitions: presence | Present/Partial/Missing/N/A | home: <path|n/a>`
+
+```text
+Sólido states/transitions presence
+  home: <path|n/a>
+  <entity>: Present|Partial|Missing|N/A (<evidence>)
+```
+
+### 18.5 Non-goals
+
+- Inventing product entity state machines or flag soup  
+- Forcing a filename over an evolved home  
+- Greenwashing Missing as OK  
+- Rewriting or renumbering [§14](#14-gono-go-decision-trail-v254)–[§17](#17-production-harden-dod)  
+- New CLI · new matrix verdicts · living-claims wire change · cascade engine  
+- Orderfield / ArkGate ports  
+- Changing §6.0 diff-first / docs-universe  
+- Walking the tree to find vision/domain docs  
 
 ---
 
@@ -1043,5 +1124,6 @@ Open questions: …
 Recommend review: n/a | human | agent  # trigger / class / pointers — §6.9
 §2 Mínimo: n/a | proposed | mapped | presence   # §16; Missing ≠ OK
 Production-harden DoD: n/a | applied            # §17; domain change → claims/matrix
+Sólido states/transitions: n/a | proposed | mapped | presence   # §18; Missing ≠ OK
 Suggested next Intent: …
 ```
