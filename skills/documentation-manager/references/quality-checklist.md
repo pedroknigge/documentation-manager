@@ -178,6 +178,15 @@ Closed checklist: [modes.md §16](modes.md#16-product-domain-minimo). Parent: §
 - [ ] Did not invent threat model, SEV runbooks, or a data inventory; did not claim a signed Go (trail is §14 proposal; captain signs)
 - [ ] Human remained captain; tool proposed only
 
+## Production-harden DoD (Pedro norte §2 / §20)
+
+When Intent is **production-harden** (“no volver a prototipo”, “endurecer a producción”, harden for production). Product Definition of Done — **not** a signed Gate A/B **Go** (that stays [modes.md §14](modes.md#14-gono-go-decision-trail-v254) / captain). Reuses [§16](modes.md#16-product-domain-minimo) Mínimo + §14 §20 trail + living claims. Procedure: [modes.md §17](modes.md#17-production-harden-dod). Does **not** add Sólido states/transitions (other P2).
+
+- [ ] Domain-changing PR / change set: **claims/matrix updated** (diff-first) — new or changed domain sentences have `@claim` + matrix rows, or an honest Missing / Contradicted; **no greenwash OK**
+- [ ] **§2** Mínimo not dropped: presence or mapped still scored if in scope; Missing stays Missing ([modes.md §16](modes.md#16-product-domain-minimo))
+- [ ] **§20** / Apéndice A Gate A/B criteria still copied (not invented); never invent a Sí; living-claims CI ≠ production go/no-go
+- [ ] Captain / HITL: skill proposes; human signs; no auto-merge; no invented Sí
+
 ## Voice
 
 - [ ] Matches repo language (or user's language)
