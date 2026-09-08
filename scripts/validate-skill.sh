@@ -124,7 +124,9 @@ for concept in \
   "2.5.0" \
   "2.5.4" \
   "2.5.5" \
+  "2.5.6" \
   "Go/no-go" \
+  "§2 Mínimo" \
   "Gate A" \
   "audit-claims" \
   "diff-first" \
@@ -137,7 +139,7 @@ for concept in \
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.5)"
+ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.6, §2 Mínimo)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -213,11 +215,15 @@ for concept in \
   "cannot be Go" \
   "living-claims CI" \
   "Prototype → production coverage" \
-  "out-of-scope (captain)"
+  "out-of-scope (captain)" \
+  "§2 Mínimo" \
+  "killer assumptions" \
+  "Missing stays Missing" \
+  "JTBD"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md … + team + living-claims + go/no-go + p2p coverage present"
+ok "modes.md … + team + living-claims + go/no-go + p2p + §2 Mínimo procedures present"
 
 [[ -x "$ROOT/scripts/generate-docs-dashboard.sh" ]] || [[ -f "$ROOT/scripts/generate-docs-dashboard.sh" ]] \
   || fail "Missing scripts/generate-docs-dashboard.sh"
@@ -282,7 +288,11 @@ grep -F -q "residual-risk" "$QC" || fail "quality-checklist missing residual-ris
 grep -F -q "never invent a Sí" "$QC" || fail "quality-checklist missing never invent a Sí"
 grep -F -q "Prototype → production" "$QC" || fail "quality-checklist missing Prototype → production"
 grep -F -q "out-of-scope (captain)" "$QC" || fail "quality-checklist missing out-of-scope (captain)"
-ok "quality-checklist … + team + living-claims + go/no-go + p2p present"
+grep -F -q "§2 Mínimo" "$QC" || fail "quality-checklist missing §2 Mínimo"
+grep -F -q "JTBD" "$QC" || fail "quality-checklist missing JTBD"
+grep -F -q "killer assumptions" "$QC" || fail "quality-checklist missing killer assumptions"
+grep -F -q "Missing stays Missing" "$QC" || fail "quality-checklist missing Missing stays Missing"
+ok "quality-checklist … + team + living-claims + go/no-go + p2p + §2 Mínimo present"
 
 PT="$SKILL_DIR/references/plan-template.md"
 grep -F -q "Implementation bridge" "$PT" || fail "plan-template missing Implementation bridge section"

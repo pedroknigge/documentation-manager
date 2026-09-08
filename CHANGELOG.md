@@ -6,6 +6,36 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.6] — 2026-09-08
+
+**P1 — §2 Mínimo pack** (Pedro norte §2 Producto y dominio). Skill can **propose** (from-zero / integrate) and **audit presence** of the closed product-domain checklist. **Not** a new major; **not** a Knowledge OS leap.
+
+Parent: [ADR-0002](docs/adr/0002-knowledge-enslavement-captain.md) (propose; never override evolved layout) · Pedro norte §2. Rebased onto v2.5.5 Appendix A honesty map ([modes.md §15](skills/documentation-manager/references/modes.md#15-prototype--production-coverage-apendice-a)); this pack is **modes §16**.
+
+### Added
+
+- **§2 Mínimo (closed):** problem · user · JTBD one page; MVP scope + non-goals; critical flows alta / login / valor / pago / baja/export; 1–2 success metrics; killer assumptions
+- Procedure [modes.md §16](skills/documentation-manager/references/modes.md#16-product-domain-minimo): propose (from-zero / adopt-full) · map (integrate, evolved home) · presence audit (in-scope only)
+- Presence tokens Present / Partial / **Missing** / N/A-with-evidence — **Missing stays Missing** (never OK; never greenwash)
+- Quality-checklist section pointing at §16 / §2
+- SKILL rule 27 + artifact-matrix row + announce `§2 Mínimo`
+
+### Unchanged (locked)
+
+- Diff-first / docs-universe ([modes.md §6.0](skills/documentation-manager/references/modes.md#60-change-set-diff-first)) — no tree walk to find vision
+- Adopt evolved layout — never force `product-vision.md` over the captain
+- Never invent product facts
+- **Go/no-go §14** intact (v2.5.4)
+- **Appendix A §15** intact (v2.5.5)
+
+### Out of scope (held)
+
+- Writing a real product’s JTBD · Sólido edges/states · new CLI / matrix verdicts / living-claims wire
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.6 —`; `metadata.version` **2.5.6**
+
 ## [2.5.5] — 2026-09-08
 
 Appendix A honesty map for Pedro norte *De prototipo a producción* v1.0. **Not** a new major; **not** a Knowledge OS leap.

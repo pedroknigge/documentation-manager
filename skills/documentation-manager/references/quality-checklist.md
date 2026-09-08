@@ -55,6 +55,8 @@ Run before reporting done.
 - [ ] Narrative comments: scanned **change-set files only**; classified stale / redundant / snapshot / fact-vs-changed-symbol ([modes.md §6.10](modes.md#610-narrative-comments-report-first)); emitted §6.9 recommend review with `path:line` + class; **no auto-edit / auto-delete**; did not treat free prose as matrix rows; no full-tree comment campaign; no CI gate on narrative comments
 - [ ] from-zero: full KB only with that Intent; sandbox when path requested; old docs treated as hypothesis
 - [ ] from-zero does not silently overwrite mature productive SSOT without confirm
+- [ ] Project from-zero / integrate: **§2 Mínimo** proposed or mapped ([modes.md §16](modes.md#16-product-domain-minimo)) — no invented product facts
+- [ ] Project audit: §2 presence scored **only** if a product-domain doc is in the §6.0 set or announced docs-universe — no tree walk to find vision
 
 ## Go/no-go Gate A/B (v2.5.4)
 
@@ -111,6 +113,18 @@ Run before reporting done.
 - [ ] Integrate-first: adding team did **not** rewrite product-vision / requirements / ADRs
 - [ ] No invented owner names; empty owner = gap
 - [ ] Approval notes are last-approved style only — no BPM / ticket clone
+
+## Product domain Mínimo (v2.5.6 · Pedro norte §2)
+
+Closed checklist: [modes.md §16](modes.md#16-product-domain-minimo). Parent: §2 Producto y dominio (Mínimo). Does **not** reuse modes §14 (go/no-go) or §15 (Appendix A).
+
+- [ ] Pack items considered: problem·user·**JTBD** one page; **MVP scope + non-goals**; critical flows **alta / login / valor / pago / baja/export**; **1–2 success metrics**; **killer assumptions**
+- [ ] from-zero / bootstrap / adopt-full: **proposed** into the adopted or proposed home — Confirmed / Inferred / gap; **never invent product facts**
+- [ ] integrate: **mapped** onto the evolved home; gaps listed; did **not** force `product-vision.md` over the captain
+- [ ] audit: presence tokens Present / Partial / **Missing** / N/A-with-evidence; **Missing stays Missing** (never OK; never greenwash)
+- [ ] N/A used only for a critical flow with a one-line evidence note — not as a synonym for Missing
+- [ ] Diff-first / docs-universe **unchanged** — no full-tree walk to find vision
+- [ ] Did not write a real product’s JTBD for this skill-package repo; did not add Sólido edges/states here
 
 ## Knowledge dashboard (v1.6)
 

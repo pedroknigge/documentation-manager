@@ -2,7 +2,7 @@
 
 > Hub: [AGENTS.md](../AGENTS.md) · Planes: [docs/plans/](./plans/)  
 > **Producto:** Agent Skill (knowledge base viva, agent-first). No es una app de producto genérica.  
-> **Última actualización:** 2026-09-08 · **Versión actual:** 2.5.5
+> **Última actualización:** 2026-09-08 · **Versión actual:** 2.5.6
 
 ## Principios (axiomas)
 
@@ -157,6 +157,7 @@ Impacto en “code wins + zero maintenance cost”
 | **2.3** | Team governance (Slice C) | **Shipped** 2026-07-17 — [team-governance](./features/team-governance/README.md) |
 | **2.4** | Template telemetry (Slice D) + Fase 2 Bridge complete | **Shipped** 2026-07-17 — [template-telemetry](./features/template-telemetry/README.md) |
 | **2.5** | Knowledge OS **first increment** (living claims v0 + local CI audit) | **Shipped** 2026-08-30 — [living-claims](./features/living-claims/README.md); toward 100×, not a second 10× |
+| **2.5.6** | P1 §2 Mínimo pack (propose + presence audit) | **Shipped** 2026-09-08 — [modes.md §16](../skills/documentation-manager/references/modes.md#16-product-domain-minimo); not a KOS leap |
 
 ## Cómo usar este roadmap
 

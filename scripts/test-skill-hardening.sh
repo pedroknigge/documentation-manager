@@ -965,6 +965,28 @@ grep -F -q "prototype-to-production.md" "$DISC" \
   || fail "skill-discovery missing prototype-to-production pointer"
 ok "Appendix A honesty map (SSOT + pointers; generate≠audit; §14 go/no-go kept)"
 
+# ─── §2 Mínimo product-domain pack (v2.5.6 · modes §16) ──────────────────────
+QC="$SKILL_DIR/references/quality-checklist.md"
+for anchor in \
+  "§2 Mínimo" \
+  "JTBD" \
+  "killer assumptions" \
+  "Missing stays Missing" \
+  "alta" \
+  "baja/export"
+do
+  grep -F -q -- "$anchor" "$MODES" || fail "modes.md missing §2 Mínimo anchor: $anchor"
+  grep -F -q -- "$anchor" "$QC" || fail "quality-checklist missing §2 Mínimo anchor: $anchor"
+done
+grep -F -q "§2 Mínimo" "$SKILL_FILE" || fail "SKILL.md missing §2 Mínimo"
+grep -F -q "Never invent product facts" "$SKILL_FILE" || fail "SKILL.md missing Never invent product facts"
+grep -F -q "Never invent product facts" "$MODES" || fail "modes.md missing Never invent product facts"
+grep -F -q "never invent product facts" "$QC" || fail "quality-checklist missing never invent product facts"
+grep -F -q "## 16. Product domain Mínimo" "$MODES" || fail "modes.md missing §16 Product domain Mínimo heading"
+grep -F -q "## 14. Go/no-go decision trail" "$MODES" || fail "modes.md must keep §14 Go/no-go"
+grep -F -q "## 15. Prototype → production coverage" "$MODES" || fail "modes.md must keep §15 Appendix A (must not steal §14 or §15)"
+ok "§2 Mínimo pack anchors (modes §16 + SKILL + QC; §14 go/no-go + §15 Appendix A intact)"
+
 if [[ "$FAILS" -gt 0 ]]; then
   echo ""
   echo "❌ Hardening failed: $FAILS issue(s)"
