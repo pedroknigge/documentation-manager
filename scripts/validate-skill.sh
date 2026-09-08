@@ -131,6 +131,7 @@ for concept in \
   "2.5.9" \
   "2.5.10" \
   "2.5.11" \
+  "2.5.12" \
   "Go/no-go" \
   "§2 Mínimo" \
   "production-harden" \
@@ -148,11 +149,14 @@ for concept in \
   "evolved layout" \
   "Silent structure rewrite" \
   "prototype-to-production" \
-  "out-of-scope (captain)"
+  "out-of-scope (captain)" \
+  "Provenance grouping" \
+  "--group-by provenance" \
+  "§6.11"
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.11, §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout)"
+ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.12, §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout + Provenance grouping)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -197,6 +201,9 @@ for concept in \
   "--upsert-claims" \
   "--record-haken" \
   "--cascade-recommend" \
+  "--group-by provenance" \
+  "bot/agent" \
+  "never invent owner" \
   "Cascade verdicts" \
   "Versklavungsprinzip" \
   "for-review" \
@@ -248,7 +255,7 @@ for concept in \
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout procedures present"
+ok "modes.md … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout + Provenance grouping procedures present"
 
 [[ -x "$ROOT/scripts/generate-docs-dashboard.sh" ]] || [[ -f "$ROOT/scripts/generate-docs-dashboard.sh" ]] \
   || fail "Missing scripts/generate-docs-dashboard.sh"
@@ -325,7 +332,11 @@ grep -F -q "Plans layout" "$QC" || fail "quality-checklist missing Plans layout"
 grep -F -q "archive-on-finish" "$QC" || fail "quality-checklist missing archive-on-finish"
 grep -F -q "docs/plans/<github-login>" "$QC" || fail "quality-checklist missing docs/plans/<github-login>"
 grep -F -q "_archive" "$QC" || fail "quality-checklist missing _archive"
-ok "quality-checklist … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Plans layout present"
+grep -F -q "Provenance grouping" "$QC" || fail "quality-checklist missing Provenance grouping"
+grep -F -q -- "--group-by provenance" "$QC" || fail "quality-checklist missing --group-by provenance"
+grep -F -q "never invent" "$QC" || fail "quality-checklist missing never invent"
+grep -F -q "bot/agent" "$QC" || fail "quality-checklist missing bot/agent"
+ok "quality-checklist … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Plans layout + Provenance grouping present"
 
 PT="$SKILL_DIR/references/plan-template.md"
 grep -F -q "Implementation bridge" "$PT" || fail "plan-template missing Implementation bridge section"
@@ -357,6 +368,7 @@ for concept in \
   "--upsert-claims" \
   "--record-haken" \
   "--cascade-recommend" \
+  "--group-by provenance" \
   "Narrative comments" \
   "fact-vs-changed-symbol" \
   "Domain invariants" \
@@ -425,10 +437,12 @@ grep -F -q -- "--record-haken" "$ROOT/scripts/audit-claims.sh" \
   || fail "audit-claims.sh missing --record-haken helper"
 grep -F -q -- "--cascade-recommend" "$ROOT/scripts/audit-claims.sh" \
   || fail "audit-claims.sh missing --cascade-recommend helper"
+grep -F -q -- "--group-by provenance" "$ROOT/scripts/audit-claims.sh" \
+  || fail "audit-claims.sh missing --group-by provenance helper"
 [[ -f "$ROOT/.github/workflows/docs-audit.yml" ]] || fail "missing .github/workflows/docs-audit.yml"
 grep -F -q "audit-claims.sh" "$ROOT/.github/workflows/docs-audit.yml" \
   || fail "docs-audit.yml must invoke audit-claims.sh"
-if grep -E -q 'run:.*--(list-changed|list-claims|upsert-claims|record-haken|cascade-recommend)' "$ROOT/.github/workflows/docs-audit.yml"; then
+if grep -E -q 'run:.*--(list-changed|list-claims|upsert-claims|record-haken|cascade-recommend|group-by)' "$ROOT/.github/workflows/docs-audit.yml"; then
   fail "docs-audit.yml must not invoke change-set helpers (CI gate is whole-matrix)"
 fi
 grep -E -q '\[x\].*\.github/workflows/docs-audit\.yml' "$ROOT/docs/plans/knowledge-os/README.md" \

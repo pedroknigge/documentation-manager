@@ -873,10 +873,96 @@ echo "$crc_out" | grep -F "child=C-011" \
   && fail "--cascade-recommend conflict must not pick a winner, got: $crc_out"
 rm -rf "$BCCR" "$BCPAR" "$BCCLD" "$BCHLD" "$BCMCR" "$BCCRC" "$cr_err" "$par_err" "$crc_err"
 ok "--cascade-recommend for-review + set-only gap + HITL refuse + no date-wins"
+
+# --group-by provenance: opt-in report; never invent owner from git; no write
+grep -F -q -- "--group-by provenance" "$AUDIT" || fail "audit-claims.sh missing --group-by provenance"
+PROV="$(mktemp -d)"
+git -C "$PROV" init -q -b main
+git -C "$PROV" config user.email "alice@example.com"
+git -C "$PROV" config user.name "Alice Human"
+mkdir -p "$PROV/docs/audit" "$PROV/.github"
+cat > "$PROV/docs/owned.md" <<'EOF'
+---
+owner: alice
+---
+# Owned
+EOF
+echo orphan > "$PROV/docs/orphan.md"
+echo codeowned > "$PROV/docs/codeowned.md"
+echo '# Claims matrix
+
+| ID | Claim | Source doc | Anchor | Severity | Verdict | Steward | Action |
+|----|-------|------------|--------|----------|---------|---------|--------|
+| C-001 | x | docs/stewarded.md | `anchor.path=docs/stewarded.md` | normal | Missing | steward-bob | keep |
+' > "$PROV/docs/audit/claims-matrix.md"
+echo stewarded > "$PROV/docs/stewarded.md"
+printf '%s\n' '/docs/codeowned.md @docs-team' > "$PROV/.github/CODEOWNERS"
+git -C "$PROV" add -A
+git -C "$PROV" commit -qm init
+# bot last-author on orphan (AS-IS only — must not become owner)
+git -C "$PROV" config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+git -C "$PROV" config user.name "github-actions[bot]"
+echo dirty-bot >> "$PROV/docs/orphan.md"
+git -C "$PROV" add docs/orphan.md
+git -C "$PROV" commit -qm bot
+# dirty the owned + codeowned + stewarded files so they enter the default change set
+printf '\n' >> "$PROV/docs/owned.md"
+printf '\n' >> "$PROV/docs/codeowned.md"
+printf '\n' >> "$PROV/docs/stewarded.md"
+printf '\n' >> "$PROV/docs/orphan.md"
+echo untracked > "$PROV/docs/untracked.md"
+before_owned="$(cat "$PROV/docs/owned.md")"
+before_matrix="$(cat "$PROV/docs/audit/claims-matrix.md")"
+prov_err="$(mktemp)"
+prov_rc=0
+prov_out="$(bash "$AUDIT" --group-by provenance "$PROV" 2>"$prov_err")" || prov_rc=$?
+[[ "$prov_rc" -eq 0 ]] || fail "--group-by provenance must exit 0, got $prov_rc stderr=$(cat "$prov_err")"
+echo "$prov_out" | grep -E -q '^provenance[[:space:]]+path=docs/owned\.md[[:space:]]+owner=alice[[:space:]]+owner_src=frontmatter[[:space:]]+first=human[[:space:]]+last=human[[:space:]]+action=keep$' \
+  || fail "--group-by provenance must report frontmatter owner alice, got: $prov_out"
+echo "$prov_out" | grep -E -q '^provenance[[:space:]]+path=docs/stewarded\.md[[:space:]]+owner=steward-bob[[:space:]]+owner_src=steward' \
+  || fail "--group-by provenance must report claim steward, got: $prov_out"
+echo "$prov_out" | grep -E -q '^provenance[[:space:]]+path=docs/codeowned\.md[[:space:]]+owner=@docs-team[[:space:]]+owner_src=codeowners' \
+  || fail "--group-by provenance must report CODEOWNERS, got: $prov_out"
+echo "$prov_out" | grep -E -q '^provenance[[:space:]]+path=docs/orphan\.md[[:space:]]+owner=-[[:space:]]+owner_src=-[[:space:]]+first=human[[:space:]]+last=bot/agent[[:space:]]+action=propose-owner-or-archive$' \
+  || fail "--group-by provenance must orphan + bot last bucket, not invent owner from git, got: $prov_out"
+echo "$prov_out" | grep -E -q '^provenance[[:space:]]+path=docs/untracked\.md[[:space:]]+owner=-[[:space:]]+owner_src=-[[:space:]]+first=unknown[[:space:]]+last=unknown[[:space:]]+action=propose-owner-or-archive$' \
+  || fail "--group-by provenance untracked must be unknown, got: $prov_out"
+echo "$prov_out" | grep -E -q '^group[[:space:]]+owner=alice[[:space:]]+owner_src=frontmatter' \
+  || fail "--group-by provenance must group by TO-BE owner, got: $prov_out"
+echo "$prov_out" | grep -E -q '^git[[:space:]]+first=human[[:space:]]+n=' \
+  || fail "--group-by provenance must emit git first buckets, got: $prov_out"
+echo "$prov_out" | grep -F "owner=github-actions" \
+  && fail "--group-by provenance must not invent owner from git, got: $prov_out"
+echo "$prov_out" | grep -F "alice@example.com" \
+  && fail "--group-by provenance must not dump raw email as a bucket, got: $prov_out"
+[[ "$(cat "$PROV/docs/owned.md")" == "$before_owned" ]] \
+  || fail "--group-by provenance must not write owner into files"
+[[ "$(cat "$PROV/docs/audit/claims-matrix.md")" == "$before_matrix" ]] \
+  || fail "--group-by provenance must not write the matrix (Missing stays Missing)"
+# change-set only: clean tree must not list committed files
+git -C "$PROV" checkout -q -- docs/owned.md docs/codeowned.md docs/stewarded.md docs/orphan.md
+rm -f "$PROV/docs/untracked.md"
+clean_prov="$(bash "$AUDIT" --group-by provenance "$PROV" 2>/dev/null || true)"
+echo "$clean_prov" | grep -F "path=docs/owned.md" \
+  && fail "--group-by provenance on clean tree must not walk, got: $clean_prov"
+# usage
+bad_gb=0
+bash "$AUDIT" --group-by "$PROV" >/dev/null 2>/dev/null || bad_gb=$?
+[[ "$bad_gb" -eq 2 ]] || fail "--group-by without provenance must exit 2, got $bad_gb"
+bad_gb2=0
+bash "$AUDIT" --group-by owners "$PROV" >/dev/null 2>/dev/null || bad_gb2=$?
+[[ "$bad_gb2" -eq 2 ]] || fail "--group-by owners must exit 2, got $bad_gb2"
+# mutually exclusive
+bad_mx=0
+bash "$AUDIT" --group-by provenance --list-changed "$PROV" >/dev/null 2>/dev/null || bad_mx=$?
+[[ "$bad_mx" -eq 2 ]] || fail "--group-by provenance + --list-changed must be exclusive, got $bad_mx"
+rm -rf "$PROV" "$prov_err"
+ok "--group-by provenance explicit owner + git buckets + no invent + no write"
+
 [[ -f "$ROOT/.github/workflows/docs-audit.yml" ]] || fail "missing .github/workflows/docs-audit.yml"
 grep -F -q "audit-claims.sh" "$ROOT/.github/workflows/docs-audit.yml" \
   || fail "docs-audit.yml must invoke audit-claims.sh"
-if grep -E -q 'run:.*--(list-changed|list-claims|upsert-claims|record-haken|cascade-recommend)' "$ROOT/.github/workflows/docs-audit.yml"; then
+if grep -E -q 'run:.*--(list-changed|list-claims|upsert-claims|record-haken|cascade-recommend|group-by)' "$ROOT/.github/workflows/docs-audit.yml"; then
   fail "docs-audit.yml must not invoke change-set helpers (CI gate is whole-matrix)"
 fi
 grep -E -q '\[x\].*\.github/workflows/docs-audit\.yml' "$ROOT/docs/plans/knowledge-os/README.md" \
@@ -1094,6 +1180,33 @@ DESC_START=$(awk 'BEGIN{n=0} /^---$/{n++; next} n==1{print} n==2{exit}' "$SKILL_
 ' | tr '\n' ' ' | sed 's/  */ /g;s/^ *//;s/ *$//')
 echo "$DESC_START" | grep -q "^v${VER} —" || fail "SKILL.md description must start with v${VER} —"
 ok "Plans layout anchors (modes §20 + SKILL + QC + templates; §14–§19 intact)"
+
+# ─── Provenance grouping (v2.5.12 · modes §6.11) ─────────────────────────────
+for anchor in \
+  "--group-by provenance" \
+  "bot/agent" \
+  "never invent owner" \
+  "propose-owner-or-archive" \
+  "Provenance grouping"
+do
+  grep -F -q -- "$anchor" "$MODES" || fail "modes.md missing Provenance grouping anchor: $anchor"
+done
+for anchor in \
+  "Provenance grouping" \
+  "--group-by provenance" \
+  "bot/agent" \
+  "never invent"
+do
+  grep -F -q -- "$anchor" "$QC" || fail "quality-checklist missing Provenance grouping anchor: $anchor"
+done
+grep -F -q "Provenance grouping" "$SKILL_FILE" || fail "SKILL.md missing Provenance grouping"
+grep -F -q -- "--group-by provenance" "$SKILL_FILE" || fail "SKILL.md missing --group-by provenance"
+grep -F -q "## 6.11 Provenance grouping" "$MODES" || fail "modes.md missing §6.11 Provenance grouping heading"
+grep -F -q "## 6.8 Reconcile classification" "$MODES" || fail "modes.md must keep §6.8 (provenance must not steal reconcile)"
+grep -F -q "## 20. Plans layout" "$MODES" || fail "modes.md must keep §20 Plans layout"
+grep -F -q -- "--group-by provenance" "$LC" || fail "living-claims.md missing --group-by provenance"
+echo "$DESC_START" | grep -q "^v${VER} —" || fail "SKILL.md description must start with v${VER} —"
+ok "Provenance grouping anchors (modes §6.11 + SKILL + QC + CLI; §6.8 and §14–§20 intact)"
 
 if [[ "$FAILS" -gt 0 ]]; then
   echo ""

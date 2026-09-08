@@ -10,6 +10,7 @@
 #   --upsert-claims [--base REF]       write-back touched ids into the matrix (SSOT)
 #   --record-haken [--base REF]        record §6.7 Haken verdicts for touched claims
 #   --cascade-recommend [--base REF]   list §6.9 for-review recommends (read-only)
+#   --group-by provenance [--base REF] report TO-BE owner + AS-IS git buckets (read-only)
 #
 # Usage:
 #   audit-claims.sh [PROJECT_ROOT]
@@ -19,13 +20,15 @@
 #   audit-claims.sh --upsert-claims [--base REF] [--matrix PATH] [PROJECT_ROOT]
 #   audit-claims.sh --record-haken [--base REF] [--matrix PATH] [PROJECT_ROOT]
 #   audit-claims.sh --cascade-recommend [--base REF] [PROJECT_ROOT]
+#   audit-claims.sh --group-by provenance [--base REF] [--matrix PATH] [PROJECT_ROOT]
 #   audit-claims.sh --help
 #
 # Exit codes:
 #   0 — pass, or no matrix (skip/warn), or --list-changed printed (even if empty),
 #       or --list-claims printed with no malformed lines (missing-from-matrix is a note),
 #       or --upsert-claims / --record-haken wrote / no-op with no HITL,
-#       or --cascade-recommend listed / no-op with no HITL
+#       or --cascade-recommend listed / no-op with no HITL,
+#       or --group-by provenance printed / empty set (no write)
 #   1 — one or more critical Contradicted claims (gate), or malformed @claim (HITL),
 #       or --upsert-claims / --record-haken / --cascade-recommend refused a
 #       supersede or invent (captain)
@@ -44,6 +47,7 @@ Usage:
   $SCRIPT_NAME --upsert-claims [--base REF] [--matrix PATH] [PROJECT_ROOT]
   $SCRIPT_NAME --record-haken [--base REF] [--matrix PATH] [PROJECT_ROOT]
   $SCRIPT_NAME --cascade-recommend [--base REF] [PROJECT_ROOT]
+  $SCRIPT_NAME --group-by provenance [--base REF] [--matrix PATH] [PROJECT_ROOT]
   $SCRIPT_NAME -h | --help
 
 Air-gapped structural audit of a claims matrix (Markdown table).
@@ -95,6 +99,15 @@ Children not in the set are not listed (no repo-wide parent= grep; captain
 may expand — documented gap, not fake completeness). Conflicting
 breadcrumbs → HITL, refuse invent (captain decides supersede; not
 date-wins). Not the CI gate.
+
+--group-by provenance is an opt-in report on the same change set (never a
+full-tree walk; never a write). TO-BE owner (order parameter, first hit):
+frontmatter owner: · claim steward · CODEOWNERS. AS-IS git (this flag is
+the opt-in): first author (git log --diff-filter=A) and last author, each
+bucketed human · bot/agent · unknown — not raw email alone. Never invents
+owner from git. Orphans (no explicit owner) → action=propose-owner-or-archive.
+Does not change Verdict (Missing stays Missing). Not a second truth-owner
+or reconcile regime. Not the CI gate.
 EOF
 }
 
@@ -106,6 +119,7 @@ LIST_CLAIMS=0
 UPSERT_CLAIMS=0
 RECORD_HAKEN=0
 CASCADE_RECOMMEND=0
+GROUP_BY_PROVENANCE=0
 BASE=""
 
 while [[ $# -gt 0 ]]; do
@@ -140,6 +154,23 @@ while [[ $# -gt 0 ]]; do
       CASCADE_RECOMMEND=1
       shift
       ;;
+    --group-by)
+      [[ $# -ge 2 ]] || { echo "$SCRIPT_NAME: --group-by requires provenance" >&2; exit 2; }
+      if [[ "$2" != "provenance" ]]; then
+        echo "$SCRIPT_NAME: --group-by only accepts provenance (got $2)" >&2
+        exit 2
+      fi
+      GROUP_BY_PROVENANCE=1
+      shift 2
+      ;;
+    --group-by=*)
+      if [[ "${1#--group-by=}" != "provenance" ]]; then
+        echo "$SCRIPT_NAME: --group-by only accepts provenance (got ${1#--group-by=})" >&2
+        exit 2
+      fi
+      GROUP_BY_PROVENANCE=1
+      shift
+      ;;
     --base)
       [[ $# -ge 2 ]] || { echo "$SCRIPT_NAME: --base requires a ref" >&2; exit 2; }
       BASE="$2"
@@ -171,12 +202,12 @@ if [[ -z "$ROOT" ]]; then
 fi
 ROOT="$(cd -P "$ROOT" 2>/dev/null && pwd || echo "$ROOT")"
 
-if [[ -n "$BASE" && "$LIST_CHANGED" -eq 0 && "$LIST_CLAIMS" -eq 0 && "$UPSERT_CLAIMS" -eq 0 && "$RECORD_HAKEN" -eq 0 && "$CASCADE_RECOMMEND" -eq 0 ]]; then
-  echo "$SCRIPT_NAME: --base requires --list-changed, --list-claims, --upsert-claims, --record-haken, or --cascade-recommend" >&2
+if [[ -n "$BASE" && "$LIST_CHANGED" -eq 0 && "$LIST_CLAIMS" -eq 0 && "$UPSERT_CLAIMS" -eq 0 && "$RECORD_HAKEN" -eq 0 && "$CASCADE_RECOMMEND" -eq 0 && "$GROUP_BY_PROVENANCE" -eq 0 ]]; then
+  echo "$SCRIPT_NAME: --base requires --list-changed, --list-claims, --upsert-claims, --record-haken, --cascade-recommend, or --group-by provenance" >&2
   exit 2
 fi
-if [[ "$((LIST_CHANGED + LIST_CLAIMS + UPSERT_CLAIMS + RECORD_HAKEN + CASCADE_RECOMMEND))" -gt 1 ]]; then
-  echo "$SCRIPT_NAME: --list-changed, --list-claims, --upsert-claims, --record-haken, and --cascade-recommend are mutually exclusive" >&2
+if [[ "$((LIST_CHANGED + LIST_CLAIMS + UPSERT_CLAIMS + RECORD_HAKEN + CASCADE_RECOMMEND + GROUP_BY_PROVENANCE))" -gt 1 ]]; then
+  echo "$SCRIPT_NAME: --list-changed, --list-claims, --upsert-claims, --record-haken, --cascade-recommend, and --group-by provenance are mutually exclusive" >&2
   exit 2
 fi
 if [[ "$LIST_CHANGED" -eq 1 && "$EXPLICIT_MATRIX" -eq 1 ]]; then
@@ -1122,6 +1153,287 @@ if [[ "$CASCADE_RECOMMEND" -eq 1 ]]; then
     echo "$SCRIPT_NAME: HITL ($HITL_REFUSE id(s) not recommended; captain decides; do not invent)" >&2
     exit 1
   fi
+  exit 0
+fi
+
+# --- provenance (opt-in report; never writes; never invents owner from git) ---
+
+trim_ws() {
+  local s="${1-}"
+  s="${s#"${s%%[![:space:]]*}"}"
+  s="${s%"${s##*[![:space:]]}"}"
+  printf '%s' "$s"
+}
+
+# Honest buckets only — not a raw email dump. Conservative: unknown if empty;
+# bot/agent only on closed signals; else human. Never copies this into owner.
+provenance_bucket() {
+  local ident
+  ident="$(trim_ws "${1-}")"
+  if [[ -z "$ident" || "$ident" == "<>" || "$ident" == "< >" ]]; then
+    printf '%s\n' unknown
+    return
+  fi
+  local low
+  low=$(printf '%s' "$ident" | tr '[:upper:]' '[:lower:]')
+  case "$low" in
+    *"[bot]"*|*"dependabot"*|*"github-actions"*|*"github actions"*|*"cursor[bot]"*|*"cursor-agent"*|*"cursoragent"*)
+      printf '%s\n' "bot/agent"
+      return
+      ;;
+  esac
+  if [[ "$low" =~ [+][a-z0-9._-]*bot@ ]] || [[ "$low" =~ (^|[^[:alnum:]])bot@ ]]; then
+    printf '%s\n' "bot/agent"
+    return
+  fi
+  printf '%s\n' human
+}
+
+# YAML/frontmatter owner: on the file (markdown --- block). Empty if none.
+extract_frontmatter_owner() {
+  local file="$1"
+  [[ -f "$file" ]] || return 0
+  awk '
+    BEGIN { in_fm = 0 }
+    NR == 1 && $0 ~ /^---[[:space:]]*$/ { in_fm = 1; next }
+    in_fm && $0 ~ /^---[[:space:]]*$/ { exit }
+    in_fm && $0 ~ /^owner:[[:space:]]*/ {
+      sub(/^owner:[[:space:]]*/, "")
+      gsub(/^["'\'']+|["'\'']+$/, "")
+      gsub(/^[[:space:]]+|[[:space:]]+$/, "")
+      if ($0 != "" && $0 != "null" && $0 != "~" && $0 != "-" && $0 != "TBD") print $0
+      exit
+    }
+  ' "$file"
+}
+
+# Claim steward / Owner column for rows whose Source or Anchor is this path.
+extract_steward_owner() {
+  local matrix="$1" want="$2"
+  [[ -f "$matrix" && -n "$want" ]] || return 0
+  awk -v want="$want" '
+  function trim(s) {
+    gsub(/^[[:space:]]+|[[:space:]]+$/, "", s)
+    gsub(/^\*\*|\*\*$/, "", s)
+    gsub(/`/, "", s)
+    return s
+  }
+  function split_cells(line, cells,   n, i, raw) {
+    sub(/^\|/, "", line)
+    sub(/\|$/, "", line)
+    n = split(line, raw, "|")
+    for (i = 1; i <= n; i++) cells[i] = trim(raw[i])
+    return n
+  }
+  function is_sep_row(line) {
+    return (line ~ /^\|[-:|[:space:]]+\|$/)
+  }
+  function norm_path(s) {
+    sub(/^anchor\.path=/, "", s)
+    return s
+  }
+  BEGIN { id_col = 0; steward_col = 0; source_col = 0; anchor_col = 0; in_table = 0 }
+  /^[[:space:]]*\|/ {
+    if (is_sep_row($0)) next
+    n = split_cells($0, cells)
+    if (!in_table) {
+      id_col = 0; steward_col = 0; source_col = 0; anchor_col = 0
+      for (i = 1; i <= n; i++) {
+        low = tolower(cells[i])
+        if (low == "id" || low == "claim id") id_col = i
+        if (low == "steward" || low == "claim steward" || low == "owner") steward_col = i
+        if (low == "source doc" || low == "source") source_col = i
+        if (low == "anchor" || low == "anchor path") anchor_col = i
+      }
+      if (id_col > 0) { in_table = 1; next }
+      next
+    }
+    if (steward_col == 0 || steward_col > n) next
+    own = cells[steward_col]
+    if (own == "" || own == "-" || toupper(own) == "TBD") next
+    hit = 0
+    if (source_col > 0 && source_col <= n && cells[source_col] == want) hit = 1
+    if (anchor_col > 0 && anchor_col <= n && norm_path(cells[anchor_col]) == want) hit = 1
+    if (hit) { print own; exit }
+    next
+  }
+  { in_table = 0; id_col = 0; steward_col = 0; source_col = 0; anchor_col = 0 }
+  ' "$matrix"
+}
+
+# GitHub-style: first existing of .github/CODEOWNERS, CODEOWNERS, docs/CODEOWNERS.
+find_codeowners_file() {
+  local root="$1"
+  local cand
+  for cand in "$root/.github/CODEOWNERS" "$root/CODEOWNERS" "$root/docs/CODEOWNERS"; do
+    if [[ -f "$cand" ]]; then
+      printf '%s\n' "$cand"
+      return 0
+    fi
+  done
+  return 1
+}
+
+# Last matching pattern wins. Subset: exact, dir/, and * globs. No invent.
+path_matches_codeowners() {
+  local pat="$1" path="$2"
+  local p="${pat#/}"
+  if [[ -z "$p" ]]; then
+    return 1
+  fi
+  if [[ "$p" == */ ]]; then
+    [[ "$path" == "$p"* || "$path" == "${p%/}" ]]
+    return
+  fi
+  if [[ "$p" != */* ]]; then
+    local base="${path##*/}"
+    # shellcheck disable=SC2254
+    case "$base" in
+      $p) return 0 ;;
+    esac
+    # shellcheck disable=SC2254
+    case "$path" in
+      $p|*/$p) return 0 ;;
+    esac
+    return 1
+  fi
+  # shellcheck disable=SC2254
+  case "$path" in
+    $p) return 0 ;;
+  esac
+  return 1
+}
+
+extract_codeowners_owner() {
+  local file="$1" path="$2"
+  [[ -f "$file" && -n "$path" ]] || return 0
+  local line pat owners last=""
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    line="${line%%$'\r'}"
+    line="$(trim_ws "$line")"
+    [[ -z "$line" || "$line" == \#* ]] && continue
+    pat="${line%%[[:space:]]*}"
+    owners="$(trim_ws "${line#"$pat"}")"
+    [[ -z "$owners" ]] && continue
+    if path_matches_codeowners "$pat" "$path"; then
+      last="$owners"
+    fi
+  done < "$file"
+  if [[ -n "$last" ]]; then
+    printf '%s\n' "$last"
+  fi
+}
+
+# First hit: frontmatter owner: · claim steward · CODEOWNERS. Never git.
+resolve_explicit_owner() {
+  local root="$1" rel="$2" matrix="${3-}"
+  local own src
+  own="$(extract_frontmatter_owner "$root/$rel" || true)"
+  own="$(trim_ws "$own")"
+  if [[ -n "$own" ]]; then
+    printf '%s\t%s\n' "$own" "frontmatter"
+    return 0
+  fi
+  if [[ -n "$matrix" && -f "$matrix" ]]; then
+    own="$(extract_steward_owner "$matrix" "$rel" || true)"
+    own="$(trim_ws "$own")"
+    if [[ -n "$own" ]]; then
+      printf '%s\t%s\n' "$own" "steward"
+      return 0
+    fi
+  fi
+  local cof
+  cof="$(find_codeowners_file "$root" || true)"
+  if [[ -n "$cof" ]]; then
+    own="$(extract_codeowners_owner "$cof" "$rel" || true)"
+    own="$(trim_ws "$own")"
+    if [[ -n "$own" ]]; then
+      printf '%s\t%s\n' "$own" "codeowners"
+      return 0
+    fi
+  fi
+  printf '%s\t%s\n' "-" "-"
+}
+
+# AS-IS git only. Empty / untracked → unknown. Never used as owner.
+git_first_author() {
+  local root="$1" rel="$2"
+  git -C "$root" log --diff-filter=A --format='%an <%ae>' -- "$rel" 2>/dev/null | tail -n 1
+}
+
+git_last_author() {
+  local root="$1" rel="$2"
+  git -C "$root" log -1 --format='%an <%ae>' -- "$rel" 2>/dev/null
+}
+
+if [[ "$GROUP_BY_PROVENANCE" -eq 1 ]]; then
+  if [[ -z "$MATRIX" ]]; then
+    MATRIX="$ROOT/docs/audit/claims-matrix.md"
+  fi
+  if [[ ! -f "$MATRIX" ]]; then
+    if [[ "$EXPLICIT_MATRIX" -eq 1 ]]; then
+      echo "$SCRIPT_NAME: matrix not found: $MATRIX" >&2
+      exit 2
+    fi
+    MATRIX=""
+  fi
+
+  echo "$SCRIPT_NAME: note: provenance report is opt-in — TO-BE owner (explicit) + AS-IS git buckets; never invents owner from git; no write (modes.md §6.11)" >&2
+
+  changed_files=$(list_changed_files "$ROOT" "$BASE") || exit $?
+
+  if [[ -z "$(trim_ws "$changed_files")" ]]; then
+    echo "$SCRIPT_NAME: note: empty change set — no provenance rows (diff-first; do not full-tree)" >&2
+    exit 0
+  fi
+
+  rows=""
+  declare -A owner_n=() first_n=() last_n=()
+  declare -A owner_src_of=()
+  owners_ordered=()
+
+  while IFS= read -r rel; do
+    [[ -z "${rel:-}" ]] && continue
+    resolved="$(resolve_explicit_owner "$ROOT" "$rel" "$MATRIX")"
+    owner="${resolved%%$'\t'*}"
+    owner_src="${resolved#*$'\t'}"
+    first_ident="$(git_first_author "$ROOT" "$rel" || true)"
+    last_ident="$(git_last_author "$ROOT" "$rel" || true)"
+    first_b="$(provenance_bucket "$first_ident")"
+    last_b="$(provenance_bucket "$last_ident")"
+    if [[ "$owner" == "-" ]]; then
+      action="propose-owner-or-archive"
+    else
+      action="keep"
+    fi
+    rows+="${owner}"$'\t'"${owner_src}"$'\t'"${rel}"$'\t'"${first_b}"$'\t'"${last_b}"$'\t'"${action}"$'\n'
+    if [[ -z "${owner_n[$owner]+x}" ]]; then
+      owners_ordered+=("$owner")
+      owner_src_of[$owner]="$owner_src"
+    fi
+    owner_n[$owner]=$((${owner_n[$owner]:-0} + 1))
+    first_n[$first_b]=$((${first_n[$first_b]:-0} + 1))
+    last_n[$last_b]=$((${last_n[$last_b]:-0} + 1))
+  done < <(printf '%s\n' "$changed_files" | sort -u)
+
+  # Primary group: TO-BE owner (explicit). Git buckets annotate; they are not owners.
+  for own in "${owners_ordered[@]}"; do
+    src="${owner_src_of[$own]}"
+    echo "group"$'\t'"owner=${own}"$'\t'"owner_src=${src}"$'\t'"n=${owner_n[$own]}"
+    while IFS=$'\t' read -r o srcp path first_b last_b action; do
+      [[ -z "${path:-}" ]] && continue
+      [[ "$o" == "$own" ]] || continue
+      echo "provenance"$'\t'"path=${path}"$'\t'"owner=${o}"$'\t'"owner_src=${srcp}"$'\t'"first=${first_b}"$'\t'"last=${last_b}"$'\t'"action=${action}"
+    done <<< "$rows"
+  done
+
+  for b in human bot/agent unknown; do
+    echo "git"$'\t'"first=${b}"$'\t'"n=${first_n[$b]:-0}"
+  done
+  for b in human bot/agent unknown; do
+    echo "git"$'\t'"last=${b}"$'\t'"n=${last_n[$b]:-0}"
+  done
+
   exit 0
 fi
 

@@ -6,6 +6,29 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.12] — 2026-09-08
+
+Audit/report facet: group-by provenance (owner + git opt-in). **Not** a new major; **not** a Knowledge OS leap; **not** a second truth-owner or reconcile regime. Rebased onto v2.5.11 (`5741301`).
+
+### Added
+
+- **Opt-in report:** `audit-claims.sh --group-by provenance [--base REF]` — same §6.0 change set; no write
+- Procedure [modes.md §6.11](skills/documentation-manager/references/modes.md#611-provenance-grouping-opt-in-report): explicit `owner:` / claim steward / CODEOWNERS first (TO-BE); git first/last author bucketed `human` · `bot/agent` · `unknown` (AS-IS; never invent owner from git)
+- Orphans (no owner) → propose `owner:` or archive; **Missing stays Missing**; no greenwash
+- Quality-checklist section **Provenance grouping** + SKILL rule 32
+
+### Unchanged (locked)
+
+- **§6.8** reconcile · **§14** go/no-go · **§15** Appendix A · **§16** §2 Mínimo · **§17** production-harden DoD · **§18** Sólido · **§19** cold-agent · **§20** plans layout stay numbered as shipped
+- Dual-plane: git is AS-IS only; owner is TO-BE only — no second regime
+- Human captain · never invent owner from git · Missing stays Missing · no greenwash
+- CI gate still whole-matrix; `--group-by provenance` is not the gate
+- No dashboard rewrite · no auto-write of `owner:` · no new matrix verdicts
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.12 —`; `metadata.version` **2.5.12**
+
 ## [2.5.11] — 2026-09-08
 
 Plans layout: creator GitHub folder + multi-doc grouping + archive-on-finish (Pedro 2026-09-08). **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.10 (`b211225`).

@@ -21,6 +21,7 @@ Load this file after Step 0 when you need detailed steps for the active mode.
 | “en test/”, “carpeta test”, “sandbox”, “sin tocar docs productivos” | from-zero (or integrate if only index) | **sandbox:path** |
 | “mejorar docs”, “ordenar”, “integrar hub”, “coverage matrix” | integrate | root |
 | “auditar”, “docs vs code”, “¿las docs mienten?”, “validar que exista” | audit | root (matrix may live under `docs/audit/` or sandbox) |
+| “provenance”, “group-by owner”, “group-by provenance”, “quién escribió” | audit + [§6.11](#611-provenance-grouping-opt-in-report) opt-in | root (change set only) |
 | “audit then fix” / “auditar y corregir” | audit → then integrate or selective patch | root |
 | “production-harden”, “no volver a prototipo”, “endurecer a producción” | **production-harden** (DoD overlay on sync/audit) | root (change set only) |
 
@@ -401,23 +402,25 @@ If sync reveals many Contradicted claims → suggest **audit** (still **diff-fir
    - Persist touched ids: `./scripts/audit-claims.sh --upsert-claims [--base REF] [ROOT]` (matrix SSOT write-back; HITL if supersede is unclear; **not** date-wins; not the CI gate)
    - Record §6.7 Haken verdicts: `./scripts/audit-claims.sh --record-haken [--base REF] [ROOT]` (Action / existing Haken column; never Verdict; HITL if escalate vs break; not the CI gate)
    - Cascade recommend (read-only): `./scripts/audit-claims.sh --cascade-recommend [--base REF] [ROOT]` (parent released in the set → for-review children already in the set + §6.9; no write; no walker)
+   - Provenance report (opt-in, read-only): `./scripts/audit-claims.sh --group-by provenance [--base REF] [ROOT]` ([§6.11](#611-provenance-grouping-opt-in-report); explicit owner first; git = AS-IS buckets only; no write)
    - `./scripts/…` is shorthand: resolve the **installed skill** `scripts/` first (what `install.sh` ships), then an optional consumer-repo copy for CI. See [skill-discovery.md — Skill-runtime scripts](skill-discovery.md#skill-runtime-scripts).
 2. Empty set, not a git repo, or unclear base → **HITL** (ask once: name a base, give a file list, or confirm full-tree opt-in). **Do not** fall back to reading the tree.
 3. **Valid-but-huge (docs-universe escape):** the base resolved (real commit / named ref) but the change set is too large to inventory and extract claims in this pass (thousands of files, or thousands of commits vs that base). This is **not** empty/unclear (step 2) and **not** a full-tree opt-in.
    - **Announce** (required): `Audit-scope: docs-universe (change set unusable) | files: <n> | commits: <n> | base: <ref> | universe: <hub-docs|sandbox:path> | reason: huge`
    - **Remeasure** `<n>` this session — do not inherit a prior session’s or another doc’s counts: `git diff --name-only <base>...HEAD | wc -l` · `git rev-list --count <base>..HEAD`.
-   - **Constrain** later steps (§6.1–§6.10) to the **docs universe** only: hub + `docs/` (or the evolved hub docs tree already adopted), or `Out: sandbox:path`. Prefer the named-base diff intersected with those paths. Do **not** walk `src/` or the rest of the repo. Do **not** treat this as `full-tree`.
+   - **Constrain** later steps (§6.1–§6.11) to the **docs universe** only: hub + `docs/` (or the evolved hub docs tree already adopted), or `Out: sandbox:path`. Prefer the named-base diff intersected with those paths. Do **not** walk `src/` or the rest of the repo. Do **not** treat this as `full-tree`.
    - **HITL is optional** (ask once: tighter base, a file list, or confirm this constraint). Do **not** block forever. If the captain is silent, proceed on the announced docs universe.
 4. Inventory (§6.1) and claim extraction (§6.2) **only** those paths, plus a specific `anchor.path` a changed doc cites. Do not glob `docs/**` or walk `src/`. **Exception:** if step 3 applied, the path list **is** the announced docs universe (hub + `docs/` or sandbox) — still never `src/` / the repo. If the user **did** opt into full-tree / cold-start: default claim/doc universe is `docs/` + root markdown + `.github` contributor docs; **exclude** `examples/**` unless they opted those in ([skill-discovery.md](skill-discovery.md) **Cold-start survey heuristics**; `./scripts/survey-docs.sh --claim-scope`).
 5. Named feature + change set → **intersect**. Empty intersection → HITL, not a feature-tree walk.
 6. **Cascade pointer:** if a changed file has a breadcrumb `parent=` ([living-claims.md § Code breadcrumbs](living-claims.md#code-breadcrumbs-comment-mirror)) or a matrix row whose `id` is named as `parent` on a changed breadcrumb, **recommend review** of children ([§6.9](#69-recommend-review-human-vs-agent)) and apply [§6.7](#67-cascade-verdicts-haken) (hold / escalate / break / for-review). Do not run a cascade engine. Do not grep the repo for children.
 7. **Reconcile pointer:** if the change set includes agent-written plans/MDs that share a topic with a living doc (or with each other), apply [§6.8](#68-reconcile-classification-plansmds). Do not walk `docs/**` for a second tree.
 8. **Narrative-comment pointer:** if a changed file has non-`@claim` prose comments (JSDoc, block, AI TODOs that assert facts) that look stale, redundant, snapshot, or fact-vs-changed-symbol, apply [§6.10](#610-narrative-comments-report-first) and emit [§6.9](#69-recommend-review-human-vs-agent). Report only; never auto-edit. Do not walk the tree.
-9. Human is captain. Propose matrix updates; HITL when who-wins is unclear. When cascade / reconcile / audit / narrative comments need eyes, [§6.9](#69-recommend-review-human-vs-agent) — recommend, do not assign or merge.
-10. **§2 Mínimo presence:** if a product-domain doc is already in the path list / announced docs-universe, apply [§16.5](#165-audit-presence). Do **not** walk the tree to find vision. Diff-first / docs-universe stay unchanged.
-11. **Sólido states/transitions presence:** if a product-domain / domain-model doc is already in the path list / announced docs-universe, apply [§18.4](#184-audit-presence). Do **not** walk the tree to find vision/domain. Diff-first / docs-universe stay unchanged.
+9. **Provenance pointer (opt-in):** if the user asked for provenance / group-by owner / `--group-by provenance`, apply [§6.11](#611-provenance-grouping-opt-in-report). Report only; never invent owner from git; never write `owner:`. Do not walk the tree.
+10. Human is captain. Propose matrix updates; HITL when who-wins is unclear. When cascade / reconcile / audit / narrative comments need eyes, [§6.9](#69-recommend-review-human-vs-agent) — recommend, do not assign or merge.
+11. **§2 Mínimo presence:** if a product-domain doc is already in the path list / announced docs-universe, apply [§16.5](#165-audit-presence). Do **not** walk the tree to find vision. Diff-first / docs-universe stay unchanged.
+12. **Sólido states/transitions presence:** if a product-domain / domain-model doc is already in the path list / announced docs-universe, apply [§18.4](#184-audit-presence). Do **not** walk the tree to find vision/domain. Diff-first / docs-universe stay unchanged.
 
-Announce: `Audit-scope: diff-first | files: <n> | base: <HEAD|ref|n/a>` · `Audit-scope: docs-universe (change set unusable) | files: <n> | commits: <n> | base: <ref> | universe: <hub-docs|sandbox:path> | reason: huge` · or `Audit-scope: full-tree (user opt-in)`.
+Announce: `Audit-scope: diff-first | files: <n> | base: <HEAD|ref|n/a>` · `Audit-scope: docs-universe (change set unusable) | files: <n> | commits: <n> | base: <ref> | universe: <hub-docs|sandbox:path> | reason: huge` · or `Audit-scope: full-tree (user opt-in)`. When provenance was asked: `Provenance: grouped | orphans: <n>`.
 
 **Anti-snapshot (counts):** any count written into docs must carry its remeasure command beside it, or omit the number. Do not inherit a count from a prior session or another doc.
 
@@ -497,7 +500,7 @@ Do **not** auto-start from-zero after audit without user Intent.
 
 ### 6.6 Living claims + local CI (pointer)
 
-After writing the matrix, remind: dashboard truth score is **advisory**; **CI / `scripts/audit-claims.sh` is the gate** (fail on **critical Contradicted**). The gate parses the **whole matrix** (do not hide existing critical Contradicted). Agent **reads** stay **diff-first** ([§6.0](#60-change-set-diff-first)); `--list-changed` / `--list-claims` / `--upsert-claims` / `--record-haken` / `--cascade-recommend` are not the gate. Procedure: [§13](#13-living-claims--ci-structural-audit-v25) and [living-claims.md](living-claims.md).
+After writing the matrix, remind: dashboard truth score is **advisory**; **CI / `scripts/audit-claims.sh` is the gate** (fail on **critical Contradicted**). The gate parses the **whole matrix** (do not hide existing critical Contradicted). Agent **reads** stay **diff-first** ([§6.0](#60-change-set-diff-first)); `--list-changed` / `--list-claims` / `--upsert-claims` / `--record-haken` / `--cascade-recommend` / `--group-by provenance` are not the gate. Procedure: [§13](#13-living-claims--ci-structural-audit-v25) and [living-claims.md](living-claims.md).
 
 ### 6.7 Cascade verdicts (Haken)
 
@@ -708,6 +711,47 @@ Ask: <one question if human / HITL; else "review then delete or rewrite — do n
 
 **Non-goals:** auto-delete · auto-edit engine · full-tree comment scan · CI gate on narrative comments / missing comments · treating free prose as matrix rows · second SSOT · new CLI · reopening `@claim` wire · graph walker · C-055 / C-056 / C-059 · Orderfield / ArkGate ports
 
+### 6.11 Provenance grouping (opt-in report)
+
+**Procedure + one opt-in helper** — not a second truth-owner regime, not a second reconcile plane, not a write. Binding: [ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md) captain rule. Human is captain. The skill **reports**. It never copies git into `owner:` and never auto-rewrites ownership.
+
+Stay on the **§6.0 change set**. Do not walk the tree for authors or CODEOWNERS campaigns.
+
+This is **not** [§6.8](#68-reconcile-classification-plansmds) (plans/MDs stay there). **Not** a new [§6.3](#63-verdicts) verdict. **Missing stays Missing.**
+
+#### Dual-plane (closed — do not invent a third)
+
+| Plane | What | Must not |
+|-------|------|----------|
+| **TO-BE owner** | Explicit order parameter, first hit: frontmatter `owner:` · claim steward · CODEOWNERS | Invent a person; treat git as owner |
+| **AS-IS git** | First author (`git log --diff-filter=A`) and/or last author, **only** because `--group-by provenance` (or the user asked) | Copy that identity into `owner:` |
+
+#### Honest buckets (git only)
+
+`human` · `bot/agent` · `unknown` — **not** raw email alone. Empty / untracked / no A-commit → `unknown`. Do not invent a bucket to look complete.
+
+#### Action (report only)
+
+| Finding | Action token | Write? |
+|---------|--------------|--------|
+| Explicit owner present | `keep` | no |
+| Orphan (no owner) | `propose-owner-or-archive` | **no** — propose `owner:` or archive; captain decides |
+| Matrix **Missing** | unchanged | **no** — Missing stays Missing; no greenwash |
+
+#### Apply
+
+1. Take the §6.0 path list. Helper: `./scripts/audit-claims.sh --group-by provenance [--base REF] [--matrix PATH] [ROOT]`.
+2. Resolve **TO-BE owner** per path (frontmatter → steward → CODEOWNERS). No hit → `owner=-`.
+3. Resolve **AS-IS** first/last buckets. Never promote them to owner.
+4. Emit grouped stdout (owner groups first, then git bucket counts). One machine line per path:
+   `provenance  path=<p>  owner=<name\|->  owner_src=<frontmatter\|steward\|codeowners\|->  first=<human\|bot/agent\|unknown>  last=…  action=<keep\|propose-owner-or-archive>`
+5. **Never** write `owner:` / CODEOWNERS / matrix Owner. Never change Verdict.
+6. Human is captain. First explicit hit is the order parameter — do not break a tie with git.
+
+Announce when asked: `Provenance: grouped | orphans: <n>`.
+
+**Non-goals:** second truth-owner SSOT · second reconcile regime · auto-write of `owner:` · inventing owner from git · new matrix verdicts · dashboard rewrite · full-tree author census · CODEOWNERS enforcement engine · CI gate on missing owner.
+
 ---
 
 ## 7. From-zero
@@ -842,10 +886,10 @@ Announce: `Team: create|link|skip | docs/team | owners | approval-notes`.
 2. Anchors: `anchor.path` (+ optional `symbol` / `hash`); severity `critical` \| `normal`.  
 3. Verdicts unchanged; **code wins**.  
 4. **Truth score** formula matches dashboard heuristic; score is **advisory**.  
-5. **CI is the gate:** `critical` + `Contradicted` → non-zero from local air-gapped `scripts/audit-claims.sh` (example `.github/workflows/docs-audit.yml`). **No network** required. The gate parses the **whole matrix** (do not hide existing critical Contradicted). Agent **audit/reconcile reads** stay **diff-first** (§6.0); `--list-changed` / `--list-claims` / `--upsert-claims` / `--record-haken` / `--cascade-recommend` are change-set helpers, not the gate.  
+5. **CI is the gate:** `critical` + `Contradicted` → non-zero from local air-gapped `scripts/audit-claims.sh` (example `.github/workflows/docs-audit.yml`). **No network** required. The gate parses the **whole matrix** (do not hide existing critical Contradicted). Agent **audit/reconcile reads** stay **diff-first** (§6.0); `--list-changed` / `--list-claims` / `--upsert-claims` / `--record-haken` / `--cascade-recommend` / `--group-by provenance` are change-set helpers, not the gate.  
 6. Graceful v0: no matrix → skip/warn; missing severity → `normal`.  
 7. Do not invent code to match docs; do not auto-commit.  
-8. **Diff-first** — never a full-tree read by default; cascade = [§6.7](#67-cascade-verdicts-haken) (recommend review; no engine); reconcile classification = [§6.8](#68-reconcile-classification-plansmds) (no living contradictions; AS-IS code / TO-BE one living SSOT; no date-wins); recommend review = [§6.9](#69-recommend-review-human-vs-agent) (human vs agent; no assign); narrative comments = [§6.10](#610-narrative-comments-report-first) (report-first; no auto-edit).
+8. **Diff-first** — never a full-tree read by default; cascade = [§6.7](#67-cascade-verdicts-haken) (recommend review; no engine); reconcile classification = [§6.8](#68-reconcile-classification-plansmds) (no living contradictions; AS-IS code / TO-BE one living SSOT; no date-wins); recommend review = [§6.9](#69-recommend-review-human-vs-agent) (human vs agent; no assign); narrative comments = [§6.10](#610-narrative-comments-report-first) (report-first; no auto-edit); provenance grouping = [§6.11](#611-provenance-grouping-opt-in-report) (opt-in report; never invent owner from git).
 
 Announce: `Living-claims: v0 | matrix: path|none | CI-gate: audit-claims | score: advisory | Audit-scope: diff-first`.
 
