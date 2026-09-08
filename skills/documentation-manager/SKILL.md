@@ -1,21 +1,22 @@
 ---
 name: documentation-manager
 description: >
-  v2.5.4 — Use when bootstrapping, completing, updating, or auditing project documentation,
+  v2.5.5 — Use when bootstrapping, completing, updating, or auditing project documentation,
   or documenting a feature/module/epic: AGENTS.md + docs/, ADRs, roadmap,
   docs/features/<slug>/, docs/plans/<slug>/. Triggers: "document this project",
   "bootstrap docs", "sync docs", "audit docs", "docs vs code", "from zero",
   "new feature", "nueva feature", "promové el plan", "after ark-check",
   "arkgate bridge", "knowledge dashboard", "go/no-go", "gate A/B",
-  /documentation-manager. Intents: integrate, audit, from-zero. Feature
-  autopilot v2; Implementation bridge opt-in; ArkGate post-gate sync;
-  dashboard HTML; polyglot + monorepo hubs; team governance (docs/team);
-  living claims v0 + local CI structural audit; go/no-go Gate A/B trail
-  (docs/ops). On conflict code wins.
+  "prototipo a producción", "Apéndice A", /documentation-manager. Intents:
+  integrate, audit, from-zero. Feature autopilot v2; Implementation bridge
+  opt-in; ArkGate post-gate sync; dashboard HTML; polyglot + monorepo hubs;
+  team governance (docs/team); living claims v0 + local CI structural audit;
+  go/no-go Gate A/B trail (docs/ops). Appendix A honesty map
+  (generates vs audits vs captain). On conflict code wins.
 license: MIT
 metadata:
   author: pedroknigge
-  version: "2.5.4"
+  version: "2.5.5"
 ---
 
 # Documentation Manager
@@ -44,12 +45,13 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 17. **ArkGate bridge (v1.4).** If ArkGate is detected (`ark.config.json`, `ark-check`, `.ark/`, ark skills) or the user just finished a gate, run the **bridge** sub-flow: enrich inventory from the contract; after gate pass → scoped **sync** / **audit**; residual violations → mark claims Contradicted/Partial — never rewrite docs to excuse broken architecture. No Ark → no-op. Placement hints in Implementation bridge reuse Ark layers when detected. See [arkgate-bridge.md](references/arkgate-bridge.md) and [modes.md §9](references/modes.md#9-arkgate-bridge-v14).
 18. **Knowledge dashboard (v1.6).** Optional static HTML view of plans/features/claims (`scripts/generate-docs-dashboard.sh` → `docs/audit/generated/dashboard.html`). Markdown is SSOT; HTML is gitignored view-only. Offer after audit once or on “dashboard” request. See [knowledge-dashboard.md](references/knowledge-dashboard.md) and [modes.md §10](references/modes.md#10-knowledge-dashboard-v16).
 19. **Skill hardening (v1.7).** Maintainers: run `validate-skill.sh` + `test-skill-hardening.sh` before release. Agents: detect install/version via [skill-discovery.md](references/skill-discovery.md); suggest reinstall when outdated (no silent auto-patch).
-20. **v2.0 package.** Completes the 10× line: capabilities 1.4–1.7 plus [docs/adoption-matrix.md](../../docs/adoption-matrix.md) tracking. Baseline install floor remains **2.0.0**; polyglot **2.1.0**; monorepo **2.2.0**; team **2.3.0**; Bridge complete **2.4.0**; Knowledge OS first increment **2.5.0**; current line is **2.5.4+** (catch-up on that floor — living claims + CI audit + go/no-go trail; not a second 10×).
+20. **v2.0 package.** Completes the 10× line: capabilities 1.4–1.7 plus [docs/adoption-matrix.md](../../docs/adoption-matrix.md) tracking. Baseline install floor remains **2.0.0**; polyglot **2.1.0**; monorepo **2.2.0**; team **2.3.0**; Bridge complete **2.4.0**; Knowledge OS first increment **2.5.0**; current line is **2.5.5+** (catch-up on that floor — living claims + CI audit + go/no-go trail; not a second 10×).
 21. **Polyglot stack detection (v2.1 Slice A / skill 2.1.0).** On project discover (integrate / audit / from-zero / adopt), detect stack from filesystem (`package.json`, `pyproject.toml`, `go.mod`, …) via [skill-discovery.md](references/skill-discovery.md) **Polyglot stack detection** (or `scripts/detect-stack.sh`). Use **Inventory by stack** and **Docs layout guidance by stack** — do **not** assume Node/TS. Never invent ModuleIds/endpoints for frameworks without code evidence. See [modes.md §0.3](references/modes.md#03-stack-detection-polyglot-mvp--v21).
 22. **Monorepo hubs (v2.2 Slice B).** Detect multi-package trees (`pnpm-workspace.yaml`, `package.json` workspaces, `go.work`, multi-package dirs) via [skill-discovery.md](references/skill-discovery.md) **Monorepo hubs** (or `scripts/detect-packages.sh`). Root hub is a **map + Package index**, not a dump; multi-package coverage marks **gap** packages; default **package non-writes** when only indexing root. See [modes.md §0.4](references/modes.md#04-monorepo-hubs-v22-slice-b).
 23. **Team governance (v2.3 Slice C).** Optional `docs/team/` with **owners** + **approval notes** (last-approved style). Create vs link per [team-governance.md](references/team-governance.md); hub links Team without becoming an HR wiki; integrate-first — adding team must **not** rewrite product-vision / requirements / ADRs. No CODEOWNERS engine or BPM. See [modes.md §11](references/modes.md#11-team-governance-v23-slice-c).
 24. **Living claims + CI structural audit (v2.5 / Knowledge OS first increment).** Audit matrices use **living claims v0**: `anchor.path` / optional `anchor.symbol` / optional `anchor.hash`, `severity` (`critical` \| `normal`), verdicts unchanged. Matrix-first ([audit-template.md](references/audit-template.md)); procedure [living-claims.md](references/living-claims.md); wire [ADR-0001](../../docs/adr/0001-living-claims-wire-format.md). Truth score stays **advisory** (dashboard heuristic); **local air-gapped** `scripts/audit-claims.sh` / example `docs-audit` CI is the **gate** (fail on critical Contradicted). No SaaS. Optional code-comment breadcrumbs (`id` + parent/plane + status) **mirror** the same `id` — [living-claims.md § Code breadcrumbs](references/living-claims.md#code-breadcrumbs-comment-mirror). Four on-demand loops on `audit-claims.sh`: `--list-claims` / `--upsert-claims` / `--record-haken` / `--cascade-recommend` (Haken ≠ DB/daemon; still no graph walker). **Audit / reconcile reads are diff-first** (git change set only; never a full-tree scan unless the user opts in) — [modes.md §6.0](references/modes.md#60-change-set-diff-first). See [modes.md §6](references/modes.md#6-audit-project-or-feature) / [§13](references/modes.md#13-living-claims--ci-structural-audit-v25).
 25. **Go/no-go Gate A/B trail (v2.5.4).** When the user asks for a production go/no-go, Gate A/B, or a signed decision from prototype → production: write answers (**Sí** / **No** / **N/A justificado**) plus **one residual-risk sentence** into living docs — default `docs/ops/go-nogo.md` from [go-nogo-template.md](references/go-nogo-template.md) (adopt evolved path). **Gate A:** any **No** → Decision **cannot be Go**. **Gate B:** **No** only with owner + due date. Code/evidence wins; never invent a Sí; never auto-fill from living-claims CI (that gate ≠ production go/no-go). Dual-plane: the signed file is an **ops / TO-BE** record, not a code claim. Human captain / HITL when unclear. See [modes.md §14](references/modes.md#14-gono-go-decision-trail-v254).
+26. **Prototype → production (Apéndice A).** Honesty map: which Pedro norte artifacts this skill **generates** vs **audits** vs **out-of-scope (captain)**. Tool proposes; human signs. Never claim we generate what we only audit. Gate A/B *signing* stays captain (trail is §14). See [prototype-to-production.md](references/prototype-to-production.md).
 
 ## Step 0 — Detect scope, mode, and Intent
 
@@ -96,6 +98,7 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 - “owners” / “quién es dueño” / “team docs” / “approval notes” / “docs/team” → **Team governance** ([team-governance.md](references/team-governance.md); modes §11)
 - “living claims” / “truth score” / “docs CI” / “fail on Contradicted” → **Living claims** + local CI gate ([living-claims.md](references/living-claims.md); modes §13)
 - “go/no-go” / “gate A” / “gate B” / “production gate” / “de prototipo a producción” → **Go/no-go** trail ([go-nogo-template.md](references/go-nogo-template.md); modes §14)
+- “Apéndice A” / “production checklist” / “SEV runbooks” / “honesty map” → load the honesty map ([prototype-to-production.md](references/prototype-to-production.md); modes §15); do not invent missing artifacts; do not steal §14
 
 **Maturity** (when relevant): thin | mixed | mature — see [modes.md](references/modes.md#2-adopt-project).
 
@@ -231,6 +234,7 @@ Follow [quality-checklist.md](references/quality-checklist.md).
 | [references/team-approval-notes-template.md](references/team-approval-notes-template.md) | Consumer `docs/team/approval-notes.md` |
 | [references/go-nogo-template.md](references/go-nogo-template.md) | Consumer `docs/ops/go-nogo.md` (Gate A/B trail) |
 | [references/quality-checklist.md](references/quality-checklist.md) | Done criteria |
+| [references/prototype-to-production.md](references/prototype-to-production.md) | **Apéndice A honesty map** (generates / audits / captain) |
 
 ## When NOT to use / defaults
 

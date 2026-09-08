@@ -156,6 +156,13 @@ Run before reporting done.
 - [ ] Last updated / status line refreshed
 - [ ] Adopt: Surface coverage section present on hub
 
+## Prototype → production (Apéndice A)
+
+- [ ] Loaded [prototype-to-production.md](prototype-to-production.md) when production-checklist / Apéndice A was in scope
+- [ ] Did not claim **generate** for artifacts marked **audits** or **out-of-scope (captain)**
+- [ ] Did not invent threat model, SEV runbooks, or a data inventory; did not claim a signed Go (trail is §14 proposal; captain signs)
+- [ ] Human remained captain; tool proposed only
+
 ## Voice
 
 - [ ] Matches repo language (or user's language)
