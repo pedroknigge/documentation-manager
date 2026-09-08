@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v2.5.3</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT
+  <strong>v2.5.4</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.3-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.4-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -203,6 +203,8 @@ project-root/
     ├── team/                 ← optional (v2.3): OWNERS + approval notes
     │   ├── OWNERS.md
     │   └── approval-notes.md
+    ├── ops/                  ← optional (v2.5.4): go/no-go Gate A/B trail
+    │   └── go-nogo.md
     ├── decisions/
     │   └── ADR-001-….md
     └── features/

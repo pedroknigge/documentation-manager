@@ -832,6 +832,44 @@ Announce: `Living-claims: v0 | matrix: path|none | CI-gate: audit-claims | score
 
 ---
 
+## 14. Go/no-go decision trail (v2.5.4)
+
+**When:** User asks for go/no-go, Gate A/B, production gate, “de prototipo a producción”, or a signed production decision; or a project already has §20 / Apéndice A **Gate A/B firmado** tables.
+
+**Home:** create or refresh **`docs/ops/go-nogo.md`** from [go-nogo-template.md](go-nogo-template.md). If the repo already evolved an equivalent ops/decision path, **adopt it** — do not fork a second trail. Optional: one ADR that **links** the signed file (the trail is the SSOT; do not hide answers only in chat).
+
+This is an **ops / TO-BE** decision record (dual-plane). It is **not** a living-claims matrix row and **not** a code claim. **living-claims CI ≠ production go/no-go** — never auto-fill Gate answers from `audit-claims.sh` or a green claims job.
+
+### 14.1 Write the trail
+
+1. Find the project’s **§20** Gate A/B tables (Apéndice A **Gate A/B firmado**, or `de-prototipo-a-produccion` / equivalent). **Copy criteria verbatim.** Do not invent a parallel product checklist. No §20 in-repo → leave criterion cells as `_paste from project §20_` and **HITL** the captain; do not invent product facts.  
+2. For each row, answer **Sí** / **No** / **N/A justificado** / **unanswered**.  
+3. **Sí** requires a pointer to code or runnable evidence. **Never invent a Sí.** No pointer → **unanswered** or **No**, not Sí.  
+4. **N/A justificado** needs one-line why (not a back-door Sí).  
+5. Unclear → **HITL** (human captain). Do not guess.  
+6. Write **one residual-risk sentence**. Empty → trail incomplete.
+
+### 14.2 Decision rules (locked)
+
+| Block | Rule |
+|-------|------|
+| **Gate A** (Block A) | Any **No** → Decision **cannot be Go**. |
+| **Gate B** (Block B) | **No** only with **owner + due date**. Missing either → incomplete; cannot sign Go. |
+
+- Agents may propose the tables and may record **No-Go** when Gate A has a **No**.  
+- **Go** requires the **human captain** to sign. Agents never auto-sign Go.  
+- **No greenwash:** do not rewrite a No into Sí to look ready.
+
+### 14.3 Hub + non-writes
+
+- Hub Key Links: optional pointer to `docs/ops/go-nogo.md` when the file exists.  
+- Adding the trail must **not** rewrite product-vision, requirements, architecture, or ADRs.  
+- Default non-writes: those narrative docs + app source + claims-matrix verdicts (do not flip claim verdicts to “justify” a Sí).
+
+Announce: `Go-nogo: create|link|skip | path | Decision: unanswered|Go|No-Go | residual-risk: yes|no | captain: HITL|signed`.
+
+---
+
 ## Completion template (all modes)
 
 ```

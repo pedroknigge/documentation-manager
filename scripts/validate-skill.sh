@@ -79,11 +79,12 @@ for ref in \
   team-governance.md \
   team-owners-template.md \
   team-approval-notes-template.md \
-  living-claims.md
+  living-claims.md \
+  go-nogo-template.md
 do
   [[ -f "$SKILL_DIR/references/$ref" ]] || fail "Missing references/$ref"
 done
-ok "all references present (incl. bridges + dashboard + discovery + team + living-claims)"
+ok "all references present (incl. bridges + dashboard + discovery + team + living-claims + go-nogo)"
 
 for concept in \
   "Step 0" \
@@ -120,7 +121,9 @@ for concept in \
   "2.4.0" \
   "Living claims" \
   "2.5.0" \
-  "2.5.3" \
+  "2.5.4" \
+  "Go/no-go" \
+  "Gate A" \
   "audit-claims" \
   "diff-first" \
   "docs-universe" \
@@ -130,7 +133,7 @@ for concept in \
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, current 2.5.3)"
+ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, current 2.5.4, go/no-go)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -198,11 +201,17 @@ for concept in \
   "survey-docs.sh" \
   "docs-universe" \
   "Valid-but-huge" \
-  "remeasure"
+  "remeasure" \
+  "Gate A" \
+  "Gate B" \
+  "N/A justificado" \
+  "residual-risk" \
+  "cannot be Go" \
+  "living-claims CI"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md … + team + living-claims procedures present"
+ok "modes.md … + team + living-claims + go/no-go procedures present"
 
 [[ -x "$ROOT/scripts/generate-docs-dashboard.sh" ]] || [[ -f "$ROOT/scripts/generate-docs-dashboard.sh" ]] \
   || fail "Missing scripts/generate-docs-dashboard.sh"
@@ -261,7 +270,11 @@ grep -F -q "*adr*" "$QC" || fail "quality-checklist missing tight ADR *adr* ban"
 grep -F -q "examples/**" "$QC" || fail "quality-checklist missing examples/** claim-scope exclude"
 grep -F -q "docs-universe" "$QC" || fail "quality-checklist missing docs-universe escape"
 grep -F -q "remeasure" "$QC" || fail "quality-checklist missing anti-snapshot remeasure"
-ok "quality-checklist … + team + living-claims present"
+grep -F -q "Go/no-go" "$QC" || fail "quality-checklist missing Go/no-go"
+grep -F -q "Gate A" "$QC" || fail "quality-checklist missing Gate A"
+grep -F -q "residual-risk" "$QC" || fail "quality-checklist missing residual-risk"
+grep -F -q "never invent a Sí" "$QC" || fail "quality-checklist missing never invent a Sí"
+ok "quality-checklist … + team + living-claims + go/no-go present"
 
 PT="$SKILL_DIR/references/plan-template.md"
 grep -F -q "Implementation bridge" "$PT" || fail "plan-template missing Implementation bridge section"
@@ -274,10 +287,10 @@ done
 ok "status-taxonomy labels present"
 
 AT="$SKILL_DIR/references/audit-template.md"
-for concept in "OK" "Partial" "Missing" "Contradicted" "Unverifiable" "Claims matrix" "Code inventory" "Severity" "anchor.path"; do
+for concept in "OK" "Partial" "Missing" "Contradicted" "Unverifiable" "Claims matrix" "Code inventory" "Severity" "anchor.path" "Go/no-go" "living-claims CI"; do
   grep -F -q -- "$concept" "$AT" || fail "audit-template missing: $concept"
 done
-ok "audit-template verdicts + living-claims severity/anchor present"
+ok "audit-template verdicts + living-claims severity/anchor + go/no-go token present"
 
 LC="$SKILL_DIR/references/living-claims.md"
 for concept in \
@@ -365,7 +378,9 @@ grep -F -q "Package index" "$SKILL_DIR/references/agents-md-template.md" || \
   fail "agents-md-template missing Package index"
 grep -F -q "docs/team/OWNERS.md" "$SKILL_DIR/references/agents-md-template.md" || \
   fail "agents-md-template missing Team docs/team/OWNERS.md link"
-ok "agents-md-template has Plans + Surface coverage + Package index + Team + code wins"
+grep -F -q "docs/ops/go-nogo.md" "$SKILL_DIR/references/agents-md-template.md" || \
+  fail "agents-md-template missing Go/no-go docs/ops/go-nogo.md link"
+ok "agents-md-template has Plans + Surface coverage + Package index + Team + Go/no-go + code wins"
 
 TG="$SKILL_DIR/references/team-governance.md"
 for concept in "docs/team" "OWNERS.md" "approval-notes" "create" "link" "Integrate-first" "anti-wiki"; do
@@ -381,6 +396,21 @@ grep -F -q "last approved" "$SKILL_DIR/references/team-approval-notes-template.m
   grep -F -q "Last approved" "$SKILL_DIR/references/team-approval-notes-template.md" || \
   fail "team-approval-notes-template missing last approved"
 ok "team owner + approval-notes templates present"
+
+GN="$SKILL_DIR/references/go-nogo-template.md"
+for concept in \
+  "Gate A" \
+  "Gate B" \
+  "N/A justificado" \
+  "residual-risk" \
+  "cannot be Go" \
+  "living-claims CI" \
+  "docs/ops/go-nogo.md" \
+  "human captain"
+do
+  grep -F -q -- "$concept" "$GN" || fail "go-nogo-template.md missing: $concept"
+done
+ok "go-nogo-template.md Gate A/B + residual-risk + dual-plane present"
 
 # Template telemetry was withdrawn from the skill surface (does not serve north star).
 [[ ! -f "$SKILL_DIR/references/template-telemetry.md" ]] \

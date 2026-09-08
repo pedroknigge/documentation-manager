@@ -29,6 +29,8 @@
 **Truth score (advisory):** _computed by dashboard / formula below — not a merge gate_  
 **CI gate:** fail if any **critical** + **Contradicted** (local `scripts/audit-claims.sh`).
 
+**Go/no-go (ops, not this matrix):** production Gate A/B is a signed **TO-BE** record (`docs/ops/go-nogo.md` or evolved equivalent). **living-claims CI ≠ production go/no-go** — do not auto-fill Gate answers from this matrix.
+
 **Top risks:**  
 1. …  
 2. …

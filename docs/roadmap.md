@@ -2,7 +2,7 @@
 
 > Hub: [AGENTS.md](../AGENTS.md) · Planes: [docs/plans/](./plans/)  
 > **Producto:** Agent Skill (knowledge base viva, agent-first). No es una app de producto genérica.  
-> **Última actualización:** 2026-09-07 · **Versión actual:** 2.5.3
+> **Última actualización:** 2026-09-08 · **Versión actual:** 2.5.4
 
 ## Principios (axiomas)
 
@@ -37,6 +37,7 @@
 | Adoption matrix | **Shipped** (v2.0) | [adoption-matrix.md](./adoption-matrix.md) |
 | Bridge (polyglot / monorepo / team / telemetry) | **Shipped** (Fase 2) | [phase-2-bridge](./plans/phase-2-bridge/README.md) · A–D complete |
 | Living claims + CI structural audit | **Shipped** (v2.5.0) | [living-claims](./features/living-claims/README.md) — first KOS increment |
+| Go/no-go Gate A/B trail | **Shipped** (v2.5.4) | [go-nogo](./features/go-nogo/README.md) — ops/TO-BE; not living-claims CI |
 | Polyglot / multi-repo / SaaS (org + OS) | **Planned** (resto del horizonte 100×) | [knowledge-os](./plans/knowledge-os/README.md) |
 
 ## Fases
