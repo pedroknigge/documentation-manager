@@ -274,12 +274,12 @@ Announce **non-writes** in the summary even when the user did not list them.
 1. Infer name, slug, **Kind** (§3.1b), problem (from user text + any issue/PR link).  
 2. Search code lightly — if something exists, note it and offer pack instead or dual-link.  
 3. Write [plan-template.md](plan-template.md) → `docs/plans/<slug>/README.md`.  
-4. Fill what is known; **Open questions** for the rest — do **not** invent APIs.  
+4. Fill what is known so [§19](#19-cold-agent-readable) is recoverable from the file alone (intent, success criteria, non-goals, next actions); **Open questions** for the rest — do **not** invent APIs or product intent.  
 5. Status: `Planned` (or `In progress` if they are actively designing).  
 6. Wire hub: section **Plans** (or Features → Plans) with link + status.  
 7. If `docs/roadmap.md` exists, add one bullet linking the plan (do not rewrite the whole roadmap).  
 8. If implement/stubs opt-in → §3.8; else summary one-liner for Implementation bridge.  
-9. Summary: path, non-writes, open questions count, Kind, how to promote later.
+9. Summary: path, non-writes, open questions count, Kind, how to promote later, **Cold-agent readable** (`applied` | `gap` | `HITL`).
 
 **Anti-bloat:** no empty `design.md` unless content exists. No product-vision suite.
 
@@ -289,11 +289,11 @@ Announce **non-writes** in the summary even when the user did not list them.
 
 1. **Feature sizing:** one ModuleId / package / route family per slug. Cluster → [feature-cluster-template.md](feature-cluster-template.md) + children. Anti-pattern: one README owning three ModuleIds.  
 2. Scope code (entry points, routes, permissions, tests).  
-3. Write/update [feature-readme-template.md](feature-readme-template.md) under `docs/features/<slug>/` with status taxonomy + **Canonical authority** table.  
+3. Write/update [feature-readme-template.md](feature-readme-template.md) under `docs/features/<slug>/` with status taxonomy + **Canonical authority** table. Apply [§19](#19-cold-agent-readable).  
 4. Status from code ([status-taxonomy.md](status-taxonomy.md)); if only planned stubs, `Planned` / `In progress`.  
 5. If a plan exists at `docs/plans/<slug>/`, link it under Related; do not duplicate the whole plan.  
 6. Wire hub + coverage row. Hybrid = minimal hub + feature only.  
-7. Summary: pack path, code surfaces found, non-writes.
+7. Summary: pack path, code surfaces found, non-writes, **Cold-agent readable** (`applied` | `gap` | `HITL`).
 
 If Intent is **audit** on a feature: claims for that surface **intersected with the §6.0 change set**; do not walk the feature tree; do not rewrite the module doc unless asked to patch.
 
@@ -315,12 +315,13 @@ Do **not** ask the user to specify non-writes, folder layout, or Intent when the
 Use the explicit checklist in [implementation-bridge.md](implementation-bridge.md) (Promote checklist). Short form:
 
 1. Read `docs/plans/<slug>/` + **code inventory** for the slug (**code wins**).  
-2. Create/update `docs/features/<slug>/` from **code** + plan acceptance criteria (not from stubs alone).  
+2. Create/update `docs/features/<slug>/` from **code** + plan acceptance criteria (not from stubs alone). Apply [§19](#19-cold-agent-readable) — the pack must recover the same intent the plan had (or name the regime change).  
 3. Supersede or trim Implementation bridge stub inventory that diverged from code.  
 4. Plan status → `Shipped` or `Superseded` + link to pack.  
 5. Hub: feature link becomes primary; plan stays archived/historical.  
 6. Coverage row → documented.  
-7. Optional: scoped audit on new structural claims.
+7. Optional: scoped audit on new structural claims.  
+8. Do not drop success / non-goals / next actions into chat-only notes.
 
 ### 3.7 Layout (plans)
 
@@ -585,6 +586,7 @@ AS-IS uses [§6.3](#63-verdicts) (code wins). TO-BE uses supersede marking below
 5. On **orphan**: propose a single home; do not create a second SSOT for the same topic.
 6. If the class needs eyes, recommend review per [§6.9](#69-recommend-review-human-vs-agent).
 7. Human is captain. Never override evolved layout. Do not auto-commit. Do not run a classifier engine.
+8. Living TO-BE SSOT must stay [§19](#19-cold-agent-readable) cold-agent readable. Chat-only / dual-reading living plans → **orphan** or HITL — do not keep them as the living SSOT.
 
 **Non-goals:** date-wins rules · auto-merge / reconcile engine · graph walker · cascade verdicts (stay in §6.7) · recommend-review audience (stay in §6.9) · breadcrumb format · new class tokens.
 
@@ -1101,6 +1103,60 @@ Sólido states/transitions presence
 
 ---
 
+<a id="19-cold-agent-readable"></a>
+
+## 19. Cold-agent readable (v2.5.10)
+
+**When:** Writing or promoting **plan** / **feature** packs ([§3](#3-feature-autopilot--plan-v13--v2--skill-v15)); **ideally every** artifact this skill writes or audits.
+
+**Binding:** A cold agent with no prior chat must recover the **same intent** the file was created with — **no dual / ambiguous interpretation**. Complements the golden rule: if you cannot point to where it is, it does not exist.
+
+**Not when:** inventing product intent to fill a hole; rewriting all existing consumer plans; treating chat as a second SSOT.
+
+Parent: captain [ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md). Reuses [plan-template.md](plan-template.md), [feature-readme-template.md](feature-readme-template.md), [quality-checklist.md](quality-checklist.md). **Does not renumber or replace §14–§18.** No new CLI.
+
+### 19.1 Recoverable from the file alone (closed)
+
+Required on **plan / feature / promote**. Reuse existing template sections — do **not** invent a second SSOT.
+
+| Recoverable | Lives in (reuse) | Fail if |
+|-------------|------------------|---------|
+| **Intent** | Problem / Purpose / Outcome | “as we discussed”; chat-only; two equally plausible readings |
+| **Success criteria** | Acceptance criteria / Users & success | empty or only implied |
+| **Non-goals** | Users & success / Out of scope | omitted when the scope could be read two ways |
+| **Next actions** | Next actions / Promotion | no one can see what to do next without chat |
+
+**Forbidden phrases:** “as we discussed”, “per the chat”, “you know what I mean”, and any pointer that exists only in conversation.
+
+**Missing intent / dual interpretation:** mark **gap** (or HITL). Never invent product intent to fill the hole. **Missing stays Missing.** No greenwash. Human captain.
+
+### 19.2 Plan / feature / promote
+
+1. Fill the plan or feature template so §19.1 is recoverable without chat.  
+2. Promote ([§3.6](#36-promote-plan--feature-pack) + [implementation-bridge.md](implementation-bridge.md) Promote checklist): the pack must recover the **same intent** the plan had (or name the regime change). Do not drop success / non-goals / next actions into chat.  
+3. Cluster indexes: Purpose + child links enough to recover why the cluster exists; children carry the rest.
+
+### 19.3 Writes / audits (ideally all)
+
+Quality-checklist **Cold-agent readable**. On audit of a plan/feature (or any written artifact already in the [§6.0](#60-change-set-diff-first) set): dual interpretation or missing intent → **gap** / HITL — never OK. Do not walk the tree to find chat leftovers.
+
+### 19.4 Reconcile / dual-plane
+
+When a TO-BE plan is marked **living** ([§6.8](#68-reconcile-classification-plansmds)): it must stay cold-agent readable. Chat-only notes, “as we discussed” drafts, or dual-reading living plans → classify **orphan** (no recoverable authority) or HITL — do **not** keep them as the living SSOT.
+
+Does **not** change who-wins. **AS-IS** still code. **TO-BE** still one living SSOT.
+
+### 19.5 Non-goals
+
+- Rewriting all existing consumer plans  
+- Inventing product intent  
+- New CLI · second SSOT · new matrix verdicts  
+- Orderfield / ArkGate ports · P3 Ports  
+- Rewriting or renumbering [§14](#14-gono-go-decision-trail-v254)–[§18](#18-solido-statestransitions)  
+- Changing §6.0 diff-first / docs-universe  
+
+---
+
 ## Completion template (all modes)
 
 ```
@@ -1125,5 +1181,6 @@ Recommend review: n/a | human | agent  # trigger / class / pointers — §6.9
 §2 Mínimo: n/a | proposed | mapped | presence   # §16; Missing ≠ OK
 Production-harden DoD: n/a | applied            # §17; domain change → claims/matrix
 Sólido states/transitions: n/a | proposed | mapped | presence   # §18; Missing ≠ OK
+Cold-agent readable: n/a | applied | gap | HITL   # §19; plan/feature/promote required
 Suggested next Intent: …
 ```

@@ -39,6 +39,7 @@ Run before reporting done.
 - [ ] Stubs (if any) marked hypothesis; no Real public surface without code evidence
 - [ ] Ark detected → placement uses layers/contract when filling bridge
 - [ ] Promote uses **code** inventory, not stubs alone (implementation-bridge promote checklist)
+- [ ] Plan / feature / promote: **Cold-agent readable** ([modes.md §19](modes.md#19-cold-agent-readable)) — intent, success, non-goals, next actions recoverable from the file alone
 
 ## Intent / audit / from-zero
 
@@ -199,6 +200,15 @@ Closed artifact: [modes.md §18](modes.md#18-solido-statestransitions). Parent: 
 - [ ] Presence tokens Present / Partial / **Missing** / N/A-with-evidence; **Missing stays Missing** (never OK; never greenwash)
 - [ ] Intent=`production-harden` / shipping language: critical entity with no transition map reported **Missing** (DoD tie §17)
 - [ ] Did not invent a real product’s state machine for this skill-package repo; did not add CLI / matrix verdicts / living-claims wire
+
+## Cold-agent readable (v2.5.10)
+
+Closed bar: [modes.md §19](modes.md#19-cold-agent-readable). Complements the golden rule (if you cannot point to where it is, it does not exist). Human captain; never invent product intent; Missing stays Missing; no greenwash.
+
+- [ ] Plan / feature / promote: **intent**, **success criteria**, **non-goals**, and **next actions** are recoverable from the file alone (no “as we discussed”, no chat-only context)
+- [ ] Dual interpretation or missing intent flagged as **gap** / HITL — never OK
+- [ ] Living TO-BE plans stay cold-agent readable when marked living (not orphan chat notes) ([modes.md §6.8](modes.md#68-reconcile-classification-plansmds))
+- [ ] Did not invent product intent to fill a hole; did not rewrite all existing consumer plans
 
 ## Voice
 

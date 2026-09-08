@@ -2,7 +2,8 @@
 
 > **Plan (not SSOT implementation docs).** Hub: [AGENTS.md](../../../AGENTS.md)  
 > Related: [Roadmap](../../roadmap.md) · [Architecture](../../architecture.md) · future pack: `docs/features/<slug>/`  
-> When this ships or lands in code, **promote** to a feature pack (see Promotion).
+> When this ships or lands in code, **promote** to a feature pack (see Promotion).  
+> **Cold-agent readable:** a reader with no chat must recover **intent**, **success criteria**, **non-goals**, and **next actions** from this file alone. No “as we discussed”. Dual reading → gap. See [modes.md §19](modes.md#19-cold-agent-readable).
 
 **Status:** Planned | In progress | Shipped | Cancelled | Superseded  
 **Slug:** `feature-slug`  
@@ -70,6 +71,10 @@ flowchart LR
 ## Open questions
 
 - …
+
+## Next actions
+
+- [ ] …   # first concrete step a cold agent can take; not chat leftovers
 
 ## Implementation bridge
 

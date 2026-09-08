@@ -127,11 +127,13 @@ for concept in \
   "2.5.6" \
   "2.5.8" \
   "2.5.9" \
+  "2.5.10" \
   "Go/no-go" \
   "§2 Mínimo" \
   "production-harden" \
   "Production-harden DoD" \
   "Sólido states/transitions" \
+  "Cold-agent readable" \
   "Gate A" \
   "audit-claims" \
   "diff-first" \
@@ -144,7 +146,7 @@ for concept in \
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.9, §2 Mínimo + production-harden DoD + Sólido states/transitions)"
+ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.10, §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -229,11 +231,13 @@ for concept in \
   "Production-harden DoD" \
   "production-harden" \
   "Sólido states/transitions" \
-  "no flag soup"
+  "no flag soup" \
+  "Cold-agent readable" \
+  "as we discussed"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions procedures present"
+ok "modes.md … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable procedures present"
 
 [[ -x "$ROOT/scripts/generate-docs-dashboard.sh" ]] || [[ -f "$ROOT/scripts/generate-docs-dashboard.sh" ]] \
   || fail "Missing scripts/generate-docs-dashboard.sh"
@@ -417,7 +421,7 @@ grep -E -q '\[x\].*\.github/workflows/docs-audit\.yml' "$ROOT/docs/plans/knowled
 ok "audit-claims.sh present (air-gapped) + example docs-audit whole-matrix gate"
 
 PT="$SKILL_DIR/references/plan-template.md"
-for concept in "Promotion" "Acceptance criteria" "Open questions" "MVP scope" "docs/features"; do
+for concept in "Promotion" "Acceptance criteria" "Open questions" "MVP scope" "docs/features" "Next actions" "Cold-agent readable"; do
   grep -F -q -- "$concept" "$PT" || fail "plan-template missing: $concept"
 done
 ok "plan-template promotion path present"
@@ -475,7 +479,11 @@ ok "template telemetry withdrawn from skill tree + scripts"
 
 grep -F -q "Canonical authority" "$SKILL_DIR/references/feature-readme-template.md" || \
   fail "feature-readme-template missing Canonical authority"
-ok "feature-readme-template has Canonical authority"
+grep -F -q "Cold-agent readable" "$SKILL_DIR/references/feature-readme-template.md" || \
+  fail "feature-readme-template missing Cold-agent readable"
+grep -F -q "Next actions" "$SKILL_DIR/references/feature-readme-template.md" || \
+  fail "feature-readme-template missing Next actions"
+ok "feature-readme-template has Canonical authority + Cold-agent readable"
 
 echo "$NAME_VAL" | grep -Eq '^[a-z0-9]+(-[a-z0-9]+)*$' || fail "name violates agentskills.io pattern"
 

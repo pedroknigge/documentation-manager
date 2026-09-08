@@ -6,6 +6,28 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.10] — 2026-09-08
+
+Cold-agent readable bar (Pedro 2026-09-08). **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.9 (`ff6ea34`).
+
+### Added
+
+- **Closed bar:** plan / feature / promote artifacts must recover **intent**, **success criteria**, **non-goals**, and **next actions** from the file alone — no “as we discussed”, no chat-only context, no dual interpretation
+- Procedure [modes.md §19](skills/documentation-manager/references/modes.md#19-cold-agent-readable): file-alone recoverable fields · writes/audits flag dual reading as gap / HITL · living TO-BE stays cold-agent readable
+- Quality-checklist section **Cold-agent readable** + SKILL rule 30 + plan/feature template banners + Next actions + promote checklist row
+- Complements the golden rule: if you cannot point to where it is, it does not exist
+
+### Unchanged (locked)
+
+- **§14** go/no-go · **§15** Appendix A · **§16** §2 Mínimo · **§17** production-harden DoD · **§18** Sólido states/transitions stay numbered as shipped
+- Human captain · never invent product intent · Missing stays Missing · no greenwash
+- No new CLI · no second SSOT · no living-claims wire change · no new matrix verdicts
+- Orderfield / ArkGate ports · P3 Ports · rewriting all existing consumer plans (out of scope)
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.10 —`; `metadata.version` **2.5.10**
+
 ## [2.5.9] — 2026-09-08
 
 Sólido states/transitions artifact guidance (Pedro norte §2). **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.8 (`95f679d`).

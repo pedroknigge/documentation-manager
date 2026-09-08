@@ -91,6 +91,7 @@ When code is real (“promové el plan” / implementation landed):
 6. [ ] Hub: Features primary; Plans historical
 7. [ ] Surface coverage row → documented
 8. [ ] Optional: scoped audit on new claims
+9. [ ] **Cold-agent readable:** pack recovers the same intent / success / non-goals / next actions from the file alone ([modes.md §19](modes.md#19-cold-agent-readable)) — or names the regime change; no “as we discussed”
 
 ## Status tokens for stub-only work
 

@@ -1,7 +1,8 @@
 # Feature cluster: [Domain name]
 
 > Hub: [AGENTS.md](../../../AGENTS.md) · Architecture: [architecture.md](../../architecture.md)  
-> This file is an **index only** — not a substitute for child feature packs.
+> This file is an **index only** — not a substitute for child feature packs.  
+> **Cold-agent readable:** Purpose + child links must recover why this cluster exists without chat. Children carry intent / success / non-goals / next actions ([modes.md §19](modes.md#19-cold-agent-readable)).
 
 **Status:** Index  
 **Slug:** `cluster-slug`  
