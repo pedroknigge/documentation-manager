@@ -90,8 +90,12 @@ collect_packs() {
   local dir="$ROOT/docs/$kind"
   [[ -d "$dir" ]] || return 0
   local readme slug status title rel
+  # Plans: legacy docs/plans/<slug>/ + creator docs/plans/<login>/<slug>/ + _archive
+  local maxdepth=2
+  [[ "$kind" == "plans" ]] && maxdepth=4
   # Portable find (no -print0 required for shallow tree)
-  find "$dir" -mindepth 2 -maxdepth 2 -type f -name 'README.md' 2>/dev/null | sort | while read -r readme; do
+  find "$dir" -mindepth 2 -maxdepth "$maxdepth" -type f -name 'README.md' 2>/dev/null | sort | while read -r readme; do
+    [[ "$(basename "$(dirname "$readme")")" == "_archive" ]] && continue
     slug=$(meta_field "$readme" "Slug")
     [[ -z "$slug" ]] && slug=$(basename "$(dirname "$readme")")
     status=$(meta_field "$readme" "Status")

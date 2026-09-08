@@ -4,7 +4,8 @@
 # Not an LLM runner — structural contract for agents following the skill.
 #
 id	signal_summary	expected_mode	expected_path_or_policy	anchor
-plan-no-code	"nueva feature X" / no code	plan	docs/plans/<slug>/	docs/plans
+plan-no-code	"nueva feature X" / no code	plan	docs/plans/<github-login>/<slug>/	docs/plans/<github-login>
+archive-on-finish	Status Shipped|Cancelled|Superseded or promote	plan	docs/plans/<github-login>/_archive/<slug>/	_archive
 feature-with-code	document module with code path	feature	docs/features/<slug>/	docs/features
 promote	"promové el plan" / code landed	promote	plan → feature pack	Promote plan
 from-zero-sandbox	full KB under test/	from-zero	Out: sandbox	from-zero

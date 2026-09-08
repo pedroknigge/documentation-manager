@@ -2,7 +2,7 @@
 
 > Hub: [AGENTS.md](../AGENTS.md) · Planes: [docs/plans/](./plans/)  
 > **Producto:** Agent Skill (knowledge base viva, agent-first). No es una app de producto genérica.  
-> **Última actualización:** 2026-09-08 · **Versión actual:** 2.5.10
+> **Última actualización:** 2026-09-08 · **Versión actual:** 2.5.11
 
 ## Principios (axiomas)
 
@@ -159,10 +159,11 @@ Impacto en “code wins + zero maintenance cost”
 | **2.5** | Knowledge OS **first increment** (living claims v0 + local CI audit) | **Shipped** 2026-08-30 — [living-claims](./features/living-claims/README.md); toward 100×, not a second 10× |
 | **2.5.6** | P1 §2 Mínimo pack (propose + presence audit) | **Shipped** 2026-09-08 — [modes.md §16](../skills/documentation-manager/references/modes.md#16-product-domain-minimo); not a KOS leap |
 | **2.5.10** | Cold-agent readable bar (file-alone intent) | **Shipped** 2026-09-08 — [modes.md §19](../skills/documentation-manager/references/modes.md#19-cold-agent-readable); not a KOS leap |
+| **2.5.11** | Plans creator folder + archive-on-finish | **Shipped** 2026-09-08 — [modes.md §20](../skills/documentation-manager/references/modes.md#20-plans-layout); not a KOS leap |
 
 ## Cómo usar este roadmap
 
-1. Trabajo **neto nuevo** → plan en [`docs/plans/<slug>/`](./plans/) y una fila aquí.
+1. Trabajo **neto nuevo** → plan en [`docs/plans/<github-login>/<slug>/`](./plans/) y una fila aquí. (Planes históricos de este repo pueden seguir en `docs/plans/<slug>/` — no migrar en masa.)
 2. Cuando haya **código o comportamiento de skill real** → promover a `docs/features/<slug>/` (o sección en SKILL/references).
 3. No reescribir este archivo entero por cada issue; actualizar filas de estado y links.
 

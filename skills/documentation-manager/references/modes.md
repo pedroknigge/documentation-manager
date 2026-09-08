@@ -223,7 +223,7 @@ User names a surface
   → discover code for that name (paths, ModuleId, package, routes)
   → classify Kind (new feature | spike | epic | redesign) — §3.1b
   → IF user said "plan" / "epic" / "vamos a construir" / "spike" OR no meaningful code found
-        → Mode: plan  → docs/plans/<slug>/
+        → Mode: plan  → docs/plans/<github-login>/<slug>/   # new writes; §20. Adopt evolved flat trees.
   → ELSE IF code exists (or pack already exists to refresh)
         → Mode: feature → docs/features/<slug>/
   → ELSE ambiguous name only
@@ -234,7 +234,7 @@ User names a surface
 
 | Signal | Mode | Out path |
 |--------|------|----------|
-| No code / green idea / “plan” / “epic” / “spike” | **plan** | `docs/plans/<slug>/README.md` |
+| No code / green idea / “plan” / “epic” / “spike” | **plan** | `docs/plans/<github-login>/<slug>/README.md` (new writes; [§20](#20-plans-layout)) |
 | Code path or ModuleId found | **feature** | `docs/features/<slug>/README.md` |
 | Redesign of existing surface | **plan** (+ link current pack) or **feature** refresh | plan owns migration intent until code moves |
 | Both plan + “and start the pack” | plan first; pack only when code real (or Planned pack only if user insists) | plan is authority until promote |
@@ -273,7 +273,7 @@ Announce **non-writes** in the summary even when the user did not list them.
 
 1. Infer name, slug, **Kind** (§3.1b), problem (from user text + any issue/PR link).  
 2. Search code lightly — if something exists, note it and offer pack instead or dual-link.  
-3. Write [plan-template.md](plan-template.md) → `docs/plans/<slug>/README.md`.  
+3. Write [plan-template.md](plan-template.md) → `docs/plans/<github-login>/<slug>/README.md` ([§20](#20-plans-layout); adopt an existing flat tree — do not force-migrate).  
 4. Fill what is known so [§19](#19-cold-agent-readable) is recoverable from the file alone (intent, success criteria, non-goals, next actions); **Open questions** for the rest — do **not** invent APIs or product intent.  
 5. Status: `Planned` (or `In progress` if they are actively designing).  
 6. Wire hub: section **Plans** (or Features → Plans) with link + status.  
@@ -291,7 +291,7 @@ Announce **non-writes** in the summary even when the user did not list them.
 2. Scope code (entry points, routes, permissions, tests).  
 3. Write/update [feature-readme-template.md](feature-readme-template.md) under `docs/features/<slug>/` with status taxonomy + **Canonical authority** table. Apply [§19](#19-cold-agent-readable).  
 4. Status from code ([status-taxonomy.md](status-taxonomy.md)); if only planned stubs, `Planned` / `In progress`.  
-5. If a plan exists at `docs/plans/<slug>/`, link it under Related; do not duplicate the whole plan.  
+5. If a plan exists at `docs/plans/<github-login>/<slug>/` (or an adopted `docs/plans/<slug>/`), link it under Related; do not duplicate the whole plan.  
 6. Wire hub + coverage row. Hybrid = minimal hub + feature only.  
 7. Summary: pack path, code surfaces found, non-writes, **Cold-agent readable** (`applied` | `gap` | `HITL`).
 
@@ -314,23 +314,28 @@ Do **not** ask the user to specify non-writes, folder layout, or Intent when the
 
 Use the explicit checklist in [implementation-bridge.md](implementation-bridge.md) (Promote checklist). Short form:
 
-1. Read `docs/plans/<slug>/` + **code inventory** for the slug (**code wins**).  
+1. Read `docs/plans/<github-login>/<slug>/` (or adopted evolved path) + **code inventory** for the slug (**code wins**).  
 2. Create/update `docs/features/<slug>/` from **code** + plan acceptance criteria (not from stubs alone). Apply [§19](#19-cold-agent-readable) — the pack must recover the same intent the plan had (or name the regime change).  
 3. Supersede or trim Implementation bridge stub inventory that diverged from code.  
 4. Plan status → `Shipped` or `Superseded` + link to pack.  
-5. Hub: feature link becomes primary; plan stays archived/historical.  
+5. Hub: feature link becomes primary; **archive-on-finish** ([§20.3](#203-archive-on-finish)) — move the slug folder to `docs/plans/<github-login>/_archive/<slug>/` when possible.  
 6. Coverage row → documented.  
 7. Optional: scoped audit on new structural claims.  
 8. Do not drop success / non-goals / next actions into chat-only notes.
 
 ### 3.7 Layout (plans)
 
+New writes ([§20](#20-plans-layout)). Do **not** force-migrate existing `docs/plans/<slug>/` trees without HITL.
+
 ```text
 docs/
   plans/
-    <slug>/
-      README.md          # plan (template; may include Implementation bridge section)
-      implementation.md  # optional; only if bridge detail is large
+    <github-login>/
+      <slug>/
+        README.md          # plan index (template; may include Implementation bridge)
+        implementation.md  # optional companion; stay in this folder
+      _archive/
+        <slug>/            # finished home (Shipped | Cancelled | Superseded | promoted)
   features/
     <slug>/
       README.md          # implementation pack (after code or promote)
@@ -1157,6 +1162,98 @@ Does **not** change who-wins. **AS-IS** still code. **TO-BE** still one living S
 
 ---
 
+<a id="20-plans-layout"></a>
+
+## 20. Plans layout (creator folder + archive-on-finish · v2.5.11)
+
+**When:** Writing a **new** plan; promoting; or any skill pass (**plan** / **promote** / **sync** / **audit**) that has plan folders in the [§6.0](#60-change-set-diff-first) change set.
+
+**Binding:** New plans live under `docs/plans/<github-login>/<slug>/`. Every companion document for one plan stays inside that slug folder. Finished plans move to `docs/plans/<github-login>/_archive/<slug>/`.
+
+**Not when:** inventing a GitHub login; force-migrating an existing consumer `docs/plans/<slug>/` tree without HITL; deleting history; rewriting all historical plans.
+
+Parent: captain [ADR-0002](../../../docs/adr/0002-knowledge-enslavement-captain.md). Reuses [plan-template.md](plan-template.md) Status enum (`Planned` | `In progress` | `Shipped` | `Cancelled` | `Superseded`). Complements [§19](#19-cold-agent-readable). **Does not renumber or replace §14–§19.** No new CLI.
+
+### 20.1 Creator path + multi-doc (new writes)
+
+```text
+docs/plans/<github-login>/<slug>/
+  README.md              # index (plan-template)
+  <companion>.md         # optional siblings — stay in this folder
+```
+
+| Rule | Detail |
+|------|--------|
+| **Creator segment** | `<github-login>` is the GitHub user who **creates** the plan (detect §20.2). Never invent. |
+| **Slug folder** | kebab-case surface name. One plan ≈ one slug. |
+| **Index** | `README.md` is the ordered index. Companions are siblings in the same folder (clear tree; link from the README). |
+| **Forbidden (new writes)** | Loose files at `docs/plans/` root. Folders at `docs/plans/<slug>/` **without** the creator segment. |
+
+**Existing consumer trees** at `docs/plans/<slug>/` (no creator segment): **adopt** — do **not** force-migrate without HITL. Reads and updates may stay on the evolved path until the captain asks to move.
+
+This skill-package repo’s historical `docs/plans/<slug>/` packs stay put unless HITL asks to migrate.
+
+### 20.2 Detect `<github-login>` (never invent)
+
+Try in order. Stop at the first **unambiguous** GitHub login. If none → **HITL**. Never invent `unknown` / `user` / `local` / a teammate you guessed.
+
+| Order | Source | Use when |
+|-------|--------|----------|
+| 1 | `gh api user -q .login` | `gh` is authenticated and prints a single login |
+| 2 | Git author mapped to GitHub | Unambiguous only: `git config github.user`; or author email `login@users.noreply.github.com` / `id+login@users.noreply.github.com`; or a single-token `user.name` that `gh api users/<name> -q .login` returns as that same login |
+| 3 | HITL | Anything else — ask once: “Which GitHub login owns this plan?” |
+
+Ambiguous author (display name with spaces, multiple candidates, `gh` missing, API miss) → HITL. Do not pick the repo owner by default.
+
+Announce `Plans creator: <login> | HITL` with the plan path.
+
+### 20.3 Archive-on-finish
+
+On **plan / promote / sync / audit** when a plan folder is in the change set (do **not** walk the tree to find finished plans):
+
+| Trigger | Archive? |
+|---------|----------|
+| Plan **Status** is `Shipped` | **Yes** — move the whole slug folder |
+| Plan **Status** is `Cancelled` | **Yes** |
+| Plan **Status** is `Superseded` | **Yes** |
+| Plan was **promoted** to a feature pack | **Yes** (promote already sets Shipped or Superseded) |
+| Status is `Planned` or `In progress` | **No** |
+| Finished plan **not** in the change set | **No** — do not hunt |
+
+**Destination:** `docs/plans/<github-login>/_archive/<slug>/` when the creator segment is known (from the path, or §20.2).
+
+**Legacy flat** `docs/plans/<slug>/` that is finished: do **not** invent a login to archive under. HITL: migrate under a creator `_archive/` **or** leave in place. Prefer leave if the captain does not name a login.
+
+**Move vs stub:**
+
+| Situation | Action |
+|-----------|--------|
+| Default | **Move** the whole folder; update hub / roadmap / feature-pack links to the archive path |
+| Links would break **and** HITL says keep a pointer | Leave a **stub** README at the old path (Status + one link to the archive). Prefer move + update links. |
+| History | **Do not delete.** Archive is the finished home. Git keeps earlier commits. |
+
+Archive folders stay cold-agent readable ([§19](#19-cold-agent-readable)): the moved files still recover intent / success / non-goals / next actions.
+
+### 20.4 Reads / updates
+
+- New writes → §20.1 path.
+- Updates to an existing plan → write where it already lives (creator folder, archive, or adopted flat tree).
+- After a finish trigger → §20.3.
+- Multi-doc: never scatter companions outside the slug folder.
+
+### 20.5 Non-goals
+
+- Force-migrating all consumer `docs/plans/<slug>/` trees
+- Bulk-rewriting this repo’s historical plans into creator folders
+- Changing `docs/features/<slug>/`
+- New Status tokens · new CLI · second SSOT
+- Inventing a GitHub login
+- Orderfield / ArkGate ports · P3 Ports
+- Rewriting or renumbering [§14](#14-gono-go-decision-trail-v254)–[§19](#19-cold-agent-readable)
+- Changing §6.0 diff-first / docs-universe
+
+---
+
 ## Completion template (all modes)
 
 ```
@@ -1182,5 +1279,6 @@ Recommend review: n/a | human | agent  # trigger / class / pointers — §6.9
 Production-harden DoD: n/a | applied            # §17; domain change → claims/matrix
 Sólido states/transitions: n/a | proposed | mapped | presence   # §18; Missing ≠ OK
 Cold-agent readable: n/a | applied | gap | HITL   # §19; plan/feature/promote required
+Plans layout: n/a | creator:<login> | HITL | archived   # §20; new writes under <github-login>/<slug>/
 Suggested next Intent: …
 ```

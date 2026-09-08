@@ -1,9 +1,11 @@
 # Plan: [Name]
 
-> **Plan (not SSOT implementation docs).** Hub: [AGENTS.md](../../../AGENTS.md)  
-> Related: [Roadmap](../../roadmap.md) · [Architecture](../../architecture.md) · future pack: `docs/features/<slug>/`  
-> When this ships or lands in code, **promote** to a feature pack (see Promotion).  
-> **Cold-agent readable:** a reader with no chat must recover **intent**, **success criteria**, **non-goals**, and **next actions** from this file alone. No “as we discussed”. Dual reading → gap. See [modes.md §19](modes.md#19-cold-agent-readable).
+> **Plan (not SSOT implementation docs).** New writes live at `docs/plans/<github-login>/<slug>/` ([modes.md §20](modes.md#20-plans-layout)).  
+> Hub: [AGENTS.md](../../../../AGENTS.md)  
+> Related: [Roadmap](../../../roadmap.md) · [Architecture](../../../architecture.md) · future pack: `docs/features/<slug>/`  
+> When this ships or lands in code, **promote** to a feature pack (see Promotion), then **archive-on-finish**.  
+> **Cold-agent readable:** a reader with no chat must recover **intent**, **success criteria**, **non-goals**, and **next actions** from this file alone. No “as we discussed”. Dual reading → gap. See [modes.md §19](modes.md#19-cold-agent-readable).  
+> Adjust `../` counts if this plan still lives on an adopted flat `docs/plans/<slug>/` path (do not force-migrate).
 
 **Status:** Planned | In progress | Shipped | Cancelled | Superseded  
 **Slug:** `feature-slug`  
@@ -115,7 +117,7 @@ When implementation starts or the surface is real in code:
 3. Move durable decisions into ADRs if locked.
 4. Link this plan from the feature pack (**Related docs**).
 5. Mark this plan **Shipped** or **Superseded** and link the feature pack.
-6. Update hub nav + Surface coverage row; drop or archive the plan link if the pack is now the authority.
+6. **Archive-on-finish** ([modes.md §20](modes.md#20-plans-layout)): move this whole slug folder to `docs/plans/<github-login>/_archive/<slug>/` when possible; update hub nav + Surface coverage. Stub at the old path only if links would break and HITL says keep.
 
 See also promote checklist in [implementation-bridge.md](implementation-bridge.md).
 

@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v2.5.10</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT
+  <strong>v2.5.11</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.10-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.11-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -50,7 +50,7 @@ Still not a motor: walking the whole repo for children · a background enslaveme
 
 | Hub | Narrative | Plans | Features | Truth check |
 |-----|-----------|-------|----------|-------------|
-| `AGENTS.md` | vision · requirements · architecture · roadmap · ADRs | `docs/plans/<slug>/` | `docs/features/<slug>/` | optional `docs/audit/` claims matrix |
+| `AGENTS.md` | vision · requirements · architecture · roadmap · ADRs | `docs/plans/<github-login>/<slug>/` | `docs/features/<slug>/` | optional `docs/audit/` claims matrix |
 
 Whole project. Single module. Or a full rewrite in a sandbox — **without** torching the docs that already work.
 
@@ -142,7 +142,7 @@ For a **named feature**, you don’t need Intent at all — **feature autopilot*
 
 | | Mode | Lands in | When |
 |---|------|----------|------|
-| **A** | **plan** | `docs/plans/<slug>/` | New idea / epic / no solid code yet |
+| **A** | **plan** | `docs/plans/<github-login>/<slug>/` | New idea / epic / no solid code yet |
 | **B** | **feature** | `docs/features/<slug>/` | Code exists (or pack refresh) |
 | **C** | **promote** | plan → feature pack | Implementation landed |
 
@@ -166,7 +166,7 @@ Slash command: **`/documentation-manager`**. Or just talk:
 | You say | It leans toward |
 |---------|-----------------|
 | *“Bootstrap docs for this greenfield SaaS.”* | bootstrap / from-zero |
-| *“Nueva feature: team invitations.”* | **plan** → `docs/plans/team-invitations/` |
+| *“Nueva feature: team invitations.”* | **plan** → `docs/plans/<github-login>/team-invitations/` |
 | *“Documentá el módulo checkout en src/checkout.”* | **feature pack** + hub link |
 | *“Promové el plan de team invitations.”* | plan → `docs/features/…` |
 | *“We changed billing webhooks — sync the docs.”* | surgical sync |

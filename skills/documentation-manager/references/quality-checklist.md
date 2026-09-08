@@ -27,7 +27,7 @@ Run before reporting done.
 ## Feature autopilot / plan (v1.3 + v2)
 
 - [ ] Named “new feature X” used **plan** or **feature** autopilot — not project from-zero
-- [ ] No code / planning language → `docs/plans/<slug>/` from plan-template
+- [ ] No code / planning language → `docs/plans/<github-login>/<slug>/` from plan-template (new writes; [modes.md §20](modes.md#20-plans-layout))
 - [ ] Code-backed surface → `docs/features/<slug>/` from feature template
 - [ ] **Kind** set when signaled (new feature | spike | epic | redesign); epic → child slugs not mega-pack
 - [ ] Default **non-writes** applied and listed (vision, requirements, unrelated ADRs/packs)
@@ -209,6 +209,19 @@ Closed bar: [modes.md §19](modes.md#19-cold-agent-readable). Complements the go
 - [ ] Dual interpretation or missing intent flagged as **gap** / HITL — never OK
 - [ ] Living TO-BE plans stay cold-agent readable when marked living (not orphan chat notes) ([modes.md §6.8](modes.md#68-reconcile-classification-plansmds))
 - [ ] Did not invent product intent to fill a hole; did not rewrite all existing consumer plans
+
+## Plans layout / archive-on-finish (v2.5.11)
+
+Closed procedure: [modes.md §20](modes.md#20-plans-layout). Reuses plan-template Status (`Planned` | `In progress` | `Shipped` | `Cancelled` | `Superseded`). Complements §19. Human captain; never invent a GitHub login; no force-migrate of existing flat trees; no greenwash.
+
+- [ ] **New writes** live at `docs/plans/<github-login>/<slug>/` — `README.md` is the index; companions stay in that folder
+- [ ] **Forbidden** for new writes: loose files at `docs/plans/` root, or `docs/plans/<slug>/` without the creator segment
+- [ ] `<github-login>` detected from `gh api user -q .login`, unambiguous git→GitHub author map, or HITL — **never invent**
+- [ ] Existing consumer `docs/plans/<slug>/` trees **adopted** — no force-migrate without HITL
+- [ ] On plan / promote / sync / audit of plans in the change set: Status **Shipped | Cancelled | Superseded** or **promoted** → move the slug folder to `docs/plans/<github-login>/_archive/<slug>/` when possible
+- [ ] Prefer **move + update hub links**; stub at the old path only if links would break **and** HITL says keep
+- [ ] Did not delete history; archive is the finished home
+- [ ] Did not invent a login to archive a legacy flat plan; HITL or leave in place
 
 ## Voice
 

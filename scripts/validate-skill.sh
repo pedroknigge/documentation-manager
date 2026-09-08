@@ -56,6 +56,8 @@ DESC_LEN=${#DESC_FLAT}
 [[ "$DESC_LEN" -gt 0 ]] || fail "description empty"
 [[ "$DESC_LEN" -le "$MAX_DESC" ]] || fail "description length $DESC_LEN > $MAX_DESC"
 ok "description length $DESC_LEN ≤ $MAX_DESC"
+echo "$DESC_FLAT" | grep -q "^v${VER} —" || fail "description must start with v${VER} —"
+ok "description starts with v${VER} —"
 
 LINES=$(wc -l < "$SKILL_FILE" | tr -d ' ')
 [[ "$LINES" -le "$MAX_LINES" ]] || fail "SKILL.md has $LINES lines (max $MAX_LINES for progressive disclosure)"
@@ -128,12 +130,16 @@ for concept in \
   "2.5.8" \
   "2.5.9" \
   "2.5.10" \
+  "2.5.11" \
   "Go/no-go" \
   "§2 Mínimo" \
   "production-harden" \
   "Production-harden DoD" \
   "Sólido states/transitions" \
   "Cold-agent readable" \
+  "Plans layout" \
+  "docs/plans/<github-login>" \
+  "_archive" \
   "Gate A" \
   "audit-claims" \
   "diff-first" \
@@ -146,7 +152,7 @@ for concept in \
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.10, §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable)"
+ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.11, §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -233,11 +239,16 @@ for concept in \
   "Sólido states/transitions" \
   "no flag soup" \
   "Cold-agent readable" \
-  "as we discussed"
+  "as we discussed" \
+  "Plans layout" \
+  "docs/plans/<github-login>" \
+  "_archive" \
+  "gh api user -q .login" \
+  "archive-on-finish"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable procedures present"
+ok "modes.md … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout procedures present"
 
 [[ -x "$ROOT/scripts/generate-docs-dashboard.sh" ]] || [[ -f "$ROOT/scripts/generate-docs-dashboard.sh" ]] \
   || fail "Missing scripts/generate-docs-dashboard.sh"
@@ -310,7 +321,11 @@ grep -F -q "Production-harden DoD" "$QC" || fail "quality-checklist missing Prod
 grep -F -q "no greenwash OK" "$QC" || fail "quality-checklist missing no greenwash OK"
 grep -F -q "Sólido states/transitions" "$QC" || fail "quality-checklist missing Sólido states/transitions"
 grep -F -q "no flag soup" "$QC" || fail "quality-checklist missing no flag soup"
-ok "quality-checklist … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions present"
+grep -F -q "Plans layout" "$QC" || fail "quality-checklist missing Plans layout"
+grep -F -q "archive-on-finish" "$QC" || fail "quality-checklist missing archive-on-finish"
+grep -F -q "docs/plans/<github-login>" "$QC" || fail "quality-checklist missing docs/plans/<github-login>"
+grep -F -q "_archive" "$QC" || fail "quality-checklist missing _archive"
+ok "quality-checklist … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Plans layout present"
 
 PT="$SKILL_DIR/references/plan-template.md"
 grep -F -q "Implementation bridge" "$PT" || fail "plan-template missing Implementation bridge section"
@@ -421,10 +436,10 @@ grep -E -q '\[x\].*\.github/workflows/docs-audit\.yml' "$ROOT/docs/plans/knowled
 ok "audit-claims.sh present (air-gapped) + example docs-audit whole-matrix gate"
 
 PT="$SKILL_DIR/references/plan-template.md"
-for concept in "Promotion" "Acceptance criteria" "Open questions" "MVP scope" "docs/features" "Next actions" "Cold-agent readable"; do
+for concept in "Promotion" "Acceptance criteria" "Open questions" "MVP scope" "docs/features" "Next actions" "Cold-agent readable" "docs/plans/<github-login>" "_archive" "archive-on-finish"; do
   grep -F -q -- "$concept" "$PT" || fail "plan-template missing: $concept"
 done
-ok "plan-template promotion path present"
+ok "plan-template promotion path + Plans layout present"
 
 grep -F -q "Surface coverage" "$SKILL_DIR/references/agents-md-template.md" || \
   fail "agents-md-template missing Surface coverage"
