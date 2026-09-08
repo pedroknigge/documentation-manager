@@ -56,6 +56,17 @@ Run before reporting done.
 - [ ] from-zero: full KB only with that Intent; sandbox when path requested; old docs treated as hypothesis
 - [ ] from-zero does not silently overwrite mature productive SSOT without confirm
 
+## Go/no-go Gate A/B (v2.5.4)
+
+- [ ] Production decision trail written to `docs/ops/go-nogo.md` (or adopted evolved path) from [go-nogo-template.md](go-nogo-template.md) when go/no-go / Gate A/B / production gate was in scope
+- [ ] Criteria copied from the project’s **§20** / Apéndice A **Gate A/B firmado** — no invented parallel checklist; no invented product facts
+- [ ] Answers are **Sí** / **No** / **N/A justificado** / **unanswered**; **Sí** has an evidence pointer; **never invent a Sí**; no greenwash
+- [ ] **Gate A:** any **No** → Decision **cannot be Go**
+- [ ] **Gate B:** **No** only with **owner + due date**
+- [ ] **One residual-risk sentence** present (or trail left unsigned)
+- [ ] Dual-plane: trail is ops / TO-BE — **not** a living-claims row; **living-claims CI ≠ production go/no-go**; did not auto-fill from `audit-claims.sh`
+- [ ] **Go** signed only by the **human captain**; HITL when unclear
+
 ## Living claims + CI audit (v2.5)
 
 - [ ] Structural claims use living-claims columns: Anchor path (+ optional symbol/hash) and Severity (`critical` \| `normal`)

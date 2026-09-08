@@ -248,7 +248,7 @@ fi
 # ─── install.sh ships required remote refs (hardening regression) ────────────
 for ref in plan-template.md arkgate-bridge.md implementation-bridge.md knowledge-dashboard.md \
   team-governance.md team-owners-template.md team-approval-notes-template.md \
-  living-claims.md; do
+  living-claims.md go-nogo-template.md; do
   grep -q "$ref" "$ROOT/install.sh" || fail "install.sh remote list missing $ref"
 done
 grep -q "template-telemetry.md" "$ROOT/install.sh" \
@@ -419,9 +419,11 @@ grep -q "Withdrawn" "$ROOT/docs/features/template-telemetry/README.md" \
   || fail "template-telemetry pack must be marked Withdrawn"
 [[ -f "$ROOT/docs/features/living-claims/README.md" ]] || fail "missing living-claims feature pack"
 grep -q "Shipped" "$ROOT/docs/features/living-claims/README.md" || fail "living-claims pack not marked Shipped"
+[[ -f "$ROOT/docs/features/go-nogo/README.md" ]] || fail "missing go-nogo feature pack"
+grep -q "Shipped" "$ROOT/docs/features/go-nogo/README.md" || fail "go-nogo pack not marked Shipped"
 grep -q "Shipped" "$ROOT/docs/plans/phase-2-bridge/README.md" \
   || fail "phase-2-bridge plan should mark slices shipped (grep Shipped)"
-ok "adoption matrix + CHANGELOG + feature packs (incl. withdrawn telemetry + living-claims)"
+ok "adoption matrix + CHANGELOG + feature packs (incl. withdrawn telemetry + living-claims + go-nogo)"
 
 # ─── Living claims CI audit entrypoint + fixtures (Knowledge OS first increment) ─
 AUDIT="$ROOT/scripts/audit-claims.sh"
@@ -895,6 +897,35 @@ grep -F -q "remeasure" "$MODES" || fail "modes.md missing anti-snapshot remeasur
 grep -F -q "Severity" "$SKILL_DIR/references/audit-template.md" \
   || fail "audit-template missing Severity"
 ok "living-claims CI audit script + fixtures + GHA + skill anchors"
+
+# ─── Go/no-go Gate A/B trail (v2.5.4) ────────────────────────────────────────
+GN="$SKILL_DIR/references/go-nogo-template.md"
+[[ -f "$GN" ]] || fail "missing references/go-nogo-template.md"
+for anchor in \
+  "Gate A" \
+  "Gate B" \
+  "N/A justificado" \
+  "residual-risk" \
+  "cannot be Go" \
+  "living-claims CI" \
+  "docs/ops/go-nogo.md" \
+  "human captain" \
+  "Never invent a Sí"
+do
+  grep -F -q -- "$anchor" "$GN" || fail "go-nogo-template.md missing: $anchor"
+done
+grep -F -q "Go/no-go" "$MODES" || fail "modes.md missing Go/no-go"
+grep -F -q "cannot be Go" "$MODES" || fail "modes.md missing cannot be Go"
+grep -F -q "living-claims CI" "$MODES" || fail "modes.md missing living-claims CI dual-plane"
+grep -F -q "Go/no-go" "$SKILL_FILE" || fail "SKILL.md missing Go/no-go"
+grep -F -q "docs/ops/go-nogo.md" "$SKILL_FILE" || fail "SKILL.md missing docs/ops/go-nogo.md"
+grep -F -q "Go/no-go" "$SKILL_DIR/references/quality-checklist.md" \
+  || fail "quality-checklist missing Go/no-go"
+grep -F -q "Go/no-go" "$SKILL_DIR/references/audit-template.md" \
+  || fail "audit-template missing Go/no-go token"
+grep -F -q "docs/ops/go-nogo.md" "$SKILL_DIR/references/agents-md-template.md" \
+  || fail "agents-md-template missing docs/ops/go-nogo.md"
+ok "go/no-go Gate A/B trail anchors (template + modes + SKILL + QC + audit token)"
 
 if [[ "$FAILS" -gt 0 ]]; then
   echo ""

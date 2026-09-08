@@ -67,6 +67,16 @@ Version must match across:
 - `CHANGELOG.md` section for that version
 - `docs/adoption-matrix.md` version line (when cutting a major)
 
+### Cutting **2.5.4** (go/no-go Gate A/B trail)
+
+Narrative: skill procedure + `docs/ops/go-nogo.md` template so agents/humans leave Gate A/B answers (Sí / No / N/A justificado) + one residual-risk sentence in living docs. Block A any No → cannot be Go; Block B No only with owner + due. Living-claims CI ≠ production go/no-go. **Not** a new major; **not** a Knowledge OS leap. Parent tags after merge — do not tag from the PR branch.
+
+```bash
+# after gate is green (parent, post-merge):
+git tag -a v2.5.4 -m "documentation-manager skill v2.5.4 — go/no-go Gate A/B decision trail"
+git push origin main --tags   # only when you intend to publish
+```
+
 ### Cutting **2.5.3** (anonymous sales/GTM dogfood stats)
 
 Narrative: empty schema v1 ledger at `docs/sales-stats.json` for LIVE FIELD DOGFOOD (every 72h, off-repo). Public rows never include target owner/repo/URLs. Aggregates may back or lower README product claims (never invent numbers). **Not** a new major; **not** a Knowledge OS leap.
@@ -99,7 +109,7 @@ git push origin main --tags   # only when you intend to publish
 
 ### Cutting **2.5.0** (Knowledge OS first increment)
 
-Narrative: **first OS foundation slice toward 100×** (living claims v0 + local CI audit). Do **not** market as a second 10× or a full 100× leap. Historical — current install floor is **2.5.3**.
+Narrative: **first OS foundation slice toward 100×** (living claims v0 + local CI audit). Do **not** market as a second 10× or a full 100× leap. Historical — current install floor is **2.5.4**.
 
 ```bash
 # after gate is green:

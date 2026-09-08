@@ -6,6 +6,22 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.4] — 2026-09-08
+
+Go/no-go Gate A/B decision trail in living docs. **Not** a new major; **not** a Knowledge OS leap.
+
+### Added
+
+- **Go/no-go:** [modes.md §14](skills/documentation-manager/references/modes.md#14-gono-go-decision-trail-v254) — write Gate A/B answers (Sí / No / N/A justificado) + **one residual-risk sentence** into `docs/ops/go-nogo.md`
+- Template: [go-nogo-template.md](skills/documentation-manager/references/go-nogo-template.md) (consumer copies; adopt evolved path)
+- Locked rules: Gate A any **No** → Decision **cannot be Go**; Gate B **No** only with owner + due date; never invent a Sí; never auto-fill from living-claims CI (that gate ≠ production go/no-go); dual-plane ops/TO-BE; human captain / HITL
+- Audit-template token + quality-checklist + hub Key Links pointer
+- Feature pack: [docs/features/go-nogo/README.md](docs/features/go-nogo/README.md)
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.4 —`; `metadata.version` **2.5.4**
+
 ## [2.5.3] — 2026-09-07
 
 Anonymous sales/GTM dogfood stats file for LIVE FIELD DOGFOOD (every 72h, off-repo). **Not** a new major; **not** a Knowledge OS leap.
