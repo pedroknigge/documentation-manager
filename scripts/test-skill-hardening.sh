@@ -1017,7 +1017,7 @@ do
   grep -F -q -- "$anchor" "$QC" || fail "quality-checklist missing Sólido states/transitions anchor: $anchor"
 done
 grep -F -q "Sólido states/transitions" "$SKILL_FILE" || fail "SKILL.md missing Sólido states/transitions"
-grep -F -q "never invent domain states" "$SKILL_FILE" || fail "SKILL.md missing never invent domain states"
+grep -F -q "Never invent domain states" "$SKILL_FILE" || fail "SKILL.md missing Never invent domain states"
 grep -F -q "## 18. Sólido states/transitions" "$MODES" || fail "modes.md missing §18 Sólido states/transitions heading"
 grep -F -q "## 14. Go/no-go decision trail" "$MODES" || fail "modes.md must keep §14 Go/no-go (states/transitions must not steal it)"
 grep -F -q "## 15. Prototype → production coverage" "$MODES" || fail "modes.md must keep §15 Appendix A"

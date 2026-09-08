@@ -8,15 +8,12 @@ description: >
   "new feature", "nueva feature", "promové el plan", "after ark-check",
   "arkgate bridge", "knowledge dashboard", "go/no-go", "gate A/B",
   "prototipo a producción", "Apéndice A", "production-harden",
-  "no volver a prototipo", "states/transitions", "estados y transiciones",
-  /documentation-manager. Intents:
+  "states/transitions", /documentation-manager. Intents:
   integrate, audit, from-zero, production-harden (DoD overlay). Feature autopilot v2;
-  Implementation bridge opt-in; ArkGate post-gate sync; dashboard HTML; polyglot +
-  monorepo hubs; team governance (docs/team); living claims v0 + local CI structural
-  audit; go/no-go Gate A/B trail (docs/ops). Appendix A honesty map
-  (generates vs audits vs captain). §2 Mínimo (propose + presence).
-  Production-harden DoD (§2/§20 + claims/matrix). Sólido states/transitions
-  (propose + presence). On conflict code wins.
+  Implementation bridge opt-in; ArkGate post-gate; dashboard; polyglot + monorepo
+  hubs; team governance; living claims v0 + local CI audit; go/no-go Gate A/B;
+  Appendix A honesty map; §2 Mínimo; Production-harden DoD; Sólido
+  states/transitions (propose + presence). On conflict code wins.
 license: MIT
 metadata:
   author: pedroknigge
