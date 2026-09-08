@@ -4,7 +4,7 @@
 > **Purpose:** Track where this skill is (or should be) installed, and the ArkGate pairing path.  
 > **Honesty rule:** only mark **Verified** when someone ran install/validate against that target. Hypotheses stay **Candidate**.
 
-**Last updated:** 2026-09-08 · Skill version **2.5.9**
+**Last updated:** 2026-09-08 · Skill version **2.5.10**
 
 ## How to use
 
@@ -41,6 +41,7 @@
 | Go/no-go Gate A/B trail (ops/TO-BE) | **2.5.4** | [go-nogo](./features/go-nogo/README.md) · `docs/ops/go-nogo.md` — not living-claims CI |
 | §2 Mínimo product-domain (propose + presence) | **2.5.6** | [modes.md §16](../skills/documentation-manager/references/modes.md#16-product-domain-minimo) — Missing ≠ OK; adopt evolved home |
 | Production-harden DoD (§2 / §20 + claims/matrix) | **2.5.8** | [modes.md §17](../skills/documentation-manager/references/modes.md#17-production-harden-dod) · [quality-checklist.md](../skills/documentation-manager/references/quality-checklist.md) — not a signed Go |
+| Cold-agent readable (file-alone intent) | **2.5.10** | [modes.md §19](../skills/documentation-manager/references/modes.md#19-cold-agent-readable) · [quality-checklist.md](../skills/documentation-manager/references/quality-checklist.md) — dual reading → gap / HITL |
 
 ## Target projects
 

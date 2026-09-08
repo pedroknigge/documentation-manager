@@ -1,7 +1,8 @@
 # Feature: [Name]
 
 > Part of the project knowledge base. Hub: [AGENTS.md](../../../AGENTS.md)  
-> Related: [Architecture](../../architecture.md) · [Roadmap](../../roadmap.md) · [Decisions](../../decisions/)
+> Related: [Architecture](../../architecture.md) · [Roadmap](../../roadmap.md) · [Decisions](../../decisions/)  
+> **Cold-agent readable:** a reader with no chat must recover **intent**, **success criteria**, **non-goals**, and **next actions** from this file alone. No “as we discussed”. Dual reading → gap. See [modes.md §19](modes.md#19-cold-agent-readable).
 
 **Status:** Real | Dual | Local | Demo | Partial | Planned | In progress | Shipped | Deprecated | Unknown  
 *(See [status-taxonomy.md](status-taxonomy.md). Primary token required; optional note in parentheses.)*  
@@ -76,6 +77,10 @@ flowchart LR
 ## Open questions
 
 - …
+
+## Next actions
+
+- [ ] …   # first concrete step a cold agent can take; not chat leftovers
 
 ## Implementation bridge
 

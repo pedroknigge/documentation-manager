@@ -1025,6 +1025,29 @@ grep -F -q "## 16. Product domain Mínimo" "$MODES" || fail "modes.md must keep 
 grep -F -q "## 17. Production-harden DoD" "$MODES" || fail "modes.md must keep §17 production-harden DoD"
 ok "Sólido states/transitions anchors (modes §18 + SKILL + QC; §14/§15/§16/§17 intact)"
 
+# ─── Cold-agent readable (v2.5.10 · modes §19) ───────────────────────────────
+for anchor in \
+  "Cold-agent readable" \
+  "as we discussed" \
+  "invent product intent" \
+  "Missing stays Missing"
+do
+  grep -F -q -- "$anchor" "$MODES" || fail "modes.md missing Cold-agent readable anchor: $anchor"
+  grep -F -q -- "$anchor" "$QC" || fail "quality-checklist missing Cold-agent readable anchor: $anchor"
+done
+grep -F -q "Cold-agent readable" "$SKILL_FILE" || fail "SKILL.md missing Cold-agent readable"
+grep -F -q "Never invent product intent" "$SKILL_FILE" || fail "SKILL.md missing Never invent product intent"
+grep -F -q "## 19. Cold-agent readable" "$MODES" || fail "modes.md missing §19 Cold-agent readable heading"
+grep -F -q "## 14. Go/no-go decision trail" "$MODES" || fail "modes.md must keep §14 Go/no-go (cold-agent must not steal it)"
+grep -F -q "## 15. Prototype → production coverage" "$MODES" || fail "modes.md must keep §15 Appendix A"
+grep -F -q "## 16. Product domain Mínimo" "$MODES" || fail "modes.md must keep §16 §2 Mínimo"
+grep -F -q "## 17. Production-harden DoD" "$MODES" || fail "modes.md must keep §17 production-harden DoD"
+grep -F -q "## 18. Sólido states/transitions" "$MODES" || fail "modes.md must keep §18 Sólido states/transitions"
+grep -F -q "Next actions" "$SKILL_DIR/references/plan-template.md" || fail "plan-template missing Next actions"
+grep -F -q "Cold-agent readable" "$SKILL_DIR/references/plan-template.md" || fail "plan-template missing Cold-agent readable"
+grep -F -q "Cold-agent readable" "$SKILL_DIR/references/implementation-bridge.md" || fail "implementation-bridge missing Cold-agent readable on promote"
+ok "Cold-agent readable anchors (modes §19 + SKILL + QC + templates; §14–§18 intact)"
+
 if [[ "$FAILS" -gt 0 ]]; then
   echo ""
   echo "❌ Hardening failed: $FAILS issue(s)"

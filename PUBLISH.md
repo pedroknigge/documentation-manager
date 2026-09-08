@@ -67,6 +67,16 @@ Version must match across:
 - `CHANGELOG.md` section for that version
 - `docs/adoption-matrix.md` version line (when cutting a major)
 
+### Cutting **2.5.10** (cold-agent readable)
+
+Narrative: plan / feature / promote (and ideally every write/audit) must recover intent, success criteria, non-goals, and next actions from the file alone. Dual interpretation or missing intent → gap / HITL. Living TO-BE stays cold-agent readable. **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.9. Parent tags after merge — do not tag from the PR branch.
+
+```bash
+# after gate is green (parent, post-merge):
+git tag -a v2.5.10 -m "documentation-manager skill v2.5.10 — cold-agent readable bar"
+git push origin main --tags   # only when you intend to publish
+```
+
 ### Cutting **2.5.9** (Sólido states/transitions)
 
 Narrative: propose / map / presence-audit a short states/transitions table (or one link) for core entities. No flag soup. Missing stays Missing. Light §17 DoD tie when shipping. **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.8.
