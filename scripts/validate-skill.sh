@@ -333,7 +333,7 @@ grep -F -q "archive-on-finish" "$QC" || fail "quality-checklist missing archive-
 grep -F -q "docs/plans/<github-login>" "$QC" || fail "quality-checklist missing docs/plans/<github-login>"
 grep -F -q "_archive" "$QC" || fail "quality-checklist missing _archive"
 grep -F -q "Provenance grouping" "$QC" || fail "quality-checklist missing Provenance grouping"
-grep -F -q "--group-by provenance" "$QC" || fail "quality-checklist missing --group-by provenance"
+grep -F -q -- "--group-by provenance" "$QC" || fail "quality-checklist missing --group-by provenance"
 grep -F -q "never invent" "$QC" || fail "quality-checklist missing never invent"
 grep -F -q "bot/agent" "$QC" || fail "quality-checklist missing bot/agent"
 ok "quality-checklist … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Plans layout + Provenance grouping present"

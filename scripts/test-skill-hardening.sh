@@ -1200,11 +1200,11 @@ do
   grep -F -q -- "$anchor" "$QC" || fail "quality-checklist missing Provenance grouping anchor: $anchor"
 done
 grep -F -q "Provenance grouping" "$SKILL_FILE" || fail "SKILL.md missing Provenance grouping"
-grep -F -q "--group-by provenance" "$SKILL_FILE" || fail "SKILL.md missing --group-by provenance"
+grep -F -q -- "--group-by provenance" "$SKILL_FILE" || fail "SKILL.md missing --group-by provenance"
 grep -F -q "## 6.11 Provenance grouping" "$MODES" || fail "modes.md missing §6.11 Provenance grouping heading"
 grep -F -q "## 6.8 Reconcile classification" "$MODES" || fail "modes.md must keep §6.8 (provenance must not steal reconcile)"
 grep -F -q "## 20. Plans layout" "$MODES" || fail "modes.md must keep §20 Plans layout"
-grep -F -q "--group-by provenance" "$LC" || fail "living-claims.md missing --group-by provenance"
+grep -F -q -- "--group-by provenance" "$LC" || fail "living-claims.md missing --group-by provenance"
 echo "$DESC_START" | grep -q "^v${VER} —" || fail "SKILL.md description must start with v${VER} —"
 ok "Provenance grouping anchors (modes §6.11 + SKILL + QC + CLI; §6.8 and §14–§20 intact)"
 
