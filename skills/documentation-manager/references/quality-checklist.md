@@ -54,6 +54,7 @@ Run before reporting done.
 - [ ] Reconcile: agent-written plans/MDs classified **evolution** / **regime change** / **orphan** / **contradiction** ([modes.md §6.8](modes.md#68-reconcile-classification-plansmds)); no living contradictions; **AS-IS** code wins / **TO-BE** one living SSOT; supersede marking — never parallel contradicting SSOT; latest-by-date does not auto-win on either plane; HITL when unclear — captain decides ties
 - [ ] Recommend review: when cascade / reconcile / audit / narrative comments need eyes, recommend **human** or **agent** ([modes.md §6.9](modes.md#69-recommend-review-human-vs-agent)) with pointers into the change set / claims / class; `--cascade-recommend` lists the §6.9 block for for-review children already in the set; HITL → human; no assign, notify, merge, or engine
 - [ ] Narrative comments: scanned **change-set files only**; classified stale / redundant / snapshot / fact-vs-changed-symbol ([modes.md §6.10](modes.md#610-narrative-comments-report-first)); emitted §6.9 recommend review with `path:line` + class; **no auto-edit / auto-delete**; did not treat free prose as matrix rows; no full-tree comment campaign; no CI gate on narrative comments
+- [ ] Provenance (only if asked / `--group-by provenance`): grouped the §6.0 set by explicit owner first, then git first/last buckets `human` · `bot/agent` · `unknown` ([modes.md §6.11](modes.md#611-provenance-grouping-opt-in-report)); **never invent** owner from git; orphans → propose `owner:` or archive; **no write**; Missing stays Missing; not a second truth-owner or reconcile regime
 - [ ] from-zero: full KB only with that Intent; sandbox when path requested; old docs treated as hypothesis
 - [ ] from-zero does not silently overwrite mature productive SSOT without confirm
 - [ ] Project from-zero / integrate: **§2 Mínimo** proposed or mapped ([modes.md §16](modes.md#16-product-domain-minimo)) — no invented product facts
@@ -76,7 +77,7 @@ Run before reporting done.
 - [ ] Wire matches [living-claims.md](living-claims.md) / [ADR-0001](../../../docs/adr/0001-living-claims-wire-format.md) — matrix-first, no parallel wiki
 - [ ] Verdict enum unchanged; omitted severity treated as `normal`
 - [ ] Truth score described as **advisory**; **CI / `audit-claims.sh`** is the gate for critical Contradicted (whole matrix; agent reads stay **diff-first**)
-- [ ] Breadcrumbs: `audit-claims.sh --list-claims` on the §6.0 set; HITL if malformed; do not invent ids; persist with `--upsert-claims`; record §6.7 with `--record-haken` (Action / existing Haken column; never Verdict); list §6.9 for-review with `--cascade-recommend` (set + visible `parent=` only)
+- [ ] Breadcrumbs: `audit-claims.sh --list-claims` on the §6.0 set; HITL if malformed; do not invent ids; persist with `--upsert-claims`; record §6.7 with `--record-haken` (Action / existing Haken column; never Verdict); list §6.9 for-review with `--cascade-recommend` (set + visible `parent=` only); opt-in `--group-by provenance` is report-only (not the gate)
 - [ ] Domain invariants encoded as `@claim` + matrix rows ([living-claims.md](living-claims.md#domain-invariants-dual-plane-cookbook)); same dual-plane who-wins — no second regime; no greenwash OK
 - [ ] Did not invent code to satisfy a claim; did not auto-commit
 - [ ] No SaaS/control-plane invented for the core gate (local/air-gapped)
@@ -222,6 +223,16 @@ Closed procedure: [modes.md §20](modes.md#20-plans-layout). Reuses plan-templat
 - [ ] Prefer **move + update hub links**; stub at the old path only if links would break **and** HITL says keep
 - [ ] Did not delete history; archive is the finished home
 - [ ] Did not invent a login to archive a legacy flat plan; HITL or leave in place
+
+## Provenance grouping (v2.5.12)
+
+Opt-in report: [modes.md §6.11](modes.md#611-provenance-grouping-opt-in-report). Not a second truth-owner or reconcile regime. Diff-first; no auto-rewrite of ownership. Human captain; never invent owner from git; Missing stays Missing; no greenwash.
+
+- [ ] Ran only when asked / `--group-by provenance` (same §6.0 change set)
+- [ ] Explicit owner first: frontmatter `owner:` / claim steward / CODEOWNERS (TO-BE)
+- [ ] Git first/last bucketed `human` · `bot/agent` · `unknown` — **never invent** owner from git (AS-IS)
+- [ ] Orphans → proposed `owner:` or archive (**no write**)
+- [ ] Did not change Verdict; **Missing stays Missing**; no greenwash
 
 ## Voice
 

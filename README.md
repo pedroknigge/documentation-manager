@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v2.5.11</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT
+  <strong>v2.5.12</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.11-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.12-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -41,6 +41,8 @@ Binding decision: [ADR-0002](./docs/adr/0002-knowledge-enslavement-captain.md). 
 | Persist | `--upsert-claims` | Write touched ids into the claims matrix |
 | Record | `--record-haken` | Note hold / for-review on **Action** (escalate/break → you decide) |
 | Cascade-recommend | `--cascade-recommend` | List children **already in the set** that need review when a parent was released |
+
+Opt-in report (not a fifth enslavement loop): `--group-by provenance` groups the change set by explicit owner (TO-BE: frontmatter `owner:` / steward / CODEOWNERS) and git first/last buckets (AS-IS: `human` · `bot/agent` · `unknown`). **Never invents owner from git.** Orphans → propose `owner:` or archive. No write. See [modes.md §6.11](./skills/documentation-manager/references/modes.md#611-provenance-grouping-opt-in-report).
 
 **Haken** is that parent/child test — a comment and a matrix note. It is **not** a database and **not** a daemon.
 

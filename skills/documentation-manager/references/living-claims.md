@@ -67,13 +67,14 @@ score = (OK_N * 100 + PARTIAL_N * 50) / TOTAL_V   # TOTAL_V > 0
 8. If the set includes agent-written plans/MDs that share a topic with a living doc, apply [modes.md §6.8](modes.md#68-reconcile-classification-plansmds) — classify; **no living contradictions**; **AS-IS** code wins / **TO-BE** one living SSOT; date does not auto-win on either plane. Domain invariants use the same planes — [Domain invariants](#domain-invariants-dual-plane-cookbook).  
 9. When cascade / reconcile / audit / narrative comments need eyes, recommend review per [modes.md §6.9](modes.md#69-recommend-review-human-vs-agent) (**human** vs **agent**; pointers into the set / claims / class / `path:line`). Do not assign, notify, or merge.  
 10. Non-`@claim` prose comments in the set: classify and **report** per [modes.md §6.10](modes.md#610-narrative-comments-report-first). Never auto-edit. Never treat free prose as a matrix row.  
-11. Never invent code to satisfy a claim; never auto-commit. HITL when who-wins is unclear.
+11. When the user asks for provenance / group-by owner / `--group-by provenance`: run the opt-in report on the same change set ([modes.md §6.11](modes.md#611-provenance-grouping-opt-in-report)). Explicit owner first; git is AS-IS buckets only; **never invent** owner from git; never write `owner:`. Orphans → propose `owner:` or archive. Missing stays Missing. Not a second owner or reconcile regime.  
+12. Never invent code to satisfy a claim; never auto-commit. HITL when who-wins is unclear.
 
 ## CI (local / air-gapped)
 
 Consumers (and this package example workflow) run a pure local script — **no network**.
 
-The **merge gate** parses the **whole matrix**. Agent audit/reconcile **reads** stay **diff-first** ([modes.md §6.0](modes.md#60-change-set-diff-first)). Do not pass `--list-changed` / `--list-claims` / `--upsert-claims` / `--record-haken` / `--cascade-recommend` to the CI job (that would hide existing critical Contradicted).
+The **merge gate** parses the **whole matrix**. Agent audit/reconcile **reads** stay **diff-first** ([modes.md §6.0](modes.md#60-change-set-diff-first)). Do not pass `--list-changed` / `--list-claims` / `--upsert-claims` / `--record-haken` / `--cascade-recommend` / `--group-by provenance` to the CI job (that would hide existing critical Contradicted).
 
 ```bash
 # gate (whole matrix — what CI runs):
@@ -86,6 +87,7 @@ The **merge gate** parses the **whole matrix**. Agent audit/reconcile **reads** 
 ./scripts/audit-claims.sh --upsert-claims [--base REF] [--matrix PATH] [PROJECT_ROOT]
 ./scripts/audit-claims.sh --record-haken [--base REF] [--matrix PATH] [PROJECT_ROOT]
 ./scripts/audit-claims.sh --cascade-recommend [--base REF] [PROJECT_ROOT]
+./scripts/audit-claims.sh --group-by provenance [--base REF] [--matrix PATH] [PROJECT_ROOT]
 ```
 
 **Agents** invoke the same script from the **installed skill** `scripts/` ([skill-discovery.md — Skill-runtime scripts](skill-discovery.md#skill-runtime-scripts)). Consumer-repo `./scripts/audit-claims.sh` is an opt-in **CI** copy (with `.github/workflows/docs-audit.yml`) — not a second install path. Enable the workflow as a required check to fail merge on **critical Contradicted**.
@@ -159,7 +161,7 @@ checkout() { :; }
 
 ### Non-goals (this section)
 
-Convention only for the **comment wire** (do not reopen the format). Parse with `audit-claims.sh --list-claims` (change set only). Persist touched ids with `--upsert-claims` (matrix SSOT; HITL when supersede is unclear; no date-wins). Record §6.7 verdicts with `--record-haken` (Action / existing Haken column; never Verdict). List §6.9 for-review recommends with `--cascade-recommend` (released parent in the set → children already in the set; no write; no walker). Do **not** implement here: cascade engine (graph walker), reconcile classification (procedure: [modes.md §6.8](modes.md#68-reconcile-classification-plansmds)), recommend-review engine (auto-assign / notify / merge), or CI that fails on missing comments. `audit-claims.sh` default remains the **matrix gate**; `--list-changed` lists paths; `--list-claims` parses `@claim` in those paths; `--upsert-claims` writes those ids back; `--record-haken` records hold / for-review from the same set; `--cascade-recommend` lists the §6.9 payload.
+Convention only for the **comment wire** (do not reopen the format). Parse with `audit-claims.sh --list-claims` (change set only). Persist touched ids with `--upsert-claims` (matrix SSOT; HITL when supersede is unclear; no date-wins). Record §6.7 verdicts with `--record-haken` (Action / existing Haken column; never Verdict). List §6.9 for-review recommends with `--cascade-recommend` (released parent in the set → children already in the set; no write; no walker). Do **not** implement here: cascade engine (graph walker), reconcile classification (procedure: [modes.md §6.8](modes.md#68-reconcile-classification-plansmds)), recommend-review engine (auto-assign / notify / merge), or CI that fails on missing comments. `audit-claims.sh` default remains the **matrix gate**; `--list-changed` lists paths; `--list-claims` parses `@claim` in those paths; `--upsert-claims` writes those ids back; `--record-haken` records hold / for-review from the same set; `--cascade-recommend` lists the §6.9 payload; `--group-by provenance` is the opt-in owner/git report ([modes.md §6.11](modes.md#611-provenance-grouping-opt-in-report)) — not this wire.
 
 ## Domain invariants (dual-plane cookbook)
 
@@ -215,14 +217,15 @@ Non-`@claim` prose (JSDoc, block comments, AI TODOs that assert facts) is **not*
 - Replacing Notion/MkDocs  
 - Cascade engine / reconcile classification ([modes.md §6.8](modes.md#68-reconcile-classification-plansmds)) / recommend-review engine ([modes.md §6.9](modes.md#69-recommend-review-human-vs-agent)) (Haken **recorder** is `--record-haken`; **lister** is `--cascade-recommend`; the walker is still out)  
 - Auto-edit / auto-delete of narrative comments; CI gate on missing comments; treating free prose as matrix rows ([modes.md §6.10](modes.md#610-narrative-comments-report-first))
+- Second truth-owner regime or inventing `owner:` from git ([modes.md §6.11](modes.md#611-provenance-grouping-opt-in-report) is report-only)
 
 ## Concept anchors (greppable)
 
-`living claims` · `living-claims` · `anchor.path` · `severity` · `critical Contradicted` · `truth score` · `audit-claims` · `docs-audit` · `@claim` · `breadcrumb` · `plane` · `changed` · `adjusted` · `diff-first` · `--list-changed` · `--list-claims` · `--upsert-claims` · `--record-haken` · `--cascade-recommend` · `recommend review` · `whole matrix` · `narrative comments` · `fact-vs-changed-symbol` · `Domain invariants` · `no greenwash`
+`living claims` · `living-claims` · `anchor.path` · `severity` · `critical Contradicted` · `truth score` · `audit-claims` · `docs-audit` · `@claim` · `breadcrumb` · `plane` · `changed` · `adjusted` · `diff-first` · `--list-changed` · `--list-claims` · `--upsert-claims` · `--record-haken` · `--cascade-recommend` · `--group-by provenance` · `recommend review` · `whole matrix` · `narrative comments` · `fact-vs-changed-symbol` · `Domain invariants` · `no greenwash`
 
 ## Related
 
-- Modes: [modes.md §6](modes.md#6-audit-project-or-feature) · [§6.7](modes.md#67-cascade-verdicts-haken) · [§6.8](modes.md#68-reconcile-classification-plansmds) · [Who wins](modes.md#who-wins-as-is-vs-to-be) · [§6.9](modes.md#69-recommend-review-human-vs-agent) · [§6.10](modes.md#610-narrative-comments-report-first) · [§13](modes.md#13-living-claims--ci-structural-audit-v25)  
+- Modes: [modes.md §6](modes.md#6-audit-project-or-feature) · [§6.7](modes.md#67-cascade-verdicts-haken) · [§6.8](modes.md#68-reconcile-classification-plansmds) · [Who wins](modes.md#who-wins-as-is-vs-to-be) · [§6.9](modes.md#69-recommend-review-human-vs-agent) · [§6.10](modes.md#610-narrative-comments-report-first) · [§6.11](modes.md#611-provenance-grouping-opt-in-report) · [§13](modes.md#13-living-claims--ci-structural-audit-v25)  
 - Quality: [quality-checklist.md](quality-checklist.md)  
 - Feature pack: [docs/features/living-claims/README.md](../../../docs/features/living-claims/README.md)  
 - Epic: [docs/plans/knowledge-os/README.md](../../../docs/plans/knowledge-os/README.md)  
