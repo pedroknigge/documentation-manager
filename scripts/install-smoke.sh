@@ -35,6 +35,7 @@ for path in \
   "$FAKE_HOME/.agents/skills/documentation-manager/references/skill-discovery.md" \
   "$FAKE_HOME/.agents/skills/documentation-manager/references/plan-template.md" \
   "$FAKE_HOME/.agents/skills/documentation-manager/references/living-claims.md" \
+  "$FAKE_HOME/.agents/skills/documentation-manager/references/prototype-to-production.md" \
   "$FAKE_HOME/.agents/skills/documentation-manager/scripts/generate-docs-dashboard.sh" \
   "$FAKE_HOME/.agents/skills/documentation-manager/scripts/audit-claims.sh" \
   "$FAKE_HOME/.agents/skills/documentation-manager/scripts/detect-stack.sh" \

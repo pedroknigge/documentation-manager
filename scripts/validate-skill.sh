@@ -80,11 +80,12 @@ for ref in \
   team-owners-template.md \
   team-approval-notes-template.md \
   living-claims.md \
-  go-nogo-template.md
+  go-nogo-template.md \
+  prototype-to-production.md
 do
   [[ -f "$SKILL_DIR/references/$ref" ]] || fail "Missing references/$ref"
 done
-ok "all references present (incl. bridges + dashboard + discovery + team + living-claims + go-nogo)"
+ok "all references present (incl. bridges + dashboard + discovery + team + living-claims + go-nogo + p2p)"
 
 for concept in \
   "Step 0" \
@@ -122,6 +123,7 @@ for concept in \
   "Living claims" \
   "2.5.0" \
   "2.5.4" \
+  "2.5.5" \
   "Go/no-go" \
   "Gate A" \
   "audit-claims" \
@@ -129,11 +131,13 @@ for concept in \
   "docs-universe" \
   "§6.10" \
   "evolved layout" \
-  "Silent structure rewrite"
+  "Silent structure rewrite" \
+  "prototype-to-production" \
+  "out-of-scope (captain)"
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, current 2.5.4, go/no-go)"
+ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.5)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -207,11 +211,13 @@ for concept in \
   "N/A justificado" \
   "residual-risk" \
   "cannot be Go" \
-  "living-claims CI"
+  "living-claims CI" \
+  "Prototype → production coverage" \
+  "out-of-scope (captain)"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md … + team + living-claims + go/no-go procedures present"
+ok "modes.md … + team + living-claims + go/no-go + p2p coverage present"
 
 [[ -x "$ROOT/scripts/generate-docs-dashboard.sh" ]] || [[ -f "$ROOT/scripts/generate-docs-dashboard.sh" ]] \
   || fail "Missing scripts/generate-docs-dashboard.sh"
@@ -274,7 +280,9 @@ grep -F -q "Go/no-go" "$QC" || fail "quality-checklist missing Go/no-go"
 grep -F -q "Gate A" "$QC" || fail "quality-checklist missing Gate A"
 grep -F -q "residual-risk" "$QC" || fail "quality-checklist missing residual-risk"
 grep -F -q "never invent a Sí" "$QC" || fail "quality-checklist missing never invent a Sí"
-ok "quality-checklist … + team + living-claims + go/no-go present"
+grep -F -q "Prototype → production" "$QC" || fail "quality-checklist missing Prototype → production"
+grep -F -q "out-of-scope (captain)" "$QC" || fail "quality-checklist missing out-of-scope (captain)"
+ok "quality-checklist … + team + living-claims + go/no-go + p2p present"
 
 PT="$SKILL_DIR/references/plan-template.md"
 grep -F -q "Implementation bridge" "$PT" || fail "plan-template missing Implementation bridge section"
@@ -312,6 +320,26 @@ do
   grep -F -qi -- "$concept" "$LC" || fail "living-claims.md missing: $concept"
 done
 ok "living-claims.md wire-format anchors present"
+
+P2P="$SKILL_DIR/references/prototype-to-production.md"
+for concept in \
+  "generates" \
+  "audits" \
+  "out-of-scope (captain)" \
+  "Problem / scope / non-goals" \
+  "Domain invariants" \
+  "Context diagram" \
+  "Data inventory" \
+  "Threat model 1-pager" \
+  "ADRs" \
+  "Definition of Done" \
+  "Runbooks SEV" \
+  "Gate A/B signed" \
+  "This page is the SSOT"
+do
+  grep -F -q -- "$concept" "$P2P" || fail "prototype-to-production.md missing: $concept"
+done
+ok "prototype-to-production.md Appendix A honesty map present"
 
 DISC="$SKILL_DIR/references/skill-discovery.md"
 for concept in \

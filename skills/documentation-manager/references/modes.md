@@ -870,6 +870,21 @@ Announce: `Go-nogo: create|link|skip | path | Decision: unanswered|Go|No-Go | re
 
 ---
 
+## 15. Prototype → production coverage (Apéndice A)
+
+**When:** User mentions Apéndice A, production checklist, SEV runbooks, threat model, or the honesty map. For a signed Gate A/B decision, use **§14** (do not steal it).
+
+**SSOT:** [prototype-to-production.md](prototype-to-production.md) — honesty matrix only. Do not copy the table here.
+
+1. Load the map. For each Appendix A artifact follow **generates** | **audits** | **out-of-scope (captain)**.
+2. Human is captain. Tool proposes. Never claim **generate** for audit/out rows.
+3. Do not invent missing artifacts (threat model, SEV runbooks, data inventory).
+4. Gate A/B *signing* is captain. The trail proposal is **§14** / [go-nogo-template.md](go-nogo-template.md) — never auto-sign Go.
+
+Announce: `P2P-coverage: loaded | generate: … | audit: … | captain: …`
+
+---
+
 ## Completion template (all modes)
 
 ```

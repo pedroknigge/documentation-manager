@@ -248,7 +248,7 @@ fi
 # ─── install.sh ships required remote refs (hardening regression) ────────────
 for ref in plan-template.md arkgate-bridge.md implementation-bridge.md knowledge-dashboard.md \
   team-governance.md team-owners-template.md team-approval-notes-template.md \
-  living-claims.md go-nogo-template.md; do
+  living-claims.md go-nogo-template.md prototype-to-production.md; do
   grep -q "$ref" "$ROOT/install.sh" || fail "install.sh remote list missing $ref"
 done
 grep -q "template-telemetry.md" "$ROOT/install.sh" \
@@ -926,6 +926,44 @@ grep -F -q "Go/no-go" "$SKILL_DIR/references/audit-template.md" \
 grep -F -q "docs/ops/go-nogo.md" "$SKILL_DIR/references/agents-md-template.md" \
   || fail "agents-md-template missing docs/ops/go-nogo.md"
 ok "go/no-go Gate A/B trail anchors (template + modes + SKILL + QC + audit token)"
+
+# ─── Prototype → production Appendix A honesty map (v2.5.5) ────────────────
+P2P="$SKILL_DIR/references/prototype-to-production.md"
+[[ -f "$P2P" ]] || fail "missing references/prototype-to-production.md"
+for anchor in \
+  "This page is the SSOT" \
+  "generates" \
+  "audits" \
+  "out-of-scope (captain)" \
+  "Problem / scope / non-goals" \
+  "Domain invariants" \
+  "Context diagram" \
+  "Data inventory" \
+  "Threat model 1-pager" \
+  "ADRs" \
+  "Definition of Done" \
+  "Runbooks SEV" \
+  "Gate A/B signed" \
+  "Never claim we **generate**"
+do
+  grep -F -q -- "$anchor" "$P2P" || fail "prototype-to-production.md missing: $anchor"
+done
+# Honest today: do not claim generate for audit/out rows
+for row in "Data inventory | **audits**" "Threat model 1-pager | **out-of-scope (captain)**" \
+  "Runbooks SEV | **out-of-scope (captain)**" "Gate A/B signed | **out-of-scope (captain)**"
+do
+  grep -F -q -- "$row" "$P2P" || fail "prototype-to-production.md missing honest row: $row"
+done
+grep -F -q "prototype-to-production.md" "$SKILL_FILE" || fail "SKILL.md missing prototype-to-production pointer"
+grep -F -q "Prototype → production coverage" "$MODES" || fail "modes.md missing §15 Prototype → production"
+grep -F -q "## 14. Go/no-go decision trail" "$MODES" || fail "modes.md must keep §14 as go/no-go"
+grep -F -q "## 15. Prototype → production coverage" "$MODES" || fail "modes.md missing §15 Appendix A (must not steal §14)"
+grep -F -q "out-of-scope (captain)" "$SKILL_FILE" || fail "SKILL.md missing out-of-scope (captain)"
+grep -F -q "Prototype → production" "$SKILL_DIR/references/quality-checklist.md" \
+  || fail "quality-checklist missing Prototype → production"
+grep -F -q "prototype-to-production.md" "$DISC" \
+  || fail "skill-discovery missing prototype-to-production pointer"
+ok "Appendix A honesty map (SSOT + pointers; generate≠audit; §14 go/no-go kept)"
 
 if [[ "$FAILS" -gt 0 ]]; then
   echo ""

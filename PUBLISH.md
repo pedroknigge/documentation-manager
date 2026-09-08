@@ -67,6 +67,16 @@ Version must match across:
 - `CHANGELOG.md` section for that version
 - `docs/adoption-matrix.md` version line (when cutting a major)
 
+### Cutting **2.5.5** (Appendix A skill coverage map)
+
+Narrative: honesty map for Pedro norte *De prototipo a producción* v1.0 Apéndice A — each artifact is **generates** | **audits** | **out-of-scope (captain)**. Human captain; tool proposes; never claim generate for audit/out rows. Does not replace the v2.5.4 go/no-go trail (modes §14). **Not** a new major; **not** a Knowledge OS leap. Parent tags.
+
+```bash
+# after gate is green:
+git tag -a v2.5.5 -m "documentation-manager skill v2.5.5 — Appendix A honesty map (generates vs audits vs captain)"
+git push origin main --tags   # only when you intend to publish
+```
+
 ### Cutting **2.5.4** (go/no-go Gate A/B trail)
 
 Narrative: skill procedure + `docs/ops/go-nogo.md` template so agents/humans leave Gate A/B answers (Sí / No / N/A justificado) + one residual-risk sentence in living docs. Block A any No → cannot be Go; Block B No only with owner + due. Living-claims CI ≠ production go/no-go. **Not** a new major; **not** a Knowledge OS leap. Parent tags after merge — do not tag from the PR branch.
@@ -109,7 +119,7 @@ git push origin main --tags   # only when you intend to publish
 
 ### Cutting **2.5.0** (Knowledge OS first increment)
 
-Narrative: **first OS foundation slice toward 100×** (living claims v0 + local CI audit). Do **not** market as a second 10× or a full 100× leap. Historical — current install floor is **2.5.4**.
+Narrative: **first OS foundation slice toward 100×** (living claims v0 + local CI audit). Do **not** market as a second 10× or a full 100× leap. Historical — current install floor is **2.5.5**.
 
 ```bash
 # after gate is green:

@@ -316,3 +316,5 @@ Before tagging a release:
 All must exit 0. See [PUBLISH.md](../../../PUBLISH.md) in the package root.
 
 Target install version for the 10× line: **≥ 2.0.0**. Polyglot MVP **≥ 2.1.0**. Monorepo hubs **≥ 2.2.0**. Team governance **≥ 2.3.0**. Bridge line **≥ 2.4.0**. **Living claims + CI structural audit (Knowledge OS first increment) ≥ 2.5.0**. Track targets in [docs/adoption-matrix.md](../../../docs/adoption-matrix.md).
+
+**See also:** Pedro norte Apéndice A honesty map — [prototype-to-production.md](prototype-to-production.md) (generates vs audits vs captain; do not copy the table here).

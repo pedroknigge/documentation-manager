@@ -6,6 +6,21 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.5] — 2026-09-08
+
+Appendix A honesty map for Pedro norte *De prototipo a producción* v1.0. **Not** a new major; **not** a Knowledge OS leap.
+
+### Added
+
+- **P1 Coverage:** [prototype-to-production.md](skills/documentation-manager/references/prototype-to-production.md) — SSOT honesty matrix (generates | audits | out-of-scope (captain))
+- Artifacts: Problem/scope/non-goals · Domain invariants · Context diagram · Data inventory · Threat model 1-pager · ADRs · Definition of Done · Runbooks SEV · Gate A/B signed
+- Honesty: SEV runbooks + threat model are **out-of-scope (captain)**; data inventory **audits** only; Gate A/B *signing* stays captain (trail proposal is modes §14 / v2.5.4)
+- Pointers: SKILL.md rule 26 + templates row; modes.md §15; quality-checklist; skill-discovery see-also (no second SSOT; does not steal §14 go/no-go)
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.5 —`; `metadata.version` **2.5.5**
+
 ## [2.5.4] — 2026-09-08
 
 Go/no-go Gate A/B decision trail in living docs. **Not** a new major; **not** a Knowledge OS leap.
