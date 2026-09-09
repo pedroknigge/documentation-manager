@@ -67,6 +67,16 @@ Version must match across:
 - `CHANGELOG.md` section for that version
 - `docs/adoption-matrix.md` version line (when cutting a major)
 
+### Cutting **2.5.13** (anonymous dogfood sales-stats first live row)
+
+Narrative: schema v1 ledger at `docs/sales-stats.json` records the first anonymized ok dogfood run. Public rows never include target owner/repo/URLs. Aggregates may back or lower README product claims (never invent numbers). **Not** a new major; **not** a Knowledge OS leap. Parent tags after merge — do not tag from the PR branch.
+
+```bash
+# after gate is green (parent, post-merge):
+git tag -a v2.5.13 -m "documentation-manager skill v2.5.13 — anonymous dogfood sales-stats first live row"
+git push origin main --tags   # only when you intend to publish
+```
+
 ### Cutting **2.5.12** (provenance grouping)
 
 Narrative: opt-in `audit-claims.sh --group-by provenance` groups the git change set by explicit owner (frontmatter `owner:` / claim steward / CODEOWNERS) and git first/last buckets (`human` · `bot/agent` · `unknown`). Never invent owner from git. Orphans → propose `owner:` or archive. Missing stays Missing. Not a second truth-owner or reconcile regime. **Not** a new major; **not** a Knowledge OS leap. Rebased onto v2.5.11. Parent tags after merge — do not tag from the PR branch.

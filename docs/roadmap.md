@@ -2,7 +2,7 @@
 
 > Hub: [AGENTS.md](../AGENTS.md) · Planes: [docs/plans/](./plans/)  
 > **Producto:** Agent Skill (knowledge base viva, agent-first). No es una app de producto genérica.  
-> **Última actualización:** 2026-09-08 · **Versión actual:** 2.5.12
+> **Última actualización:** 2026-09-09 · **Versión actual:** 2.5.13
 
 ## Principios (axiomas)
 
@@ -161,6 +161,7 @@ Impacto en “code wins + zero maintenance cost”
 | **2.5.10** | Cold-agent readable bar (file-alone intent) | **Shipped** 2026-09-08 — [modes.md §19](../skills/documentation-manager/references/modes.md#19-cold-agent-readable); not a KOS leap |
 | **2.5.11** | Plans creator folder + archive-on-finish | **Shipped** 2026-09-08 — [modes.md §20](../skills/documentation-manager/references/modes.md#20-plans-layout); not a KOS leap |
 | **2.5.12** | Audit/report group-by provenance (owner + git opt-in) | **Shipped** 2026-09-08 — [modes.md §6.11](../skills/documentation-manager/references/modes.md#611-provenance-grouping-opt-in-report); not a KOS leap; not a second owner regime |
+| **2.5.13** | Anonymous dogfood sales-stats first live row | **Shipped** 2026-09-09 — [sales-stats.json](./sales-stats.json); not a KOS leap |
 
 ## Cómo usar este roadmap
 
