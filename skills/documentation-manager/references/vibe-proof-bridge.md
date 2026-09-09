@@ -28,7 +28,7 @@ Evaluate **before** any propose or call. Order is fail-closed.
 
 | Gate | Offer / call? | How to know (no greenwash) |
 |------|---------------|----------------------------|
-| **No executable contract** | **Skip** | No meaningful product/skill code (no `src/` / stack sources / scripts+tests that vibe-proof would treat as `skill/docs`). Docs-only trees stay skipped. |
+| **no executable contract** | **Skip** | No meaningful product/skill code (no `src/` / stack sources / scripts+tests that vibe-proof would treat as `skill/docs`). Docs-only trees stay skipped. |
 | **Strong living architecture** | **Skip** | Proven with **pointers** — see §3. File existence is **not** enough. |
 | Auditable code **and** architecture **weak/absent** | **Offer** (default HITL) or **mandate** | Code inventory found real surfaces; architecture authority missing, stub, TBD-only, or not living. |
 | Ordinary “nueva feature X” / plan with **no** mandate | **HITL propose once** if the two offer rows above pass; else skip | Never auto-run. |
@@ -38,7 +38,7 @@ Unclear whether architecture is strong → **not** strong. Offer if code exists.
 
 ## 3. Strong living architecture (pointers only)
 
-**Strong** only if you can **point** to **all** of:
+**strong living architecture** only if you can **point** to **all** of:
 
 1. An **adopted** architecture authority (hub-linked `docs/architecture.md`, CapCase `docs/Architecture.md`, or the captain’s evolved home). Never force a filename.
 2. It names **real** code surfaces (paths / packages / modules that **exist** in the tree) — not `src/…` placeholders, not `YYYY-MM-DD` leftovers.

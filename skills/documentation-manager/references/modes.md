@@ -1326,7 +1326,7 @@ Archive folders stay cold-agent readable ([§19](#19-cold-agent-readable)): the 
 
 > Hay código auditable y la arquitectura documentada está floja o ausente. ¿Corro vibe-proof-auditor y pliego los findings en acceptance / MVP / next actions del plan?
 
-Wait. Captain no → `skip:declined`. **Never** silent auto-run.
+Wait. Captain no → `skip:declined`. **no silent auto-run.**
 
 **Internal call** only with explicit mandate (“close gaps”, “listo para prod”, “asegurá huecos”) or a vibe-proof **flag** — never on every plan. Still announce.
 
