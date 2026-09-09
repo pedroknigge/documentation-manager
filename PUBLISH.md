@@ -67,6 +67,16 @@ Version must match across:
 - `CHANGELOG.md` section for that version
 - `docs/adoption-matrix.md` version line (when cutting a major)
 
+### Cutting **2.5.14** (`--base` commit-ish HITL exit 2)
+
+Narrative: `audit-claims.sh --base` must be a commit this clone can see before `git diff <base>...HEAD`. Empty-tree / missing / non-commit → HITL + exit 2 (not git 128). Finding B (malformed `@claim` suppresses valid siblings) stays HITL / out of scope. **Not** a new major; **not** a Knowledge OS leap. Parent tags after merge — do not tag from the PR branch.
+
+```bash
+# after gate is green (parent, post-merge):
+git tag -a v2.5.14 -m "documentation-manager skill v2.5.14 — --base commit-ish HITL exit 2"
+git push origin main --tags   # only when you intend to publish
+```
+
 ### Cutting **2.5.13** (anonymous dogfood sales-stats first live row)
 
 Narrative: schema v1 ledger at `docs/sales-stats.json` records the first anonymized ok dogfood run. Public rows never include target owner/repo/URLs. Aggregates may back or lower README product claims (never invent numbers). **Not** a new major; **not** a Knowledge OS leap. Parent tags after merge — do not tag from the PR branch.
