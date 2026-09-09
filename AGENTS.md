@@ -1,6 +1,6 @@
 # AGENTS.md — documentation-manager (skill package)
 
-**Status:** skill development repo · last updated 2026-09-09 · skill version **2.5.14**
+**Status:** skill development repo · last updated 2026-09-09 · skill version **2.5.15**
 
 ## What this folder is
 
@@ -68,6 +68,7 @@ documentation-manager/          ← this git root (skill development)
 | Template telemetry | [docs/features/template-telemetry/README.md](docs/features/template-telemetry/README.md) | **Withdrawn** (shipped v2.4.0; cut — not north star) |
 | Living claims (KOS first increment) | [docs/features/living-claims/README.md](docs/features/living-claims/README.md) | Shipped (v2.5.0) |
 | Go/no-go Gate A/B trail | [docs/features/go-nogo/README.md](docs/features/go-nogo/README.md) | Shipped (v2.5.4) |
+| Vibe-proof plan bridge (HITL) | [skills/documentation-manager/references/vibe-proof-bridge.md](skills/documentation-manager/references/vibe-proof-bridge.md) | Shipped (v2.5.15) |
 
 ## Navigation (meta)
 

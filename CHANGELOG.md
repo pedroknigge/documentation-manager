@@ -6,6 +6,30 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.15] — 2026-09-09
+
+P2 Bridge: plan mode ↔ vibe-proof-auditor (HITL propose). **Not** a new major; **not** a Knowledge OS leap.
+
+### Added
+
+- Sibling-skill bridge (ArkGate-style) from **plan mode** to [vibe-proof-auditor](https://github.com/pedroknigge/vibe-proof-auditor): one **HITL propose** when the tree is auditable and architecture docs are weak/absent
+- Procedure [modes.md §21](skills/documentation-manager/references/modes.md#21-vibe-proof-auditor-bridge) + [vibe-proof-bridge.md](skills/documentation-manager/references/vibe-proof-bridge.md)
+- Offer gates: **no executable contract** → skip; **strong living architecture** (pointers only; file existence ≠ living) → skip
+- Internal call only with mandate (“close gaps”, “listo para prod”, “asegurá huecos”) or a vibe-proof flag — never on every plan; **no silent auto-run**
+- Fold findings into plan Acceptance / MVP / Next actions (cold-agent readable) — not a second SSOT, not a full report dump
+- Quality-checklist section **Vibe-proof-auditor bridge** + golden offer/skip rows
+
+### Unchanged (locked)
+
+- **§9** ArkGate · **§14** go/no-go · **§15** Appendix A · **§16** §2 Mínimo · **§17** production-harden DoD · **§18** Sólido · **§19** cold-agent · **§20** plans layout stay numbered as shipped
+- Human captain · Missing stays Missing · no greenwash · dual-plane intact
+- Finding B from #41 stays **HITL / parked**
+- Orderfield / ArkGate ports · P3 Ports · product merge · vibe-proof scoring copied here
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.15 —`; `metadata.version` **2.5.15**
+
 ## [2.5.14] — 2026-09-09
 
 `--base` commit-ish HITL exit 2 (dogfood finding A). **Not** a new major; **not** a Knowledge OS leap.

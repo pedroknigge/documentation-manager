@@ -83,11 +83,12 @@ for ref in \
   team-approval-notes-template.md \
   living-claims.md \
   go-nogo-template.md \
-  prototype-to-production.md
+  prototype-to-production.md \
+  vibe-proof-bridge.md
 do
   [[ -f "$SKILL_DIR/references/$ref" ]] || fail "Missing references/$ref"
 done
-ok "all references present (incl. bridges + dashboard + discovery + team + living-claims + go-nogo + p2p)"
+ok "all references present (incl. bridges + dashboard + discovery + team + living-claims + go-nogo + p2p + vibe-proof)"
 
 for concept in \
   "Step 0" \
@@ -134,6 +135,7 @@ for concept in \
   "2.5.12" \
   "2.5.13" \
   "2.5.14" \
+  "2.5.15" \
   "Go/no-go" \
   "§2 Mínimo" \
   "production-harden" \
@@ -154,11 +156,14 @@ for concept in \
   "out-of-scope (captain)" \
   "Provenance grouping" \
   "--group-by provenance" \
-  "§6.11"
+  "§6.11" \
+  "Vibe-proof-auditor bridge" \
+  "vibe-proof HITL" \
+  "no silent auto-run"
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.14, §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout + Provenance grouping)"
+ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.15, §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout + Provenance grouping + Vibe-proof-auditor bridge)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -253,11 +258,15 @@ for concept in \
   "docs/plans/<github-login>" \
   "_archive" \
   "gh api user -q .login" \
-  "archive-on-finish"
+  "archive-on-finish" \
+  "Vibe-proof-auditor bridge" \
+  "vibe-proof HITL propose" \
+  "strong living architecture" \
+  "no executable contract"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout + Provenance grouping procedures present"
+ok "modes.md … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout + Provenance grouping + Vibe-proof-auditor bridge procedures present"
 
 [[ -x "$ROOT/scripts/generate-docs-dashboard.sh" ]] || [[ -f "$ROOT/scripts/generate-docs-dashboard.sh" ]] \
   || fail "Missing scripts/generate-docs-dashboard.sh"
@@ -294,6 +303,20 @@ do
   grep -F -q -- "$concept" "$BRIDGE" || fail "arkgate-bridge.md missing: $concept"
 done
 ok "arkgate-bridge.md detection + post-gate present"
+
+VPB="$SKILL_DIR/references/vibe-proof-bridge.md"
+for concept in \
+  "Detection" \
+  "Offer gates" \
+  "HITL propose" \
+  "no silent auto-run" \
+  "strong living architecture" \
+  "no executable contract" \
+  "not a second SSOT"
+do
+  grep -F -q -- "$concept" "$VPB" || fail "vibe-proof-bridge.md missing: $concept"
+done
+ok "vibe-proof-bridge.md detection + offer gates + HITL present"
 
 QC="$SKILL_DIR/references/quality-checklist.md"
 grep -F -q "Coverage matrix" "$QC" || fail "quality-checklist missing Coverage matrix"
@@ -338,7 +361,11 @@ grep -F -q "Provenance grouping" "$QC" || fail "quality-checklist missing Proven
 grep -F -q -- "--group-by provenance" "$QC" || fail "quality-checklist missing --group-by provenance"
 grep -F -q "never invent" "$QC" || fail "quality-checklist missing never invent"
 grep -F -q "bot/agent" "$QC" || fail "quality-checklist missing bot/agent"
-ok "quality-checklist … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Plans layout + Provenance grouping present"
+grep -F -q "Vibe-proof-auditor bridge" "$QC" || fail "quality-checklist missing Vibe-proof-auditor bridge"
+grep -F -q "vibe-proof HITL propose" "$QC" || fail "quality-checklist missing vibe-proof HITL propose"
+grep -F -q "no silent auto-run" "$QC" || fail "quality-checklist missing no silent auto-run"
+grep -F -q "strong living architecture" "$QC" || fail "quality-checklist missing strong living architecture"
+ok "quality-checklist … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Plans layout + Provenance grouping + Vibe-proof-auditor bridge present"
 
 PT="$SKILL_DIR/references/plan-template.md"
 grep -F -q "Implementation bridge" "$PT" || fail "plan-template missing Implementation bridge section"

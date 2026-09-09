@@ -110,7 +110,8 @@ install_skill_tree() {
       team-approval-notes-template.md \
       living-claims.md \
       go-nogo-template.md \
-      prototype-to-production.md
+      prototype-to-production.md \
+      vibe-proof-bridge.md
     do
       curl -fsSL "${REPO_RAW}/${SKILL_REL}/references/${ref}" -o "$dest/references/${ref}" || true
     done

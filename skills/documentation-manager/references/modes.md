@@ -214,6 +214,7 @@ Treat as **feature-scoped work** (not project bootstrap / from-zero):
 | “promové el plan de X” / “promote plan X” | **Promote** plan → feature pack (§3.6) |
 | “implementá X”, “generá stubs”, “scaffold X”, “start coding” | Stage A docs if needed **+** Implementation bridge on (§3.8) |
 | “spike X”, “epic X”, “redesign X” | Autopilot + Kind refinement (§3.1b) |
+| “close gaps” / “listo para prod” / “asegurá huecos” / “vibe-proof” **while already in plan** | Plan + vibe-proof **mandate** ([§21](#21-vibe-proof-auditor-bridge)) — not a steal of a standalone auditor ask |
 
 **Do not** escalate to project Intent (integrate / from-zero) just because someone said “documentá”. Named surface → feature or plan.
 
@@ -280,7 +281,8 @@ Announce **non-writes** in the summary even when the user did not list them.
 6. Wire hub: section **Plans** (or Features → Plans) with link + status.  
 7. If `docs/roadmap.md` exists, add one bullet linking the plan (do not rewrite the whole roadmap).  
 8. If implement/stubs opt-in → §3.8; else summary one-liner for Implementation bridge.  
-9. Summary: path, non-writes, open questions count, Kind, how to promote later, **Cold-agent readable** (`applied` | `gap` | `HITL`).
+9. Summary: path, non-writes, open questions count, Kind, how to promote later, **Cold-agent readable** (`applied` | `gap` | `HITL`).  
+10. **Vibe-proof bridge** ([§21](#21-vibe-proof-auditor-bridge)): if offer gates pass, **one HITL propose** (or internal call on mandate/flag). Never silent auto-run. Announce `Vibe-proof: …`.
 
 **Anti-bloat:** no empty `design.md` unless content exists. No product-vision suite.
 
@@ -1298,6 +1300,51 @@ Archive folders stay cold-agent readable ([§19](#19-cold-agent-readable)): the 
 
 ---
 
+<a id="21-vibe-proof-auditor-bridge"></a>
+
+## 21. Vibe-proof-auditor bridge (HITL propose · v2.5.15)
+
+**When:** **Plan mode** on a tree that already has an **auditable** code/skill contract, and architecture docs are **weak/absent**.
+
+**Not when:** no executable contract; **strong living architecture** (proven with pointers); ordinary plan with no mandate **and** gates fail; standalone “listo para prod” meant only for the sibling (no plan intent).
+
+**Full procedure:** [vibe-proof-bridge.md](vibe-proof-bridge.md). Sibling: [vibe-proof-auditor](https://github.com/pedroknigge/vibe-proof-auditor). **Do not merge products.** Does **not** reuse or renumber [§9](#9-arkgate-bridge-v14) or [§14](#14-gono-go-decision-trail-v254)–[§20](#20-plans-layout). No new CLI. No Orderfield / ArkGate ports.
+
+### 21.1 Offer gates (closed)
+
+| Gate | Action |
+|------|--------|
+| **no executable contract** | **Skip** — auditor is not for docs-only without code |
+| **strong living architecture** | **Skip** — do not offer |
+| Auditable code **and** architecture weak/absent | **Offer** (default) or **mandate** |
+
+**strong living architecture** only if you can **point** to all of: adopted architecture authority (never force a filename) + real existing paths/packages + not a stub/TBD leftover + if matrix rows exist, none Contradicted and architecture claims not Missing. File existence ≠ living. Unclear → **not** strong. **Missing stays Missing.** No greenwash.
+
+### 21.2 HITL propose vs mandate
+
+**Default (no mandate):** one **vibe-proof HITL propose** after Stage A:
+
+> Hay código auditable y la arquitectura documentada está floja o ausente. ¿Corro vibe-proof-auditor y pliego los findings en acceptance / MVP / next actions del plan?
+
+Wait. Captain no → `skip:declined`. **no silent auto-run.**
+
+**Internal call** only with explicit mandate (“close gaps”, “listo para prod”, “asegurá huecos”) or a vibe-proof **flag** — never on every plan. Still announce.
+
+### 21.3 Fold (not a second SSOT)
+
+If the captain says yes (or mandate): load the sibling skill; fold Findings / P0–P1 into the plan’s **Acceptance** / **MVP** / **Next actions** ([§19](#19-cold-agent-readable): `id` + path + note). Pointer to the report OK. Do **not** dump the full report. Dual-plane: findings = AS-IS; plan rows = TO-BE. Sibling absent → `skip:absent`; hint once; leave Missing.
+
+Announce: `Vibe-proof: n/a | skip:<no-code|strong-arch|declined|absent> | HITL | mandate | folded`
+
+### 21.4 Non-goals
+
+- Merging products · copying vibe-proof scoring/gates · silent auto-run
+- Second SSOT · full report dump · inventing a Sí / green OK
+- Finding B from issue #41 · Orderfield / ArkGate ports · P3 Ports
+- Rewriting or renumbering [§9](#9-arkgate-bridge-v14) or [§14](#14-gono-go-decision-trail-v254)–[§20](#20-plans-layout)
+
+---
+
 ## Completion template (all modes)
 
 ```
@@ -1324,5 +1371,6 @@ Production-harden DoD: n/a | applied            # §17; domain change → claims
 Sólido states/transitions: n/a | proposed | mapped | presence   # §18; Missing ≠ OK
 Cold-agent readable: n/a | applied | gap | HITL   # §19; plan/feature/promote required
 Plans layout: n/a | creator:<login> | HITL | archived   # §20; new writes under <github-login>/<slug>/
+Vibe-proof: n/a | skip:<no-code|strong-arch|declined|absent> | HITL | mandate | folded   # §21; never silent auto-run
 Suggested next Intent: …
 ```

@@ -1,24 +1,24 @@
 ---
 name: documentation-manager
 description: >
-  v2.5.14 — Use when bootstrapping, completing, updating, or auditing project documentation,
+  v2.5.15 — Use when bootstrapping, completing, updating, or auditing project documentation,
   or documenting a feature/module/epic: AGENTS.md + docs/, ADRs, roadmap,
   docs/features/<slug>/, docs/plans/<github-login>/<slug>/. Triggers: "document this project",
   "bootstrap docs", "sync docs", "audit docs", "docs vs code", "from zero",
   "new feature", "nueva feature", "promové el plan", "after ark-check",
   "arkgate bridge", "knowledge dashboard", "go/no-go", "gate A/B",
   "prototipo a producción", "Apéndice A", "production-harden",
-  "states/transitions", "cold-agent", "provenance", /documentation-manager. Intents:
-  integrate, audit, from-zero, production-harden (DoD overlay). Feature autopilot v2;
-  Implementation bridge opt-in; ArkGate post-gate; dashboard; polyglot + monorepo
-  hubs; team governance; living claims v0 + local CI audit; go/no-go Gate A/B;
-  Appendix A honesty map; §2 Mínimo; Production-harden DoD; Sólido
-  states/transitions; cold-agent readable; plans layout + archive-on-finish.
-  On conflict code wins.
+  "states/transitions", "cold-agent", "provenance", "vibe-proof",
+  /documentation-manager. Intents: integrate, audit, from-zero,
+  production-harden (DoD overlay). Feature autopilot v2; Implementation
+  bridge opt-in; ArkGate post-gate; dashboard; polyglot + monorepo hubs;
+  team governance; living claims + CI audit; go/no-go; Appendix A; §2
+  Mínimo; production-harden DoD; Sólido; cold-agent; plans layout;
+  provenance; vibe-proof HITL plan bridge. On conflict code wins.
 license: MIT
 metadata:
   author: pedroknigge
-  version: "2.5.14"
+  version: "2.5.15"
 ---
 
 # Documentation Manager
@@ -47,7 +47,7 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 17. **ArkGate bridge (v1.4).** If ArkGate is detected (`ark.config.json`, `ark-check`, `.ark/`, ark skills) or the user just finished a gate, run the **bridge** sub-flow: enrich inventory from the contract; after gate pass → scoped **sync** / **audit**; residual violations → mark claims Contradicted/Partial — never rewrite docs to excuse broken architecture. No Ark → no-op. Placement hints in Implementation bridge reuse Ark layers when detected. See [arkgate-bridge.md](references/arkgate-bridge.md) and [modes.md §9](references/modes.md#9-arkgate-bridge-v14).
 18. **Knowledge dashboard (v1.6).** Optional static HTML view of plans/features/claims (`scripts/generate-docs-dashboard.sh` → `docs/audit/generated/dashboard.html`). Markdown is SSOT; HTML is gitignored view-only. Offer after audit once or on “dashboard” request. See [knowledge-dashboard.md](references/knowledge-dashboard.md) and [modes.md §10](references/modes.md#10-knowledge-dashboard-v16).
 19. **Skill hardening (v1.7).** Maintainers: run `validate-skill.sh` + `test-skill-hardening.sh` before release. Agents: detect install/version via [skill-discovery.md](references/skill-discovery.md); suggest reinstall when outdated (no silent auto-patch).
-20. **v2.0 package.** Completes the 10× line: capabilities 1.4–1.7 plus [docs/adoption-matrix.md](../../docs/adoption-matrix.md) tracking. Baseline install floor remains **2.0.0**; polyglot **2.1.0**; monorepo **2.2.0**; team **2.3.0**; Bridge complete **2.4.0**; Knowledge OS first increment **2.5.0**; current line is **2.5.14+** (catch-up on that floor — living claims + CI audit + go/no-go trail + Appendix A + §2 Mínimo + production-harden DoD + Sólido states/transitions + cold-agent readable + plans creator folder + archive-on-finish + provenance grouping; 2.5.13 glance; not a second 10×).
+20. **v2.0 package.** Completes the 10× line: capabilities 1.4–1.7 plus [docs/adoption-matrix.md](../../docs/adoption-matrix.md) tracking. Baseline install floor remains **2.0.0**; polyglot **2.1.0**; monorepo **2.2.0**; team **2.3.0**; Bridge complete **2.4.0**; Knowledge OS first increment **2.5.0**; current line is **2.5.15+** (catch-up on that floor — living claims + CI audit + go/no-go trail + Appendix A + §2 Mínimo + production-harden DoD + Sólido states/transitions + cold-agent readable + plans creator folder + archive-on-finish + provenance grouping + vibe-proof HITL plan bridge; 2.5.13 glance; 2.5.14 `--base` HITL; not a second 10×).
 21. **Polyglot stack detection (v2.1 Slice A / skill 2.1.0).** On project discover (integrate / audit / from-zero / adopt), detect stack from filesystem (`package.json`, `pyproject.toml`, `go.mod`, …) via [skill-discovery.md](references/skill-discovery.md) **Polyglot stack detection** (or `scripts/detect-stack.sh`). Use **Inventory by stack** and **Docs layout guidance by stack** — do **not** assume Node/TS. Never invent ModuleIds/endpoints for frameworks without code evidence. See [modes.md §0.3](references/modes.md#03-stack-detection-polyglot-mvp--v21).
 22. **Monorepo hubs (v2.2 Slice B).** Detect multi-package trees (`pnpm-workspace.yaml`, `package.json` workspaces, `go.work`, multi-package dirs) via [skill-discovery.md](references/skill-discovery.md) **Monorepo hubs** (or `scripts/detect-packages.sh`). Root hub is a **map + Package index**, not a dump; multi-package coverage marks **gap** packages; default **package non-writes** when only indexing root. See [modes.md §0.4](references/modes.md#04-monorepo-hubs-v22-slice-b).
 23. **Team governance (v2.3 Slice C).** Optional `docs/team/` with **owners** + **approval notes** (last-approved style). Create vs link per [team-governance.md](references/team-governance.md); hub links Team without becoming an HR wiki; integrate-first — adding team must **not** rewrite product-vision / requirements / ADRs. No CODEOWNERS engine or BPM. See [modes.md §11](references/modes.md#11-team-governance-v23-slice-c).
@@ -60,6 +60,7 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 30. **Cold-agent readable (v2.5.10).** Plan / feature / promote artifacts must recover **intent**, **success criteria**, **non-goals**, and **next actions** from the file alone — no “as we discussed”, no chat-only context, no dual interpretation. Ideally every write/audit: flag dual reading or missing intent as **gap** / HITL. Living TO-BE plans stay cold-agent readable when marked living (not orphan chat notes). Complements: if you cannot point to where it is, it does not exist. Never invent product intent. Missing stays Missing. No greenwash. Human captain. See [modes.md §19](references/modes.md#19-cold-agent-readable) and [quality-checklist.md](references/quality-checklist.md). Does **not** reuse modes §14–§18 as the procedure (those stay numbered as shipped).
 31. **Plans layout (v2.5.11).** New plans MUST live under **`docs/plans/<github-login>/<slug>/`** (README.md index + sibling companions). Detect login from `gh api user -q .login`, unambiguous git→GitHub author map, or HITL — **never invent** a fake user. On plan / promote / sync / audit of plans in the change set, when Status is **Shipped | Cancelled | Superseded** or the plan was **promoted**, move the slug folder to **`docs/plans/<github-login>/_archive/<slug>/`** when possible (prefer move + update hub links; stub only if links would break and HITL says keep). Do not force-migrate existing `docs/plans/<slug>/` trees without HITL. See [modes.md §20](references/modes.md#20-plans-layout). Does **not** reuse modes §14–§19 as the procedure (those stay numbered as shipped).
 32. **Provenance grouping (v2.5.12).** Opt-in audit/report: `audit-claims.sh --group-by provenance`. Explicit `owner:` / claim steward / CODEOWNERS is the **TO-BE** order parameter. Git first/last author is **AS-IS** only — **never invent** owner from git. Honest buckets: `human` · `bot/agent` · `unknown` (not raw email alone). Orphans (no owner) → propose `owner:` or archive; **Missing stays Missing**; no write. **Not** a second truth-owner or reconcile regime. See [modes.md §6.11](references/modes.md#611-provenance-grouping-opt-in-report). Does **not** reuse modes §6.8 or §14–§20 as the procedure.
+33. **Vibe-proof-auditor bridge (v2.5.15).** Sibling-skill bridge (ArkGate-style) — do **not** merge products. In **plan mode**, when there is an **auditable** code/tree and architecture docs are **weak/absent**, offer **one HITL propose**: run vibe-proof and fold findings into the plan? **Strong living architecture** → do not offer. **No executable contract** → do not offer. Internal call only with explicit mandate (“close gaps”, “listo para prod”, “asegurá huecos”) or a vibe-proof flag — **never** on every plan; **no silent auto-run**. Fold into Acceptance / MVP / Next actions (cold-agent readable) — not a second SSOT, not a full report dump. See [vibe-proof-bridge.md](references/vibe-proof-bridge.md) and [modes.md §21](references/modes.md#21-vibe-proof-auditor-bridge).
 
 ## Step 0 — Detect scope, mode, and Intent
 
@@ -114,6 +115,7 @@ Living project knowledge for humans and AI agents. **Code is the source of truth
 - “cold-agent” / “as we discussed” / “recover intent from the file” → **Cold-agent readable** ([modes.md §19](references/modes.md#19-cold-agent-readable)): file-alone intent; dual reading → gap / HITL
 - “archive plan” / “creator folder” / new plan path → **Plans layout** ([modes.md §20](references/modes.md#20-plans-layout)): `docs/plans/<github-login>/<slug>/`; archive-on-finish; never invent a login
 - “provenance” / “group-by owner” / “group-by provenance” / “quién escribió” → **Provenance grouping** ([modes.md §6.11](references/modes.md#611-provenance-grouping-opt-in-report)): opt-in report; never invent owner from git
+- “vibe-proof” / “asegurá huecos” / “close gaps” **in a plan session** → **Vibe-proof bridge** ([vibe-proof-bridge.md](references/vibe-proof-bridge.md); modes §21): HITL propose or mandate; never silent auto-run; do not steal a standalone auditor ask
 
 **Maturity** (when relevant): thin | mixed | mature — see [modes.md](references/modes.md#2-adopt-project).
 
@@ -125,7 +127,7 @@ If scope/mode still ambiguous after inference, ask once. Load procedures from [r
 Scope: <x> | Mode: <y> | Intent: <integrate|audit|from-zero|production-harden|n/a> | Variant: <full|integrate|arkgate-bridge|n/a> | Maturity: <…|n/a> | Out: <root|sandbox:path> | Stack: <node-ts|python|go|mixed|unknown|n/a> | Monorepo: <yes|no|n/a> | ArkGate: <none|detected> | Slug: <slug|n/a>
 ```
 
-When **integrate**, list **non-writes** (include package non-writes when monorepo root-index only) and whether layout was **adopted** (evolved) or **proposed** (thin / from-zero). When **audit**, list matrix path, **Audit-scope** (`diff-first` default, `docs-universe` if the change set was valid-but-unusable, or `full-tree` if the user opted in), change-set size, and top contradictions. When **from-zero** + sandbox, include **promotion plan**. When **plan** or **feature**, list path + **default non-writes** + **Cold-agent readable** (`applied` | `gap` | `HITL`) per [modes.md §19](references/modes.md#19-cold-agent-readable). When **plan**, also announce **Plans layout** (`creator:<login>` | `HITL` | `archived`) per [modes.md §20](references/modes.md#20-plans-layout). When **ArkGate bridge**, list signals and post-gate sync vs audit-enrich. When project-level, include **Stack** and **Monorepo** from discovery. When project from-zero / integrate / audit, include **§2 Mínimo** (`proposed` | `mapped` | `presence` | `n/a`) per [modes.md §16](references/modes.md#16-product-domain-minimo) and **Sólido states/transitions** (`proposed` | `mapped` | `presence` | `n/a`) per [modes.md §18](references/modes.md#18-solido-statestransitions). When Intent=`production-harden`, announce **Production-harden DoD** (`applied` | `n/a`) and whether domain change updated claims/matrix ([modes.md §17](references/modes.md#17-production-harden-dod)); if a domain doc is in scope, also announce states/transitions presence. When provenance was asked, announce **Provenance** (`grouped` | `n/a`) and orphan count ([modes.md §6.11](references/modes.md#611-provenance-grouping-opt-in-report)).
+When **integrate**, list **non-writes** (include package non-writes when monorepo root-index only) and whether layout was **adopted** (evolved) or **proposed** (thin / from-zero). When **audit**, list matrix path, **Audit-scope** (`diff-first` default, `docs-universe` if the change set was valid-but-unusable, or `full-tree` if the user opted in), change-set size, and top contradictions. When **from-zero** + sandbox, include **promotion plan**. When **plan** or **feature**, list path + **default non-writes** + **Cold-agent readable** (`applied` | `gap` | `HITL`) per [modes.md §19](references/modes.md#19-cold-agent-readable). When **plan**, also announce **Plans layout** (`creator:<login>` | `HITL` | `archived`) per [modes.md §20](references/modes.md#20-plans-layout) and **Vibe-proof** (`n/a` | `skip:<no-code|strong-arch|declined|absent>` | `HITL` | `mandate` | `folded`) per [modes.md §21](references/modes.md#21-vibe-proof-auditor-bridge). When **ArkGate bridge**, list signals and post-gate sync vs audit-enrich. When project-level, include **Stack** and **Monorepo** from discovery. When project from-zero / integrate / audit, include **§2 Mínimo** (`proposed` | `mapped` | `presence` | `n/a`) per [modes.md §16](references/modes.md#16-product-domain-minimo) and **Sólido states/transitions** (`proposed` | `mapped` | `presence` | `n/a`) per [modes.md §18](references/modes.md#18-solido-statestransitions). When Intent=`production-harden`, announce **Production-harden DoD** (`applied` | `n/a`) and whether domain change updated claims/matrix ([modes.md §17](references/modes.md#17-production-harden-dod)); if a domain doc is in scope, also announce states/transitions presence. When provenance was asked, announce **Provenance** (`grouped` | `n/a`) and orphan count ([modes.md §6.11](references/modes.md#611-provenance-grouping-opt-in-report)).
 
 ## Recommended layout (proposal)
 
@@ -193,7 +195,7 @@ Maturity → adopt-full or adopt-integrate. Default layout is a **proposal**; ev
 **Diff-first:** change set from `git diff` / changed files (or `audit-claims.sh --list-changed`). Parse `@claim` breadcrumbs with `--list-claims` (same set only; HITL if malformed; do not invent ids); persist / record / cascade-recommend on demand with `--upsert-claims` / `--record-haken` / `--cascade-recommend` (not a daemon; see [living-claims.md](references/living-claims.md) + [modes.md §6.7](references/modes.md#67-cascade-verdicts-haken)). Never a full-tree read by default. Valid-but-huge set → announce and constrain to the docs universe ([modes.md §6.0](references/modes.md#60-change-set-diff-first)); never a silent full-repo walk. Then structural claims → **living-claims** matrix (anchors + severity) → report. If a parent breadcrumb would require children, apply [modes.md §6.7](references/modes.md#67-cascade-verdicts-haken) (recommend review; no engine). Agent-written plans/MDs in the set: classify per [modes.md §6.8](references/modes.md#68-reconcile-classification-plansmds) (evolution / regime change / orphan / contradiction). **No living contradictions.** **AS-IS** code wins; **TO-BE** one living SSOT (date does not auto-win on either plane). When cascade / reconcile / audit / narrative comments need eyes, recommend review to a **human** or **agent** ([modes.md §6.9](references/modes.md#69-recommend-review-human-vs-agent)) — pointers only; no assign, notify, or merge. Non-`@claim` prose comments in the set that look stale/redundant/snapshot or assert a fact after a symbol change: **report** via [modes.md §6.10](references/modes.md#610-narrative-comments-report-first) — never auto-edit. When asked, group the set by provenance with `--group-by provenance` ([modes.md §6.11](references/modes.md#611-provenance-grouping-opt-in-report)) — never invent owner from git; no write. **Code wins.** CI gate separate from dashboard score. If a product-domain / domain-model doc is in the set or docs-universe, score **§2 Mínimo presence** ([modes.md §16](references/modes.md#16-product-domain-minimo)) and **Sólido states/transitions presence** ([modes.md §18](references/modes.md#18-solido-statestransitions)) — Missing stays Missing; do not walk the tree to find vision. See [modes.md §6.0](references/modes.md#60-change-set-diff-first), [§6](references/modes.md#6-audit-project-or-feature), [§13](references/modes.md#13-living-claims--ci-structural-audit-v25), [living-claims.md](references/living-claims.md).
 
 ### Plan / Feature (autopilot v2)
-Named surface → **plan** (`docs/plans/<github-login>/<slug>/`) if no code / planning language; **feature** (`docs/features/<slug>/`) if code-backed. Kind spike/epic/redesign when signaled. Default non-writes always. Optional **Implementation bridge** on implement/stubs language. Promote plan → pack when **code** is real. Intent / success / non-goals / next actions must be recoverable from the file alone ([modes.md §19](references/modes.md#19-cold-agent-readable)). New plan writes + archive-on-finish: [modes.md §20](references/modes.md#20-plans-layout). See [modes.md §3](references/modes.md#3-feature-autopilot--plan-v13--v2--skill-v15) and [implementation-bridge.md](references/implementation-bridge.md).
+Named surface → **plan** (`docs/plans/<github-login>/<slug>/`) if no code / planning language; **feature** (`docs/features/<slug>/`) if code-backed. Kind spike/epic/redesign when signaled. Default non-writes always. Optional **Implementation bridge** on implement/stubs language. Promote plan → pack when **code** is real. Intent / success / non-goals / next actions must be recoverable from the file alone ([modes.md §19](references/modes.md#19-cold-agent-readable)). New plan writes + archive-on-finish: [modes.md §20](references/modes.md#20-plans-layout). Optional **vibe-proof HITL propose** when code is auditable and architecture is weak/absent ([modes.md §21](references/modes.md#21-vibe-proof-auditor-bridge)). See [modes.md §3](references/modes.md#3-feature-autopilot--plan-v13--v2--skill-v15) and [implementation-bridge.md](references/implementation-bridge.md).
 
 ### Sync / Roadmap
 Blast-radius sync; report stale/redundant comments in the change set ([modes.md §6.10](references/modes.md#610-narrative-comments-report-first)); never auto-edit. Roadmap links plans for net-new work. See modes §4–5.
@@ -231,6 +233,9 @@ New plans: `docs/plans/<github-login>/<slug>/` (README index + siblings). Detect
 ### Provenance grouping (v2.5.12)
 Opt-in `--group-by provenance`: group the change set by explicit owner (TO-BE) and git first/last buckets (AS-IS: `human` · `bot/agent` · `unknown`). Never invent owner from git. Orphans → propose `owner:` or archive. Missing stays Missing. Not a second owner or reconcile regime. See [modes.md §6.11](references/modes.md#611-provenance-grouping-opt-in-report).
 
+### Vibe-proof-auditor bridge (v2.5.15)
+Plan mode: one HITL propose when code is auditable and architecture is weak/absent; skip on **strong living architecture** or **no executable contract**. Mandate/flag only for an internal call. Fold findings into Acceptance / MVP / Next actions — not a second SSOT. See [vibe-proof-bridge.md](references/vibe-proof-bridge.md) and modes §21.
+
 ## Hub requirements
 
 - Overview, nav links, agent instructions (read docs; update after significant work; ADRs; **code wins**), status line.
@@ -245,7 +250,7 @@ Template: [agents-md-template.md](references/agents-md-template.md)
 
 ## Quality bar
 
-Follow [quality-checklist.md](references/quality-checklist.md) (incl. **Cold-agent readable** + **Plans layout**).
+Follow [quality-checklist.md](references/quality-checklist.md) (incl. **Cold-agent readable** + **Plans layout** + **Vibe-proof-auditor bridge**).
 
 **Anti-snapshot:** no hardcoded table/route/endpoint counts.
 
@@ -265,13 +270,14 @@ Follow [quality-checklist.md](references/quality-checklist.md) (incl. **Cold-age
 | [references/living-claims.md](references/living-claims.md) | **Living claims v0** (anchors, severity, truth score vs CI) |
 | [references/modes.md](references/modes.md) | Full procedures |
 | [references/arkgate-bridge.md](references/arkgate-bridge.md) | **ArkGate bridge** (detect, post-gate, violation→claim) |
+| [references/vibe-proof-bridge.md](references/vibe-proof-bridge.md) | **Vibe-proof-auditor bridge** (plan HITL propose / mandate fold) |
 | [references/knowledge-dashboard.md](references/knowledge-dashboard.md) | **Knowledge dashboard** (static HTML view; score advisory) |
 | [references/skill-discovery.md](references/skill-discovery.md) | **Discovery / upgrade** + **Polyglot** + **Monorepo hubs** + **Cold-start survey heuristics** |
 | [references/team-governance.md](references/team-governance.md) | **Team governance** (create/link, non-writes) |
 | [references/team-owners-template.md](references/team-owners-template.md) | Consumer `docs/team/OWNERS.md` |
 | [references/team-approval-notes-template.md](references/team-approval-notes-template.md) | Consumer `docs/team/approval-notes.md` |
 | [references/go-nogo-template.md](references/go-nogo-template.md) | Consumer `docs/ops/go-nogo.md` (Gate A/B trail) |
-| [references/quality-checklist.md](references/quality-checklist.md) | Done criteria (incl. **§2 Mínimo** + go/no-go + Appendix A + **production-harden DoD** + **Sólido states/transitions** + **Cold-agent readable** + **Plans layout**) |
+| [references/quality-checklist.md](references/quality-checklist.md) | Done criteria (incl. **§2 Mínimo** + go/no-go + Appendix A + **production-harden DoD** + **Sólido states/transitions** + **Cold-agent readable** + **Plans layout** + **Vibe-proof-auditor bridge**) |
 | [references/prototype-to-production.md](references/prototype-to-production.md) | **Apéndice A honesty map** (generates / audits / captain) |
 
 ## When NOT to use / defaults
@@ -283,6 +289,7 @@ Follow [quality-checklist.md](references/quality-checklist.md) (incl. **Cold-age
 - Mature improve without audit request → **integrate** (not full parallel tree)
 - Replacing MkDocs/Docusaurus wholesale — integrate with it
 - **New feature request** → do **not** run full project from-zero; use plan/feature autopilot
+- **Silent vibe-proof auto-run** on every plan — HITL propose or mandate only ([modes.md §21](references/modes.md#21-vibe-proof-auditor-bridge))
 
 ## Activation
 

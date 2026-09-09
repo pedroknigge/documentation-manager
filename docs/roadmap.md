@@ -2,7 +2,7 @@
 
 > Hub: [AGENTS.md](../AGENTS.md) · Planes: [docs/plans/](./plans/)  
 > **Producto:** Agent Skill (knowledge base viva, agent-first). No es una app de producto genérica.  
-> **Última actualización:** 2026-09-09 · **Versión actual:** 2.5.14
+> **Última actualización:** 2026-09-09 · **Versión actual:** 2.5.15
 
 ## Principios (axiomas)
 
@@ -163,6 +163,7 @@ Impacto en “code wins + zero maintenance cost”
 | **2.5.12** | Audit/report group-by provenance (owner + git opt-in) | **Shipped** 2026-09-08 — [modes.md §6.11](../skills/documentation-manager/references/modes.md#611-provenance-grouping-opt-in-report); not a KOS leap; not a second owner regime |
 | **2.5.13** | Anonymous dogfood sales-stats first live row | **Shipped** 2026-09-09 — [sales-stats.json](./sales-stats.json); not a KOS leap |
 | **2.5.14** | `--base` commit-ish HITL exit 2 (finding A) | **Shipped** 2026-09-09 — [modes.md §6.0](../skills/documentation-manager/references/modes.md#60-change-set-diff-first); finding B still HITL; not a KOS leap |
+| **2.5.15** | Plan ↔ vibe-proof-auditor HITL propose | **Shipped** 2026-09-09 — [modes.md §21](../skills/documentation-manager/references/modes.md#21-vibe-proof-auditor-bridge); not a KOS leap; not a product merge |
 
 ## Cómo usar este roadmap
 

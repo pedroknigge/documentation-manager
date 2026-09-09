@@ -67,6 +67,16 @@ Version must match across:
 - `CHANGELOG.md` section for that version
 - `docs/adoption-matrix.md` version line (when cutting a major)
 
+### Cutting **2.5.15** (plan ↔ vibe-proof-auditor HITL)
+
+Narrative: sibling-skill bridge from plan mode to vibe-proof-auditor. One HITL propose when code is auditable and architecture docs are weak/absent. Strong living architecture or no executable contract → skip. Internal call only on mandate/flag. Fold into Acceptance / MVP / Next actions — not a second SSOT. **Not** a new major; **not** a Knowledge OS leap. Parent tags after merge — do not tag from the PR branch.
+
+```bash
+# after gate is green (parent, post-merge):
+git tag -a v2.5.15 -m "documentation-manager skill v2.5.15 — plan ↔ vibe-proof-auditor HITL"
+git push origin main --tags   # only when you intend to publish
+```
+
 ### Cutting **2.5.14** (`--base` commit-ish HITL exit 2)
 
 Narrative: `audit-claims.sh --base` must be a commit this clone can see before `git diff <base>...HEAD`. Empty-tree / missing / non-commit → HITL + exit 2 (not git 128). Finding B (malformed `@claim` suppresses valid siblings) stays HITL / out of scope. **Not** a new major; **not** a Knowledge OS leap. Parent tags after merge — do not tag from the PR branch.
