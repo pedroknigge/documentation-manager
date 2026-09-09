@@ -32,7 +32,8 @@
 #   1 — one or more critical Contradicted claims (gate), or malformed @claim (HITL),
 #       or --upsert-claims / --record-haken / --cascade-recommend refused a
 #       supersede or invent (captain)
-#   2 — usage / unreadable matrix path when explicitly required / not a git repo
+#   2 — usage / unreadable matrix path when explicitly required / not a git repo /
+#       --base is missing, not a commit, or not in this clone
 set -euo pipefail
 
 SCRIPT_NAME="$(basename "$0")"
@@ -56,8 +57,11 @@ Missing matrix → warn and exit 0. Matrix without Severity column → treat all
 
 --list-changed prints the git change set (one path per line) for diff-first
 audit/reconcile reads. Default: dirty tree vs HEAD + untracked. With --base:
-git diff --name-only <base>...HEAD. Empty set is exit 0 (agent HITL — do not
-full-tree). Does not change the matrix gate.
+git diff --name-only <base>...HEAD. <base> must be a real commit this clone
+can see (not a tree / empty-tree id; not omitted by a shallow fetch). If it
+is not: HITL on stderr and exit 2 — leave --base off for dirty tree vs HEAD,
+or fetch more history and name a real commit. Empty set is exit 0 (agent
+HITL — do not full-tree). Does not change the matrix gate.
 
 --list-claims parses @claim breadcrumbs in the same change set only (never a
 full-tree grep). Stdout: one line per valid breadcrumb
@@ -227,6 +231,13 @@ list_changed_files() {
     exit 2
   fi
   if [[ -n "$base" ]]; then
+    # Triple-dot diff is commit-only. Trees (empty-tree id), blobs, and
+    # refs this clone cannot see used to leak git fatal + exit 128.
+    if ! git -C "$root" rev-parse --verify --quiet "${base}^{commit}" >/dev/null 2>&1; then
+      echo "$SCRIPT_NAME: HITL: --base must be a real commit this clone can see (got ${base})." >&2
+      echo "$SCRIPT_NAME: Leave --base off to use your current dirty files vs HEAD, or fetch more history and name a real commit. Do not scan the whole tree." >&2
+      exit 2
+    fi
     git -C "$root" diff --name-only "${base}...HEAD"
   else
     git -C "$root" diff --name-only HEAD

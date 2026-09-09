@@ -6,6 +6,24 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.14] — 2026-09-09
+
+`--base` commit-ish HITL exit 2 (dogfood finding A). **Not** a new major; **not** a Knowledge OS leap.
+
+### Fixed
+
+- `audit-claims.sh --base`: require a commit this clone can see before `git diff <base>...HEAD`; empty-tree / missing / non-commit → HITL + exit 2 (not git 128). Same `list_changed_files` helper for all `--base` siblings. No new flag.
+
+### Unchanged (locked)
+
+- Finding B (one malformed `@claim` suppresses valid siblings on `--list-claims` / `--cascade-recommend`) stays **HITL / out of scope** — fail-closed unchanged
+- Human captain · no silent supersede · audit scope stays git diff / changed files only
+- No new flag · no second change-set path · no GitHub release from this branch
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.14 —`; `metadata.version` **2.5.14**
+
 ## [2.5.13] — 2026-09-09
 
 Anonymous dogfood sales-stats first live row. **Not** a new major; **not** a Knowledge OS leap.
