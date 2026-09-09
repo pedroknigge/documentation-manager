@@ -16,3 +16,6 @@ impl-bridge-opt-in	implementá / generá stubs	plan-or-feature+bridge	stubs opt-
 dashboard	generate knowledge dashboard	dashboard	docs/audit/generated/	Knowledge dashboard
 kind-spike	spike / timebox explore	plan	Kind spike	Kind refinement
 non-writes-plan	plan/feature default	plan-or-feature	non-writes vision/requirements	Always-on non-writes
+vibeproof-offer	plan + auditable code + weak/absent architecture	plan	HITL propose vibe-proof	vibe-proof HITL propose
+vibeproof-skip-strong	strong living architecture	plan	do not offer	strong living architecture
+vibeproof-skip-nocode	no executable contract	plan	do not offer	no executable contract

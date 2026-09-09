@@ -248,7 +248,7 @@ fi
 # ─── install.sh ships required remote refs (hardening regression) ────────────
 for ref in plan-template.md arkgate-bridge.md implementation-bridge.md knowledge-dashboard.md \
   team-governance.md team-owners-template.md team-approval-notes-template.md \
-  living-claims.md go-nogo-template.md prototype-to-production.md; do
+  living-claims.md go-nogo-template.md prototype-to-production.md vibe-proof-bridge.md; do
   grep -q "$ref" "$ROOT/install.sh" || fail "install.sh remote list missing $ref"
 done
 grep -q "template-telemetry.md" "$ROOT/install.sh" \
@@ -1228,6 +1228,28 @@ grep -F -q "## 20. Plans layout" "$MODES" || fail "modes.md must keep §20 Plans
 grep -F -q -- "--group-by provenance" "$LC" || fail "living-claims.md missing --group-by provenance"
 echo "$DESC_START" | grep -q "^v${VER} —" || fail "SKILL.md description must start with v${VER} —"
 ok "Provenance grouping anchors (modes §6.11 + SKILL + QC + CLI; §6.8 and §14–§20 intact)"
+
+# ─── Vibe-proof-auditor bridge (v2.5.15 · modes §21) ─────────────────────────
+for anchor in \
+  "Vibe-proof-auditor bridge" \
+  "vibe-proof HITL propose" \
+  "strong living architecture" \
+  "no executable contract" \
+  "no silent auto-run"
+do
+  grep -F -q -- "$anchor" "$MODES" || fail "modes.md missing Vibe-proof-auditor bridge anchor: $anchor"
+  grep -F -q -- "$anchor" "$QC" || fail "quality-checklist missing Vibe-proof-auditor bridge anchor: $anchor"
+done
+grep -F -q "Vibe-proof-auditor bridge" "$SKILL_FILE" || fail "SKILL.md missing Vibe-proof-auditor bridge"
+grep -F -q "vibe-proof HITL" "$SKILL_FILE" || fail "SKILL.md missing vibe-proof HITL"
+grep -F -q "## 21. Vibe-proof-auditor bridge" "$MODES" || fail "modes.md missing §21 Vibe-proof-auditor bridge heading"
+grep -F -q "## 9. ArkGate bridge" "$MODES" || fail "modes.md must keep §9 ArkGate (vibe-proof must not steal it)"
+grep -F -q "## 20. Plans layout" "$MODES" || fail "modes.md must keep §20 Plans layout"
+VPB="$SKILL_DIR/references/vibe-proof-bridge.md"
+[[ -f "$VPB" ]] || fail "missing references/vibe-proof-bridge.md"
+grep -F -q "not a second SSOT" "$VPB" || fail "vibe-proof-bridge.md missing not a second SSOT"
+echo "$DESC_START" | grep -q "^v${VER} —" || fail "SKILL.md description must start with v${VER} —"
+ok "Vibe-proof-auditor bridge anchors (modes §21 + SKILL + QC + reference; §9 and §14–§20 intact)"
 
 if [[ "$FAILS" -gt 0 ]]; then
   echo ""

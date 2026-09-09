@@ -234,6 +234,18 @@ Opt-in report: [modes.md §6.11](modes.md#611-provenance-grouping-opt-in-report)
 - [ ] Orphans → proposed `owner:` or archive (**no write**)
 - [ ] Did not change Verdict; **Missing stays Missing**; no greenwash
 
+## Vibe-proof-auditor bridge (v2.5.15)
+
+Sibling-skill bridge (ArkGate-style). Closed procedure: [modes.md §21](modes.md#21-vibe-proof-auditor-bridge) · [vibe-proof-bridge.md](vibe-proof-bridge.md). Do **not** merge products. Human captain; Missing stays Missing; no greenwash; dual-plane intact; **no silent auto-run**.
+
+- [ ] Evaluated **offer gates** before any propose/call: **no executable contract** → skip; **strong living architecture** (pointers only; file existence ≠ living) → skip; auditable code + weak/absent architecture → offer
+- [ ] Default: **one vibe-proof HITL propose** in plan mode — never on every plan; waited for the captain
+- [ ] Internal call only with explicit mandate (“close gaps”, “listo para prod”, “asegurá huecos”) or a vibe-proof flag
+- [ ] Findings folded into plan **Acceptance / MVP / Next actions** (cold-agent readable: id + path + note) — not a second SSOT, not a full report dump
+- [ ] Did not invent “strong architecture” without pointers; unclear → not strong
+- [ ] Did not copy vibe-proof scoring/gates; did not run harden/`agy` unless the captain asked the sibling
+- [ ] Did not touch Orderfield / ArkGate ports; did not board Finding B from #41
+
 ## Voice
 
 - [ ] Matches repo language (or user's language)

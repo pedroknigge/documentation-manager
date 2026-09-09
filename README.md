@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v2.5.14</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT
+  <strong>v2.5.15</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.14-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.15-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -182,6 +182,7 @@ Slash command: **`/documentation-manager`**. Or just talk:
 | *“This is a pnpm monorepo — index packages.”* | **Monorepo hubs** → root map + package index |
 | *“Python / Go stack — don’t assume Node.”* | **Polyglot** stack detection + layout tables |
 | *“Add docs/team owners for this module.”* | **Team governance** (optional OWNERS + notes) |
+| *“Nueva feature X”* on a repo with code but weak architecture | **plan** + one **vibe-proof HITL** propose (never auto-run) |
 
 </details>
 
@@ -233,6 +234,16 @@ Sandbox runs can mirror the same shape under a path like `test/` — marked **no
 When the skill sees `ark.config.json`, `ark-check`, `.ark/`, or ark host skills, it **enriches** inventory and, after a gate, offers a scoped docs pass. **No Ark → no-op** (never required). Residual violations become claim debt — docs are not rewritten to excuse broken architecture.
 
 Procedure: [skills/documentation-manager/references/arkgate-bridge.md](./skills/documentation-manager/references/arkgate-bridge.md)
+
+---
+
+## Pair with vibe-proof-auditor
+
+**vibe-proof-auditor** is the sibling production-readiness auditor. **Documentation Manager** stays the docs owner.
+
+In **plan mode**, if the tree already has auditable code and architecture docs are weak or missing, the skill asks **once** (HITL): run vibe-proof and fold findings into the plan’s acceptance / MVP / next actions? **Strong living architecture** or **no code** → it does not ask. It never auto-runs. An explicit “close gaps” / “listo para prod” / “asegurá huecos” (or a vibe-proof flag) is the only internal call.
+
+Procedure: [skills/documentation-manager/references/vibe-proof-bridge.md](./skills/documentation-manager/references/vibe-proof-bridge.md)
 
 ---
 
