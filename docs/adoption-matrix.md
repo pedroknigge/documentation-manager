@@ -4,7 +4,7 @@
 > **Purpose:** Track where this skill is (or should be) installed, and the ArkGate pairing path.  
 > **Honesty rule:** only mark **Verified** when someone ran install/validate against that target. Hypotheses stay **Candidate**.
 
-**Last updated:** 2026-09-08 · Skill version **2.5.12**
+**Last updated:** 2026-09-09 · Skill version **2.5.13**
 
 ## How to use
 

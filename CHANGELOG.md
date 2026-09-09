@@ -6,6 +6,15 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.13] — 2026-09-09
+
+Anonymous dogfood sales-stats first live row. **Not** a new major; **not** a Knowledge OS leap.
+
+### Changed
+
+- **GTM:** [docs/sales-stats.json](docs/sales-stats.json) — schema v1 ledger records one anonymized ok run (aggregates: empty zeros → 1 ok). Public rows still omit target owner, repo, URLs, and identifiable foreign content. README History still points at the file without citing run counts.
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.13 —`; `metadata.version` **2.5.13**
+
 ## [2.5.12] — 2026-09-08
 
 Audit/report facet: group-by provenance (owner + git opt-in). **Not** a new major; **not** a Knowledge OS leap; **not** a second truth-owner or reconcile regime. Rebased onto v2.5.11 (`5741301`).

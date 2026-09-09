@@ -1,16 +1,58 @@
 {
   "schema": 1,
   "product": "documentation-manager",
-  "updated_at": null,
+  "updated_at": "2026-09-09T01:27:51Z",
   "skill_version_floor": "2.5.2",
   "privacy": "Public rows never include target owner, repo, URLs, or identifiable foreign content. Aggregates may back or lower README product claims; never invent numbers; never name target repos.",
   "aggregates": {
-    "runs_total": 0,
-    "runs_ok": 0,
+    "runs_total": 1,
+    "runs_ok": 1,
     "runs_fail": 0,
-    "duration_s_sum": 0,
-    "by_phase": {},
-    "by_finding_kind": {}
+    "duration_s_sum": 183,
+    "by_phase": {
+      "detect-stack": 1,
+      "survey-docs": 1,
+      "list-changed": 1,
+      "list-claims": 1,
+      "audit": 1,
+      "cascade": 1,
+      "provenance": 1,
+      "upsert-claims": 1,
+      "docs-universe-escape": 1
+    },
+    "by_finding_kind": {
+      "base_ref_crash": 1,
+      "malformed_fail_closed": 1,
+      "empty_changeset": 1,
+      "missing_matrix": 1,
+      "stack_unknown": 1
+    }
   },
-  "runs": []
+  "runs": [
+    {
+      "ts": "2026-09-09T01:27:51Z",
+      "ok": true,
+      "duration_s": 183,
+      "skill_version": "2.5.12",
+      "phases": [
+        "detect-stack",
+        "survey-docs",
+        "list-changed",
+        "list-claims",
+        "audit",
+        "cascade",
+        "provenance",
+        "upsert-claims",
+        "docs-universe-escape"
+      ],
+      "findings": {
+        "base_ref_crash": 1,
+        "malformed_fail_closed": 1,
+        "empty_changeset": 1,
+        "missing_matrix": 1,
+        "stack_unknown": 1
+      },
+      "notes": "First live dogfood ledger row. --base non-commit exit 128; clean empty set HITL; dirty path + cascade OK after malformed removed."
+    }
+  ]
 }
