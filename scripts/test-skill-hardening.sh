@@ -543,7 +543,28 @@ echo "$base_out" | grep -F -q "src/ok.py" \
   || fail "--list-claims --base must list committed ok.py, got: $base_out"
 echo "$base_out" | grep -F "untouched.ts" \
   && fail "--list-claims --base must not walk the tree, got: $base_out"
-rm -rf "$BCGIT" "$BCBAD" "$BCUNK" "$BCBASE" "$bad_err" "$unk_err"
+# --base: commit this clone can see; empty-tree / missing / tree → exit 2 (not git 128)
+EMPTY_TREE="4b825dc642cb6eb9a060e54bf8d69288fbee4904"
+HEAD_TREE="$(git -C "$BCBASE" rev-parse 'HEAD^{tree}')"
+base_err="$(mktemp)"
+assert_base_exit2() {
+  local helper="$1" ref="$2" label="$3"
+  local rc=0
+  bash "$AUDIT" "$helper" --base "$ref" "$BCBASE" >/dev/null 2>"$base_err" || rc=$?
+  [[ "$rc" -eq 2 ]] || fail "$label must exit 2, got $rc stderr=$(cat "$base_err")"
+  grep -F -q "HITL" "$base_err" || fail "$label must HITL, got: $(cat "$base_err")"
+  grep -F -q "fatal:" "$base_err" && fail "$label must not leak git fatal, got: $(cat "$base_err")"
+  grep -F -q "Leave --base off" "$base_err" \
+    || fail "$label must mention dirty-tree fallback, got: $(cat "$base_err")"
+}
+assert_base_exit2 --list-changed "$EMPTY_TREE" "--list-changed --base empty-tree"
+assert_base_exit2 --list-claims "$EMPTY_TREE" "--list-claims --base empty-tree"
+assert_base_exit2 --list-changed "definitely-not-a-ref" "--list-changed --base missing ref"
+assert_base_exit2 --list-changed "$HEAD_TREE" "--list-changed --base tree object"
+list_base_out="$(bash "$AUDIT" --list-changed --base main "$BCBASE" 2>/dev/null || true)"
+echo "$list_base_out" | grep -qx "src/ok.py" \
+  || fail "--list-changed --base main must still list src/ok.py, got: $list_base_out"
+rm -rf "$BCGIT" "$BCBAD" "$BCUNK" "$BCBASE" "$bad_err" "$unk_err" "$base_err"
 ok "--list-claims change-set only + HITL + matrix note"
 
 # --upsert-claims: write-back loop on the same change-set / fixture

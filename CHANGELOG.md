@@ -6,6 +6,10 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+### Fixed
+
+- `audit-claims.sh --base`: require a commit this clone can see before `git diff <base>...HEAD`; empty-tree / missing / non-commit → HITL + exit 2 (not git 128). Same `list_changed_files` helper for all `--base` siblings. No new flag.
+
 ## [2.5.13] — 2026-09-09
 
 Anonymous dogfood sales-stats first live row. **Not** a new major; **not** a Knowledge OS leap.
