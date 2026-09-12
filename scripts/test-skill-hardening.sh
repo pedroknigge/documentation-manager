@@ -30,11 +30,11 @@ grep -q "skill version \*\*${VER}\*\*" "$ROOT/AGENTS.md" \
 ok "version sync README + AGENTS ↔ SKILL ($VER)"
 
 # ─── Fixtures present ───────────────────────────────────────────────────────
-for f in thin-repo mature-repo no-docs-repo python-thin-repo go-thin-repo monorepo-thin \
+for f in thin-repo mature-repo no-docs-repo python-thin-repo go-thin-repo cargo-primary-repo monorepo-thin \
   golden/autopilot-cases.tsv claims-pass claims-fail claims-none claims-breadcrumbs survey-heuristics; do
   [[ -e "$FIX/$f" ]] || fail "missing fixture $f"
 done
-ok "fixtures present (thin, mature, no-docs, python-thin, go-thin, monorepo-thin, golden, claims-*, survey-heuristics)"
+ok "fixtures present (thin, mature, no-docs, python-thin, go-thin, cargo-primary, monorepo-thin, golden, claims-*, survey-heuristics)"
 
 # thin: code, no hub/docs
 [[ -f "$FIX/thin-repo/src/app/index.ts" ]] || fail "thin-repo missing code"
@@ -93,7 +93,33 @@ mkdir -p "$_edge/cmd" "$_edge/internal"
 edge_out=$(bash "$DETECT" "$_edge")
 echo "$edge_out" | grep -qw "go" && fail "detect-stack cmd+internal without go.mod must not report go, got: $edge_out"
 rm -rf "$_edge"
-ok "detect-stack.sh on node + python + go fixtures (+ negative go edges)"
+# Cargo-primary + secondary package.json must not emit node-ts (rust is not MVP)
+[[ -f "$FIX/cargo-primary-repo/Cargo.toml" ]] || fail "cargo-primary missing Cargo.toml"
+[[ -f "$FIX/cargo-primary-repo/rust-toolchain" ]] || fail "cargo-primary missing rust-toolchain"
+[[ -f "$FIX/cargo-primary-repo/package.json" ]] || fail "cargo-primary missing secondary package.json"
+[[ ! -f "$FIX/cargo-primary-repo/AGENTS.md" ]] || fail "cargo-primary should not have AGENTS.md"
+[[ ! -d "$FIX/cargo-primary-repo/docs" ]] || fail "cargo-primary should not have docs/"
+_cargo_err=$(mktemp)
+cargo_out=$(bash "$DETECT" "$FIX/cargo-primary-repo" 2>"$_cargo_err")
+echo "$cargo_out" | grep -qx "unknown" || fail "detect-stack cargo-primary expected unknown, got: $cargo_out"
+echo "$cargo_out" | grep -qw "node-ts" && fail "detect-stack cargo-primary must not report node-ts: $cargo_out"
+grep -q "gap: rust present" "$_cargo_err" || fail "detect-stack cargo-primary expected rust gap on stderr, got: $(cat "$_cargo_err")"
+rm -f "$_cargo_err"
+# Strong Node workspace + Cargo = keep node-ts (mixed-with-gap), still no rust token
+_mix=$(mktemp -d)
+printf '[workspace]\nmembers = ["crates/x"]\n' > "$_mix/Cargo.toml"
+mkdir -p "$_mix/crates/x"
+printf '[package]\nname = "x"\nversion = "0.1.0"\n' > "$_mix/crates/x/Cargo.toml"
+printf '%s\n' '{"name":"root","private":true,"workspaces":["packages/*"]}' > "$_mix/package.json"
+mkdir -p "$_mix/packages/web"
+printf '%s\n' '{"name":"web"}' > "$_mix/packages/web/package.json"
+_mix_err=$(mktemp)
+mix_out=$(bash "$DETECT" "$_mix" 2>"$_mix_err")
+echo "$mix_out" | grep -qw "node-ts" || fail "detect-stack cargo+workspaces expected node-ts, got: $mix_out"
+echo "$mix_out" | grep -qw "unknown" && fail "detect-stack cargo+workspaces must not print unknown with node-ts: $mix_out"
+grep -q "gap: rust present" "$_mix_err" || fail "detect-stack cargo+workspaces expected rust gap on stderr"
+rm -rf "$_mix" "$_mix_err"
+ok "detect-stack.sh on node + python + go fixtures (+ negative go edges + cargo-primary)"
 
 # monorepo-thin: multi-package workspace signals, no root hub/docs
 [[ -f "$FIX/monorepo-thin/pnpm-workspace.yaml" ]] || fail "monorepo-thin missing pnpm-workspace.yaml"
@@ -144,7 +170,29 @@ nw_out=$(bash "$DPKG" "$_nw")
 echo "$nw_out" | grep -qx "packages/a" || fail "detect-packages npm workspaces expected packages/a, got: $nw_out"
 echo "$nw_out" | grep -qx "packages/b" || fail "detect-packages npm workspaces expected packages/b, got: $nw_out"
 rm -rf "$_nw"
-ok "detect-packages.sh on monorepo-thin (+ empty thin + go.work + npm workspaces)"
+# Cargo workspace members (not silent empty)
+pkg_cargo=$(bash "$DPKG" "$FIX/cargo-primary-repo" 2>/dev/null)
+echo "$pkg_cargo" | grep -qx "crates/core" || fail "detect-packages cargo-primary expected crates/core, got: $pkg_cargo"
+echo "$pkg_cargo" | grep -qx "crates/cli" || fail "detect-packages cargo-primary expected crates/cli, got: $pkg_cargo"
+# members = ["crates/*"] glob
+_cglob=$(mktemp -d)
+mkdir -p "$_cglob/crates/a" "$_cglob/crates/b"
+printf '[workspace]\nmembers = ["crates/*"]\n' > "$_cglob/Cargo.toml"
+printf '[package]\nname = "a"\nversion = "0.1.0"\n' > "$_cglob/crates/a/Cargo.toml"
+printf '[package]\nname = "b"\nversion = "0.1.0"\n' > "$_cglob/crates/b/Cargo.toml"
+cglob_out=$(bash "$DPKG" "$_cglob" 2>/dev/null)
+echo "$cglob_out" | grep -qx "crates/a" || fail "detect-packages Cargo glob expected crates/a, got: $cglob_out"
+echo "$cglob_out" | grep -qx "crates/b" || fail "detect-packages Cargo glob expected crates/b, got: $cglob_out"
+rm -rf "$_cglob"
+# Cargo workspace present but members unresolved → empty + stderr gap
+_cg=$(mktemp -d)
+printf '[workspace]\nresolver = "2"\n' > "$_cg/Cargo.toml"
+_cg_err=$(mktemp)
+cg_out=$(bash "$DPKG" "$_cg" 2>"$_cg_err")
+[[ -z "${cg_out// }" ]] || fail "detect-packages unresolved Cargo workspace should be empty, got: $cg_out"
+grep -q "gap: Cargo workspace present" "$_cg_err" || fail "detect-packages unresolved Cargo workspace expected gap on stderr, got: $(cat "$_cg_err")"
+rm -rf "$_cg" "$_cg_err"
+ok "detect-packages.sh on monorepo-thin (+ empty thin + go.work + npm workspaces + cargo members)"
 
 # ─── survey-docs.sh cold-start heuristics (issue #11) ────────────────────────
 SURVEY="$ROOT/scripts/survey-docs.sh"

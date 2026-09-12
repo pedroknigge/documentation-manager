@@ -6,6 +6,25 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.17] — 2026-09-12
+
+Cargo-primary must not lose to a secondary `package.json` (`stack_misdetect` #45). **Not** a new major; **not** a Knowledge OS leap. **Not** a `rust` MVP token.
+
+### Fixed
+
+- **`stack_misdetect` (#45):** `detect-stack.sh` no longer labels a Cargo-primary tree as `node-ts` from a secondary `package.json`. Rust stays out of MVP tokens — stdout is `unknown` (or remaining MVP tokens) plus a stderr gap note.
+- `detect-packages.sh` lists `Cargo.toml` `[workspace]` members (or empty + gap when members do not resolve)
+
+### Unchanged (locked)
+
+- MVP tokens remain `node-ts` | `python` | `go` | `unknown` — rust is a gap signal only
+- Finding B from #41 stays **HITL / parked**
+- No sales-stats append (already in 2.5.16)
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.17 —`; `metadata.version` **2.5.17**
+
 ## [2.5.16] — 2026-09-12
 
 Anonymous dogfood sales-stats second live row (`stack_misdetect`). **Not** a new major; **not** a Knowledge OS leap.

@@ -7,6 +7,7 @@ Synthetic **project roots** and **golden tables** used by `scripts/validate-skil
 | `thin-repo/` | adopt-full / from-zero candidate | Node/TS code + README, no `AGENTS.md` / `docs/` |
 | `python-thin-repo/` | polyglot MVP | `pyproject.toml` + `src/hello_app/`, no hub/docs |
 | `go-thin-repo/` | polyglot MVP | `go.mod` + `cmd/` + `internal/`, no hub/docs |
+| `cargo-primary-repo/` | stack_misdetect (#45) | Cargo workspace + `rust-toolchain` + secondary root `package.json`; no hub/docs |
 | `monorepo-thin/` | monorepo hubs | workspaces + `packages/api` + `packages/web`, no root hub/docs |
 | `mature-repo/` | integrate / plan-vs-feature | hub + roadmap + feature pack + plan + code |
 | `no-docs-repo/` | bootstrap | README only |
