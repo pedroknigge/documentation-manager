@@ -99,11 +99,13 @@ Agents may also detect manually using the signal table (required path when the s
 | **node-ts** | `package.json`; also `tsconfig.json`, `pnpm-workspace.yaml`, `yarn.lock`, `package-lock.json`, `src/app/**`, `app/**` (Next) | Baseline since v1.x |
 | **python** | `pyproject.toml`, `setup.py`, `setup.cfg`, `requirements.txt`, `Pipfile`, `poetry.lock`; package dirs under `src/<pkg>/` with `__init__.py` | Prefer `src/` layout when present |
 | **go** | **`go.mod` required** (module line = module path). `cmd/`, `internal/`, `pkg/` are inventory hints after detection, not standalone signals | Orphan `go.sum` alone is **not** enough |
-| **unknown** | None of the above | Generic tree walk; still no invented APIs |
+| **unknown** | None of the above, **or** Cargo-primary with no other MVP token | Generic tree walk; still no invented APIs. **Not** a `rust` token. |
 
 **Mixed:** two or more of node-ts / python / go fire → announce **`Stack: mixed`** and list each primary (`detect-stack.sh` prints them space-separated; it does not print the word `mixed`). Inventory **per stack present**; do not force a single language narrative.
 
 **Conflict / weak signals:** ask once only if product entrypoint is ambiguous; otherwise pick the stack with the strongest root-level manifest.
+
+**Cargo-primary (not an MVP token):** root `Cargo.toml` and/or `rust-toolchain` / `rust-toolchain.toml` is a stronger language SSOT than a secondary `package.json` (tooling / no Node workspace). Do **not** record `node-ts` from that secondary file — `detect-stack.sh` prints **`unknown`** (or remaining MVP tokens if python/go or a **strong** Node workspace is also present) and a stderr **gap** note (`rust present; not an MVP token`). Do not invent a `rust` primary. Strong Node = `pnpm-workspace.yaml` or `package.json` `"workspaces"` (co-primary → keep `node-ts`, still emit the rust gap). Human captain if the entrypoint is still unclear.
 
 ### Inventory by stack (what to list first)
 
@@ -172,6 +174,7 @@ Stack: <node-ts|python|go|mixed|unknown> | signals: <short list>
 | `package.json` `"workspaces"` | Node (npm/yarn) | Array or `{ "packages": [...] }` |
 | `lerna.json` / `nx.json` / `turbo.json` | Node tooling | Hint only; still resolve package dirs from workspaces/globs |
 | `go.work` | Go | Lists `use` module dirs |
+| `Cargo.toml` `[workspace]` | Rust | `members` globs / concrete dirs (not an MVP stack token; still list packages) |
 | Multiple `go.mod` under subdirs | Go | Multi-module tree without go.work |
 | Multiple `pyproject.toml` under subdirs | Python | Multi-package / workspace layout |
 | `packages/*`, `apps/*`, `libs/*` with manifests | Common | Directory convention + package.json / pyproject / go.mod inside |
@@ -194,10 +197,13 @@ Optional helper (installed skill `scripts/` first — [Skill-runtime scripts](#s
 | `pnpm-workspace.yaml` globs / concrete dirs | Yes |
 | `package.json` `workspaces` (via `node` JSON parse) | Yes |
 | `go.work` `use ./path` (incl. multi-line `use (` blocks) | Yes |
+| `Cargo.toml` `[workspace]` `members` (globs / concrete dirs with `Cargo.toml`) | Yes |
 | Convention `packages/*`, `apps/*`, `libs/*` with manifests | Yes (when nothing else found) |
 | Arbitrary multi-`go.mod` / multi-`pyproject.toml` outside those | **No** — agent walks tree manually from the signal table |
 
-If the script is unavailable or returns empty while signals suggest monorepo, detect manually from the signal table, then list package roots that contain a package manifest (`package.json`, `pyproject.toml`, or `go.mod`).
+If a Cargo `[workspace]` table is present but no members resolve, `detect-packages.sh` prints **empty stdout** and a stderr **gap** note (`Cargo workspace present; members unresolved`) — not a silent empty. Single-crate `Cargo.toml` (no workspace) is not a monorepo.
+
+If the script is unavailable or returns empty while signals suggest monorepo, detect manually from the signal table, then list package roots that contain a package manifest (`package.json`, `pyproject.toml`, `go.mod`, or `Cargo.toml`).
 
 **Not a monorepo:** single root manifest only, no workspace file, no multi-package globs / multi-module layout → single-repo flow (Slice A stack tables only).
 

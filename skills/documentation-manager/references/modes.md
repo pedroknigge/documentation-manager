@@ -44,7 +44,7 @@ Detect stack (Polyglot stack detection — skill-discovery.md)
 
 Before inventory on **from-zero / integrate / audit** (and when exploring for adopt-full):
 
-1. Run **Polyglot stack detection** in [skill-discovery.md](skill-discovery.md) (signals: `package.json`, `pyproject.toml`, `go.mod`, …) or `./scripts/detect-stack.sh <root>` when available.  
+1. Run **Polyglot stack detection** in [skill-discovery.md](skill-discovery.md) (signals: `package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`, …) or `./scripts/detect-stack.sh <root>` when available. Cargo-primary + secondary Node → **`unknown`** (rust is not an MVP token); do not let a tooling `package.json` win.  
 2. Record token(s): `node-ts` | `python` | `go` | `unknown`. If the detector prints **two or more** primaries (space-separated), announce **`Stack: mixed`** and inventory each.  
 3. Choose **Inventory by stack** and **Docs layout guidance by stack** from that same reference — **do not** default to Node/TS paths when another stack is primary.  
 4. Announce `Stack: …` with the project Step 0 line.
@@ -429,7 +429,7 @@ Announce: `Audit-scope: diff-first | files: <n> | base: <HEAD|ref|n/a>` · `Audi
 ### 6.1 Code inventory (change set only)
 
 1. Take the §6.0 path list — that **is** the inventory universe.  
-2. **Detect stack** (§0.3) from **root manifests already in hand** (`package.json`, `pyproject.toml`, `go.mod`) — do not walk packages to inventory everything. Tokens: `node-ts` | `python` | `go` | `mixed` | `unknown`.  
+2. **Detect stack** (§0.3) from **root manifests already in hand** (`package.json`, `pyproject.toml`, `go.mod`, `Cargo.toml`) — do not walk packages to inventory everything. Tokens: `node-ts` | `python` | `go` | `mixed` | `unknown` (Cargo-primary without another MVP token → `unknown`).  
 3. Classify **only changed files** with the **Inventory by stack** table in [skill-discovery.md](skill-discovery.md).  
 4. Summary of common kinds (prefer stack-specific rows; **only if the path is in the change set**):
 

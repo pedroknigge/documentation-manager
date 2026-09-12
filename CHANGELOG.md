@@ -6,6 +6,10 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+### Fixed
+
+- **`stack_misdetect` (#45):** `detect-stack.sh` no longer labels a Cargo-primary tree as `node-ts` from a secondary `package.json`. Rust stays out of MVP tokens — stdout is `unknown` (or remaining MVP tokens) plus a stderr gap note. `detect-packages.sh` lists `Cargo.toml` `[workspace]` members (or empty + gap when members do not resolve). No sales-stats append (already in 2.5.16). No glance bump (scripts + discovery only).
+
 ## [2.5.16] — 2026-09-12
 
 Anonymous dogfood sales-stats second live row (`stack_misdetect`). **Not** a new major; **not** a Knowledge OS leap.
