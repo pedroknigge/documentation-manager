@@ -1,31 +1,40 @@
 {
   "schema": 1,
   "product": "documentation-manager",
-  "updated_at": "2026-09-09T01:27:51Z",
+  "updated_at": "2026-09-12T01:17:53Z",
   "skill_version_floor": "2.5.2",
   "privacy": "Public rows never include target owner, repo, URLs, or identifiable foreign content. Aggregates may back or lower README product claims; never invent numbers; never name target repos.",
   "aggregates": {
-    "runs_total": 1,
-    "runs_ok": 1,
+    "runs_total": 2,
+    "runs_ok": 2,
     "runs_fail": 0,
-    "duration_s_sum": 183,
+    "duration_s_sum": 230,
     "by_phase": {
-      "detect-stack": 1,
-      "survey-docs": 1,
-      "list-changed": 1,
-      "list-claims": 1,
-      "audit": 1,
+      "detect-stack": 2,
+      "detect-packages": 1,
+      "survey-docs": 2,
+      "list-changed": 2,
+      "list-changed-base": 1,
+      "list-claims": 2,
+      "list-claims-base": 1,
+      "audit": 2,
+      "list-changed-probe": 1,
       "cascade": 1,
-      "provenance": 1,
+      "cascade-recommend": 1,
+      "provenance": 2,
       "upsert-claims": 1,
-      "docs-universe-escape": 1
+      "upsert-skipped-hitl": 1,
+      "docs-universe-escape": 2
     },
     "by_finding_kind": {
       "base_ref_crash": 1,
       "malformed_fail_closed": 1,
-      "empty_changeset": 1,
-      "missing_matrix": 1,
-      "stack_unknown": 1
+      "empty_changeset": 2,
+      "missing_matrix": 2,
+      "stack_unknown": 1,
+      "docs_universe_escape": 1,
+      "stack_misdetect": 1,
+      "cascade_noop": 1
     }
   },
   "runs": [
@@ -53,6 +62,35 @@
         "stack_unknown": 1
       },
       "notes": "First live dogfood ledger row. --base non-commit exit 128; clean empty set HITL; dirty path + cascade OK after malformed removed."
+    },
+    {
+      "ts": "2026-09-12T01:17:53Z",
+      "ok": true,
+      "duration_s": 47,
+      "skill_version": "2.5.14",
+      "phases": [
+        "detect-stack",
+        "detect-packages",
+        "survey-docs",
+        "list-changed",
+        "list-changed-base",
+        "list-claims",
+        "list-claims-base",
+        "audit",
+        "list-changed-probe",
+        "cascade-recommend",
+        "provenance",
+        "upsert-skipped-hitl",
+        "docs-universe-escape"
+      ],
+      "findings": {
+        "missing_matrix": 1,
+        "empty_changeset": 1,
+        "docs_universe_escape": 1,
+        "stack_misdetect": 1,
+        "cascade_noop": 1
+      },
+      "notes": "Second live dogfood ledger row. Cargo-primary+secondary package.json → node-ts mislabel (stack_misdetect). --base OK on depth 50. empty changeset HITL + missing matrix expected; docs-universe escape honored."
     }
   ]
 }

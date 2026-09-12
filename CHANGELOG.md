@@ -6,6 +6,15 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.16] — 2026-09-12
+
+Anonymous dogfood sales-stats second live row (`stack_misdetect`). **Not** a new major; **not** a Knowledge OS leap.
+
+### Changed
+
+- **GTM:** [docs/sales-stats.json](docs/sales-stats.json) — schema v1 ledger appends a second anonymized ok run (aggregates: 1 ok → 2 ok). Finding kinds include `stack_misdetect` (boarded as #45; detect-stack not changed here). Public rows still omit target owner, repo, URLs, and identifiable foreign content. README History still points at the file without citing run counts.
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.16 —`; `metadata.version` **2.5.16**
+
 ## [2.5.15] — 2026-09-09
 
 P2 Bridge: plan mode ↔ vibe-proof-auditor (HITL propose). **Not** a new major; **not** a Knowledge OS leap.
