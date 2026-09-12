@@ -2,7 +2,7 @@
 
 > Hub: [AGENTS.md](../AGENTS.md) · Planes: [docs/plans/](./plans/)  
 > **Producto:** Agent Skill (knowledge base viva, agent-first). No es una app de producto genérica.  
-> **Última actualización:** 2026-09-12 · **Versión actual:** 2.5.16
+> **Última actualización:** 2026-09-12 · **Versión actual:** 2.5.17
 
 ## Principios (axiomas)
 
@@ -165,6 +165,7 @@ Impacto en “code wins + zero maintenance cost”
 | **2.5.14** | `--base` commit-ish HITL exit 2 (finding A) | **Shipped** 2026-09-09 — [modes.md §6.0](../skills/documentation-manager/references/modes.md#60-change-set-diff-first); finding B still HITL; not a KOS leap |
 | **2.5.15** | Plan ↔ vibe-proof-auditor HITL propose | **Shipped** 2026-09-09 — [modes.md §21](../skills/documentation-manager/references/modes.md#21-vibe-proof-auditor-bridge); not a KOS leap; not a product merge |
 | **2.5.16** | Anonymous dogfood sales-stats second live row | **Shipped** 2026-09-12 — [sales-stats.json](./sales-stats.json); `stack_misdetect` boarded as #45; not a KOS leap |
+| **2.5.17** | Cargo-primary detect-stack + Cargo workspace packages (#45) | **Shipped** 2026-09-12 — no `rust` MVP token; `unknown` + gap; [skill-discovery.md](../skills/documentation-manager/references/skill-discovery.md); not a KOS leap |
 
 ## Cómo usar este roadmap
 
