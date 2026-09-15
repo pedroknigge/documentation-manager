@@ -6,6 +6,15 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.18] — 2026-09-15
+
+Anonymous dogfood sales-stats third live row. **Not** a new major; **not** a Knowledge OS leap.
+
+### Changed
+
+- **GTM:** [docs/sales-stats.json](docs/sales-stats.json) — schema v1 ledger appends a third anonymized ok run (aggregates: 2 ok → 3 ok). Expected finding kinds: `empty_changeset`, `missing_matrix`, `cascade_noop`, `docs_universe_escape`. Public rows still omit target owner, repo, URLs, and identifiable foreign content. README History still points at the file without citing run counts.
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.18 —`; `metadata.version` **2.5.18**
+
 ## [2.5.17] — 2026-09-12
 
 Cargo-primary must not lose to a secondary `package.json` (`stack_misdetect` #45). **Not** a new major; **not** a Knowledge OS leap. **Not** a `rust` MVP token.
