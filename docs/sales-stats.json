@@ -1,40 +1,40 @@
 {
   "schema": 1,
   "product": "documentation-manager",
-  "updated_at": "2026-09-12T01:17:53Z",
+  "updated_at": "2026-09-15T01:29:13Z",
   "skill_version_floor": "2.5.2",
   "privacy": "Public rows never include target owner, repo, URLs, or identifiable foreign content. Aggregates may back or lower README product claims; never invent numbers; never name target repos.",
   "aggregates": {
-    "runs_total": 2,
-    "runs_ok": 2,
+    "runs_total": 3,
+    "runs_ok": 3,
     "runs_fail": 0,
-    "duration_s_sum": 230,
+    "duration_s_sum": 235,
     "by_phase": {
-      "detect-stack": 2,
-      "detect-packages": 1,
-      "survey-docs": 2,
-      "list-changed": 2,
-      "list-changed-base": 1,
-      "list-claims": 2,
-      "list-claims-base": 1,
-      "audit": 2,
-      "list-changed-probe": 1,
+      "detect-stack": 3,
+      "detect-packages": 2,
+      "survey-docs": 3,
+      "list-changed": 3,
+      "list-changed-base": 2,
+      "list-claims": 3,
+      "list-claims-base": 2,
+      "audit": 3,
+      "list-changed-probe": 2,
       "cascade": 1,
-      "cascade-recommend": 1,
-      "provenance": 2,
+      "cascade-recommend": 2,
+      "provenance": 3,
       "upsert-claims": 1,
-      "upsert-skipped-hitl": 1,
-      "docs-universe-escape": 2
+      "upsert-skipped-hitl": 2,
+      "docs-universe-escape": 3
     },
     "by_finding_kind": {
       "base_ref_crash": 1,
       "malformed_fail_closed": 1,
-      "empty_changeset": 2,
-      "missing_matrix": 2,
+      "empty_changeset": 3,
+      "missing_matrix": 3,
       "stack_unknown": 1,
-      "docs_universe_escape": 1,
+      "docs_universe_escape": 2,
       "stack_misdetect": 1,
-      "cascade_noop": 1
+      "cascade_noop": 2
     }
   },
   "runs": [
@@ -91,6 +91,34 @@
         "cascade_noop": 1
       },
       "notes": "Second live dogfood ledger row. Cargo-primary+secondary package.json → node-ts mislabel (stack_misdetect). --base OK on depth 50. empty changeset HITL + missing matrix expected; docs-universe escape honored."
+    },
+    {
+      "ts": "2026-09-15T01:29:13Z",
+      "ok": true,
+      "duration_s": 5,
+      "skill_version": "2.5.17",
+      "phases": [
+        "detect-stack",
+        "detect-packages",
+        "survey-docs",
+        "list-changed",
+        "list-changed-base",
+        "list-claims",
+        "list-claims-base",
+        "audit",
+        "list-changed-probe",
+        "cascade-recommend",
+        "provenance",
+        "upsert-skipped-hitl",
+        "docs-universe-escape"
+      ],
+      "findings": {
+        "empty_changeset": 1,
+        "missing_matrix": 1,
+        "cascade_noop": 1,
+        "docs_universe_escape": 1
+      },
+      "notes": "Third live dogfood ledger row. Clean clone dirty empty + missing matrix expected; --base OK on depth 50; cascade noop (no breadcrumbs in set); docs-universe escape honored; no crash; no actionable product defect this run."
     }
   ]
 }

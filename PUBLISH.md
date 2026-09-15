@@ -67,6 +67,16 @@ Version must match across:
 - `CHANGELOG.md` section for that version
 - `docs/adoption-matrix.md` version line (when cutting a major)
 
+### Cutting **2.5.18** (anonymous dogfood sales-stats third live row)
+
+Narrative: schema v1 ledger at `docs/sales-stats.json` appends a third anonymized ok dogfood run. Finding kinds are expected (`empty_changeset`, `missing_matrix`, `cascade_noop`, `docs_universe_escape`). Public rows never include target owner/repo/URLs. Aggregates may back or lower README product claims (never invent numbers). **Not** a new major; **not** a Knowledge OS leap. Parent tags after merge — do not tag from the PR branch.
+
+```bash
+# after gate is green (parent, post-merge):
+git tag -a v2.5.18 -m "documentation-manager skill v2.5.18 — anonymous dogfood sales-stats third live row"
+git push origin main --tags   # only when you intend to publish
+```
+
 ### Cutting **2.5.17** (Cargo-primary detect-stack / #45)
 
 Narrative: `detect-stack.sh` must not label a Cargo-primary tree as `node-ts` from a secondary `package.json`. Rust stays out of MVP tokens (`unknown` + stderr gap). `detect-packages.sh` lists Cargo workspace members (or empty + gap). **Not** a new major; **not** a Knowledge OS leap; **not** a `rust` token. Parent tags after merge — do not tag from the PR branch.
