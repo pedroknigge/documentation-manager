@@ -111,7 +111,8 @@ install_skill_tree() {
       living-claims.md \
       go-nogo-template.md \
       prototype-to-production.md \
-      vibe-proof-bridge.md
+      vibe-proof-bridge.md \
+      pstack-bridge.md
     do
       curl -fsSL "${REPO_RAW}/${SKILL_REL}/references/${ref}" -o "$dest/references/${ref}" || true
     done

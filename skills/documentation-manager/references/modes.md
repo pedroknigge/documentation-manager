@@ -215,6 +215,7 @@ Treat as **feature-scoped work** (not project bootstrap / from-zero):
 | “implementá X”, “generá stubs”, “scaffold X”, “start coding” | Stage A docs if needed **+** Implementation bridge on (§3.8) |
 | “spike X”, “epic X”, “redesign X” | Autopilot + Kind refinement (§3.1b) |
 | “close gaps” / “listo para prod” / “asegurá huecos” / “vibe-proof” **while already in plan** | Plan + vibe-proof **mandate** ([§21](#21-vibe-proof-auditor-bridge)) — not a steal of a standalone auditor ask |
+| “pstack” / “/architect” / “/figure-it-out” **while already in plan** | Plan + pstack **HITL** (or captain-yes fold) ([§22](#22-pstack-plan-bridge)) — bake always; never silent auto-run |
 
 **Do not** escalate to project Intent (integrate / from-zero) just because someone said “documentá”. Named surface → feature or plan.
 
@@ -283,6 +284,7 @@ Announce **non-writes** in the summary even when the user did not list them.
 8. If implement/stubs opt-in → §3.8; else summary one-liner for Implementation bridge.  
 9. Summary: path, non-writes, open questions count, Kind, how to promote later, **Cold-agent readable** (`applied` | `gap` | `HITL`).  
 10. **Vibe-proof bridge** ([§21](#21-vibe-proof-auditor-bridge)): if offer gates pass, **one HITL propose** (or internal call on mandate/flag). Never silent auto-run. Announce `Vibe-proof: …`.
+11. **Pstack bake + HITL** ([§22](#22-pstack-plan-bridge)): apply the portable bake table (always-on). If a pstack-family skill is present, **one HITL propose** to run `/architect` (or `/figure-it-out` for large ambiguous work) **with checkpoint**. Never silent auto-run. Announce `Pstack: …`.
 
 **Anti-bloat:** no empty `design.md` unless content exists. No product-vision suite.
 
@@ -1345,6 +1347,64 @@ Announce: `Vibe-proof: n/a | skip:<no-code|strong-arch|declined|absent> | HITL |
 
 ---
 
+<a id="22-pstack-plan-bridge"></a>
+
+## 22. Pstack plan bridge (bake + HITL · v2.5.19)
+
+**When:** **Plan mode** writes or refreshes a plan.
+
+**Always:** apply the portable **pstack bake** (subtract-before-add, attack the premise, falsifiable acceptance, verifiable next actions, ≥2 approaches on one-way doors, experience/outcome first) *inside this skill* — no plugin required.
+
+**Live path when:** host skills named `architect` / `figure-it-out` / a pstack plugin are present. Default: **one HITL propose** to run `/architect` (or `/figure-it-out` for large ambiguous work) **with checkpoint**, then fold.
+
+**Not when (live path):** sibling absent (`skip:absent`); captain declined (`skip:declined`); not a plan write/refresh (`n/a`).
+
+**Full procedure:** [pstack-bridge.md](pstack-bridge.md). Sibling: host pstack plugin (`architect` / `figure-it-out`). **Do not merge products.** Do **not** vendor pstack or copy skill bodies. Does **not** reuse or renumber [§9](#9-arkgate-bridge-v14), [§21](#21-vibe-proof-auditor-bridge), or [§14](#14-gono-go-decision-trail-v254)–[§20](#20-plans-layout). No new CLI. No Orderfield / ArkGate ports.
+
+### 22.1 Bake (always-on)
+
+Write/refresh the plan so a cold agent can recover:
+
+| Rule | Plan home |
+|------|-----------|
+| **subtract-before-add** | Non-goals / MVP out / what to delete first |
+| **attack the premise** | Open questions when scope is fuzzy or prior fixes failed |
+| **falsifiable acceptance** | Prove-it predicates (not vibes) |
+| **verifiable next actions** | Independently verifiable units |
+| **one-way doors** | ≥2 **structurally distinct** approaches in Open questions / Approach (or HITL) |
+| **experience/outcome first** | Outcome over implementation convenience |
+
+[§19](#19-cold-agent-readable) stays binding.
+
+### 22.2 HITL propose vs skip
+
+**Default (pstack present, no prior yes):** one **pstack HITL propose** after Stage A:
+
+> Hay pstack (`/architect` / `/figure-it-out`) en el host. ¿Corro `/architect` (o `/figure-it-out` si el trabajo es grande y ambiguo) **with checkpoint** y pliego los findings en Acceptance / MVP / Next actions / Open questions del plan?
+
+Wait. Captain no → `skip:declined`. **no silent auto-run.** Always **with checkpoint** — do not let architect implement.
+
+Absent sibling → `skip:absent`; hint once; bake still applies.
+
+User already said “run `/architect`” / “run `/figure-it-out`” / “with pstack” in this plan session → treat as yes (still announce `HITL`; still checkpoint).
+
+### 22.3 Fold (not a second SSOT)
+
+If the captain says yes: load the sibling skill; fold design / framing / tradeoffs into the plan’s **Acceptance** / **MVP** / **Next actions** / **Open questions** ([§19](#19-cold-agent-readable): `id` + path + note). Do **not** dump the full sibling output. Dual-plane: findings = AS-IS; plan rows = TO-BE. Sibling absent after yes → `skip:absent`; leave Missing.
+
+Announce: `Pstack: n/a | skip:absent|declined | HITL | folded`
+
+### 22.4 Non-goals
+
+- Vendoring pstack · copying skill bodies · silent auto-run
+- Second SSOT · full sibling dump · inventing a Sí / green OK
+- Replacing [§21](#21-vibe-proof-auditor-bridge) or [§9](#9-arkgate-bridge-v14)
+- Finding B from issue #41 · Orderfield / ArkGate ports · P3 Ports
+- Rewriting or renumbering [§9](#9-arkgate-bridge-v14) or [§14](#14-gono-go-decision-trail-v254)–[§21](#21-vibe-proof-auditor-bridge)
+- Major redesign of [§20](#20-plans-layout)
+
+---
+
 ## Completion template (all modes)
 
 ```
@@ -1372,5 +1432,6 @@ Sólido states/transitions: n/a | proposed | mapped | presence   # §18; Missing
 Cold-agent readable: n/a | applied | gap | HITL   # §19; plan/feature/promote required
 Plans layout: n/a | creator:<login> | HITL | archived   # §20; new writes under <github-login>/<slug>/
 Vibe-proof: n/a | skip:<no-code|strong-arch|declined|absent> | HITL | mandate | folded   # §21; never silent auto-run
+Pstack: n/a | skip:absent|declined | HITL | folded   # §22; bake always; never silent auto-run
 Suggested next Intent: …
 ```

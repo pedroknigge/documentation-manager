@@ -19,3 +19,6 @@ non-writes-plan	plan/feature default	plan-or-feature	non-writes vision/requireme
 vibeproof-offer	plan + auditable code + weak/absent architecture	plan	HITL propose vibe-proof	vibe-proof HITL propose
 vibeproof-skip-strong	strong living architecture	plan	do not offer	strong living architecture
 vibeproof-skip-nocode	no executable contract	plan	do not offer	no executable contract
+pstack-bake	plan write/refresh	plan	always-on bake	subtract-before-add
+pstack-hitl	pstack present	plan	one HITL propose	pstack HITL
+pstack-skip-absent	pstack absent	plan	skip:absent	skip:absent
