@@ -10,7 +10,7 @@ When plan mode **writes or refreshes** a plan, apply these rules *inside this sk
 
 | Rule | What to write in the plan |
 |------|---------------------------|
-| **Subtract before add** | What **not** to build; what to **delete first** (Non-goals / MVP out / Open questions). |
+| **subtract-before-add** | What **not** to build; what to **delete first** (Non-goals / MVP out / Open questions). |
 | **Attack the premise** | When scope is **fuzzy** or **prior fixes failed**, question the request before adding surface (Open questions). |
 | **Falsifiable acceptance** | Acceptance rows are **prove-it predicates** a cold agent can check — not vibes. |
 | **Verifiable next actions** | Each next action is an **independently verifiable unit** (not a chat leftover). |
