@@ -5,6 +5,7 @@
 > Related: [Roadmap](../../../roadmap.md) · [Architecture](../../../architecture.md) · future pack: `docs/features/<slug>/`  
 > When this ships or lands in code, **promote** to a feature pack (see Promotion), then **archive-on-finish**.  
 > **Cold-agent readable:** a reader with no chat must recover **intent**, **success criteria**, **non-goals**, and **next actions** from this file alone. No “as we discussed”. Dual reading → gap. See [modes.md §19](modes.md#19-cold-agent-readable).  
+> **Pstack bake (always-on):** subtract-before-add; attack the premise when scope is fuzzy or prior fixes failed; falsifiable acceptance (prove-it predicates); next actions independently verifiable; one-way doors need ≥2 structurally distinct approaches (Open questions / Approach or HITL); experience/outcome first. Live `/architect` / `/figure-it-out` only via HITL when pstack is present — [modes.md §22](modes.md#22-pstack-plan-bridge).  
 > Adjust `../` counts if this plan still lives on an adopted flat `docs/plans/<slug>/` path (do not force-migrate).
 
 **Status:** Planned | In progress | Shipped | Cancelled | Superseded  
@@ -20,13 +21,14 @@
 
 ## Outcome
 
-[One paragraph: what success looks like for users/business after this lands.]
+[One paragraph: what success looks like for users/business after this lands. Experience/outcome first — not implementation convenience.]
 
 ## Users & success
 
 - **Primary users:** …
 - **Success metrics:** …
-- **Non-goals / out of scope:** …
+- **Non-goals / out of scope:** …   # subtract-before-add: what NOT to build
+- **Delete first:** …               # optional; what to remove before adding
 
 ## MVP scope
 
@@ -35,6 +37,8 @@
 | … | … |
 
 ## Acceptance criteria
+
+Write as **falsifiable prove-it predicates** a cold agent can check. Not vibes.
 
 - [ ] …
 - [ ] …
@@ -55,6 +59,7 @@
 ## Approach (short)
 
 [How we think we will build it. Link architecture constraints. Prefer bullets over essays.]
+On a **one-way door**, list at least two **structurally distinct** approaches here or under Open questions (or HITL). Whole-shape alternatives, not point tweaks.
 
 ```mermaid
 flowchart LR
@@ -72,9 +77,11 @@ flowchart LR
 
 ## Open questions
 
-- …
+- …   # attack the premise when scope is fuzzy or prior fixes failed; one-way doors → ≥2 approaches
 
 ## Next actions
+
+Independently verifiable units (each can be proven without the others).
 
 - [ ] …   # first concrete step a cold agent can take; not chat leftovers
 

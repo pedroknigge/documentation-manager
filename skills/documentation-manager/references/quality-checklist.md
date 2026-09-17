@@ -40,6 +40,7 @@ Run before reporting done.
 - [ ] Ark detected → placement uses layers/contract when filling bridge
 - [ ] Promote uses **code** inventory, not stubs alone (implementation-bridge promote checklist)
 - [ ] Plan / feature / promote: **Cold-agent readable** ([modes.md §19](modes.md#19-cold-agent-readable)) — intent, success, non-goals, next actions recoverable from the file alone
+- [ ] Plan write/refresh: **pstack bake** applied ([modes.md §22](modes.md#22-pstack-plan-bridge)); live `/architect` only via **pstack HITL** (never silent auto-run)
 
 ## Intent / audit / from-zero
 
@@ -245,6 +246,17 @@ Sibling-skill bridge (ArkGate-style). Closed procedure: [modes.md §21](modes.md
 - [ ] Did not invent “strong architecture” without pointers; unclear → not strong
 - [ ] Did not copy vibe-proof scoring/gates; did not run harden/`agy` unless the captain asked the sibling
 - [ ] Did not touch Orderfield / ArkGate ports; did not board Finding B from #41
+
+## Pstack plan bridge (v2.5.19)
+
+Sibling-skill bridge (ArkGate-style) **plus** always-on bake. Closed procedure: [modes.md §22](modes.md#22-pstack-plan-bridge) · [pstack-bridge.md](pstack-bridge.md). Do **not** merge products. Do **not** vendor pstack. Human captain; Missing stays Missing; no greenwash; dual-plane intact; **no silent auto-run**. Cold-agent §19 stays.
+
+- [ ] Plan write/refresh applied **pstack bake**: subtract-before-add; attack the premise when fuzzy / prior fixes failed; **falsifiable acceptance** (prove-it predicates); next actions independently verifiable; one-way doors have ≥2 structurally distinct approaches (or HITL); experience/outcome first
+- [ ] Live path: detected host `architect` / `figure-it-out` / pstack plugin — **one pstack HITL propose** (`/architect` or `/figure-it-out` **with checkpoint**). Absent → `skip:absent`. Declined → `skip:declined`
+- [ ] Never silent auto-run; waited for the captain; checkpoint so architect does not implement
+- [ ] Findings folded into plan **Acceptance / MVP / Next actions / Open questions** (cold-agent readable: id + path + note) — not a second SSOT, not a full sibling dump
+- [ ] Did not copy pstack skill bodies; did not run arena/implement unless the captain asked the sibling
+- [ ] Did not steal §21 vibe-proof or §9 ArkGate; did not touch Orderfield / ArkGate ports; did not board Finding B from #41
 
 ## Voice
 

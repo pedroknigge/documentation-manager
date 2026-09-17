@@ -296,7 +296,7 @@ fi
 # ─── install.sh ships required remote refs (hardening regression) ────────────
 for ref in plan-template.md arkgate-bridge.md implementation-bridge.md knowledge-dashboard.md \
   team-governance.md team-owners-template.md team-approval-notes-template.md \
-  living-claims.md go-nogo-template.md prototype-to-production.md vibe-proof-bridge.md; do
+  living-claims.md go-nogo-template.md prototype-to-production.md vibe-proof-bridge.md pstack-bridge.md; do
   grep -q "$ref" "$ROOT/install.sh" || fail "install.sh remote list missing $ref"
 done
 grep -q "template-telemetry.md" "$ROOT/install.sh" \
@@ -1298,6 +1298,30 @@ VPB="$SKILL_DIR/references/vibe-proof-bridge.md"
 grep -F -q "not a second SSOT" "$VPB" || fail "vibe-proof-bridge.md missing not a second SSOT"
 echo "$DESC_START" | grep -q "^v${VER} —" || fail "SKILL.md description must start with v${VER} —"
 ok "Vibe-proof-auditor bridge anchors (modes §21 + SKILL + QC + reference; §9 and §14–§20 intact)"
+
+# ─── Pstack plan bridge (v2.5.19 · modes §22) ────────────────────────────────
+for anchor in \
+  "Pstack plan bridge" \
+  "pstack HITL propose" \
+  "subtract-before-add" \
+  "skip:absent" \
+  "no silent auto-run"
+do
+  grep -F -q -- "$anchor" "$MODES" || fail "modes.md missing Pstack plan bridge anchor: $anchor"
+  grep -F -q -- "$anchor" "$QC" || fail "quality-checklist missing Pstack plan bridge anchor: $anchor"
+done
+grep -F -q "Pstack plan bridge" "$SKILL_FILE" || fail "SKILL.md missing Pstack plan bridge"
+grep -F -q "pstack HITL" "$SKILL_FILE" || fail "SKILL.md missing pstack HITL"
+grep -F -q "## 22. Pstack plan bridge" "$MODES" || fail "modes.md missing §22 Pstack plan bridge heading"
+grep -F -q "## 21. Vibe-proof-auditor bridge" "$MODES" || fail "modes.md must keep §21 vibe-proof (pstack must not steal it)"
+grep -F -q "## 9. ArkGate bridge" "$MODES" || fail "modes.md must keep §9 ArkGate (pstack must not steal it)"
+grep -F -q "## 20. Plans layout" "$MODES" || fail "modes.md must keep §20 Plans layout"
+PSB="$SKILL_DIR/references/pstack-bridge.md"
+[[ -f "$PSB" ]] || fail "missing references/pstack-bridge.md"
+grep -F -q "not a second SSOT" "$PSB" || fail "pstack-bridge.md missing not a second SSOT"
+grep -F -q "with checkpoint" "$PSB" || fail "pstack-bridge.md missing with checkpoint"
+echo "$DESC_START" | grep -q "^v${VER} —" || fail "SKILL.md description must start with v${VER} —"
+ok "Pstack plan bridge anchors (modes §22 + SKILL + QC + reference; §9, §20, §21 intact)"
 
 if [[ "$FAILS" -gt 0 ]]; then
   echo ""

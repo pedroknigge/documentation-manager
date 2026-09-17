@@ -6,6 +6,31 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.19] — 2026-09-17
+
+P2 Bridge: plan mode ↔ pstack (bake + HITL propose). **Not** a new major; **not** a Knowledge OS leap.
+
+### Added
+
+- Portable **pstack bake** in **plan mode** (always-on; no plugin required): subtract-before-add, attack the premise, falsifiable acceptance (prove-it predicates), independently verifiable next actions, ≥2 structurally distinct approaches on one-way doors, experience/outcome first
+- Sibling-skill HITL (ArkGate-style) when host skills named `architect` / `figure-it-out` / a pstack plugin are present: one **pstack HITL propose** to run `/architect` (or `/figure-it-out` for large ambiguous work) **with checkpoint**
+- Procedure [modes.md §22](skills/documentation-manager/references/modes.md#22-pstack-plan-bridge) + [pstack-bridge.md](skills/documentation-manager/references/pstack-bridge.md)
+- Fold findings into plan Acceptance / MVP / Next actions / Open questions (cold-agent readable) — not a second SSOT, not a sibling dump
+- Quality-checklist section **Pstack plan bridge** + golden bake / HITL / skip:absent rows
+- Announce: `Pstack: n/a | skip:absent|declined | HITL | folded` — **no silent auto-run**
+
+### Unchanged (locked)
+
+- **§9** ArkGate · **§14** go/no-go · **§15** Appendix A · **§16** §2 Mínimo · **§17** production-harden DoD · **§18** Sólido · **§19** cold-agent · **§20** plans layout · **§21** vibe-proof stay numbered as shipped
+- Human captain · Missing stays Missing · no greenwash · dual-plane intact
+- Finding B from #41 stays **HITL / parked**
+- Orderfield / ArkGate ports · P3 Ports · product merge · pstack skill bodies not vendored here
+- detect-stack / audit-claims behavior unchanged
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.19 —`; `metadata.version` **2.5.19**
+
 ## [2.5.18] — 2026-09-15
 
 Anonymous dogfood sales-stats third live row. **Not** a new major; **not** a Knowledge OS leap.

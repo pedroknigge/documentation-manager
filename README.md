@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v2.5.18</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT
+  <strong>v2.5.19</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.18-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.19-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -183,6 +183,7 @@ Slash command: **`/documentation-manager`**. Or just talk:
 | *“Python / Go stack — don’t assume Node.”* | **Polyglot** stack detection + layout tables |
 | *“Add docs/team owners for this module.”* | **Team governance** (optional OWNERS + notes) |
 | *“Nueva feature X”* on a repo with code but weak architecture | **plan** + one **vibe-proof HITL** propose (never auto-run) |
+| *“Nueva feature X”* when pstack / `/architect` is on the host | **plan** + **pstack bake** + one **pstack HITL** propose (never auto-run) |
 
 </details>
 
@@ -244,6 +245,16 @@ Procedure: [skills/documentation-manager/references/arkgate-bridge.md](./skills/
 In **plan mode**, if the tree already has auditable code and architecture docs are weak or missing, the skill asks **once** (HITL): run vibe-proof and fold findings into the plan’s acceptance / MVP / next actions? **Strong living architecture** or **no code** → it does not ask. It never auto-runs. An explicit “close gaps” / “listo para prod” / “asegurá huecos” (or a vibe-proof flag) is the only internal call.
 
 Procedure: [skills/documentation-manager/references/vibe-proof-bridge.md](./skills/documentation-manager/references/vibe-proof-bridge.md)
+
+---
+
+## Pair with pstack
+
+**pstack** (`/architect`, `/figure-it-out`) is the sibling design stack. **Documentation Manager** stays the docs owner.
+
+In **plan mode**, the skill always applies a portable **pstack bake** (subtract-before-add, falsifiable acceptance, verifiable next actions, two approaches on one-way doors) so hosts without the plugin still get the rules. When those skills are present, it asks **once** (HITL): run `/architect` (or `/figure-it-out` for large ambiguous work) **with checkpoint** and fold findings into the plan? It never auto-runs. Absent plugin → bake only.
+
+Procedure: [skills/documentation-manager/references/pstack-bridge.md](./skills/documentation-manager/references/pstack-bridge.md)
 
 ---
 

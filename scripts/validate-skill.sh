@@ -84,11 +84,12 @@ for ref in \
   living-claims.md \
   go-nogo-template.md \
   prototype-to-production.md \
-  vibe-proof-bridge.md
+  vibe-proof-bridge.md \
+  pstack-bridge.md
 do
   [[ -f "$SKILL_DIR/references/$ref" ]] || fail "Missing references/$ref"
 done
-ok "all references present (incl. bridges + dashboard + discovery + team + living-claims + go-nogo + p2p + vibe-proof)"
+ok "all references present (incl. bridges + dashboard + discovery + team + living-claims + go-nogo + p2p + vibe-proof + pstack)"
 
 for concept in \
   "Step 0" \
@@ -139,6 +140,7 @@ for concept in \
   "2.5.16" \
   "2.5.17" \
   "2.5.18" \
+  "2.5.19" \
   "Go/no-go" \
   "§2 Mínimo" \
   "production-harden" \
@@ -162,11 +164,14 @@ for concept in \
   "§6.11" \
   "Vibe-proof-auditor bridge" \
   "vibe-proof HITL" \
-  "no silent auto-run"
+  "no silent auto-run" \
+  "Pstack plan bridge" \
+  "pstack HITL" \
+  "subtract-before-add"
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.18, §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout + Provenance grouping + Vibe-proof-auditor bridge)"
+ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.19, §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout + Provenance grouping + Vibe-proof-auditor bridge + Pstack plan bridge)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -265,11 +270,15 @@ for concept in \
   "Vibe-proof-auditor bridge" \
   "vibe-proof HITL propose" \
   "strong living architecture" \
-  "no executable contract"
+  "no executable contract" \
+  "Pstack plan bridge" \
+  "pstack HITL propose" \
+  "subtract-before-add" \
+  "skip:absent"
 do
   grep -F -q -- "$concept" "$MODES" || fail "Missing concept in modes.md: $concept"
 done
-ok "modes.md … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout + Provenance grouping + Vibe-proof-auditor bridge procedures present"
+ok "modes.md … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout + Provenance grouping + Vibe-proof-auditor bridge + Pstack plan bridge procedures present"
 
 [[ -x "$ROOT/scripts/generate-docs-dashboard.sh" ]] || [[ -f "$ROOT/scripts/generate-docs-dashboard.sh" ]] \
   || fail "Missing scripts/generate-docs-dashboard.sh"
@@ -321,6 +330,20 @@ do
 done
 ok "vibe-proof-bridge.md detection + offer gates + HITL present"
 
+PSB="$SKILL_DIR/references/pstack-bridge.md"
+for concept in \
+  "Detection" \
+  "HITL propose" \
+  "no silent auto-run" \
+  "not a second SSOT" \
+  "subtract-before-add" \
+  "with checkpoint" \
+  "skip:absent"
+do
+  grep -F -q -- "$concept" "$PSB" || fail "pstack-bridge.md missing: $concept"
+done
+ok "pstack-bridge.md bake + detection + HITL present"
+
 QC="$SKILL_DIR/references/quality-checklist.md"
 grep -F -q "Coverage matrix" "$QC" || fail "quality-checklist missing Coverage matrix"
 grep -F -q "Mature-repo" "$QC" || fail "quality-checklist missing Mature-repo section"
@@ -368,7 +391,11 @@ grep -F -q "Vibe-proof-auditor bridge" "$QC" || fail "quality-checklist missing 
 grep -F -q "vibe-proof HITL propose" "$QC" || fail "quality-checklist missing vibe-proof HITL propose"
 grep -F -q "no silent auto-run" "$QC" || fail "quality-checklist missing no silent auto-run"
 grep -F -q "strong living architecture" "$QC" || fail "quality-checklist missing strong living architecture"
-ok "quality-checklist … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Plans layout + Provenance grouping + Vibe-proof-auditor bridge present"
+grep -F -q "Pstack plan bridge" "$QC" || fail "quality-checklist missing Pstack plan bridge"
+grep -F -q "pstack HITL propose" "$QC" || fail "quality-checklist missing pstack HITL propose"
+grep -F -q "subtract-before-add" "$QC" || fail "quality-checklist missing subtract-before-add"
+grep -F -q "with checkpoint" "$QC" || fail "quality-checklist missing with checkpoint"
+ok "quality-checklist … + team + living-claims + go/no-go + p2p + §2 Mínimo + production-harden DoD + Sólido states/transitions + Plans layout + Provenance grouping + Vibe-proof-auditor bridge + Pstack plan bridge present"
 
 PT="$SKILL_DIR/references/plan-template.md"
 grep -F -q "Implementation bridge" "$PT" || fail "plan-template missing Implementation bridge section"
@@ -482,10 +509,10 @@ grep -E -q '\[x\].*\.github/workflows/docs-audit\.yml' "$ROOT/docs/plans/knowled
 ok "audit-claims.sh present (air-gapped) + example docs-audit whole-matrix gate"
 
 PT="$SKILL_DIR/references/plan-template.md"
-for concept in "Promotion" "Acceptance criteria" "Open questions" "MVP scope" "docs/features" "Next actions" "Cold-agent readable" "docs/plans/<github-login>" "_archive" "archive-on-finish"; do
+for concept in "Promotion" "Acceptance criteria" "Open questions" "MVP scope" "docs/features" "Next actions" "Cold-agent readable" "docs/plans/<github-login>" "_archive" "archive-on-finish" "Pstack bake" "falsifiable" "structurally distinct" "independently verifiable"; do
   grep -F -q -- "$concept" "$PT" || fail "plan-template missing: $concept"
 done
-ok "plan-template promotion path + Plans layout present"
+ok "plan-template promotion path + Plans layout + pstack bake present"
 
 grep -F -q "Surface coverage" "$SKILL_DIR/references/agents-md-template.md" || \
   fail "agents-md-template missing Surface coverage"
