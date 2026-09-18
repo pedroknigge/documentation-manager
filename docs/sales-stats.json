@@ -1,40 +1,40 @@
 {
   "schema": 1,
   "product": "documentation-manager",
-  "updated_at": "2026-09-15T01:29:13Z",
+  "updated_at": "2026-09-18T01:25:15Z",
   "skill_version_floor": "2.5.2",
   "privacy": "Public rows never include target owner, repo, URLs, or identifiable foreign content. Aggregates may back or lower README product claims; never invent numbers; never name target repos.",
   "aggregates": {
-    "runs_total": 3,
-    "runs_ok": 3,
+    "runs_total": 4,
+    "runs_ok": 4,
     "runs_fail": 0,
-    "duration_s_sum": 235,
+    "duration_s_sum": 333,
     "by_phase": {
-      "detect-stack": 3,
-      "detect-packages": 2,
-      "survey-docs": 3,
-      "list-changed": 3,
-      "list-changed-base": 2,
-      "list-claims": 3,
-      "list-claims-base": 2,
-      "audit": 3,
-      "list-changed-probe": 2,
+      "detect-stack": 4,
+      "detect-packages": 3,
+      "survey-docs": 4,
+      "list-changed": 4,
+      "list-changed-base": 3,
+      "list-claims": 4,
+      "list-claims-base": 3,
+      "audit": 4,
+      "list-changed-probe": 3,
       "cascade": 1,
-      "cascade-recommend": 2,
-      "provenance": 3,
+      "cascade-recommend": 3,
+      "provenance": 4,
       "upsert-claims": 1,
-      "upsert-skipped-hitl": 2,
-      "docs-universe-escape": 3
+      "upsert-skipped-hitl": 3,
+      "docs-universe-escape": 4
     },
     "by_finding_kind": {
       "base_ref_crash": 1,
       "malformed_fail_closed": 1,
-      "empty_changeset": 3,
-      "missing_matrix": 3,
-      "stack_unknown": 1,
-      "docs_universe_escape": 2,
+      "empty_changeset": 4,
+      "missing_matrix": 4,
+      "stack_unknown": 2,
+      "docs_universe_escape": 3,
       "stack_misdetect": 1,
-      "cascade_noop": 2
+      "cascade_noop": 3
     }
   },
   "runs": [
@@ -90,7 +90,7 @@
         "stack_misdetect": 1,
         "cascade_noop": 1
       },
-      "notes": "Second live dogfood ledger row. Cargo-primary+secondary package.json → node-ts mislabel (stack_misdetect). --base OK on depth 50. empty changeset HITL + missing matrix expected; docs-universe escape honored."
+      "notes": "Second live dogfood ledger row. Cargo-primary+secondary package.json \u2192 node-ts mislabel (stack_misdetect). --base OK on depth 50. empty changeset HITL + missing matrix expected; docs-universe escape honored."
     },
     {
       "ts": "2026-09-15T01:29:13Z",
@@ -119,6 +119,35 @@
         "docs_universe_escape": 1
       },
       "notes": "Third live dogfood ledger row. Clean clone dirty empty + missing matrix expected; --base OK on depth 50; cascade noop (no breadcrumbs in set); docs-universe escape honored; no crash; no actionable product defect this run."
+    },
+    {
+      "ts": "2026-09-18T01:25:15Z",
+      "ok": true,
+      "duration_s": 98,
+      "skill_version": "2.5.17",
+      "phases": [
+        "detect-stack",
+        "detect-packages",
+        "survey-docs",
+        "list-changed",
+        "list-changed-base",
+        "list-claims",
+        "list-claims-base",
+        "audit",
+        "list-changed-probe",
+        "cascade-recommend",
+        "provenance",
+        "upsert-skipped-hitl",
+        "docs-universe-escape"
+      ],
+      "findings": {
+        "stack_unknown": 1,
+        "empty_changeset": 1,
+        "missing_matrix": 1,
+        "cascade_noop": 1,
+        "docs_universe_escape": 1
+      },
+      "notes": "Fourth live dogfood ledger row. go.work-only Go workspace root \u2192 detect-stack unknown while detect-packages lists members (stack_unknown actionable). --base OK depth 50; empty dirty set + missing matrix expected; cascade noop; docs-universe escape on huge base set; no crash."
     }
   ]
 }

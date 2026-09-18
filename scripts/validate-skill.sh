@@ -141,6 +141,7 @@ for concept in \
   "2.5.17" \
   "2.5.18" \
   "2.5.19" \
+  "2.5.20" \
   "Go/no-go" \
   "§2 Mínimo" \
   "production-harden" \
@@ -171,7 +172,7 @@ for concept in \
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.19, §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout + Provenance grouping + Vibe-proof-auditor bridge + Pstack plan bridge)"
+ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.20, §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout + Provenance grouping + Vibe-proof-auditor bridge + Pstack plan bridge)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
