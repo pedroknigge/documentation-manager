@@ -2,7 +2,7 @@
 
 > Hub: [AGENTS.md](../AGENTS.md) · Planes: [docs/plans/](./plans/)  
 > **Producto:** Agent Skill (knowledge base viva, agent-first). No es una app de producto genérica.  
-> **Última actualización:** 2026-09-18 · **Versión actual:** 2.5.20
+> **Última actualización:** 2026-09-18 · **Versión actual:** 2.5.21
 
 ## Principios (axiomas)
 
@@ -169,6 +169,7 @@ Impacto en “code wins + zero maintenance cost”
 | **2.5.18** | Anonymous dogfood sales-stats third live row | **Shipped** 2026-09-15 — [sales-stats.json](./sales-stats.json); expected `empty_changeset` / `missing_matrix` / `cascade_noop` / `docs_universe_escape`; not a KOS leap |
 | **2.5.19** | Plan ↔ pstack bake + HITL propose | **Shipped** 2026-09-17 — [modes.md §22](../skills/documentation-manager/references/modes.md#22-pstack-plan-bridge); not a KOS leap; not a product merge |
 | **2.5.20** | Anonymous dogfood sales-stats fourth live row | **Shipped** 2026-09-18 — [sales-stats.json](./sales-stats.json); actionable `stack_unknown` boarded as #51; expected `empty_changeset` / `missing_matrix` / `cascade_noop` / `docs_universe_escape`; not a KOS leap |
+| **2.5.21** | go.work is a Go stack signal (#51) | **Shipped** 2026-09-18 — same `go` MVP token as root `go.mod`; [skill-discovery.md](../skills/documentation-manager/references/skill-discovery.md); not a KOS leap; not a new token |
 
 ## Cómo usar este roadmap
 

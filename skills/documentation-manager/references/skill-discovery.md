@@ -98,7 +98,7 @@ Agents may also detect manually using the signal table (required path when the s
 |---------------------|-------------------------------------|--------|
 | **node-ts** | `package.json`; also `tsconfig.json`, `pnpm-workspace.yaml`, `yarn.lock`, `package-lock.json`, `src/app/**`, `app/**` (Next) | Baseline since v1.x |
 | **python** | `pyproject.toml`, `setup.py`, `setup.cfg`, `requirements.txt`, `Pipfile`, `poetry.lock`; package dirs under `src/<pkg>/` with `__init__.py` | Prefer `src/` layout when present |
-| **go** | **`go.mod` required** (module line = module path). `cmd/`, `internal/`, `pkg/` are inventory hints after detection, not standalone signals | Orphan `go.sum` alone is **not** enough |
+| **go** | Root **`go.mod`** (module line = module path) **or** root **`go.work`** (workspace file; same `go` token). `cmd/`, `internal/`, `pkg/` are inventory hints after detection, not standalone signals | Orphan `go.sum` alone is **not** enough. Do not invent a `go-workspace` token. |
 | **unknown** | None of the above, **or** Cargo-primary with no other MVP token | Generic tree walk; still no invented APIs. **Not** a `rust` token. |
 
 **Mixed:** two or more of node-ts / python / go fire → announce **`Stack: mixed`** and list each primary (`detect-stack.sh` prints them space-separated; it does not print the word `mixed`). Inventory **per stack present**; do not force a single language narrative.
