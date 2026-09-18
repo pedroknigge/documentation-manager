@@ -6,6 +6,25 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.21] — 2026-09-18
+
+Root `go.work` is a Go stack signal (`stack_unknown` #51). **Not** a new major; **not** a Knowledge OS leap. **Not** a new stack token.
+
+### Fixed
+
+- **`stack_unknown` (#51):** `detect-stack.sh` treats a root `go.work` the same as a root `go.mod` — prints `go`. A Go workspace without a root module is still Go. Package detection already listed workspace members; stack detection now agrees.
+
+### Unchanged (locked)
+
+- MVP tokens remain `node-ts` | `python` | `go` | `unknown` — no `go-workspace` token
+- Orphan `go.sum` and `cmd/`+`internal/` without `go.mod` / `go.work` still do not claim `go`
+- Finding B from #41 stays **HITL / parked**
+- No sales-stats append (already in 2.5.20)
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.21 —`; `metadata.version` **2.5.21**
+
 ## [2.5.20] — 2026-09-18
 
 Anonymous dogfood sales-stats fourth live row. **Not** a new major; **not** a Knowledge OS leap.

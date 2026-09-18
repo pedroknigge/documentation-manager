@@ -67,6 +67,16 @@ Version must match across:
 - `CHANGELOG.md` section for that version
 - `docs/adoption-matrix.md` version line (when cutting a major)
 
+### Cutting **2.5.21** (go.work stack signal / #51)
+
+Narrative: `detect-stack.sh` treats root `go.work` as the same MVP token `go` as root `go.mod`. Workspace roots without a root module must not print `unknown`. `detect-packages.sh` already listed members — stack now agrees. **Not** a new major; **not** a Knowledge OS leap; **not** a `go-workspace` token. Parent tags after merge — do not tag from the PR branch.
+
+```bash
+# after gate is green (parent, post-merge):
+git tag -a v2.5.21 -m "documentation-manager skill v2.5.21 — go.work is a Go stack signal"
+git push origin main --tags   # only when you intend to publish
+```
+
 ### Cutting **2.5.20** (anonymous dogfood sales-stats fourth live row)
 
 Narrative: schema v1 ledger at `docs/sales-stats.json` appends a fourth anonymized ok dogfood run. Finding kinds include actionable `stack_unknown` (go.work root; boarded as #51; detect-stack not changed in this cut) plus expected `empty_changeset`, `missing_matrix`, `cascade_noop`, `docs_universe_escape`. Public rows never include target owner/repo/URLs. Aggregates may back or lower README product claims (never invent numbers). **Not** a new major; **not** a Knowledge OS leap. Parent tags after merge — do not tag from the PR branch.

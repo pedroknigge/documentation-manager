@@ -30,11 +30,11 @@ grep -q "skill version \*\*${VER}\*\*" "$ROOT/AGENTS.md" \
 ok "version sync README + AGENTS ↔ SKILL ($VER)"
 
 # ─── Fixtures present ───────────────────────────────────────────────────────
-for f in thin-repo mature-repo no-docs-repo python-thin-repo go-thin-repo cargo-primary-repo monorepo-thin \
+for f in thin-repo mature-repo no-docs-repo python-thin-repo go-thin-repo go-workspace-repo cargo-primary-repo monorepo-thin \
   golden/autopilot-cases.tsv claims-pass claims-fail claims-none claims-breadcrumbs survey-heuristics; do
   [[ -e "$FIX/$f" ]] || fail "missing fixture $f"
 done
-ok "fixtures present (thin, mature, no-docs, python-thin, go-thin, cargo-primary, monorepo-thin, golden, claims-*, survey-heuristics)"
+ok "fixtures present (thin, mature, no-docs, python-thin, go-thin, go-workspace, cargo-primary, monorepo-thin, golden, claims-*, survey-heuristics)"
 
 # thin: code, no hub/docs
 [[ -f "$FIX/thin-repo/src/app/index.ts" ]] || fail "thin-repo missing code"
@@ -82,6 +82,16 @@ echo "$py_out" | grep -qw "node-ts" && fail "detect-stack python-thin must not r
 go_out=$(bash "$DETECT" "$FIX/go-thin-repo")
 echo "$go_out" | grep -qw "go" || fail "detect-stack go-thin expected go, got: $go_out"
 echo "$go_out" | grep -qw "node-ts" && fail "detect-stack go-thin must not report node-ts: $go_out"
+# go.work workspace root without root go.mod must still emit go (#51)
+[[ -f "$FIX/go-workspace-repo/go.work" ]] || fail "go-workspace missing go.work"
+[[ -f "$FIX/go-workspace-repo/apps/api/go.mod" ]] || fail "go-workspace missing apps/api/go.mod"
+[[ -f "$FIX/go-workspace-repo/apps/cli/go.mod" ]] || fail "go-workspace missing apps/cli/go.mod"
+[[ ! -f "$FIX/go-workspace-repo/go.mod" ]] || fail "go-workspace must not have root go.mod"
+[[ ! -f "$FIX/go-workspace-repo/AGENTS.md" ]] || fail "go-workspace should not have AGENTS.md"
+[[ ! -d "$FIX/go-workspace-repo/docs" ]] || fail "go-workspace should not have docs/"
+gw_stack=$(bash "$DETECT" "$FIX/go-workspace-repo")
+echo "$gw_stack" | grep -qx "go" || fail "detect-stack go-workspace expected go, got: $gw_stack"
+echo "$gw_stack" | grep -qw "node-ts" && fail "detect-stack go-workspace must not report node-ts: $gw_stack"
 # Negative: orphan go.sum or cmd+internal without go.mod must not claim go
 _edge=$(mktemp -d)
 touch "$_edge/go.sum"
@@ -119,7 +129,7 @@ echo "$mix_out" | grep -qw "node-ts" || fail "detect-stack cargo+workspaces expe
 echo "$mix_out" | grep -qw "unknown" && fail "detect-stack cargo+workspaces must not print unknown with node-ts: $mix_out"
 grep -q "gap: rust present" "$_mix_err" || fail "detect-stack cargo+workspaces expected rust gap on stderr"
 rm -rf "$_mix" "$_mix_err"
-ok "detect-stack.sh on node + python + go fixtures (+ negative go edges + cargo-primary)"
+ok "detect-stack.sh on node + python + go fixtures (+ go.work workspace + negative go edges + cargo-primary)"
 
 # monorepo-thin: multi-package workspace signals, no root hub/docs
 [[ -f "$FIX/monorepo-thin/pnpm-workspace.yaml" ]] || fail "monorepo-thin missing pnpm-workspace.yaml"
@@ -160,6 +170,10 @@ gw_out=$(bash "$DPKG" "$_gw")
 echo "$gw_out" | grep -qx "mod-a" || fail "detect-packages go.work expected mod-a, got: $gw_out"
 echo "$gw_out" | grep -qx "mod-b" || fail "detect-packages go.work expected mod-b, got: $gw_out"
 rm -rf "$_gw"
+# Persistent go.work fixture: packages and stack must agree (#51)
+pkg_gw=$(bash "$DPKG" "$FIX/go-workspace-repo")
+echo "$pkg_gw" | grep -qx "apps/api" || fail "detect-packages go-workspace expected apps/api, got: $pkg_gw"
+echo "$pkg_gw" | grep -qx "apps/cli" || fail "detect-packages go-workspace expected apps/cli, got: $pkg_gw"
 # npm workspaces only (no pnpm-workspace.yaml)
 _nw=$(mktemp -d)
 mkdir -p "$_nw/packages/a" "$_nw/packages/b"

@@ -51,9 +51,10 @@ if [[ "$has_python" -eq 0 ]] && [[ -d "$ROOT/src" ]]; then
   shopt -u nullglob
 fi
 
-# Go: go.mod is authoritative. Do not treat orphan go.sum or generic
-# cmd/+internal/ dirs alone (common layout names outside Go).
-if [[ -f "$ROOT/go.mod" ]]; then
+# Go: go.mod or go.work is authoritative. Do not treat orphan go.sum or
+# generic cmd/+internal/ dirs alone (common layout names outside Go).
+# Root go.work is the same MVP token as go.mod (workspace, no root module).
+if [[ -f "$ROOT/go.mod" ]] || [[ -f "$ROOT/go.work" ]]; then
   has_go=1
 fi
 
