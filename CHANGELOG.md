@@ -6,6 +6,15 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.20] — 2026-09-18
+
+Anonymous dogfood sales-stats fourth live row. **Not** a new major; **not** a Knowledge OS leap.
+
+### Changed
+
+- **GTM:** [docs/sales-stats.json](docs/sales-stats.json) — schema v1 ledger appends a fourth anonymized ok run (aggregates: 3 ok → 4 ok). Finding kinds include actionable `stack_unknown` (go.work root; boarded as #51; detect-stack not changed here) plus expected `empty_changeset`, `missing_matrix`, `cascade_noop`, `docs_universe_escape`. Public rows still omit target owner, repo, URLs, and identifiable foreign content. README History still points at the file without citing run counts.
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.20 —`; `metadata.version` **2.5.20**
+
 ## [2.5.19] — 2026-09-17
 
 P2 Bridge: plan mode ↔ pstack (bake + HITL propose). **Not** a new major; **not** a Knowledge OS leap.
