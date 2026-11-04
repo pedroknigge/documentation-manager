@@ -55,7 +55,7 @@ From an installed skill tree (after install.sh):
 
 Missing matrix → empty claims section (honest “not found”), not fake scores.
 
-**Truth score is advisory.** Enforcement for **critical Contradicted** is local CI (`scripts/audit-claims.sh` / docs-audit) — see [living-claims.md](living-claims.md).
+**Truth score is advisory.** Enforcement for **critical Contradicted** is local CI (`scripts/audit-claims.sh` / docs-audit workflow or opt-in Vercel build) — see [living-claims.md](living-claims.md).
 
 ## Output policy
 

@@ -1,0 +1,17 @@
+{
+  "total_count": 2,
+  "check_runs": [
+    {
+      "name": "example-job",
+      "status": "completed",
+      "conclusion": "failure",
+      "app": { "slug": "github-actions" }
+    },
+    {
+      "name": "other-job",
+      "status": "completed",
+      "conclusion": "skipped",
+      "app": { "slug": "github-actions" }
+    }
+  ]
+}

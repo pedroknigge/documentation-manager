@@ -82,6 +82,7 @@ Run before reporting done.
 - [ ] Domain invariants encoded as `@claim` + matrix rows ([living-claims.md](living-claims.md#domain-invariants-dual-plane-cookbook)); same dual-plane who-wins — no second regime; no greenwash OK
 - [ ] Did not invent code to satisfy a claim; did not auto-commit
 - [ ] No SaaS/control-plane invented for the core gate (local/air-gapped)
+- [ ] CI surface: `ci-surface.sh` `detect`/`read`; skipped, ignored, and canceled are `absent`; both surfaces must pass when both exist; Vercel `buildCommand` is opt-in; `.github/workflows/docs-audit.yml` still the Actions example
 
 ## ArkGate bridge (v1.4)
 

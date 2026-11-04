@@ -90,7 +90,9 @@ The **merge gate** parses the **whole matrix**. Agent audit/reconcile **reads** 
 ./scripts/audit-claims.sh --group-by provenance [--base REF] [--matrix PATH] [PROJECT_ROOT]
 ```
 
-**Agents** invoke the same script from the **installed skill** `scripts/` ([skill-discovery.md — Skill-runtime scripts](skill-discovery.md#skill-runtime-scripts)). Consumer-repo `./scripts/audit-claims.sh` is an opt-in **CI** copy (with `.github/workflows/docs-audit.yml`) — not a second install path. Enable the workflow as a required check to fail merge on **critical Contradicted**.
+**Agents** invoke the same script from the **installed skill** `scripts/` ([skill-discovery.md — Skill-runtime scripts](skill-discovery.md#skill-runtime-scripts)). Consumer-repo `./scripts/audit-claims.sh` is an opt-in **CI** copy — not a second install path. Wire it with `.github/workflows/docs-audit.yml` **or** a Vercel `buildCommand` ([vercel-ci.md](vercel-ci.md)). `install.sh` does not write either file. `ci-surface.sh detect` / `read` reports whether that surface passed. Enable the resulting check (Actions job or the Vercel commit status) to fail merge on **critical Contradicted**.
+
+A Vercel `buildCommand` that exits non-zero fails the deployment, so a failing audit blocks the preview. Skipped, ignored, and canceled builds are `absent` (the audit did not run), never `pass`. GitLab, Bitbucket, and GitHub Enterprise Server are out of this surface.
 
 ## Code breadcrumbs (comment mirror)
 

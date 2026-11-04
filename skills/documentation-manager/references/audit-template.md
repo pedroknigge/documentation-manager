@@ -89,7 +89,7 @@ Aligns with `generate-docs-dashboard.sh`. If any **critical Contradicted** exist
 - [ ] Add coverage matrix gaps  
 - [ ] from-zero sandbox for clean KB  
 - [ ] File net-new ADRs for decisions that only live in code  
-- [ ] Wire consumer CI to `scripts/audit-claims.sh` / example `docs-audit` workflow  
+- [ ] Wire consumer CI to `scripts/audit-claims.sh` via example `docs-audit` workflow and/or an opt-in Vercel `buildCommand` (`ci-surface.sh`)  
 
 ## Related
 

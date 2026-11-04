@@ -310,7 +310,7 @@ fi
 # ─── install.sh ships required remote refs (hardening regression) ────────────
 for ref in plan-template.md arkgate-bridge.md implementation-bridge.md knowledge-dashboard.md \
   team-governance.md team-owners-template.md team-approval-notes-template.md \
-  living-claims.md go-nogo-template.md prototype-to-production.md vibe-proof-bridge.md pstack-bridge.md; do
+  living-claims.md vercel-ci.md go-nogo-template.md prototype-to-production.md vibe-proof-bridge.md pstack-bridge.md; do
   grep -q "$ref" "$ROOT/install.sh" || fail "install.sh remote list missing $ref"
 done
 grep -q "template-telemetry.md" "$ROOT/install.sh" \
@@ -1066,6 +1066,14 @@ grep -F -q "remeasure" "$MODES" || fail "modes.md missing anti-snapshot remeasur
 grep -F -q "Severity" "$SKILL_DIR/references/audit-template.md" \
   || fail "audit-template missing Severity"
 ok "living-claims CI audit script + fixtures + GHA + skill anchors"
+
+bash "$ROOT/scripts/test-ci-surface.sh" || fail "test-ci-surface.sh failed"
+grep -F -q "ci-surface.sh" "$ROOT/install.sh" || fail "install.sh must ship ci-surface.sh"
+grep -F -q "vercel-ci.md" "$SKILL_DIR/references/living-claims.md" \
+  || fail "living-claims.md must name the Vercel recipe"
+grep -F -q "Structural claims audit" "$ROOT/.github/workflows/docs-audit.yml" \
+  || fail "docs-audit.yml job name drifted from the ci-surface matcher"
+ok "ci-surface detect/read + no-Actions Vercel build e2e"
 
 # ─── Go/no-go Gate A/B trail (v2.5.4) ────────────────────────────────────────
 GN="$SKILL_DIR/references/go-nogo-template.md"

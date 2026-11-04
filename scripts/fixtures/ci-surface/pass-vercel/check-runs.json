@@ -1,0 +1,17 @@
+{
+  "total_count": 2,
+  "check_runs": [
+    {
+      "name": "Vercel Preview Comments",
+      "status": "completed",
+      "conclusion": "success",
+      "app": { "slug": "vercel" }
+    },
+    {
+      "name": "example-job",
+      "status": "completed",
+      "conclusion": "failure",
+      "app": { "slug": "github-actions" }
+    }
+  ]
+}

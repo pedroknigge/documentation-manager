@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "task": "deploy",
+    "environment": "Preview",
+    "original_environment": "Preview",
+    "creator": { "login": "vercel[bot]", "type": "Bot" },
+    "payload": {},
+    "statuses": [
+      {
+        "state": "success",
+        "description": "Deployment has completed",
+        "environment": "Preview",
+        "creator": { "login": "vercel[bot]", "type": "Bot" }
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "task": "deploy",
+    "environment": "Production",
+    "original_environment": "Production",
+    "creator": { "login": "vercel[bot]", "type": "Bot" },
+    "payload": {},
+    "statuses": [
+      {
+        "state": "success",
+        "description": "Deployment has completed",
+        "environment": "Production",
+        "creator": { "login": "vercel[bot]", "type": "Bot" }
+      }
+    ]
+  }
+]

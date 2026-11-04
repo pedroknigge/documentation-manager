@@ -1,0 +1,3 @@
+{
+  "buildCommand": "root=\"$(git rev-parse --show-toplevel)\" && bash \"$root/scripts/audit-claims.sh\" \"$root\" && bash \"$root/build-app.sh\""
+}

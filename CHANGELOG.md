@@ -6,6 +6,28 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.22] — 2026-11-04
+
+Vercel is a second CI surface for the docs-audit gate. GitHub Actions stays. **Not** a new major; **not** a Knowledge OS leap.
+
+### Added
+
+- **`scripts/ci-surface.sh`:** `detect` (`github-actions` | `vercel` | `both` | `none`) and `read` (`pass` | `fail` | `pending` | `absent`). Matchers pin commit-status context `Vercel`, check-run app slug `vercel` / `github-actions`, and deployment creator `vercel[bot]`. Skipped, ignored, and canceled are `absent`. When both surfaces exist, both must pass.
+- **`recipe`:** prints a `buildCommand` that runs whole-matrix `audit-claims.sh` from the git root, then the existing framework command. A failing audit blocks the rest of the build.
+- Opt-in procedure [vercel-ci.md](skills/documentation-manager/references/vercel-ci.md). `install.sh` ships `ci-surface.sh` and does not write a consumer `vercel.json`.
+- Fixtures under `scripts/fixtures/ci-surface/` (sanitized) and `scripts/fixtures/vercel-no-actions/` (no Actions). `scripts/test-ci-surface.sh` covers every verdict and the local build simulator.
+
+### Unchanged (locked)
+
+- `audit-claims.sh` stays air-gapped and is still the only matrix parser
+- `.github/workflows/docs-audit.yml` still runs `bash scripts/audit-claims.sh .` with no change-set flags
+- GitLab, Bitbucket, and GitHub Enterprise Server are out of scope
+- No release tag in this change
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.22 —`; `metadata.version` **2.5.22**
+
 ## [2.5.21] — 2026-09-18
 
 Root `go.work` is a Go stack signal (`stack_unknown` #51). **Not** a new major; **not** a Knowledge OS leap. **Not** a new stack token.

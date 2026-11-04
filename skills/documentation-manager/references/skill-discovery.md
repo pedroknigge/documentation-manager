@@ -51,6 +51,7 @@ Package-root `scripts/` is the **SSOT**. `install.sh` (local clone **and** raw G
 | Script | Role | On install |
 |--------|------|------------|
 | `audit-claims.sh` | Living-claims gate + change-set helpers | **Required** |
+| `ci-surface.sh` | Detect/read docs-audit CI surface (Actions and/or Vercel) | **Required** |
 | `detect-stack.sh` | Polyglot | Prefer |
 | `detect-packages.sh` | Monorepo | Prefer |
 | `survey-docs.sh` | Cold-start survey | Prefer |
@@ -61,7 +62,7 @@ Package-root `scripts/` is the **SSOT**. `install.sh` (local clone **and** raw G
 `./scripts/<name>` in modes is shorthand. Resolve:
 
 1. Installed skill `…/documentation-manager/scripts/<name>` (what `install.sh` ships)
-2. Else consumer-repo `./scripts/<name>` if present (opt-in **CI** copy — `docs-audit.yml` needs a local script)
+2. Else consumer-repo `./scripts/<name>` if present (opt-in **CI** copy — `docs-audit.yml` or a Vercel `buildCommand` needs a local `audit-claims.sh`)
 3. Else follow the procedure by hand, or re-run `install.sh`
 
 **Not an install story:** auto-copy into every consumer repo. Maintainer-only scripts (`validate-skill.sh`, hardening, smoke, fixtures) stay at package root.
