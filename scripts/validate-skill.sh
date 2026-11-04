@@ -143,6 +143,7 @@ for concept in \
   "2.5.19" \
   "2.5.20" \
   "2.5.21" \
+  "2.5.22" \
   "Go/no-go" \
   "§2 Mínimo" \
   "production-harden" \
@@ -173,7 +174,7 @@ for concept in \
 do
   grep -F -q -- "$concept" "$SKILL_FILE" || fail "Missing concept in SKILL.md: $concept"
 done
-ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.21, §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout + Provenance grouping + Vibe-proof-auditor bridge + Pstack plan bridge)"
+ok "core concepts present (… team 2.3.0, bridge 2.4.0, living-claims 2.5.0, go/no-go 2.5.4, current 2.5.22, §2 Mínimo + production-harden DoD + Sólido states/transitions + Cold-agent readable + Plans layout + Provenance grouping + Vibe-proof-auditor bridge + Pstack plan bridge + Vercel CI surface)"
 
 MODES="$SKILL_DIR/references/modes.md"
 for concept in \
@@ -509,6 +510,21 @@ fi
 grep -E -q '\[x\].*\.github/workflows/docs-audit\.yml' "$ROOT/docs/plans/knowledge-os/README.md" \
   || fail "knowledge-os plan must mark the GitHub Actions example AC satisfied (docs-audit.yml)"
 ok "audit-claims.sh present (air-gapped) + example docs-audit whole-matrix gate"
+
+[[ -x "$ROOT/scripts/ci-surface.sh" ]] || fail "missing scripts/ci-surface.sh"
+grep -F -q "ci-surface.sh" "$ROOT/install.sh" \
+  || fail "install.sh must ship ci-surface.sh"
+grep -F -q "vercel-ci.md" "$ROOT/install.sh" \
+  || fail "install.sh curl reference list must include vercel-ci.md"
+[[ -f "$SKILL_DIR/references/vercel-ci.md" ]] || fail "missing references/vercel-ci.md"
+grep -F -q "ci-surface.sh" "$SKILL_DIR/references/vercel-ci.md" \
+  || fail "vercel-ci.md must name ci-surface.sh"
+grep -F -q "docs-audit.yml" "$SKILL_DIR/references/vercel-ci.md" \
+  || fail "vercel-ci.md must keep the Actions example"
+if grep -E -q '\b(curl|wget|nc)\b|https?://' "$ROOT/scripts/audit-claims.sh"; then
+  fail "audit-claims.sh must stay air-gapped after the Vercel surface"
+fi
+ok "ci-surface.sh shipped; Actions example kept; audit-claims.sh still air-gapped"
 
 PT="$SKILL_DIR/references/plan-template.md"
 for concept in "Promotion" "Acceptance criteria" "Open questions" "MVP scope" "docs/features" "Next actions" "Cold-agent readable" "docs/plans/<github-login>" "_archive" "archive-on-finish" "Pstack bake" "falsifiable" "structurally distinct" "independently verifiable"; do

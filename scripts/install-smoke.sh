@@ -45,7 +45,7 @@ do
   [[ -f "$path" ]] || { echo "FAIL: missing $path"; exit 1; }
 done
 
-for script in audit-claims.sh detect-stack.sh detect-packages.sh survey-docs.sh generate-docs-dashboard.sh; do
+for script in audit-claims.sh ci-surface.sh detect-stack.sh detect-packages.sh survey-docs.sh generate-docs-dashboard.sh; do
   [[ -x "$FAKE_HOME/.agents/skills/documentation-manager/scripts/$script" ]] \
     || { echo "FAIL: not executable: $script"; exit 1; }
 done
@@ -76,7 +76,7 @@ RAW="$TMPDIR/raw"
 mkdir -p "$RAW/skills/documentation-manager/references" "$RAW/scripts"
 cp "$SKILL_SRC" "$RAW/skills/documentation-manager/SKILL.md"
 cp "$ROOT/skills/documentation-manager/references/"*.md "$RAW/skills/documentation-manager/references/"
-for script in audit-claims.sh detect-stack.sh detect-packages.sh survey-docs.sh generate-docs-dashboard.sh; do
+for script in audit-claims.sh ci-surface.sh detect-stack.sh detect-packages.sh survey-docs.sh generate-docs-dashboard.sh; do
   cp "$ROOT/scripts/$script" "$RAW/scripts/$script"
 done
 INSTALLER="$TMPDIR/installer"
@@ -88,7 +88,7 @@ mkdir -p "$FAKE_HOME_RAW/.claude" "$FAKE_HOME_RAW/.agents"
   cd "$INSTALLER"
   HOME="$FAKE_HOME_RAW" DOCUMENTATION_MANAGER_RAW="file://${RAW}" bash "$INSTALLER/install.sh"
 ) 2>&1 | cat
-for script in audit-claims.sh detect-stack.sh detect-packages.sh survey-docs.sh generate-docs-dashboard.sh; do
+for script in audit-claims.sh ci-surface.sh detect-stack.sh detect-packages.sh survey-docs.sh generate-docs-dashboard.sh; do
   raw_script="$FAKE_HOME_RAW/.agents/skills/documentation-manager/scripts/$script"
   [[ -x "$raw_script" ]] || { echo "FAIL: raw install missing executable $script"; exit 1; }
 done

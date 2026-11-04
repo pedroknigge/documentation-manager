@@ -45,6 +45,7 @@ install_skill_scripts() {
   local script dest_script
   for script in \
     audit-claims.sh \
+    ci-surface.sh \
     detect-stack.sh \
     detect-packages.sh \
     survey-docs.sh \
@@ -55,7 +56,7 @@ install_skill_scripts() {
       cp -f "${SCRIPT_DIR}/scripts/${script}" "$dest_script"
       chmod +x "$dest_script"
     elif ! have_local; then
-      if [[ "$script" == "audit-claims.sh" ]]; then
+      if [[ "$script" == "audit-claims.sh" || "$script" == "ci-surface.sh" ]]; then
         curl -fsSL "${REPO_RAW}/scripts/${script}" -o "$dest_script"
         chmod +x "$dest_script"
       else
@@ -64,8 +65,8 @@ install_skill_scripts() {
       fi
     fi
   done
-  if [[ ! -x "$dest/scripts/audit-claims.sh" ]]; then
-    red "Failed to install audit-claims.sh into $dest/scripts"
+  if [[ ! -x "$dest/scripts/audit-claims.sh" || ! -x "$dest/scripts/ci-surface.sh" ]]; then
+    red "Failed to install audit-claims.sh and ci-surface.sh into $dest/scripts"
     return 1
   fi
 }
@@ -109,6 +110,7 @@ install_skill_tree() {
       team-owners-template.md \
       team-approval-notes-template.md \
       living-claims.md \
+      vercel-ci.md \
       go-nogo-template.md \
       prototype-to-production.md \
       vibe-proof-bridge.md \

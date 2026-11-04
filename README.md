@@ -3,12 +3,12 @@
 ### Living knowledge for codebases — so agents and humans stop guessing.
 
 <p align="center">
-  <strong>v2.5.21</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT
+  <strong>v2.5.22</strong> · <a href="https://agentskills.io">Agent Skill</a> · MIT
 </p>
 
 <p align="center">
   <a href="#install"><img src="https://img.shields.io/badge/install-npx%20skills-111827?style=for-the-badge" alt="Install" /></a>
-  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.21-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
+  <a href="./skills/documentation-manager/SKILL.md"><img src="https://img.shields.io/badge/skill-2.5.22-0ea5e9?style=for-the-badge" alt="Skill version" /></a>
   <a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge" alt="License" /></a>
 </p>
 
@@ -29,7 +29,7 @@ What it usually lacks is a durable story of **what**, **why**, and **what’s ne
 | **Diff-first** | Audit and reconcile **reads** default to the **git change set**. The merge **CI gate** still parses the **whole** claims matrix (existing critical Contradicted cannot hide). |
 | **Captain** | The skill **proposes**. It never overrides the layout you already evolved. No auto-commit. Conflicts go to you (HITL). |
 
-Binding decision: [ADR-0002](./docs/adr/0002-knowledge-enslavement-captain.md). Audit procedure: [modes.md §6.0](./skills/documentation-manager/references/modes.md#60-change-set-diff-first). CI example (whole-matrix gate): [`.github/workflows/docs-audit.yml`](./.github/workflows/docs-audit.yml).
+Binding decision: [ADR-0002](./docs/adr/0002-knowledge-enslavement-captain.md). Audit procedure: [modes.md §6.0](./skills/documentation-manager/references/modes.md#60-change-set-diff-first). CI examples (whole-matrix gate): [`.github/workflows/docs-audit.yml`](./.github/workflows/docs-audit.yml) and an opt-in Vercel `buildCommand` ([vercel-ci.md](./skills/documentation-manager/references/vercel-ci.md)). `ci-surface.sh` reads either surface.
 
 <a id="honest-stage"></a>
 

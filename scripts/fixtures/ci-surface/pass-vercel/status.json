@@ -1,0 +1,11 @@
+{
+  "state": "success",
+  "total_count": 1,
+  "statuses": [
+    {
+      "state": "success",
+      "description": "Deployment has completed",
+      "context": "Vercel"
+    }
+  ]
+}

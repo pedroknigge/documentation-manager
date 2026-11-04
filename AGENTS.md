@@ -1,6 +1,6 @@
 # AGENTS.md — documentation-manager (skill package)
 
-**Status:** skill development repo · last updated 2026-09-18 · skill version **2.5.21**
+**Status:** skill development repo · last updated 2026-11-04 · skill version **2.5.22**
 
 ## What this folder is
 
@@ -70,6 +70,7 @@ documentation-manager/          ← this git root (skill development)
 | Go/no-go Gate A/B trail | [docs/features/go-nogo/README.md](docs/features/go-nogo/README.md) | Shipped (v2.5.4) |
 | Vibe-proof plan bridge (HITL) | [skills/documentation-manager/references/vibe-proof-bridge.md](skills/documentation-manager/references/vibe-proof-bridge.md) | Shipped (v2.5.15) |
 | Pstack plan bridge (bake + HITL) | [skills/documentation-manager/references/pstack-bridge.md](skills/documentation-manager/references/pstack-bridge.md) | Shipped (v2.5.19) |
+| Vercel CI surface (docs-audit) | [docs/features/vercel-ci/README.md](docs/features/vercel-ci/README.md) | Shipped (v2.5.22) |
 
 ## Navigation (meta)
 
@@ -87,6 +88,7 @@ documentation-manager/          ← this git root (skill development)
 | Skill hardening | [docs/plans/skill-hardening/README.md](docs/plans/skill-hardening/README.md) | Shipped → feature pack | 10× / v2 |
 | **Phase 2 Bridge** | [docs/plans/phase-2-bridge/README.md](docs/plans/phase-2-bridge/README.md) | **Shipped** (A–D complete, v2.4.0) | Bridge |
 | Knowledge OS | [docs/plans/knowledge-os/README.md](docs/plans/knowledge-os/README.md) | **First increment** (living-claims v0 + CI audit, v2.5.0); epic continues toward 100× | 100× (post-Bridge) |
+| Vercel CI surface | [docs/plans/pedroknigge/vercel-ci/PLAN.md](docs/plans/pedroknigge/vercel-ci/PLAN.md) | **In progress** (Approach A on this branch, v2.5.22) | CI surface |
 
 *(Historical plans in this repo stay at `docs/plans/<slug>/` — no bulk migrate. **New** writes: `docs/plans/<github-login>/<slug>/`; finished → `_archive/<slug>/`. Promote to `docs/features/<slug>/` when behavior lands in the skill tree.)*
 

@@ -2,18 +2,36 @@
 
 > **Plan (not SSOT implementation docs).** Captain named this file `PLAN.md` (design PR). [modes.md §20](../../../../skills/documentation-manager/references/modes.md#20-plans-layout) default index name is `README.md`. Do not add a second copy of this plan.  
 > Hub: [AGENTS.md](../../../../AGENTS.md)  
-> Related: [Roadmap](../../../roadmap.md) · living claims: [features/living-claims](../../../features/living-claims/README.md) · future pack: `docs/features/vercel-ci/`  
+> Related: [Roadmap](../../../roadmap.md) · living claims: [features/living-claims](../../../features/living-claims/README.md) · feature pack: [features/vercel-ci](../../../features/vercel-ci/README.md)  
 > When this ships or lands in code, **promote** to a feature pack, then **archive-on-finish**.  
 > **Cold-agent readable:** intent, success, non-goals, and next actions are in this file. No chat leftover.  
-> **Pstack bake (always-on):** subtract-before-add, attack the premise, falsifiable acceptance, verifiable next actions, two structurally distinct approaches, experience first. Live `/architect` was **not** run (design-only phase; checkpoint would be a separate yes).  
-> **This PR is design only.** No skill behavior change, no version bump, no release.
+> **Pstack bake (always-on):** subtract-before-add, attack the premise, falsifiable acceptance, verifiable next actions, two structurally distinct approaches, experience first. Live `/architect` was **not** run.  
+> **Implementation** of Approach A is on this same plan path (skill **2.5.22**). The filename stays `PLAN.md`. Archive-on-finish waits until after merge. Do not tag a release from the PR branch.
 
-**Status:** Planned  
+**Status:** In progress  
 **Slug:** `vercel-ci`  
 **Kind:** new feature  
 **Owners:** Pedro (captain) · skill maintainers  
 **Last updated:** 2026-11-04  
-**Code path (if any):** *none yet* — gate today is [`scripts/audit-claims.sh`](../../../../scripts/audit-claims.sh); example Actions workflow is [`.github/workflows/docs-audit.yml`](../../../../.github/workflows/docs-audit.yml)
+**Code path:** [`scripts/ci-surface.sh`](../../../../scripts/ci-surface.sh) · recipe [vercel-ci.md](../../../../skills/documentation-manager/references/vercel-ci.md) · gate unchanged: [`scripts/audit-claims.sh`](../../../../scripts/audit-claims.sh) · Actions example unchanged: [`.github/workflows/docs-audit.yml`](../../../../.github/workflows/docs-audit.yml)
+
+## Captain decision (2026-11-04)
+
+Approach **A**. Locked defaults:
+
+| Question | Decision |
+|----------|----------|
+| Preview | A failing audit inside `buildCommand` blocks the preview deployment |
+| Skipped, ignored, canceled | `absent` (never `pass`) |
+| Both surfaces | Both must pass |
+| GitLab, Bitbucket, GHES | Out of scope |
+| Consumer `vercel.json` | Opt-in, same as copying `docs-audit.yml` |
+| Package CI | Local simulator only |
+| Plan filename | Stays `PLAN.md` |
+| Status context | Exactly `Vercel` (pinned from a sanitized commit status whose description on success is `Deployment has completed`) |
+| Also pinned | Check-run app slug `vercel` (the `Vercel Preview Comments` check is not the deployment). Deployments created by `vercel[bot]` with environment `Preview` or `Production` |
+
+Identifying fields from the capture are not in this repo. See [scripts/fixtures/ci-surface/README.md](../../../../scripts/fixtures/ci-surface/README.md).
 
 ## Problem
 
@@ -86,20 +104,19 @@ Vercel’s product named **Deployment Checks** is the **inverse** direction: Ver
 
 ## Acceptance criteria
 
-Prove-it predicates for the **implementation** phase. This design PR satisfies only the last row.
+Prove-it predicates. Checked rows are what `scripts/test-ci-surface.sh` and `scripts/validate-skill.sh` enforce on this branch.
 
-- [ ] `audit-claims.sh` default mode is still the whole-matrix gate (exit `1` only on critical Contradicted; missing matrix exit `0`). `grep` still shows no `curl`, `wget`, `nc`, or `https://` in that file.
-- [ ] `.github/workflows/docs-audit.yml` still exists, still runs `bash scripts/audit-claims.sh .`, and still does not pass `--list-changed`, `--list-claims`, `--upsert-claims`, `--record-haken`, `--cascade-recommend`, or `--group-by`.
-- [ ] A fixture tree with **zero** files under `.github/workflows` contains a `buildCommand` that runs `audit-claims.sh` from the git root with no change-set flags. On the critical-Contradicted matrix, that command exits non-zero and a later `&&` framework step does not run. On the passing matrix, the audit exits `0` and the framework step runs.
-- [ ] The same fixture’s build is invoked with cwd set to a **subdirectory** (Vercel Root Directory). The audit still receives the git root, not the subdirectory, as `PROJECT_ROOT`.
-- [ ] Given fixture JSON for a Vercel commit status and a deployment object, the reader prints `verdict=fail` for deployment `ERROR` and for status state `failure` or `error`; `verdict=pending` for `BUILDING` / `QUEUED` / `INITIALIZING` / status `pending`; `verdict=pass` for `READY` + status `success` when the recipe ran; `verdict=absent` for ignored, skipped, or no Vercel status and no Actions workflow.
-- [ ] A tree that has only `docs-audit.yml` is still recognized as the Actions surface. A tree that has both is not reported as `pass` when either surface is `fail`.
-- [ ] `install.sh` still does not copy a workflow or a `vercel.json` into the consumer project root.
-- [ ] This design PR contains only `docs/plans/pedroknigge/vercel-ci/PLAN.md` and does not change the skill version.
+- [x] `audit-claims.sh` default mode is still the whole-matrix gate. `grep` still shows no `curl`, `wget`, `nc`, or `https://` in that file. Proven by `scripts/validate-skill.sh`.
+- [x] `.github/workflows/docs-audit.yml` still exists, still runs `bash scripts/audit-claims.sh .`, and still does not pass change-set flags. Proven by `scripts/validate-skill.sh` and `scripts/test-skill-hardening.sh`.
+- [x] `scripts/fixtures/vercel-no-actions/` has no `.github/workflows`. Its `buildCommand` is `ci-surface.sh recipe`. Critical Contradicted exits non-zero and does not write `build-stamp`. A passing matrix exits `0` and writes `FRAMEWORK_BUILD_RAN`. cwd for the build is `packages/web`. Proven by `scripts/test-ci-surface.sh`.
+- [x] `read --fixture` on the sanitized success payload prints `surface=vercel verdict=pass`. The simulator’s non-zero rewrite prints `verdict=fail`. Unit cases cover `pending`, `failure`, `error`, skipped, ignored, canceled, unknown context, a context that is not exactly `Vercel`, comments-check-only, both-must-pass, and the actions-only absent snapshot.
+- [x] A tree that has only `docs-audit.yml` detects as `github-actions`. A tree that has both is `verdict=fail` when the Vercel status is failure and the Actions job passed.
+- [x] `install.sh` ships `ci-surface.sh` into the skill tree and does not copy a workflow or a `vercel.json` into the consumer project root.
+- [x] The plan file stays `docs/plans/pedroknigge/vercel-ci/PLAN.md`. Skill version is **2.5.22** (`description` prefix and `metadata.version`). No release tag.
 
-## Inventory (verified 2026-11-04)
+## Inventory (design pass, 2026-11-04)
 
-No file in this repo contains the string `vercel`. Recognition of Vercel cannot be “extend the existing matcher”. There is no matcher.
+On the design pass, no file contained the string `vercel`, and nothing read GitHub checks. The rows below are that map. Implementation added `scripts/ci-surface.sh`, the recipe, and sanitized fixtures. `install.sh` now also ships `ci-surface.sh`. The Actions example and `audit-claims.sh` were not given a second parser.
 
 ### Gate process (reuse, do not fork)
 

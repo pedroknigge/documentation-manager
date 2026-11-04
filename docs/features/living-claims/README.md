@@ -23,7 +23,7 @@ Turn documentation claims into **machine-anchored** rows (path / optional symbol
 | Matrix template | [audit-template.md](../../../skills/documentation-manager/references/audit-template.md) | Columns |
 | Modes | [modes.md §6](../../../skills/documentation-manager/references/modes.md#6-audit-project-or-feature) · [§13](../../../skills/documentation-manager/references/modes.md#13-living-claims--ci-structural-audit-v25) | Wiring |
 | Core rule | [SKILL.md](../../../skills/documentation-manager/SKILL.md) rule 24 | Index |
-| Local CI gate | `scripts/audit-claims.sh` + `.github/workflows/docs-audit.yml` | Real CLI / example GHA (package scripts slice) |
+| Local CI gate | `scripts/audit-claims.sh` + `.github/workflows/docs-audit.yml` + opt-in Vercel `buildCommand` (`ci-surface.sh`, v2.5.22) | Real CLI / example GHA / Vercel surface |
 
 ## Acceptance criteria
 

@@ -4,7 +4,7 @@
 > **Purpose:** Track where this skill is (or should be) installed, and the ArkGate pairing path.  
 > **Honesty rule:** only mark **Verified** when someone ran install/validate against that target. Hypotheses stay **Candidate**.
 
-**Last updated:** 2026-09-18 · Skill version **2.5.21**
+**Last updated:** 2026-11-04 · Skill version **2.5.22**
 
 ## How to use
 
@@ -46,6 +46,7 @@
 | Provenance grouping (owner + git opt-in report) | **2.5.12** | [modes.md §6.11](../skills/documentation-manager/references/modes.md#611-provenance-grouping-opt-in-report) · `audit-claims.sh --group-by provenance` — never invent owner from git; not a second reconcile |
 | Vibe-proof plan bridge (HITL propose) | **2.5.15** | [vibe-proof-bridge.md](../skills/documentation-manager/references/vibe-proof-bridge.md) · [modes.md §21](../skills/documentation-manager/references/modes.md#21-vibe-proof-auditor-bridge) — no silent auto-run; not a product merge |
 | Pstack plan bridge (bake + HITL) | **2.5.19** | [pstack-bridge.md](../skills/documentation-manager/references/pstack-bridge.md) · [modes.md §22](../skills/documentation-manager/references/modes.md#22-pstack-plan-bridge) — bake always; no silent auto-run; not a product merge |
+| Vercel CI surface for docs-audit | **2.5.22** | [vercel-ci](./features/vercel-ci/README.md) · `ci-surface.sh` — Actions example stays; Vercel `buildCommand` is opt-in |
 
 ## Target projects
 

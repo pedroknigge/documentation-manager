@@ -890,12 +890,12 @@ Announce: `Team: create|link|skip | docs/team | owners | approval-notes`.
 2. Anchors: `anchor.path` (+ optional `symbol` / `hash`); severity `critical` \| `normal`.  
 3. Verdicts unchanged; **code wins**.  
 4. **Truth score** formula matches dashboard heuristic; score is **advisory**.  
-5. **CI is the gate:** `critical` + `Contradicted` → non-zero from local air-gapped `scripts/audit-claims.sh` (example `.github/workflows/docs-audit.yml`). **No network** required. The gate parses the **whole matrix** (do not hide existing critical Contradicted). Agent **audit/reconcile reads** stay **diff-first** (§6.0); `--list-changed` / `--list-claims` / `--upsert-claims` / `--record-haken` / `--cascade-recommend` / `--group-by provenance` are change-set helpers, not the gate.  
+5. **CI is the gate:** `critical` + `Contradicted` → non-zero from local air-gapped `scripts/audit-claims.sh`. Two opt-in surfaces run that same command: example `.github/workflows/docs-audit.yml`, and a Vercel `buildCommand` ([vercel-ci.md](vercel-ci.md)). **No network** inside the gate. The gate parses the **whole matrix** (do not hide existing critical Contradicted). Ask `ci-surface.sh detect` / `read` for one verdict (`pass` | `fail` | `pending` | `absent`); do not re-derive status names in prose. Skipped, ignored, and canceled are `absent`. When both surfaces exist, both must pass. A failing audit inside the Vercel build blocks the rest of that build. Agent **audit/reconcile reads** stay **diff-first** (§6.0); `--list-changed` / `--list-claims` / `--upsert-claims` / `--record-haken` / `--cascade-recommend` / `--group-by provenance` are change-set helpers, not the gate.  
 6. Graceful v0: no matrix → skip/warn; missing severity → `normal`.  
 7. Do not invent code to match docs; do not auto-commit.  
 8. **Diff-first** — never a full-tree read by default; cascade = [§6.7](#67-cascade-verdicts-haken) (recommend review; no engine); reconcile classification = [§6.8](#68-reconcile-classification-plansmds) (no living contradictions; AS-IS code / TO-BE one living SSOT; no date-wins); recommend review = [§6.9](#69-recommend-review-human-vs-agent) (human vs agent; no assign); narrative comments = [§6.10](#610-narrative-comments-report-first) (report-first; no auto-edit); provenance grouping = [§6.11](#611-provenance-grouping-opt-in-report) (opt-in report; never invent owner from git).
 
-Announce: `Living-claims: v0 | matrix: path|none | CI-gate: audit-claims | score: advisory | Audit-scope: diff-first`.
+Announce: `Living-claims: v0 | matrix: path|none | CI-gate: audit-claims | surface: github-actions|vercel|both|none | verdict: pass|fail|pending|absent|n/a | score: advisory | Audit-scope: diff-first`.
 
 ---
 
