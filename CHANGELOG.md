@@ -6,6 +6,15 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.23] — 2026-11-06
+
+Anonymous dogfood sales-stats fifth live row. **Not** a new major; **not** a Knowledge OS leap.
+
+### Changed
+
+- **GTM:** [docs/sales-stats.json](docs/sales-stats.json) — schema v1 ledger appends a fifth anonymized ok run (aggregates: 4 ok → 5 ok). Expected finding kinds: `empty_changeset`, `missing_matrix`, `cascade_noop`. Public rows still omit target owner, repo, URLs, and identifiable foreign content. README History still points at the file without citing run counts.
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.23 —`; `metadata.version` **2.5.23**
+
 ## [2.5.22] — 2026-11-04
 
 Vercel is a second CI surface for the docs-audit gate. GitHub Actions stays. **Not** a new major; **not** a Knowledge OS leap.

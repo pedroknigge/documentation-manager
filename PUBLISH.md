@@ -67,6 +67,16 @@ Version must match across:
 - `CHANGELOG.md` section for that version
 - `docs/adoption-matrix.md` version line (when cutting a major)
 
+### Cutting **2.5.23** (anonymous dogfood sales-stats fifth live row)
+
+Narrative: schema v1 ledger at `docs/sales-stats.json` appends a fifth anonymized ok dogfood run. Finding kinds are expected (`empty_changeset`, `missing_matrix`, `cascade_noop`). Public rows never include target owner/repo/URLs. Aggregates may back or lower README product claims (never invent numbers). **Not** a new major; **not** a Knowledge OS leap. Parent tags after merge — do not tag from the PR branch.
+
+```bash
+# after gate is green (parent, post-merge):
+git tag -a v2.5.23 -m "documentation-manager skill v2.5.23 — anonymous dogfood sales-stats fifth live row"
+git push origin main --tags   # only when you intend to publish
+```
+
 ### Cutting **2.5.22** (Vercel docs-audit surface)
 
 Narrative: `ci-surface.sh` detects GitHub Actions and/or Vercel and reads one verdict (`pass` | `fail` | `pending` | `absent`). The gate command is still whole-matrix `audit-claims.sh`. `docs-audit.yml` stays. The Vercel `buildCommand` is opt-in and is not written by `install.sh`. **Not** a new major; **not** a Knowledge OS leap. Parent tags after merge — do not tag from the PR branch.
