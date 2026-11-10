@@ -6,6 +6,28 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.25] — 2026-11-10
+
+Bounded nested manifest probe (#56). **Not** a new major; **not** a Knowledge OS leap.
+
+### Fixed
+
+- **`stack_unknown` / empty packages (#56):** When the repo root has no manifest or workspace file, `detect-stack.sh` and `detect-packages.sh` probe up to **depth 2** below root (skipping vendored/generated dirs) for nested `package.json` / Python / Go manifests. Stack tokens and package paths now resolve for trees such as `tools/<pkg>/package.json` only.
+
+### Added
+
+- Shared helper `scripts/lib/nested-manifest-probe.sh`; fixture `scripts/fixtures/nested-node-tools/`.
+- Plan: [docs/plans/pedroknigge/nested-manifest-probe/PLAN.md](docs/plans/pedroknigge/nested-manifest-probe/PLAN.md).
+
+### Unchanged (locked)
+
+- Root-manifest repos, cargo-primary (#45), and `go.work` (#51) behavior unchanged
+- No new MVP stack token; rust remains non-MVP
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.25 —`; `metadata.version` **2.5.25**
+
 ## [2.5.23] — 2026-11-06
 
 Anonymous dogfood sales-stats fifth live row. **Not** a new major; **not** a Knowledge OS leap.

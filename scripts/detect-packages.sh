@@ -7,6 +7,10 @@
 # Exit 2 if root is not a directory.
 set -euo pipefail
 
+SCRIPT_DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib/nested-manifest-probe.sh
+source "$SCRIPT_DIR/lib/nested-manifest-probe.sh"
+
 ROOT="${1:-.}"
 if [[ ! -d "$ROOT" ]]; then
   echo "detect-packages: not a directory: $ROOT" >&2
@@ -184,6 +188,15 @@ if [[ ${#found[@]} -eq 0 ]]; then
       done
       shopt -u nullglob
     fi
+  done
+fi
+
+# --- Bounded nested probe (no root manifest/workspace, #56) ---
+if [[ ${#found[@]} -eq 0 ]] && ! nested_probe_root_has_manifest "$ROOT"; then
+  nested_probe_collect "$ROOT"
+  local_rel=""
+  for local_rel in "${NESTED_PROBE_PATHS[@]}"; do
+    add_pkg "$local_rel"
   done
 fi
 

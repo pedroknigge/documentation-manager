@@ -9,6 +9,10 @@
 # Exit 0 always when root is readable (unknown is valid).
 set -euo pipefail
 
+SCRIPT_DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib/nested-manifest-probe.sh
+source "$SCRIPT_DIR/lib/nested-manifest-probe.sh"
+
 ROOT="${1:-.}"
 if [[ ! -d "$ROOT" ]]; then
   echo "detect-stack: not a directory: $ROOT" >&2
@@ -71,6 +75,19 @@ if [[ -f "$ROOT/pnpm-workspace.yaml" ]]; then
   has_strong_node=1
 elif [[ -f "$ROOT/package.json" ]] && grep -q '"workspaces"' "$ROOT/package.json"; then
   has_strong_node=1
+fi
+
+# Bounded nested probe when root has no manifest/workspace (#56, Approach A).
+if ! nested_probe_root_has_manifest "$ROOT"; then
+  nested_probe_collect "$ROOT"
+  local_rel=""
+  for local_rel in "${NESTED_PROBE_PATHS[@]}"; do
+    nd="$ROOT/$local_rel"
+    [[ -f "$nd/package.json" ]] && has_node=1
+    [[ -f "$nd/pyproject.toml" || -f "$nd/setup.py" || -f "$nd/setup.cfg" \
+      || -f "$nd/requirements.txt" || -f "$nd/Pipfile" ]] && has_python=1
+    [[ -f "$nd/go.mod" ]] && has_go=1
+  done
 fi
 
 # Cargo-primary + secondary Node must not emit node-ts (false primary).
