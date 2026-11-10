@@ -1,40 +1,40 @@
 {
   "schema": 1,
   "product": "documentation-manager",
-  "updated_at": "2026-11-06T14:00:00Z",
+  "updated_at": "2026-11-10T13:20:00Z",
   "skill_version_floor": "2.5.2",
   "privacy": "Public rows never include target owner, repo, URLs, or identifiable foreign content. Aggregates may back or lower README product claims; never invent numbers; never name target repos.",
   "aggregates": {
-    "runs_total": 5,
-    "runs_ok": 5,
+    "runs_total": 6,
+    "runs_ok": 6,
     "runs_fail": 0,
-    "duration_s_sum": 358,
+    "duration_s_sum": 361,
     "by_phase": {
-      "detect-stack": 5,
-      "detect-packages": 4,
-      "survey-docs": 5,
-      "list-changed": 5,
-      "list-changed-base": 4,
-      "list-claims": 5,
-      "list-claims-base": 4,
-      "audit": 5,
-      "list-changed-probe": 3,
+      "detect-stack": 6,
+      "detect-packages": 5,
+      "survey-docs": 6,
+      "list-changed": 6,
+      "list-changed-base": 5,
+      "list-claims": 6,
+      "list-claims-base": 5,
+      "audit": 6,
+      "list-changed-probe": 4,
       "cascade": 1,
-      "cascade-recommend": 4,
-      "provenance": 5,
+      "cascade-recommend": 5,
+      "provenance": 6,
       "upsert-claims": 1,
-      "upsert-skipped-hitl": 4,
+      "upsert-skipped-hitl": 5,
       "docs-universe-escape": 4
     },
     "by_finding_kind": {
       "base_ref_crash": 1,
       "malformed_fail_closed": 1,
-      "empty_changeset": 5,
-      "missing_matrix": 5,
-      "stack_unknown": 2,
+      "empty_changeset": 6,
+      "missing_matrix": 6,
+      "stack_unknown": 3,
       "docs_universe_escape": 3,
       "stack_misdetect": 1,
-      "cascade_noop": 4
+      "cascade_noop": 5
     }
   },
   "runs": [
@@ -173,6 +173,33 @@
         "cascade_noop": 1
       },
       "notes": "Fifth live dogfood ledger row. Tip scripts 2.5.22; stack detect correct on non-monorepo; dirty empty + missing matrix expected; --base HEAD~1 OK on depth 50; cascade/provenance noop (no breadcrumbs); default gate missing-matrix warn exit 0; no crash; no docs-universe escape; no actionable product defect."
+    },
+    {
+      "ts": "2026-11-10T13:20:00Z",
+      "ok": true,
+      "duration_s": 3,
+      "skill_version": "2.5.23",
+      "phases": [
+        "detect-stack",
+        "detect-packages",
+        "survey-docs",
+        "list-changed",
+        "list-changed-base",
+        "list-claims",
+        "list-claims-base",
+        "audit",
+        "cascade-recommend",
+        "provenance",
+        "list-changed-probe",
+        "upsert-skipped-hitl"
+      ],
+      "findings": {
+        "stack_unknown": 1,
+        "empty_changeset": 1,
+        "missing_matrix": 1,
+        "cascade_noop": 1
+      },
+      "notes": "Sixth live dogfood ledger row. Only code manifest nested one level under a non-package dir (no root manifest, no workspaces) -> detect-stack unknown and detect-packages empty (stack_unknown actionable, issue filed). Dirty empty + missing matrix expected; --base HEAD~1 and HEAD~10 OK on depth 50; cascade noop (no breadcrumbs); provenance on a ~165-path base set ran in ~3s with honest orphan buckets; dirty probe listed the touched file; no crash."
     }
   ]
 }

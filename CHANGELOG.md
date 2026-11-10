@@ -28,6 +28,15 @@ Bounded nested manifest probe (#56). **Not** a new major; **not** a Knowledge OS
 
 - **Glance version:** `SKILL.md` `description` starts with `v2.5.25 —`; `metadata.version` **2.5.25**
 
+## [2.5.24] — 2026-11-10
+
+Anonymous dogfood sales-stats sixth live row. **Not** a new major; **not** a Knowledge OS leap.
+
+### Changed
+
+- **GTM:** [docs/sales-stats.json](docs/sales-stats.json) — schema v1 ledger appends a sixth anonymized ok run (aggregates: 5 ok → 6 ok). Actionable `stack_unknown` (only manifest nested, no root manifest/workspaces) filed as #56; other kinds expected (`empty_changeset`, `missing_matrix`, `cascade_noop`). Public rows still omit target owner, repo, URLs, and identifiable foreign content. README History still points at the file without citing run counts.
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.24 —`; `metadata.version` **2.5.24**
+
 ## [2.5.23] — 2026-11-06
 
 Anonymous dogfood sales-stats fifth live row. **Not** a new major; **not** a Knowledge OS leap.
