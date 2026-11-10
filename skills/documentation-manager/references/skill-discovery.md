@@ -100,7 +100,7 @@ Agents may also detect manually using the signal table (required path when the s
 | **node-ts** | `package.json`; also `tsconfig.json`, `pnpm-workspace.yaml`, `yarn.lock`, `package-lock.json`, `src/app/**`, `app/**` (Next) | Baseline since v1.x |
 | **python** | `pyproject.toml`, `setup.py`, `setup.cfg`, `requirements.txt`, `Pipfile`, `poetry.lock`; package dirs under `src/<pkg>/` with `__init__.py` | Prefer `src/` layout when present |
 | **go** | Root **`go.mod`** (module line = module path) **or** root **`go.work`** (workspace file; same `go` token). `cmd/`, `internal/`, `pkg/` are inventory hints after detection, not standalone signals | Orphan `go.sum` alone is **not** enough. Do not invent a `go-workspace` token. |
-| **unknown** | None of the above, **or** Cargo-primary with no other MVP token | Generic tree walk; still no invented APIs. **Not** a `rust` token. |
+| **unknown** | None of the above, **or** Cargo-primary with no other MVP token | Generic tree walk; still no invented APIs. **Not** a `rust` token. When the **root** has no manifest/workspace, `detect-stack.sh` may probe **depth ≤ 2** (skipping `node_modules`, `fixtures`, `templates`, …) for nested manifests (#56). |
 
 **Mixed:** two or more of node-ts / python / go fire → announce **`Stack: mixed`** and list each primary (`detect-stack.sh` prints them space-separated; it does not print the word `mixed`). Inventory **per stack present**; do not force a single language narrative.
 
@@ -200,6 +200,7 @@ Optional helper (installed skill `scripts/` first — [Skill-runtime scripts](#s
 | `go.work` `use ./path` (incl. multi-line `use (` blocks) | Yes |
 | `Cargo.toml` `[workspace]` `members` (globs / concrete dirs with `Cargo.toml`) | Yes |
 | Convention `packages/*`, `apps/*`, `libs/*` with manifests | Yes (when nothing else found) |
+| Bounded nested probe (depth ≤ 2, no root manifest/workspace) | Yes — one path per line, lexicographic order (#56) |
 | Arbitrary multi-`go.mod` / multi-`pyproject.toml` outside those | **No** — agent walks tree manually from the signal table |
 
 If a Cargo `[workspace]` table is present but no members resolve, `detect-packages.sh` prints **empty stdout** and a stderr **gap** note (`Cargo workspace present; members unresolved`) — not a silent empty. Single-crate `Cargo.toml` (no workspace) is not a monorepo.

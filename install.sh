@@ -65,6 +65,13 @@ install_skill_scripts() {
       fi
     fi
   done
+  mkdir -p "$dest/scripts/lib"
+  if have_local && [[ -f "${SCRIPT_DIR}/scripts/lib/nested-manifest-probe.sh" ]]; then
+    cp -f "${SCRIPT_DIR}/scripts/lib/nested-manifest-probe.sh" "$dest/scripts/lib/"
+  elif ! have_local; then
+    curl -fsSL "${REPO_RAW}/scripts/lib/nested-manifest-probe.sh" \
+      -o "$dest/scripts/lib/nested-manifest-probe.sh" 2>/dev/null || true
+  fi
   if [[ ! -x "$dest/scripts/audit-claims.sh" || ! -x "$dest/scripts/ci-surface.sh" ]]; then
     red "Failed to install audit-claims.sh and ci-surface.sh into $dest/scripts"
     return 1

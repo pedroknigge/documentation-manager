@@ -129,7 +129,12 @@ echo "$mix_out" | grep -qw "node-ts" || fail "detect-stack cargo+workspaces expe
 echo "$mix_out" | grep -qw "unknown" && fail "detect-stack cargo+workspaces must not print unknown with node-ts: $mix_out"
 grep -q "gap: rust present" "$_mix_err" || fail "detect-stack cargo+workspaces expected rust gap on stderr"
 rm -rf "$_mix" "$_mix_err"
-ok "detect-stack.sh on node + python + go fixtures (+ go.work workspace + negative go edges + cargo-primary)"
+# Nested Node only (no root manifest, #56)
+[[ -f "$FIX/nested-node-tools/tools/doc-helper/package.json" ]] || fail "nested-node-tools missing tools/doc-helper/package.json"
+[[ ! -f "$FIX/nested-node-tools/package.json" ]] || fail "nested-node-tools must not have root package.json"
+nest_stack=$(bash "$DETECT" "$FIX/nested-node-tools")
+echo "$nest_stack" | grep -qx "node-ts" || fail "detect-stack nested-node-tools expected node-ts, got: $nest_stack"
+ok "detect-stack.sh on node + python + go fixtures (+ go.work workspace + negative go edges + cargo-primary + nested-node-tools)"
 
 # monorepo-thin: multi-package workspace signals, no root hub/docs
 [[ -f "$FIX/monorepo-thin/pnpm-workspace.yaml" ]] || fail "monorepo-thin missing pnpm-workspace.yaml"
@@ -206,7 +211,9 @@ cg_out=$(bash "$DPKG" "$_cg" 2>"$_cg_err")
 [[ -z "${cg_out// }" ]] || fail "detect-packages unresolved Cargo workspace should be empty, got: $cg_out"
 grep -q "gap: Cargo workspace present" "$_cg_err" || fail "detect-packages unresolved Cargo workspace expected gap on stderr, got: $(cat "$_cg_err")"
 rm -rf "$_cg" "$_cg_err"
-ok "detect-packages.sh on monorepo-thin (+ empty thin + go.work + npm workspaces + cargo members)"
+nest_pkg=$(bash "$DPKG" "$FIX/nested-node-tools")
+echo "$nest_pkg" | grep -qx "tools/doc-helper" || fail "detect-packages nested-node-tools expected tools/doc-helper, got: $nest_pkg"
+ok "detect-packages.sh on monorepo-thin (+ empty thin + go.work + npm workspaces + cargo members + nested-node-tools)"
 
 # ─── survey-docs.sh cold-start heuristics (issue #11) ────────────────────────
 SURVEY="$ROOT/scripts/survey-docs.sh"
