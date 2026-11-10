@@ -2,7 +2,7 @@
 
 > Hub: [AGENTS.md](../AGENTS.md) · Planes: [docs/plans/](./plans/)  
 > **Producto:** Agent Skill (knowledge base viva, agent-first). No es una app de producto genérica.  
-> **Última actualización:** 2026-11-06 · **Versión actual:** 2.5.23
+> **Última actualización:** 2026-11-10 · **Versión actual:** 2.5.24
 
 ## Principios (axiomas)
 
@@ -172,6 +172,7 @@ Impacto en “code wins + zero maintenance cost”
 | **2.5.21** | go.work is a Go stack signal (#51) | **Shipped** 2026-09-18 — same `go` MVP token as root `go.mod`; [skill-discovery.md](../skills/documentation-manager/references/skill-discovery.md); not a KOS leap; not a new token |
 | **2.5.22** | Vercel as a docs-audit CI surface | **Shipped** 2026-11-04 — `ci-surface.sh` beside `.github/workflows/docs-audit.yml`; [vercel-ci](./features/vercel-ci/README.md); not a KOS leap |
 | **2.5.23** | Anonymous dogfood sales-stats fifth live row | **Shipped** 2026-11-06 — [sales-stats.json](./sales-stats.json); expected `empty_changeset` / `missing_matrix` / `cascade_noop`; not a KOS leap |
+| **2.5.24** | Anonymous dogfood sales-stats sixth live row | **Shipped** 2026-11-10 — [sales-stats.json](./sales-stats.json); actionable `stack_unknown` (nested-only manifest) boarded as #56; expected `empty_changeset` / `missing_matrix` / `cascade_noop`; not a KOS leap |
 
 ## Cómo usar este roadmap
 
