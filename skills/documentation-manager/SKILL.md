@@ -1,7 +1,7 @@
 ---
 name: documentation-manager
 description: >
-  v2.5.25 — Use when bootstrapping, completing, updating, or auditing project documentation,
+  v2.5.26 — Use when bootstrapping, completing, updating, or auditing project documentation,
   or documenting a feature/module/epic: AGENTS.md + docs/, ADRs, roadmap,
   docs/features/<slug>/, docs/plans/<github-login>/<slug>/. Triggers: "document this project",
   "bootstrap docs", "sync docs", "audit docs", "docs vs code", "from zero",
@@ -18,7 +18,7 @@ description: >
 license: MIT
 metadata:
   author: pedroknigge
-  version: "2.5.25"
+  version: "2.5.26"
 ---
 
 # Documentation Manager
