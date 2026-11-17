@@ -1,40 +1,40 @@
 {
   "schema": 1,
   "product": "documentation-manager",
-  "updated_at": "2026-11-13T13:20:30Z",
+  "updated_at": "2026-11-17T13:25:00Z",
   "skill_version_floor": "2.5.2",
   "privacy": "Public rows never include target owner, repo, URLs, or identifiable foreign content. Aggregates may back or lower README product claims; never invent numbers; never name target repos.",
   "aggregates": {
-    "runs_total": 7,
-    "runs_ok": 7,
+    "runs_total": 8,
+    "runs_ok": 8,
     "runs_fail": 0,
-    "duration_s_sum": 364,
+    "duration_s_sum": 365,
     "by_phase": {
-      "detect-stack": 7,
-      "detect-packages": 6,
-      "survey-docs": 7,
-      "list-changed": 7,
-      "list-changed-base": 6,
-      "list-claims": 7,
-      "list-claims-base": 6,
-      "audit": 7,
-      "list-changed-probe": 5,
+      "detect-stack": 8,
+      "detect-packages": 7,
+      "survey-docs": 8,
+      "list-changed": 8,
+      "list-changed-base": 7,
+      "list-claims": 8,
+      "list-claims-base": 7,
+      "audit": 8,
+      "list-changed-probe": 6,
       "cascade": 1,
-      "cascade-recommend": 6,
-      "provenance": 7,
+      "cascade-recommend": 7,
+      "provenance": 8,
       "upsert-claims": 1,
-      "upsert-skipped-hitl": 6,
+      "upsert-skipped-hitl": 7,
       "docs-universe-escape": 4
     },
     "by_finding_kind": {
       "base_ref_crash": 1,
       "malformed_fail_closed": 1,
-      "empty_changeset": 7,
-      "missing_matrix": 7,
+      "empty_changeset": 8,
+      "missing_matrix": 8,
       "stack_unknown": 3,
       "docs_universe_escape": 3,
       "stack_misdetect": 1,
-      "cascade_noop": 6
+      "cascade_noop": 7
     }
   },
   "runs": [
@@ -226,6 +226,32 @@
         "cascade_noop": 1
       },
       "notes": "Seventh live dogfood ledger row. Python root-manifest repo: detect-stack correct, detect-packages empty (single package, expected); dirty empty + missing matrix expected; --base HEAD~1 and HEAD~10 OK on depth 50; cascade noop (no breadcrumbs); provenance on a ~14-path base set honest human buckets; dirty probe listed the touched file; no crash; no docs-universe escape; no actionable product defect."
+    },
+    {
+      "ts": "2026-11-17T13:25:00Z",
+      "ok": true,
+      "duration_s": 1,
+      "skill_version": "2.5.26",
+      "phases": [
+        "detect-stack",
+        "detect-packages",
+        "survey-docs",
+        "list-changed",
+        "list-changed-base",
+        "list-claims",
+        "list-claims-base",
+        "audit",
+        "cascade-recommend",
+        "provenance",
+        "list-changed-probe",
+        "upsert-skipped-hitl"
+      ],
+      "findings": {
+        "empty_changeset": 1,
+        "missing_matrix": 1,
+        "cascade_noop": 1
+      },
+      "notes": "Eighth live dogfood ledger row. Node/TS pnpm-workspace monorepo with an ADR set: detect-stack correct, detect-packages listed all workspace packages; survey-docs bucketed README/ADR/claim-scope; dirty empty + missing matrix expected; --base HEAD~1 and HEAD~10 OK (full history within depth 50); cascade noop (no breadcrumbs); provenance on a ~13-path base set split human vs dependency-bot last authors honestly; dirty probe listed the touched file; no crash; no docs-universe escape; no actionable product defect."
     }
   ]
 }
