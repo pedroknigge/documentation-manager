@@ -6,6 +6,15 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.28] — 2026-11-20
+
+Anonymous dogfood sales-stats ninth live row. **Not** a new major; **not** a Knowledge OS leap.
+
+### Changed
+
+- **GTM:** [docs/sales-stats.json](docs/sales-stats.json) — schema v1 ledger appends a ninth anonymized ok run (aggregates: 8 ok → 9 ok). Finding kinds: `stack_unknown` (JVM Gradle root: silent unknown, captain HITL issue), `empty_changeset`, `missing_matrix`, `cascade_noop`. Public rows still omit target owner, repo, URLs, and identifiable foreign content. README History still points at the file without citing run counts.
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.28 —`; `metadata.version` **2.5.28**
+
 ## [2.5.27] — 2026-11-17
 
 Anonymous dogfood sales-stats eighth live row. **Not** a new major; **not** a Knowledge OS leap.
