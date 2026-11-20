@@ -1,40 +1,40 @@
 {
   "schema": 1,
   "product": "documentation-manager",
-  "updated_at": "2026-11-17T13:25:00Z",
+  "updated_at": "2026-11-20T13:30:00Z",
   "skill_version_floor": "2.5.2",
   "privacy": "Public rows never include target owner, repo, URLs, or identifiable foreign content. Aggregates may back or lower README product claims; never invent numbers; never name target repos.",
   "aggregates": {
-    "runs_total": 8,
-    "runs_ok": 8,
+    "runs_total": 9,
+    "runs_ok": 9,
     "runs_fail": 0,
-    "duration_s_sum": 365,
+    "duration_s_sum": 371,
     "by_phase": {
-      "detect-stack": 8,
-      "detect-packages": 7,
-      "survey-docs": 8,
-      "list-changed": 8,
-      "list-changed-base": 7,
-      "list-claims": 8,
-      "list-claims-base": 7,
-      "audit": 8,
-      "list-changed-probe": 6,
+      "detect-stack": 9,
+      "detect-packages": 8,
+      "survey-docs": 9,
+      "list-changed": 9,
+      "list-changed-base": 8,
+      "list-claims": 9,
+      "list-claims-base": 8,
+      "audit": 9,
+      "list-changed-probe": 7,
       "cascade": 1,
-      "cascade-recommend": 7,
-      "provenance": 8,
+      "cascade-recommend": 8,
+      "provenance": 9,
       "upsert-claims": 1,
-      "upsert-skipped-hitl": 7,
+      "upsert-skipped-hitl": 8,
       "docs-universe-escape": 4
     },
     "by_finding_kind": {
       "base_ref_crash": 1,
       "malformed_fail_closed": 1,
-      "empty_changeset": 8,
-      "missing_matrix": 8,
-      "stack_unknown": 3,
+      "empty_changeset": 9,
+      "missing_matrix": 9,
+      "stack_unknown": 4,
       "docs_universe_escape": 3,
       "stack_misdetect": 1,
-      "cascade_noop": 7
+      "cascade_noop": 8
     }
   },
   "runs": [
@@ -252,6 +252,33 @@
         "cascade_noop": 1
       },
       "notes": "Eighth live dogfood ledger row. Node/TS pnpm-workspace monorepo with an ADR set: detect-stack correct, detect-packages listed all workspace packages; survey-docs bucketed README/ADR/claim-scope; dirty empty + missing matrix expected; --base HEAD~1 and HEAD~10 OK (full history within depth 50); cascade noop (no breadcrumbs); provenance on a ~13-path base set split human vs dependency-bot last authors honestly; dirty probe listed the touched file; no crash; no docs-universe escape; no actionable product defect."
+    },
+    {
+      "ts": "2026-11-20T13:30:00Z",
+      "ok": true,
+      "duration_s": 6,
+      "skill_version": "2.5.27",
+      "phases": [
+        "detect-stack",
+        "detect-packages",
+        "survey-docs",
+        "list-changed",
+        "list-changed-base",
+        "list-claims",
+        "list-claims-base",
+        "audit",
+        "cascade-recommend",
+        "provenance",
+        "list-changed-probe",
+        "upsert-skipped-hitl"
+      ],
+      "findings": {
+        "stack_unknown": 1,
+        "empty_changeset": 1,
+        "missing_matrix": 1,
+        "cascade_noop": 1
+      },
+      "notes": "Ninth live dogfood ledger row. JVM multi-module build (Gradle Kotlin DSL settings + subprojects, no Node/Python/Go/Rust manifest) with an ADR set: detect-stack unknown with no stderr gap note and detect-packages empty despite declared modules (stack_unknown actionable, captain HITL issue); survey-docs bucketed README/ADR/claim-scope; dirty empty + missing matrix expected; --base HEAD~1 and HEAD~10 OK on depth 50 (~93-path base set); cascade noop (no breadcrumbs); provenance honest human buckets; dirty probe listed the touched file; no crash; no docs-universe escape."
     }
   ]
 }
