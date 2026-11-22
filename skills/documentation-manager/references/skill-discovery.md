@@ -100,13 +100,15 @@ Agents may also detect manually using the signal table (required path when the s
 | **node-ts** | `package.json`; also `tsconfig.json`, `pnpm-workspace.yaml`, `yarn.lock`, `package-lock.json`, `src/app/**`, `app/**` (Next) | Baseline since v1.x |
 | **python** | `pyproject.toml`, `setup.py`, `setup.cfg`, `requirements.txt`, `Pipfile`, `poetry.lock`; package dirs under `src/<pkg>/` with `__init__.py` | Prefer `src/` layout when present |
 | **go** | Root **`go.mod`** (module line = module path) **or** root **`go.work`** (workspace file; same `go` token). `cmd/`, `internal/`, `pkg/` are inventory hints after detection, not standalone signals | Orphan `go.sum` alone is **not** enough. Do not invent a `go-workspace` token. |
-| **unknown** | None of the above, **or** Cargo-primary with no other MVP token | Generic tree walk; still no invented APIs. **Not** a `rust` token. When the **root** has no manifest/workspace, `detect-stack.sh` may probe **depth ≤ 2** (skipping `node_modules`, `fixtures`, `templates`, …) for nested manifests (#56). |
+| **unknown** | None of the above, **or** Cargo-primary with no other MVP token, **or** a Gradle/Maven root with no other MVP token | Generic tree walk; still no invented APIs. **Not** a `rust` token and **not** a `jvm` token. When the **root** has no manifest/workspace, `detect-stack.sh` may probe **depth ≤ 2** (skipping `node_modules`, `fixtures`, `templates`, …) for nested manifests (#56). A root Gradle or Maven file counts as that manifest. |
 
 **Mixed:** two or more of node-ts / python / go fire → announce **`Stack: mixed`** and list each primary (`detect-stack.sh` prints them space-separated; it does not print the word `mixed`). Inventory **per stack present**; do not force a single language narrative.
 
 **Conflict / weak signals:** ask once only if product entrypoint is ambiguous; otherwise pick the stack with the strongest root-level manifest.
 
 **Cargo-primary (not an MVP token):** root `Cargo.toml` and/or `rust-toolchain` / `rust-toolchain.toml` is a stronger language SSOT than a secondary `package.json` (tooling / no Node workspace). Do **not** record `node-ts` from that secondary file — `detect-stack.sh` prints **`unknown`** (or remaining MVP tokens if python/go or a **strong** Node workspace is also present) and a stderr **gap** note (`rust present; not an MVP token`). Do not invent a `rust` primary. Strong Node = `pnpm-workspace.yaml` or `package.json` `"workspaces"` (co-primary → keep `node-ts`, still emit the rust gap). Human captain if the entrypoint is still unclear.
+
+**JVM root (not an MVP token):** root `build.gradle`, `build.gradle.kts`, `settings.gradle`, `settings.gradle.kts`, or `pom.xml` does not add a token. Do not invent `jvm`. When no node-ts / python / go root signal matches, stdout stays **`unknown`**. Stderr gap names the build tool: `gradle present; not an MVP token` or `maven present; not an MVP token`. Those root files skip the depth-2 nested probe. A real root MVP signal (for example root `package.json`) still prints its token; the gap note is additional. Unlike Cargo-primary, a secondary root `package.json` is not suppressed.
 
 ### Inventory by stack (what to list first)
 
@@ -176,6 +178,8 @@ Stack: <node-ts|python|go|mixed|unknown> | signals: <short list>
 | `lerna.json` / `nx.json` / `turbo.json` | Node tooling | Hint only; still resolve package dirs from workspaces/globs |
 | `go.work` | Go | Lists `use` module dirs |
 | `Cargo.toml` `[workspace]` | Rust | `members` globs / concrete dirs (not an MVP stack token; still list packages) |
+| `settings.gradle` / `settings.gradle.kts` | Gradle | `include 'a', ':b:c'` and `include("a")`; `:b:c` → `b/c`; dirs that exist (not an MVP stack token) |
+| `pom.xml` `<modules>` | Maven | `<module>` paths inside `<modules>` that exist on disk (not an MVP stack token) |
 | Multiple `go.mod` under subdirs | Go | Multi-module tree without go.work |
 | Multiple `pyproject.toml` under subdirs | Python | Multi-package / workspace layout |
 | `packages/*`, `apps/*`, `libs/*` with manifests | Common | Directory convention + package.json / pyproject / go.mod inside |
@@ -199,13 +203,15 @@ Optional helper (installed skill `scripts/` first — [Skill-runtime scripts](#s
 | `package.json` `workspaces` (via `node` JSON parse) | Yes |
 | `go.work` `use ./path` (incl. multi-line `use (` blocks) | Yes |
 | `Cargo.toml` `[workspace]` `members` (globs / concrete dirs with `Cargo.toml`) | Yes |
+| Gradle `include` in `settings.gradle` / `settings.gradle.kts` | Yes — `include 'a', ':b:c'` and `include("a")`, including a multi-line `include(`; `:b:c` → `b/c`; directory must exist; `includeBuild` ignored |
+| Maven `<module>` inside `<modules>` | Yes — path must exist; commented modules ignored |
 | Convention `packages/*`, `apps/*`, `libs/*` with manifests | Yes (when nothing else found) |
-| Bounded nested probe (depth ≤ 2, no root manifest/workspace) | Yes — one path per line, lexicographic order (#56) |
+| Bounded nested probe (depth ≤ 2, no root manifest/workspace) | Yes — one path per line, lexicographic order (#56). A Gradle or Maven root file counts as a manifest and skips this probe. |
 | Arbitrary multi-`go.mod` / multi-`pyproject.toml` outside those | **No** — agent walks tree manually from the signal table |
 
 If a Cargo `[workspace]` table is present but no members resolve, `detect-packages.sh` prints **empty stdout** and a stderr **gap** note (`Cargo workspace present; members unresolved`) — not a silent empty. Single-crate `Cargo.toml` (no workspace) is not a monorepo.
 
-If the script is unavailable or returns empty while signals suggest monorepo, detect manually from the signal table, then list package roots that contain a package manifest (`package.json`, `pyproject.toml`, `go.mod`, or `Cargo.toml`).
+If the script is unavailable or returns empty while signals suggest monorepo, detect manually from the signal table, then list package roots that contain a package manifest (`package.json`, `pyproject.toml`, `go.mod`, or `Cargo.toml`). Gradle and Maven modules are the declared directories that exist, even without those manifests.
 
 **Not a monorepo:** single root manifest only, no workspace file, no multi-package globs / multi-module layout → single-repo flow (Slice A stack tables only).
 

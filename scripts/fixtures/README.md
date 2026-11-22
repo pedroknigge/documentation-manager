@@ -9,6 +9,8 @@ Synthetic **project roots** and **golden tables** used by `scripts/validate-skil
 | `go-thin-repo/` | polyglot MVP | `go.mod` + `cmd/` + `internal/`, no hub/docs |
 | `go-workspace-repo/` | stack_unknown (#51) | root `go.work` + member `go.mod` files, no root `go.mod` / hub/docs |
 | `cargo-primary-repo/` | stack_misdetect (#45) | Cargo workspace + `rust-toolchain` + secondary root `package.json`; no hub/docs |
+| `gradle-multimodule/` | JVM gap (no `jvm` token) | root `build.gradle` + `settings.gradle` (`include 'a', ':b:c'` and `include("lib")`); no hub/docs |
+| `maven-multimodule/` | JVM gap (no `jvm` token) | root `pom.xml` `<modules>`; no hub/docs |
 | `monorepo-thin/` | monorepo hubs | workspaces + `packages/api` + `packages/web`, no root hub/docs |
 | `mature-repo/` | integrate / plan-vs-feature | hub + roadmap + feature pack + plan + code |
 | `no-docs-repo/` | bootstrap | README only |

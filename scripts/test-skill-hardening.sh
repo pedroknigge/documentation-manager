@@ -31,10 +31,11 @@ ok "version sync README + AGENTS ↔ SKILL ($VER)"
 
 # ─── Fixtures present ───────────────────────────────────────────────────────
 for f in thin-repo mature-repo no-docs-repo python-thin-repo go-thin-repo go-workspace-repo cargo-primary-repo monorepo-thin \
+  gradle-multimodule maven-multimodule \
   golden/autopilot-cases.tsv claims-pass claims-fail claims-none claims-breadcrumbs survey-heuristics; do
   [[ -e "$FIX/$f" ]] || fail "missing fixture $f"
 done
-ok "fixtures present (thin, mature, no-docs, python-thin, go-thin, go-workspace, cargo-primary, monorepo-thin, golden, claims-*, survey-heuristics)"
+ok "fixtures present (thin, mature, no-docs, python-thin, go-thin, go-workspace, cargo-primary, monorepo-thin, gradle-multimodule, maven-multimodule, golden, claims-*, survey-heuristics)"
 
 # thin: code, no hub/docs
 [[ -f "$FIX/thin-repo/src/app/index.ts" ]] || fail "thin-repo missing code"
@@ -214,6 +215,153 @@ rm -rf "$_cg" "$_cg_err"
 nest_pkg=$(bash "$DPKG" "$FIX/nested-node-tools")
 echo "$nest_pkg" | grep -qx "tools/doc-helper" || fail "detect-packages nested-node-tools expected tools/doc-helper, got: $nest_pkg"
 ok "detect-packages.sh on monorepo-thin (+ empty thin + go.work + npm workspaces + cargo members + nested-node-tools)"
+
+# JVM roots (Gradle / Maven): stdout stays unknown (no jvm token), stderr names the
+# build tool, the nested probe does not run, and declared modules that exist are listed.
+[[ -f "$FIX/gradle-multimodule/settings.gradle" ]] || fail "gradle-multimodule missing settings.gradle"
+[[ -f "$FIX/gradle-multimodule/build.gradle" ]] || fail "gradle-multimodule missing build.gradle"
+[[ -f "$FIX/gradle-multimodule/app/build.gradle" ]] || fail "gradle-multimodule missing app"
+[[ -f "$FIX/gradle-multimodule/feature/api/build.gradle" ]] || fail "gradle-multimodule missing feature/api"
+[[ -f "$FIX/gradle-multimodule/lib/build.gradle" ]] || fail "gradle-multimodule missing lib"
+[[ -d "$FIX/gradle-multimodule/commented" ]] || fail "gradle-multimodule missing commented dir"
+[[ ! -e "$FIX/gradle-multimodule/not" ]] || fail "gradle-multimodule must not have not/there on disk"
+[[ ! -f "$FIX/gradle-multimodule/AGENTS.md" ]] || fail "gradle-multimodule should not have AGENTS.md"
+[[ ! -d "$FIX/gradle-multimodule/docs" ]] || fail "gradle-multimodule should not have docs/"
+_gerr=$(mktemp)
+g_out=$(bash "$DETECT" "$FIX/gradle-multimodule" 2>"$_gerr")
+[[ "$g_out" == "unknown" ]] || fail "detect-stack gradle expected unknown, got: $g_out"
+echo "$g_out" | grep -qw "jvm" && fail "detect-stack gradle must not emit a jvm token: $g_out"
+[[ "$(cat "$_gerr")" == "detect-stack: gap: gradle present; not an MVP token" ]] \
+  || fail "detect-stack gradle stderr, got: $(cat "$_gerr")"
+rm -f "$_gerr"
+g_pkg=$(bash "$DPKG" "$FIX/gradle-multimodule")
+[[ "$g_pkg" == $'app\nfeature/api\nlib' ]] \
+  || fail "detect-packages gradle expected app, feature/api, lib, got: $g_pkg"
+
+[[ -f "$FIX/maven-multimodule/pom.xml" ]] || fail "maven-multimodule missing pom.xml"
+[[ -f "$FIX/maven-multimodule/app/pom.xml" ]] || fail "maven-multimodule missing app"
+[[ -f "$FIX/maven-multimodule/libs/core/pom.xml" ]] || fail "maven-multimodule missing libs/core"
+[[ -d "$FIX/maven-multimodule/commented-out" ]] || fail "maven-multimodule missing commented-out dir"
+[[ ! -e "$FIX/maven-multimodule/missing-mod" ]] || fail "maven-multimodule must not have missing-mod on disk"
+[[ ! -f "$FIX/maven-multimodule/AGENTS.md" ]] || fail "maven-multimodule should not have AGENTS.md"
+[[ ! -d "$FIX/maven-multimodule/docs" ]] || fail "maven-multimodule should not have docs/"
+_merr=$(mktemp)
+m_out=$(bash "$DETECT" "$FIX/maven-multimodule" 2>"$_merr")
+[[ "$m_out" == "unknown" ]] || fail "detect-stack maven expected unknown, got: $m_out"
+echo "$m_out" | grep -qw "jvm" && fail "detect-stack maven must not emit a jvm token: $m_out"
+[[ "$(cat "$_merr")" == "detect-stack: gap: maven present; not an MVP token" ]] \
+  || fail "detect-stack maven stderr, got: $(cat "$_merr")"
+rm -f "$_merr"
+m_pkg=$(bash "$DPKG" "$FIX/maven-multimodule")
+[[ "$m_pkg" == $'app\nlibs/core' ]] \
+  || fail "detect-packages maven expected app, libs/core, got: $m_pkg"
+
+# Skipped probe: a depth-2 package.json must not change the token while the JVM root
+# files are present. Removing those root files is the control — the same decoy is node-ts.
+_jvm=$(mktemp -d)
+cp -R "$FIX/gradle-multimodule/." "$_jvm/"
+mkdir -p "$_jvm/tools/decoy"
+printf '%s\n' '{"name":"decoy"}' > "$_jvm/tools/decoy/package.json"
+_jerr=$(mktemp)
+j_out=$(bash "$DETECT" "$_jvm" 2>"$_jerr")
+[[ "$j_out" == "unknown" ]] || fail "gradle root must skip nested probe, got: $j_out"
+echo "$j_out" | grep -qw "node-ts" && fail "gradle nested probe ran (node-ts from tools/decoy)"
+grep -q "gap: gradle present; not an MVP token" "$_jerr" \
+  || fail "gradle decoy tree missing gap note: $(cat "$_jerr")"
+j_pkg=$(bash "$DPKG" "$_jvm")
+[[ "$j_pkg" == $'app\nfeature/api\nlib' ]] \
+  || fail "gradle decoy tree must not list tools/decoy, got: $j_pkg"
+rm -f "$_jvm/build.gradle" "$_jvm/settings.gradle" "$_jvm/build.gradle.kts" "$_jvm/settings.gradle.kts" "$_jvm/pom.xml"
+c_out=$(bash "$DETECT" "$_jvm" 2>"$_jerr")
+[[ "$c_out" == "node-ts" ]] \
+  || fail "without a gradle root the nested probe should see tools/decoy, got: $c_out"
+grep -q "gap: gradle present" "$_jerr" \
+  && fail "control without gradle root must not emit a gradle gap: $(cat "$_jerr")"
+c_pkg=$(bash "$DPKG" "$_jvm")
+[[ "$c_pkg" == "tools/decoy" ]] || fail "control packages expected tools/decoy, got: $c_pkg"
+rm -rf "$_jvm"
+rm -f "$_jerr"
+
+_mv=$(mktemp -d)
+cp -R "$FIX/maven-multimodule/." "$_mv/"
+mkdir -p "$_mv/tools/decoy"
+printf '%s\n' '{"name":"decoy"}' > "$_mv/tools/decoy/package.json"
+_mverr=$(mktemp)
+mv_out=$(bash "$DETECT" "$_mv" 2>"$_mverr")
+[[ "$mv_out" == "unknown" ]] || fail "maven root must skip nested probe, got: $mv_out"
+echo "$mv_out" | grep -qw "node-ts" && fail "maven nested probe ran (node-ts from tools/decoy)"
+mv_pkg=$(bash "$DPKG" "$_mv")
+[[ "$mv_pkg" == $'app\nlibs/core' ]] \
+  || fail "maven decoy tree must not list tools/decoy, got: $mv_pkg"
+rm -f "$_mv/pom.xml"
+mv_ctrl=$(bash "$DETECT" "$_mv" 2>"$_mverr")
+[[ "$mv_ctrl" == "node-ts" ]] \
+  || fail "without pom.xml the nested probe should see tools/decoy, got: $mv_ctrl"
+rm -rf "$_mv"
+rm -f "$_mverr"
+
+# build.gradle.kts alone: gap + skip, even when the probe would otherwise be the only hit
+_bg=$(mktemp -d)
+mkdir -p "$_bg/tools/decoy"
+printf '%s\n' '{"name":"decoy"}' > "$_bg/tools/decoy/package.json"
+printf '\n' > "$_bg/build.gradle.kts"
+_berr=$(mktemp)
+bg_out=$(bash "$DETECT" "$_bg" 2>"$_berr")
+[[ "$bg_out" == "unknown" ]] || fail "build.gradle.kts expected unknown, got: $bg_out"
+echo "$bg_out" | grep -qw "node-ts" && fail "build.gradle.kts must skip nested probe"
+[[ "$(cat "$_berr")" == "detect-stack: gap: gradle present; not an MVP token" ]] \
+  || fail "build.gradle.kts stderr, got: $(cat "$_berr")"
+bg_pkg=$(bash "$DPKG" "$_bg")
+[[ -z "$bg_pkg" ]] || fail "build.gradle.kts with no modules should list nothing, got: $bg_pkg"
+rm -rf "$_bg"
+rm -f "$_berr"
+
+# settings.gradle.kts: paren form, :b:c, multi-line include(; not includeBuild or // comments
+_kts=$(mktemp -d)
+mkdir -p "$_kts/a" "$_kts/b/c" "$_kts/nested/mod" "$_kts/nope"
+cat > "$_kts/settings.gradle.kts" <<'EOF'
+include("a")
+include(":b:c")
+include(
+    "nested:mod"
+)
+// include("nope")
+includeBuild("build-logic")
+EOF
+_kerr=$(mktemp)
+k_out=$(bash "$DETECT" "$_kts" 2>"$_kerr")
+[[ "$k_out" == "unknown" ]] || fail "settings.gradle.kts expected unknown, got: $k_out"
+[[ "$(cat "$_kerr")" == "detect-stack: gap: gradle present; not an MVP token" ]] \
+  || fail "settings.gradle.kts stderr, got: $(cat "$_kerr")"
+k_pkg=$(bash "$DPKG" "$_kts")
+[[ "$k_pkg" == $'a\nb/c\nnested/mod' ]] \
+  || fail "detect-packages kts expected a, b/c, nested/mod, got: $k_pkg"
+rm -rf "$_kts"
+rm -f "$_kerr"
+
+# Both build tools: one note each, still no jvm token. A root package.json stays node-ts.
+_both=$(mktemp -d)
+printf '\n' > "$_both/build.gradle"
+printf '%s\n' '<project></project>' > "$_both/pom.xml"
+_both_err=$(mktemp)
+both_out=$(bash "$DETECT" "$_both" 2>"$_both_err")
+[[ "$both_out" == "unknown" ]] || fail "gradle+maven expected unknown, got: $both_out"
+[[ "$(cat "$_both_err")" == $'detect-stack: gap: gradle present; not an MVP token\ndetect-stack: gap: maven present; not an MVP token' ]] \
+  || fail "gradle+maven stderr, got: $(cat "$_both_err")"
+rm -rf "$_both"
+rm -f "$_both_err"
+_mix=$(mktemp -d)
+printf '%s\n' '{"name":"tooling"}' > "$_mix/package.json"
+printf '\n' > "$_mix/build.gradle"
+_mix_err=$(mktemp)
+mix_jvm=$(bash "$DETECT" "$_mix" 2>"$_mix_err")
+[[ "$mix_jvm" == "node-ts" ]] || fail "root package.json + build.gradle expected node-ts, got: $mix_jvm"
+echo "$mix_jvm" | grep -qw "unknown" && fail "root package.json + build.gradle must not print unknown: $mix_jvm"
+grep -q "gap: gradle present; not an MVP token" "$_mix_err" \
+  || fail "root package.json + build.gradle missing gradle gap: $(cat "$_mix_err")"
+rm -rf "$_mix"
+rm -f "$_mix_err"
+ok "detect-stack + detect-packages JVM roots (gradle + maven gap, skipped probe, module list)"
 
 # ─── survey-docs.sh cold-start heuristics (issue #11) ────────────────────────
 SURVEY="$ROOT/scripts/survey-docs.sh"

@@ -96,7 +96,7 @@ Run before reporting done.
 
 ## Polyglot stack detection (v2.1)
 
-- [ ] Project-level work: **Stack** detected (`node-ts` | `python` | `go` | `mixed` | `unknown`) via [skill-discovery.md](skill-discovery.md) Polyglot stack detection (or `detect-stack.sh`)
+- [ ] Project-level work: **Stack** detected (`node-ts` | `python` | `go` | `mixed` | `unknown`) via [skill-discovery.md](skill-discovery.md) Polyglot stack detection (or `detect-stack.sh`). Gradle/Maven root stays `unknown` (no `jvm` token) with a gap note naming `gradle` or `maven`
 - [ ] Inventory used **Inventory by stack** rows — not Node/TS-only defaults on Python/Go repos
 - [ ] Feature/plan slug sources follow **Docs layout guidance by stack**
 - [ ] No invented ModuleIds/endpoints/framework surfaces without code evidence
@@ -104,7 +104,7 @@ Run before reporting done.
 
 ## Monorepo hubs (v2.2)
 
-- [ ] Monorepo signals checked (`pnpm-workspace` / workspaces / `go.work` / multi-package) or `detect-packages.sh`
+- [ ] Monorepo signals checked (`pnpm-workspace` / workspaces / `go.work` / Gradle `include` / Maven `<modules>` / multi-package) or `detect-packages.sh`
 - [ ] If monorepo: root hub is a **map** with **Package index** (not a narrative dump)
 - [ ] Multi-package **Surface coverage** rows; packages without docs marked **gap**
 - [ ] Default package **non-writes** when only indexing root (no rewrite of mature package vision/ADRs/packs)

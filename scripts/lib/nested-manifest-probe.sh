@@ -31,6 +31,12 @@ nested_probe_root_has_manifest() {
   [[ -f "$r/setup.cfg" ]] && return 0
   [[ -f "$r/requirements.txt" ]] && return 0
   [[ -f "$r/Pipfile" ]] && return 0
+  # Gradle / Maven root: manifest for probe purposes (no jvm token).
+  [[ -f "$r/build.gradle" ]] && return 0
+  [[ -f "$r/build.gradle.kts" ]] && return 0
+  [[ -f "$r/settings.gradle" ]] && return 0
+  [[ -f "$r/settings.gradle.kts" ]] && return 0
+  [[ -f "$r/pom.xml" ]] && return 0
   return 1
 }
 

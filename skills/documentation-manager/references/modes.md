@@ -44,7 +44,7 @@ Detect stack (Polyglot stack detection — skill-discovery.md)
 
 Before inventory on **from-zero / integrate / audit** (and when exploring for adopt-full):
 
-1. Run **Polyglot stack detection** in [skill-discovery.md](skill-discovery.md) (signals: `package.json`, `pyproject.toml`, `go.mod`, `go.work`, `Cargo.toml`, …) or `./scripts/detect-stack.sh <root>` when available. Cargo-primary + secondary Node → **`unknown`** (rust is not an MVP token); do not let a tooling `package.json` win. Root `go.work` is the same `go` token as root `go.mod`.  
+1. Run **Polyglot stack detection** in [skill-discovery.md](skill-discovery.md) (signals: `package.json`, `pyproject.toml`, `go.mod`, `go.work`, `Cargo.toml`, Gradle `build.gradle` / `settings.gradle`, Maven `pom.xml`, …) or `./scripts/detect-stack.sh <root>` when available. Cargo-primary + secondary Node → **`unknown`** (rust is not an MVP token); do not let a tooling `package.json` win. Root `go.work` is the same `go` token as root `go.mod`. A Gradle or Maven root is not a token: stdout stays **`unknown`** when no other primary matches, with a stderr gap naming `gradle` or `maven`. Do not invent `jvm`. Those root files skip the nested-manifest probe.  
 2. Record token(s): `node-ts` | `python` | `go` | `unknown`. If the detector prints **two or more** primaries (space-separated), announce **`Stack: mixed`** and inventory each.  
 3. Choose **Inventory by stack** and **Docs layout guidance by stack** from that same reference — **do not** default to Node/TS paths when another stack is primary.  
 4. Announce `Stack: …` with the project Step 0 line.
@@ -55,7 +55,7 @@ Anti-hallucination: no ModuleIds/HTTP routes/framework claims without code evide
 
 On **from-zero / integrate / adopt / audit** when multi-package signals exist:
 
-1. Run **Monorepo hubs** procedure in [skill-discovery.md](skill-discovery.md) (signals: `pnpm-workspace.yaml`, `package.json` workspaces, `go.work`, multi-`pyproject` / multi-`go.mod`, `packages/*`) or `./scripts/detect-packages.sh <root>`.  
+1. Run **Monorepo hubs** procedure in [skill-discovery.md](skill-discovery.md) (signals: `pnpm-workspace.yaml`, `package.json` workspaces, `go.work`, Gradle `settings.gradle` `include`, Maven `pom.xml` `<modules>`, multi-`pyproject` / multi-`go.mod`, `packages/*`) or `./scripts/detect-packages.sh <root>`.  
 2. If monorepo: build or update root hub as a **map** + **Package index** (not a narrative dump of every package).  
 3. **Multi-package coverage** — one coverage row per package (or major surface); packages without docs = **gap**.  
 4. **Default package non-writes** — when indexing the root, do **not** rewrite mature package product-vision / requirements / ADRs / feature packs.  
@@ -431,13 +431,13 @@ Announce: `Audit-scope: diff-first | files: <n> | base: <HEAD|ref|n/a>` · `Audi
 ### 6.1 Code inventory (change set only)
 
 1. Take the §6.0 path list — that **is** the inventory universe.  
-2. **Detect stack** (§0.3) from **root manifests already in hand** (`package.json`, `pyproject.toml`, `go.mod`, `go.work`, `Cargo.toml`) — do not walk packages to inventory everything. Tokens: `node-ts` | `python` | `go` | `mixed` | `unknown` (Cargo-primary without another MVP token → `unknown`).  
+2. **Detect stack** (§0.3) from **root manifests already in hand** (`package.json`, `pyproject.toml`, `go.mod`, `go.work`, `Cargo.toml`, Gradle `build.gradle` / `settings.gradle`, Maven `pom.xml`) — do not walk packages to inventory everything. Tokens: `node-ts` | `python` | `go` | `mixed` | `unknown` (Cargo-primary without another MVP token → `unknown`; Gradle/Maven root with no other primary → `unknown` plus a gap, no `jvm` token).  
 3. Classify **only changed files** with the **Inventory by stack** table in [skill-discovery.md](skill-discovery.md).  
 4. Summary of common kinds (prefer stack-specific rows; **only if the path is in the change set**):
 
 | Kind | How to discover (examples; **stack-aware**) |
 |------|-----------------------------------------------|
-| Packages / apps | `package.json` workspaces · `pyproject.toml` · `go.mod` / `go.work` |
+| Packages / apps | `package.json` workspaces · `pyproject.toml` · `go.mod` / `go.work` · Gradle `include` · Maven `<modules>` |
 | ModuleIds / feature flags | permissions maps, enums, nav registries **if present** (often node-ts) |
 | Entry / CLI | `src/index.ts` · `__main__.py` / console scripts · `cmd/*/main.go` |
 | Feature modules | `src/<area>` · `src/<pkg>` · `internal/<area>` |
