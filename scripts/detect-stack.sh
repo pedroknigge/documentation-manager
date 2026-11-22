@@ -6,6 +6,10 @@
 # Cargo.toml / rust-toolchain is a stronger language SSOT than a secondary
 # package.json. Rust is not an MVP token — emit unknown (or remaining MVP
 # tokens) plus a stderr gap note. Do not invent a rust token.
+# Gradle (build.gradle, build.gradle.kts, settings.gradle, settings.gradle.kts)
+# and Maven (pom.xml) are not MVP tokens. Do not invent a jvm token. When no
+# other primary matches, stdout stays unknown, plus a stderr gap note that
+# names gradle or maven. Those root files skip the nested-manifest probe.
 # Exit 0 always when root is readable (unknown is valid).
 set -euo pipefail
 
@@ -29,6 +33,8 @@ has_python=0
 has_go=0
 has_cargo=0
 has_strong_node=0
+has_gradle=0
+has_maven=0
 
 if [[ -f "$ROOT/package.json" ]] \
   || [[ -f "$ROOT/tsconfig.json" ]] \
@@ -77,6 +83,16 @@ elif [[ -f "$ROOT/package.json" ]] && grep -q '"workspaces"' "$ROOT/package.json
   has_strong_node=1
 fi
 
+# JVM root: gap signal only. Not an MVP token (no jvm). Skips the nested probe
+# via nested_probe_root_has_manifest.
+if [[ -f "$ROOT/build.gradle" || -f "$ROOT/build.gradle.kts" \
+  || -f "$ROOT/settings.gradle" || -f "$ROOT/settings.gradle.kts" ]]; then
+  has_gradle=1
+fi
+if [[ -f "$ROOT/pom.xml" ]]; then
+  has_maven=1
+fi
+
 # Bounded nested probe when root has no manifest/workspace (#56, Approach A).
 if ! nested_probe_root_has_manifest "$ROOT"; then
   nested_probe_collect "$ROOT"
@@ -104,6 +120,12 @@ fi
 
 if [[ "$has_cargo" -eq 1 ]]; then
   echo "detect-stack: gap: rust present; not an MVP token" >&2
+fi
+if [[ "$has_gradle" -eq 1 ]]; then
+  echo "detect-stack: gap: gradle present; not an MVP token" >&2
+fi
+if [[ "$has_maven" -eq 1 ]]; then
+  echo "detect-stack: gap: maven present; not an MVP token" >&2
 fi
 
 if [[ ${#tokens[@]} -eq 0 ]]; then

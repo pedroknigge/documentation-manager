@@ -6,6 +6,25 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.29] — 2026-11-22
+
+JVM roots (Gradle / Maven) stay `unknown` and say so. **Not** a new major; **not** a Knowledge OS leap. **Not** a `jvm` MVP token.
+
+### Fixed
+
+- **Gradle / Maven root:** `detect-stack.sh` still prints `unknown` when no MVP token matches. Stderr gap names the build tool (`gradle present; not an MVP token` or `maven present; not an MVP token`). Root `build.gradle`, `build.gradle.kts`, `settings.gradle`, `settings.gradle.kts`, or `pom.xml` skips the depth-2 nested-manifest probe.
+- `detect-packages.sh` lists Gradle `include` modules (`include 'a', ':b:c'` and `include("a")`; `:b:c` → `b/c`) and Maven `<module>` entries inside `<modules>`. Only paths that exist on disk.
+
+### Unchanged (locked)
+
+- MVP tokens remain `node-ts` | `python` | `go` | `unknown` — no `jvm` token
+- Cargo-primary (#45), `go.work` (#51), and the nested probe for non-JVM roots (#56) unchanged
+- A root `package.json` (or other MVP manifest) beside a JVM file still prints its token; the gap note is additional
+
+### Changed
+
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.29 —`; `metadata.version` **2.5.29**
+
 ## [2.5.28] — 2026-11-20
 
 Anonymous dogfood sales-stats ninth live row. **Not** a new major; **not** a Knowledge OS leap.

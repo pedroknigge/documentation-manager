@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>fixture</groupId>
+  <artifactId>parent</artifactId>
+  <version>0.0.0</version>
+  <packaging>pom</packaging>
+  <modules>
+    <module>app</module>
+    <module>libs/core</module>
+    <module>missing-mod</module>
+    <!-- <module>commented-out</module> -->
+  </modules>
+</project>

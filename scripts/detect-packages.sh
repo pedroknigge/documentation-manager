@@ -4,7 +4,8 @@
 # Prints one relative package path per line (sorted, unique).
 # Empty stdout + exit 0 when not a monorepo / no packages found.
 # Cargo [workspace] with no resolvable members: empty stdout + stderr gap.
-# Exit 2 if root is not a directory.
+# Gradle settings include and Maven <modules> list module dirs that exist.
+# :b:c maps to b/c. Exit 2 if root is not a directory.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -P "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -30,6 +31,23 @@ add_pkg() {
     || [[ -f "$ROOT/$rel/Cargo.toml" ]]; then
     found+=("$rel")
   fi
+}
+
+# Directory a JVM build declared. No package.json / go.mod required.
+add_existing_dir() {
+  local rel="$1"
+  rel="${rel#"${rel%%[![:space:]]*}"}"
+  rel="${rel%"${rel##*[![:space:]]}"}"
+  rel="${rel#./}"
+  while [[ "$rel" == */ ]]; do
+    rel="${rel%/}"
+  done
+  [[ -z "$rel" || "$rel" == "." ]] && return 0
+  case "$rel" in
+    /*|*..*) return 0 ;;
+  esac
+  [[ -d "$ROOT/$rel" ]] || return 0
+  found+=("$rel")
 }
 
 # Expand a workspace glob or concrete dir (pnpm / Cargo members).
@@ -83,6 +101,111 @@ extract_cargo_members() {
       in_mem=0
     fi
   done < "$toml"
+}
+
+# Print quoted strings from an include argument region.
+gradle_emit_quoted() {
+  local s="$1"
+  local i=0 n=${#s} c q="" mode=""
+  while [[ "$i" -lt "$n" ]]; do
+    c="${s:i:1}"
+    if [[ -z "$mode" ]]; then
+      if [[ "$c" == "'" || "$c" == '"' ]]; then
+        mode="$c"
+        q=""
+      fi
+    elif [[ "$c" == "$mode" ]]; then
+      printf '%s\n' "$q"
+      mode=""
+      q=""
+    else
+      q+="$c"
+    fi
+    i=$((i + 1))
+  done
+  return 0
+}
+
+# include 'a', ':b:c' and include("a"), including a multi-line include(...).
+# includeBuild is not an include. One raw token per line.
+extract_gradle_includes() {
+  local file="$1"
+  local line code trimmed rest args in_inc=0 buf=""
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    line="${line%$'\r'}"
+    code="${line%%//*}"
+    trimmed="${code#"${code%%[![:space:]]*}"}"
+    if [[ -z "$trimmed" ]]; then
+      if [[ "$in_inc" -eq 0 ]]; then
+        continue
+      fi
+    fi
+    if [[ "$in_inc" -eq 0 ]]; then
+      if [[ "$trimmed" == \** || "$trimmed" == /\** ]]; then
+        continue
+      fi
+      if [[ "$code" =~ (^|[^[:alnum:]_])include([^[:alnum:]_]|$) ]]; then
+        rest="${code#*include}"
+        if [[ "$rest" == *"("* ]]; then
+          args="${rest#*(}"
+          if [[ "$args" == *")"* ]]; then
+            gradle_emit_quoted "${args%%)*}"
+          else
+            in_inc=1
+            buf="$args"
+          fi
+        else
+          gradle_emit_quoted "$rest"
+        fi
+      fi
+    elif [[ "$code" == *")"* ]]; then
+      buf="${buf}
+${code%%)*}"
+      gradle_emit_quoted "$buf"
+      in_inc=0
+      buf=""
+    else
+      buf="${buf}
+$code"
+    fi
+  done < "$file"
+  return 0
+}
+
+# Gradle project path :b:c → relative directory b/c.
+gradle_include_to_rel() {
+  local raw="$1"
+  raw="${raw#"${raw%%[![:space:]]*}"}"
+  raw="${raw%"${raw##*[![:space:]]}"}"
+  while [[ "$raw" == :* ]]; do
+    raw="${raw#:}"
+  done
+  raw="${raw//:/\/}"
+  printf '%s\n' "$raw"
+}
+
+# <module> text inside a <modules> element. One path per line.
+extract_maven_modules() {
+  local pom="$1"
+  local line prev in_mods=0
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    line="${line%$'\r'}"
+    prev=""
+    while [[ "$line" == *"<!--"* && "$line" == *"-->"* && "$line" != "$prev" ]]; do
+      prev="$line"
+      line="${line%%<!--*}${line#*-->}"
+    done
+    if [[ "$line" == *"<modules>"* || "$line" == *"<modules "* ]]; then
+      in_mods=1
+    fi
+    if [[ "$in_mods" -eq 1 && "$line" =~ "<module>"([^<]+)"</module>" ]]; then
+      printf '%s\n' "${BASH_REMATCH[1]}"
+    fi
+    if [[ "$line" == *"</modules>"* ]]; then
+      in_mods=0
+    fi
+  done < "$pom"
+  return 0
 }
 
 # --- pnpm-workspace.yaml: packages: globs ---
@@ -175,6 +298,23 @@ if [[ -f "$ROOT/Cargo.toml" ]] && grep -q '^\[workspace\]' "$ROOT/Cargo.toml"; t
   if [[ ${#found[@]} -eq "$cargo_before" ]]; then
     echo "detect-packages: gap: Cargo workspace present; members unresolved" >&2
   fi
+fi
+
+# --- Gradle settings include (both quote forms; :b:c → b/c) ---
+for _gf in settings.gradle settings.gradle.kts; do
+  [[ -f "$ROOT/$_gf" ]] || continue
+  while IFS= read -r inc || [[ -n "${inc:-}" ]]; do
+    [[ -n "${inc:-}" ]] || continue
+    add_existing_dir "$(gradle_include_to_rel "$inc")"
+  done < <(extract_gradle_includes "$ROOT/$_gf")
+done
+
+# --- Maven <modules>/<module> (existing directories only) ---
+if [[ -f "$ROOT/pom.xml" ]]; then
+  while IFS= read -r mod || [[ -n "${mod:-}" ]]; do
+    [[ -n "${mod:-}" ]] || continue
+    add_existing_dir "$mod"
+  done < <(extract_maven_modules "$ROOT/pom.xml")
 fi
 
 # --- Convention: packages/* apps/* libs/* with manifests (if nothing else found) ---

@@ -1,0 +1,5 @@
+rootProject.name = "gradle-multimodule"
+include 'app', ':feature:api'
+include("lib")
+include ':not:there'
+// include 'commented'
