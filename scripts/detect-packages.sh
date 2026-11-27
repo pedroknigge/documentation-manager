@@ -70,6 +70,13 @@ add_from_glob() {
   fi
 }
 
+add_convention_globs() {
+  local base
+  for base in packages apps libs; do
+    add_from_glob "$base/*"
+  done
+}
+
 # Quoted strings from a Cargo.toml [workspace] members = [ ... ] block.
 extract_cargo_members() {
   local toml="$1"
@@ -227,19 +234,7 @@ if [[ -f "$ROOT/package.json" ]]; then
   if command -v node >/dev/null 2>&1; then
     while IFS= read -r p; do
       [[ -n "$p" ]] || continue
-      if [[ "$p" == */\* ]]; then
-        base="${p%/\*}"
-        if [[ -d "$ROOT/$base" ]]; then
-          shopt -s nullglob
-          for d in "$ROOT/$base"/*; do
-            [[ -d "$d" ]] || continue
-            add_pkg "${d#"$ROOT"/}"
-          done
-          shopt -u nullglob
-        fi
-      elif [[ -d "$ROOT/$p" ]]; then
-        add_pkg "$p"
-      fi
+      add_from_glob "$p"
     done < <(node -e '
 const fs=require("fs");
 const j=JSON.parse(fs.readFileSync(process.argv[1],"utf8"));
@@ -250,16 +245,7 @@ for (const x of list) console.log(String(x));
 ' "$ROOT/package.json" 2>/dev/null || true)
   else
     # Fallback: common packages/* apps/* libs/*
-    for base in packages apps libs; do
-      if [[ -d "$ROOT/$base" ]]; then
-        shopt -s nullglob
-        for d in "$ROOT/$base"/*; do
-          [[ -d "$d" ]] || continue
-          add_pkg "${d#"$ROOT"/}"
-        done
-        shopt -u nullglob
-      fi
-    done
+    add_convention_globs
   fi
 fi
 
@@ -319,16 +305,7 @@ fi
 
 # --- Convention: packages/* apps/* libs/* with manifests (if nothing else found) ---
 if [[ ${#found[@]} -eq 0 ]]; then
-  for base in packages apps libs; do
-    if [[ -d "$ROOT/$base" ]]; then
-      shopt -s nullglob
-      for d in "$ROOT/$base"/*; do
-        [[ -d "$d" ]] || continue
-        add_pkg "${d#"$ROOT"/}"
-      done
-      shopt -u nullglob
-    fi
-  done
+  add_convention_globs
 fi
 
 # --- Bounded nested probe (no root manifest/workspace, #56) ---

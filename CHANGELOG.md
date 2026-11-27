@@ -6,6 +6,18 @@ Format: keep entries scannable. Versions follow semver for the skill package (`S
 
 ## [Unreleased]
 
+## [2.5.30] — 2026-11-27
+
+Internal de-duplication only. **No behavior change**; test files untouched. **Not** a new major; **not** a Knowledge OS leap.
+
+### Changed
+
+- **`audit-claims.sh`:** one `AWK_CELLS` prelude replaces six inline copies of the Markdown table helpers (whitespace / bold / markdown cell modes). `apply_ops` replaces `apply_matrix_ops` + `apply_haken_ops` (same writes; `KIND` selects touch vs Haken). `parse_touched_claims` + `index_touched_claims` replace the three copies used by `--upsert-claims`, `--record-haken`, `--cascade-recommend`.
+- **`detect-packages.sh`:** the three `packages/*` `apps/*` `libs/*` scans reuse the existing `add_from_glob` through `add_convention_globs` (same manifest gating).
+- **`PUBLISH.md`:** 26 per-tag cut recipes → one generic recipe. Tags, `CHANGELOG.md`, and `docs/roadmap.md` remain the release history; no tag is rewritten.
+- **Removed:** 522 tracked lines (`audit-claims.sh` −252, `PUBLISH.md` −247, `detect-packages.sh` −23). No test or assertion changed.
+- **Glance version:** `SKILL.md` `description` starts with `v2.5.30 —`; `metadata.version` **2.5.30**
+
 ## [2.5.29] — 2026-11-22
 
 JVM roots (Gradle / Maven) stay `unknown` and say so. **Not** a new major; **not** a Knowledge OS leap. **Not** a `jvm` MVP token.

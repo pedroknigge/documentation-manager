@@ -38,6 +38,52 @@ set -euo pipefail
 
 SCRIPT_NAME="$(basename "$0")"
 
+# Shared awk helpers for Markdown pipe tables. Prepend to every table awk
+# program (`awk -v X=1 "$AWK_CELLS"' ... '`). Three cell modes:
+#   split_cells      — trim whitespace
+#   split_cells_bold — also strip ** at cell edges (Verdict headers)
+#   split_cells_md   — also strip ` anywhere (Anchor / ID / steward cells)
+AWK_CELLS='
+  function trim(s) {
+    gsub(/^[[:space:]]+|[[:space:]]+$/, "", s)
+    return s
+  }
+  function trim_bold(s) {
+    gsub(/^[[:space:]]+|[[:space:]]+$/, "", s)
+    gsub(/^\*\*|\*\*$/, "", s)
+    return s
+  }
+  function trim_md(s) {
+    gsub(/^[[:space:]]+|[[:space:]]+$/, "", s)
+    gsub(/^\*\*|\*\*$/, "", s)
+    gsub(/`/, "", s)
+    return s
+  }
+  function cell_trim(s, mode) {
+    if (mode == 2) return trim_md(s)
+    if (mode == 1) return trim_bold(s)
+    return trim(s)
+  }
+  function split_cells_mode(line, cells, mode,   n, i, raw) {
+    sub(/^\|/, "", line)
+    sub(/\|$/, "", line)
+    n = split(line, raw, "|")
+    for (i = 1; i <= n; i++) cells[i] = cell_trim(raw[i], mode)
+    return n
+  }
+  function split_cells(line, cells) { return split_cells_mode(line, cells, 0) }
+  function split_cells_bold(line, cells) { return split_cells_mode(line, cells, 1) }
+  function split_cells_md(line, cells) { return split_cells_mode(line, cells, 2) }
+  function is_sep_row(line) {
+    return (line ~ /^\|[-:|[:space:]]+\|$/)
+  }
+  function join_row(cells, n,   i, out) {
+    out = "|"
+    for (i = 1; i <= n; i++) out = out " " cells[i] " |"
+    return out
+  }
+'
+
 usage() {
   cat <<EOF
 Usage:
@@ -250,6 +296,18 @@ if [[ "$LIST_CHANGED" -eq 1 ]]; then
   exit 0
 fi
 
+# Default matrix path + explicit-matrix policy. Empty MATRIX = skip (not explicit).
+resolve_matrix() {
+  [[ -n "$MATRIX" ]] && return 0
+  MATRIX="$ROOT/docs/audit/claims-matrix.md"
+  [[ -f "$MATRIX" ]] && return 0
+  if [[ "$EXPLICIT_MATRIX" -eq 1 ]]; then
+    echo "$SCRIPT_NAME: matrix not found: $MATRIX" >&2
+    exit 2
+  fi
+  MATRIX=""
+}
+
 # Hits in the §6.0 change set only (never a full-tree grep).
 # Prints path<TAB>lineno<TAB>line for lines containing @claim.
 collect_change_set_hits() {
@@ -270,27 +328,11 @@ collect_change_set_hits() {
 # Matrix IDs only (read-only). Empty / missing id cells are skipped — never invented.
 list_matrix_ids() {
   local matrix="$1"
-  awk '
-  function trim(s) {
-    gsub(/^[[:space:]]+|[[:space:]]+$/, "", s)
-    gsub(/^\*\*|\*\*$/, "", s)
-    gsub(/`/, "", s)
-    return s
-  }
-  function split_cells(line, cells,   n, i, raw) {
-    sub(/^\|/, "", line)
-    sub(/\|$/, "", line)
-    n = split(line, raw, "|")
-    for (i = 1; i <= n; i++) cells[i] = trim(raw[i])
-    return n
-  }
-  function is_sep_row(line) {
-    return (line ~ /^\|[-:|[:space:]]+\|$/)
-  }
+  awk "$AWK_CELLS"'
   BEGIN { id_col = 0; in_table = 0 }
   /^[[:space:]]*\|/ {
     if (is_sep_row($0)) next
-    n = split_cells($0, cells)
+    n = split_cells_md($0, cells)
     if (!in_table) {
       id_col = 0
       for (i = 1; i <= n; i++) {
@@ -305,6 +347,58 @@ list_matrix_ids() {
   }
   { in_table = 0; id_col = 0 }
   ' "$matrix"
+}
+
+# Parse @claim breadcrumbs in the §6.0 change set into PARSED. Exits 1 on
+# malformed fields (HITL). $1 is appended to the HITL line (e.g.
+# "; matrix not written"). Never greps the full tree; never invents fields.
+parse_touched_claims() {
+  local suffix="${1:-}"
+  local parse_in kind path lineno a b c d
+  local fails=0
+  PARSED=""
+  parse_in="$(collect_change_set_hits)" || exit $?
+  if [[ -n "$parse_in" ]]; then
+    while IFS=$'\t' read -r kind path lineno a b c d; do
+      [[ -z "${kind:-}" ]] && continue
+      if [[ "$kind" == "HITL" ]]; then
+        fails=$((fails + 1))
+        echo "$SCRIPT_NAME: HITL: malformed @claim in ${path}:${lineno} — ${a}" >&2
+        continue
+      fi
+      PARSED+="${path}"$'\t'"${lineno}"$'\t'"${a}"$'\t'"${b}"$'\t'"${c}"$'\t'"${d}"$'\n'
+    done < <(printf '%s\n' "$parse_in" | parse_claim_lines)
+  fi
+  if [[ "$fails" -gt 0 ]]; then
+    echo "$SCRIPT_NAME: HITL ($fails malformed @claim; do not invent fields${suffix})" >&2
+    exit 1
+  fi
+}
+
+# Index PARSED into id_parent / id_plane / id_status / id_path / id_line /
+# id_conflict and IDS_ORDERED. Duplicate id: same fields + same path = ok;
+# anything else is a conflict (captain decides supersede; not date-wins).
+index_touched_claims() {
+  local path lineno cid parent plane status
+  declare -gA id_parent=() id_plane=() id_status=() id_path=() id_line=() id_conflict=()
+  declare -ga IDS_ORDERED=()
+  while IFS=$'\t' read -r path lineno cid parent plane status; do
+    [[ -z "${cid:-}" ]] && continue
+    if [[ -v id_parent[$cid] ]]; then
+      if [[ "${id_parent[$cid]}|${id_plane[$cid]}|${id_status[$cid]}" != "${parent}|${plane}|${status}" ]]; then
+        id_conflict[$cid]=1
+      elif [[ "${id_path[$cid]}" != "$path" ]]; then
+        id_conflict[$cid]=1
+      fi
+      continue
+    fi
+    IDS_ORDERED+=("$cid")
+    id_parent[$cid]="$parent"
+    id_plane[$cid]="$plane"
+    id_status[$cid]="$status"
+    id_path[$cid]="$path"
+    id_line[$cid]="$lineno"
+  done <<< "$PARSED"
 }
 
 # stdin: path<TAB>lineno<TAB>line  →  OK|HITL rows (tab-separated)
@@ -383,16 +477,7 @@ parse_claim_lines() {
 }
 
 if [[ "$LIST_CLAIMS" -eq 1 ]]; then
-  if [[ -z "$MATRIX" ]]; then
-    MATRIX="$ROOT/docs/audit/claims-matrix.md"
-  fi
-  if [[ ! -f "$MATRIX" ]]; then
-    if [[ "$EXPLICIT_MATRIX" -eq 1 ]]; then
-      echo "$SCRIPT_NAME: matrix not found: $MATRIX" >&2
-      exit 2
-    fi
-    MATRIX=""
-  fi
+  resolve_matrix
 
   MATRIX_IDS=""
   if [[ -n "$MATRIX" ]]; then
@@ -432,23 +517,7 @@ fi
 # Normalized Anchor path for one matrix id (empty if absent / no row).
 get_matrix_anchor() {
   local matrix="$1" want="$2"
-  awk -v want="$want" '
-  function trim(s) {
-    gsub(/^[[:space:]]+|[[:space:]]+$/, "", s)
-    gsub(/^\*\*|\*\*$/, "", s)
-    gsub(/`/, "", s)
-    return s
-  }
-  function split_cells(line, cells,   n, i, raw) {
-    sub(/^\|/, "", line)
-    sub(/\|$/, "", line)
-    n = split(line, raw, "|")
-    for (i = 1; i <= n; i++) cells[i] = trim(raw[i])
-    return n
-  }
-  function is_sep_row(line) {
-    return (line ~ /^\|[-:|[:space:]]+\|$/)
-  }
+  awk -v want="$want" "$AWK_CELLS"'
   function norm_anchor(s) {
     sub(/^anchor\.path=/, "", s)
     return s
@@ -456,7 +525,7 @@ get_matrix_anchor() {
   BEGIN { id_col = 0; anchor_col = 0; in_table = 0 }
   /^[[:space:]]*\|/ {
     if (is_sep_row($0)) next
-    n = split_cells($0, cells)
+    n = split_cells_md($0, cells)
     if (!in_table) {
       id_col = 0
       anchor_col = 0
@@ -482,23 +551,7 @@ get_matrix_anchor() {
 # Existing captain Haken token from a Haken column or Action note (empty if none).
 get_matrix_haken() {
   local matrix="$1" want="$2"
-  awk -v want="$want" '
-  function trim(s) {
-    gsub(/^[[:space:]]+|[[:space:]]+$/, "", s)
-    gsub(/^\*\*|\*\*$/, "", s)
-    gsub(/`/, "", s)
-    return s
-  }
-  function split_cells(line, cells,   n, i, raw) {
-    sub(/^\|/, "", line)
-    sub(/\|$/, "", line)
-    n = split(line, raw, "|")
-    for (i = 1; i <= n; i++) cells[i] = trim(raw[i])
-    return n
-  }
-  function is_sep_row(line) {
-    return (line ~ /^\|[-:|[:space:]]+\|$/)
-  }
+  awk -v want="$want" "$AWK_CELLS"'
   function token_in(s,   n, i, t) {
     n = split(s, t, /[^A-Za-z-]+/)
     for (i = 1; i <= n; i++) {
@@ -509,7 +562,7 @@ get_matrix_haken() {
   BEGIN { id_col = 0; haken_col = 0; action_col = 0; in_table = 0 }
   /^[[:space:]]*\|/ {
     if (is_sep_row($0)) next
-    n = split_cells($0, cells)
+    n = split_cells_md($0, cells)
     if (!in_table) {
       id_col = 0; haken_col = 0; action_col = 0
       for (i = 1; i <= n; i++) {
@@ -541,203 +594,62 @@ get_matrix_haken() {
   ' "$matrix"
 }
 
-# Ops TSV: mode<TAB>id<TAB>path<TAB>lineno<TAB>status
-# update → Action touch/status only (never Claim / Verdict / Severity / Anchor).
+# Ops TSV:
+#   KIND=matrix: mode<TAB>id<TAB>path<TAB>lineno<TAB>status
+#   KIND=haken:  mode<TAB>id<TAB>path<TAB>lineno<TAB>haken<TAB>parent
+# update → Action (and Haken column when KIND=haken and present) only. Never Verdict.
 # insert → safe defaults + captain note. Does not invent ids.
-apply_matrix_ops() {
-  local matrix="$1" ops="$2"
+apply_ops() {
+  local matrix="$1" ops="$2" kind="$3"
   local tmp
   tmp="$(mktemp)"
-  awk -v OPS="$ops" '
-  function trim(s) {
-    gsub(/^[[:space:]]+|[[:space:]]+$/, "", s)
-    return s
+  awk -v OPS="$ops" -v KIND="$kind" "$AWK_CELLS"'
+  function note_text(i) {
+    if (KIND == "haken")
+      return "haken=" op_haken[i] " parent=" op_parent[i] " evidence=" op_path[i] ":" op_line[i]
+    return "touched " op_path[i] ":" op_line[i] " status=" op_status[i]
   }
-  function split_cells(line, cells,   n, i, raw) {
-    sub(/^\|/, "", line)
-    sub(/\|$/, "", line)
-    n = split(line, raw, "|")
-    for (i = 1; i <= n; i++) cells[i] = trim(raw[i])
-    return n
-  }
-  function is_sep_row(line) {
-    return (line ~ /^\|[-:|[:space:]]+\|$/)
-  }
-  function join_row(cells, n,   i, out) {
-    out = "|"
-    for (i = 1; i <= n; i++) out = out " " cells[i] " |"
-    return out
-  }
-  function apply_touch(action, path, lineno, status,   touch) {
-    touch = "touched " path ":" lineno " status=" status
-    sub(/[[:space:]]*[·][[:space:]]*touched[[:space:]].*$/, "", action)
-    sub(/[[:space:]]+touched[[:space:]].*$/, "", action)
-    gsub(/^[[:space:]]+|[[:space:]]+$/, "", action)
-    if (action == "") return touch
-    return action " · " touch
-  }
-  function insert_row(id, path, lineno, status,   cells, i, n) {
-    n = ncol
-    for (i = 1; i <= n; i++) cells[i] = ""
-    if (id_col) cells[id_col] = id
-    if (claim_col) cells[claim_col] = "Touched via @claim — captain to fill"
-    if (source_col) cells[source_col] = path
-    if (evidence_col) cells[evidence_col] = "`" path ":" lineno "`"
-    if (anchor_col) cells[anchor_col] = "`anchor.path=" path "`"
-    if (severity_col) cells[severity_col] = "normal"
-    if (verdict_col) cells[verdict_col] = "Unverifiable"
-    if (action_col) cells[action_col] = "captain: new id from breadcrumb; fill claim · touched " path ":" lineno " status=" status
-    return join_row(cells, n)
-  }
-  BEGIN {
-    nops = 0
-    while ((getline line < OPS) > 0) {
-      if (line == "") continue
-      n = split(line, f, "\t")
-      if (n < 5) continue
-      nops++
-      op_mode[nops] = f[1]
-      op_id[nops] = f[2]
-      op_path[nops] = f[3]
-      op_line[nops] = f[4]
-      op_status[nops] = f[5]
-      op_of[f[2]] = nops
+  function apply_note(action, i,   note) {
+    note = note_text(i)
+    if (KIND == "haken") {
+      gsub(/[[:space:]]*[·][[:space:]]*haken=(hold|escalate|break|for-review)([[:space:]]+parent=[^[:space:]]+)?([[:space:]]+evidence=[^[:space:]]+)?/, "", action)
+      gsub(/^haken=(hold|escalate|break|for-review)([[:space:]]+parent=[^[:space:]]+)?([[:space:]]+evidence=[^[:space:]]+)?[[:space:]]*[·]?[[:space:]]*/, "", action)
+    } else {
+      sub(/[[:space:]]*[·][[:space:]]*touched[[:space:]].*$/, "", action)
+      sub(/[[:space:]]+touched[[:space:]].*$/, "", action)
     }
-    close(OPS)
-    id_col = 0; claim_col = 0; source_col = 0; evidence_col = 0
-    anchor_col = 0; severity_col = 0; verdict_col = 0; action_col = 0
-    in_table = 0
-    flushed = 0
-    ncol = 0
-  }
-  function flush_inserts(   i) {
-    if (flushed) return
-    flushed = 1
-    for (i = 1; i <= nops; i++) {
-      if (op_mode[i] == "insert") print insert_row(op_id[i], op_path[i], op_line[i], op_status[i])
-    }
-  }
-  /^[[:space:]]*\|/ {
-    if (is_sep_row($0)) { print; next }
-    n = split_cells($0, cells)
-    if (!in_table) {
-      id_col = 0; claim_col = 0; source_col = 0; evidence_col = 0
-      anchor_col = 0; severity_col = 0; verdict_col = 0; action_col = 0
-      for (i = 1; i <= n; i++) {
-        low = tolower(cells[i])
-        if (low == "id" || low == "claim id") id_col = i
-        else if (low == "claim" || low == "claim (quote or paraphrase)") claim_col = i
-        else if (low == "source doc" || low == "source") source_col = i
-        else if (low == "code evidence" || low == "evidence") evidence_col = i
-        else if (low == "anchor" || low == "anchor path") anchor_col = i
-        else if (low == "severity") severity_col = i
-        else if (low == "verdict") verdict_col = i
-        else if (low == "action") action_col = i
-      }
-      if (id_col > 0) {
-        in_table = 1
-        ncol = n
-        print
-        next
-      }
-      print
-      next
-    }
-    cid = (id_col > 0 && id_col <= n) ? cells[id_col] : ""
-    if (cid != "" && (cid in op_of) && op_mode[op_of[cid]] == "update") {
-      i = op_of[cid]
-      if (action_col > 0) {
-        if (action_col > n) {
-          for (j = n + 1; j <= action_col; j++) cells[j] = ""
-          n = action_col
-        }
-        cells[action_col] = apply_touch(cells[action_col], op_path[i], op_line[i], op_status[i])
-      }
-      # Fill empty evidence only — never overwrite captain/audit evidence.
-      if (evidence_col > 0 && evidence_col <= n && cells[evidence_col] == "") {
-        cells[evidence_col] = "`" op_path[i] ":" op_line[i] "`"
-      }
-      print join_row(cells, n)
-      next
-    }
-    print
-    next
-  }
-  {
-    if (in_table) {
-      flush_inserts()
-      in_table = 0
-      id_col = 0
-    }
-    print
-  }
-  END { if (in_table) flush_inserts() }
-  ' "$matrix" > "$tmp"
-  mv "$tmp" "$matrix"
-}
-
-# Ops TSV: mode<TAB>id<TAB>path<TAB>lineno<TAB>haken<TAB>parent
-# update → Action (and Haken column if present) only. Never Verdict.
-# insert → safe defaults + haken note. Does not invent ids.
-apply_haken_ops() {
-  local matrix="$1" ops="$2"
-  local tmp
-  tmp="$(mktemp)"
-  awk -v OPS="$ops" '
-  function trim(s) {
-    gsub(/^[[:space:]]+|[[:space:]]+$/, "", s)
-    return s
-  }
-  function split_cells(line, cells,   n, i, raw) {
-    sub(/^\|/, "", line)
-    sub(/\|$/, "", line)
-    n = split(line, raw, "|")
-    for (i = 1; i <= n; i++) cells[i] = trim(raw[i])
-    return n
-  }
-  function is_sep_row(line) {
-    return (line ~ /^\|[-:|[:space:]]+\|$/)
-  }
-  function join_row(cells, n,   i, out) {
-    out = "|"
-    for (i = 1; i <= n; i++) out = out " " cells[i] " |"
-    return out
-  }
-  function apply_haken_note(action, token, parent, path, lineno,   note) {
-    note = "haken=" token " parent=" parent " evidence=" path ":" lineno
-    gsub(/[[:space:]]*[·][[:space:]]*haken=(hold|escalate|break|for-review)([[:space:]]+parent=[^[:space:]]+)?([[:space:]]+evidence=[^[:space:]]+)?/, "", action)
-    gsub(/^haken=(hold|escalate|break|for-review)([[:space:]]+parent=[^[:space:]]+)?([[:space:]]+evidence=[^[:space:]]+)?[[:space:]]*[·]?[[:space:]]*/, "", action)
     gsub(/^[[:space:]]+|[[:space:]]+$/, "", action)
     if (action == "") return note
     return action " · " note
   }
-  function insert_row(id, path, lineno, token, parent,   cells, i, n) {
+  function insert_row(i,   cells, k, n) {
     n = ncol
-    for (i = 1; i <= n; i++) cells[i] = ""
-    if (id_col) cells[id_col] = id
+    for (k = 1; k <= n; k++) cells[k] = ""
+    if (id_col) cells[id_col] = op_id[i]
     if (claim_col) cells[claim_col] = "Touched via @claim — captain to fill"
-    if (source_col) cells[source_col] = path
-    if (evidence_col) cells[evidence_col] = "`" path ":" lineno "`"
-    if (anchor_col) cells[anchor_col] = "`anchor.path=" path "`"
+    if (source_col) cells[source_col] = op_path[i]
+    if (evidence_col) cells[evidence_col] = "`" op_path[i] ":" op_line[i] "`"
+    if (anchor_col) cells[anchor_col] = "`anchor.path=" op_path[i] "`"
     if (severity_col) cells[severity_col] = "normal"
     if (verdict_col) cells[verdict_col] = "Unverifiable"
-    if (haken_col) cells[haken_col] = token
-    if (action_col) cells[action_col] = "captain: new id from breadcrumb; fill claim · haken=" token " parent=" parent " evidence=" path ":" lineno
+    if (KIND == "haken" && haken_col) cells[haken_col] = op_haken[i]
+    if (action_col) cells[action_col] = "captain: new id from breadcrumb; fill claim · " note_text(i)
     return join_row(cells, n)
   }
   BEGIN {
     nops = 0
+    min_fields = (KIND == "haken") ? 6 : 5
     while ((getline line < OPS) > 0) {
       if (line == "") continue
       n = split(line, f, "\t")
-      if (n < 6) continue
+      if (n < min_fields) continue
       nops++
       op_mode[nops] = f[1]
       op_id[nops] = f[2]
       op_path[nops] = f[3]
       op_line[nops] = f[4]
-      op_haken[nops] = f[5]
-      op_parent[nops] = f[6]
+      if (KIND == "haken") { op_haken[nops] = f[5]; op_parent[nops] = f[6] }
+      else { op_status[nops] = f[5] }
       op_of[f[2]] = nops
     }
     close(OPS)
@@ -752,7 +664,7 @@ apply_haken_ops() {
     if (flushed) return
     flushed = 1
     for (i = 1; i <= nops; i++) {
-      if (op_mode[i] == "insert") print insert_row(op_id[i], op_path[i], op_line[i], op_haken[i], op_parent[i])
+      if (op_mode[i] == "insert") print insert_row(i)
     }
   }
   /^[[:space:]]*\|/ {
@@ -786,7 +698,7 @@ apply_haken_ops() {
     cid = (id_col > 0 && id_col <= n) ? cells[id_col] : ""
     if (cid != "" && (cid in op_of) && op_mode[op_of[cid]] == "update") {
       i = op_of[cid]
-      if (haken_col > 0) {
+      if (KIND == "haken" && haken_col > 0) {
         if (haken_col > n) {
           for (j = n + 1; j <= haken_col; j++) cells[j] = ""
           n = haken_col
@@ -798,8 +710,9 @@ apply_haken_ops() {
           for (j = n + 1; j <= action_col; j++) cells[j] = ""
           n = action_col
         }
-        cells[action_col] = apply_haken_note(cells[action_col], op_haken[i], op_parent[i], op_path[i], op_line[i])
+        cells[action_col] = apply_note(cells[action_col], i)
       }
+      # Fill empty evidence only — never overwrite captain/audit evidence.
       if (evidence_col > 0 && evidence_col <= n && cells[evidence_col] == "") {
         cells[evidence_col] = "`" op_path[i] ":" op_line[i] "`"
       }
@@ -827,30 +740,8 @@ if [[ "$UPSERT_CLAIMS" -eq 1 ]]; then
     MATRIX="$ROOT/docs/audit/claims-matrix.md"
   fi
 
-  parse_in="$(collect_change_set_hits)" || exit $?
-
-  FAILS=0
-  parsed=""
-  if [[ -n "$parse_in" ]]; then
-    while IFS=$'\t' read -r kind path lineno a b c d; do
-      [[ -z "${kind:-}" ]] && continue
-      if [[ "$kind" == "HITL" ]]; then
-        FAILS=$((FAILS + 1))
-        echo "$SCRIPT_NAME: HITL: malformed @claim in ${path}:${lineno} — ${a}" >&2
-        continue
-      fi
-      parsed+="${path}"$'\t'"${lineno}"$'\t'"${a}"$'\t'"${b}"$'\t'"${c}"$'\t'"${d}"$'\n'
-    done < <(printf '%s\n' "$parse_in" | parse_claim_lines)
-  fi
-
-  if [[ "$FAILS" -gt 0 ]]; then
-    echo "$SCRIPT_NAME: HITL ($FAILS malformed @claim; do not invent fields; matrix not written)" >&2
-    exit 1
-  fi
-
-  if [[ -z "$parsed" ]]; then
-    exit 0
-  fi
+  parse_touched_claims "; matrix not written"
+  [[ -z "$PARSED" ]] && exit 0
 
   if [[ ! -f "$MATRIX" ]]; then
     mkdir -p "$(dirname "$MATRIX")"
@@ -863,34 +754,14 @@ EOF
     echo "$SCRIPT_NAME: note: created matrix $MATRIX (captain: new SSOT of ids)" >&2
   fi
 
-  declare -A id_parent=() id_plane=() id_status=() id_path=() id_line=() id_conflict=()
-  ids_ordered=()
-
-  while IFS=$'\t' read -r path lineno cid parent plane status; do
-    [[ -z "${cid:-}" ]] && continue
-    if [[ -v id_parent[$cid] ]]; then
-      if [[ "${id_parent[$cid]}|${id_plane[$cid]}|${id_status[$cid]}" != "${parent}|${plane}|${status}" ]]; then
-        id_conflict[$cid]=1
-      elif [[ "${id_path[$cid]}" != "$path" ]]; then
-        # Same wire fields, second path — still a location supersede unless one matches Anchor.
-        id_conflict[$cid]=1
-      fi
-      continue
-    fi
-    ids_ordered+=("$cid")
-    id_parent[$cid]="$parent"
-    id_plane[$cid]="$plane"
-    id_status[$cid]="$status"
-    id_path[$cid]="$path"
-    id_line[$cid]="$lineno"
-  done <<< "$parsed"
+  index_touched_claims
 
   MATRIX_IDS=$'\n'"$(list_matrix_ids "$MATRIX")"$'\n'
   HITL_REFUSE=0
   ops="$(mktemp)"
   : > "$ops"
 
-  for cid in "${ids_ordered[@]}"; do
+  for cid in "${IDS_ORDERED[@]}"; do
     if [[ -v id_conflict[$cid] ]]; then
       HITL_REFUSE=$((HITL_REFUSE + 1))
       echo "$SCRIPT_NAME: HITL: refuse overwrite id=${cid} — conflicting breadcrumbs (captain decides supersede; not date-wins)" >&2
@@ -915,7 +786,7 @@ EOF
   done
 
   if [[ -s "$ops" ]]; then
-    apply_matrix_ops "$MATRIX" "$ops"
+    apply_ops "$MATRIX" "$ops" matrix
   fi
   rm -f "$ops"
 
@@ -931,51 +802,10 @@ if [[ "$RECORD_HAKEN" -eq 1 ]]; then
     MATRIX="$ROOT/docs/audit/claims-matrix.md"
   fi
 
-  parse_in="$(collect_change_set_hits)" || exit $?
+  parse_touched_claims "; matrix not written"
+  [[ -z "$PARSED" ]] && exit 0
 
-  FAILS=0
-  parsed=""
-  if [[ -n "$parse_in" ]]; then
-    while IFS=$'\t' read -r kind path lineno a b c d; do
-      [[ -z "${kind:-}" ]] && continue
-      if [[ "$kind" == "HITL" ]]; then
-        FAILS=$((FAILS + 1))
-        echo "$SCRIPT_NAME: HITL: malformed @claim in ${path}:${lineno} — ${a}" >&2
-        continue
-      fi
-      parsed+="${path}"$'\t'"${lineno}"$'\t'"${a}"$'\t'"${b}"$'\t'"${c}"$'\t'"${d}"$'\n'
-    done < <(printf '%s\n' "$parse_in" | parse_claim_lines)
-  fi
-
-  if [[ "$FAILS" -gt 0 ]]; then
-    echo "$SCRIPT_NAME: HITL ($FAILS malformed @claim; do not invent fields; matrix not written)" >&2
-    exit 1
-  fi
-
-  if [[ -z "$parsed" ]]; then
-    exit 0
-  fi
-
-  declare -A id_parent=() id_plane=() id_status=() id_path=() id_line=() id_conflict=()
-  ids_ordered=()
-
-  while IFS=$'\t' read -r path lineno cid parent plane status; do
-    [[ -z "${cid:-}" ]] && continue
-    if [[ -v id_parent[$cid] ]]; then
-      if [[ "${id_parent[$cid]}|${id_plane[$cid]}|${id_status[$cid]}" != "${parent}|${plane}|${status}" ]]; then
-        id_conflict[$cid]=1
-      elif [[ "${id_path[$cid]}" != "$path" ]]; then
-        id_conflict[$cid]=1
-      fi
-      continue
-    fi
-    ids_ordered+=("$cid")
-    id_parent[$cid]="$parent"
-    id_plane[$cid]="$plane"
-    id_status[$cid]="$status"
-    id_path[$cid]="$path"
-    id_line[$cid]="$lineno"
-  done <<< "$parsed"
+  index_touched_claims
 
   MATRIX_IDS=$'\n\n'
   if [[ -f "$MATRIX" ]]; then
@@ -985,7 +815,7 @@ if [[ "$RECORD_HAKEN" -eq 1 ]]; then
   ops="$(mktemp)"
   : > "$ops"
 
-  for cid in "${ids_ordered[@]}"; do
+  for cid in "${IDS_ORDERED[@]}"; do
     parent="${id_parent[$cid]}"
     # §6.7 trigger: a changed breadcrumb with parent=. Do not search for children.
     if [[ "$parent" == "-" ]]; then
@@ -1058,7 +888,7 @@ if [[ "$RECORD_HAKEN" -eq 1 ]]; then
 EOF
       echo "$SCRIPT_NAME: note: created matrix $MATRIX (captain: new SSOT of ids)" >&2
     fi
-    apply_haken_ops "$MATRIX" "$ops"
+    apply_ops "$MATRIX" "$ops" haken
   fi
   rm -f "$ops"
 
@@ -1070,58 +900,17 @@ EOF
 fi
 
 if [[ "$CASCADE_RECOMMEND" -eq 1 ]]; then
-  parse_in="$(collect_change_set_hits)" || exit $?
+  parse_touched_claims ""
+  [[ -z "$PARSED" ]] && exit 0
 
-  FAILS=0
-  parsed=""
-  if [[ -n "$parse_in" ]]; then
-    while IFS=$'\t' read -r kind path lineno a b c d; do
-      [[ -z "${kind:-}" ]] && continue
-      if [[ "$kind" == "HITL" ]]; then
-        FAILS=$((FAILS + 1))
-        echo "$SCRIPT_NAME: HITL: malformed @claim in ${path}:${lineno} — ${a}" >&2
-        continue
-      fi
-      parsed+="${path}"$'\t'"${lineno}"$'\t'"${a}"$'\t'"${b}"$'\t'"${c}"$'\t'"${d}"$'\n'
-    done < <(printf '%s\n' "$parse_in" | parse_claim_lines)
-  fi
-
-  if [[ "$FAILS" -gt 0 ]]; then
-    echo "$SCRIPT_NAME: HITL ($FAILS malformed @claim; do not invent fields)" >&2
-    exit 1
-  fi
-
-  if [[ -z "$parsed" ]]; then
-    exit 0
-  fi
-
-  declare -A id_parent=() id_plane=() id_status=() id_path=() id_line=() id_conflict=()
-  ids_ordered=()
-
-  while IFS=$'\t' read -r path lineno cid parent plane status; do
-    [[ -z "${cid:-}" ]] && continue
-    if [[ -v id_parent[$cid] ]]; then
-      if [[ "${id_parent[$cid]}|${id_plane[$cid]}|${id_status[$cid]}" != "${parent}|${plane}|${status}" ]]; then
-        id_conflict[$cid]=1
-      elif [[ "${id_path[$cid]}" != "$path" ]]; then
-        id_conflict[$cid]=1
-      fi
-      continue
-    fi
-    ids_ordered+=("$cid")
-    id_parent[$cid]="$parent"
-    id_plane[$cid]="$plane"
-    id_status[$cid]="$status"
-    id_path[$cid]="$path"
-    id_line[$cid]="$lineno"
-  done <<< "$parsed"
+  index_touched_claims
 
   echo "$SCRIPT_NAME: note: scope is the change set + parent= visible in that set only; children not in the set are not listed (no repo-wide parent= grep; captain may expand — modes.md §6.9)" >&2
 
   HITL_REFUSE=0
   recs=()
 
-  for cid in "${ids_ordered[@]}"; do
+  for cid in "${IDS_ORDERED[@]}"; do
     parent="${id_parent[$cid]}"
     # Children visible in the set only: a line already in the set names parent=.
     if [[ "$parent" == "-" ]]; then
@@ -1222,23 +1011,7 @@ extract_frontmatter_owner() {
 extract_steward_owner() {
   local matrix="$1" want="$2"
   [[ -f "$matrix" && -n "$want" ]] || return 0
-  awk -v want="$want" '
-  function trim(s) {
-    gsub(/^[[:space:]]+|[[:space:]]+$/, "", s)
-    gsub(/^\*\*|\*\*$/, "", s)
-    gsub(/`/, "", s)
-    return s
-  }
-  function split_cells(line, cells,   n, i, raw) {
-    sub(/^\|/, "", line)
-    sub(/\|$/, "", line)
-    n = split(line, raw, "|")
-    for (i = 1; i <= n; i++) cells[i] = trim(raw[i])
-    return n
-  }
-  function is_sep_row(line) {
-    return (line ~ /^\|[-:|[:space:]]+\|$/)
-  }
+  awk -v want="$want" "$AWK_CELLS"'
   function norm_path(s) {
     sub(/^anchor\.path=/, "", s)
     return s
@@ -1246,7 +1019,7 @@ extract_steward_owner() {
   BEGIN { id_col = 0; steward_col = 0; source_col = 0; anchor_col = 0; in_table = 0 }
   /^[[:space:]]*\|/ {
     if (is_sep_row($0)) next
-    n = split_cells($0, cells)
+    n = split_cells_md($0, cells)
     if (!in_table) {
       id_col = 0; steward_col = 0; source_col = 0; anchor_col = 0
       for (i = 1; i <= n; i++) {
@@ -1378,16 +1151,7 @@ git_last_author() {
 }
 
 if [[ "$GROUP_BY_PROVENANCE" -eq 1 ]]; then
-  if [[ -z "$MATRIX" ]]; then
-    MATRIX="$ROOT/docs/audit/claims-matrix.md"
-  fi
-  if [[ ! -f "$MATRIX" ]]; then
-    if [[ "$EXPLICIT_MATRIX" -eq 1 ]]; then
-      echo "$SCRIPT_NAME: matrix not found: $MATRIX" >&2
-      exit 2
-    fi
-    MATRIX=""
-  fi
+  resolve_matrix
 
   echo "$SCRIPT_NAME: note: provenance report is opt-in — TO-BE owner (explicit) + AS-IS git buckets; never invents owner from git; no write (modes.md §6.11)" >&2
 
@@ -1468,23 +1232,7 @@ FAIL_IDS=()
 
 # shellcheck disable=SC2016
 parse_result="$(
-  awk -v OFS='\t' '
-  function trim(s) {
-    gsub(/^[[:space:]]+|[[:space:]]+$/, "", s)
-    gsub(/^\*\*|\*\*$/, "", s)
-    return s
-  }
-  function split_cells(line, cells,   n, i, raw) {
-    sub(/^\|/, "", line)
-    sub(/\|$/, "", line)
-    n = split(line, raw, "|")
-    for (i = 1; i <= n; i++) cells[i] = trim(raw[i])
-    return n
-  }
-  function is_sep_row(line) {
-    # Separator rows look like |---|:---| or | --- | --- |
-    return (line ~ /^\|[-:|[:space:]]+\|$/)
-  }
+  awk -v OFS='\t' "$AWK_CELLS"'
   BEGIN {
     verdict_col = 0
     severity_col = 0
@@ -1493,7 +1241,7 @@ parse_result="$(
   }
   /^[[:space:]]*\|/ {
     if (is_sep_row($0)) next
-    n = split_cells($0, cells)
+    n = split_cells_bold($0, cells)
     # Detect header
     if (!in_table) {
       verdict_col = 0
